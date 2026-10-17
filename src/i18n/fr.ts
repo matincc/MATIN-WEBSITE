@@ -180,7 +180,7 @@ const fr = {
     title: 'Programmes',
     empty:
       'Les premiers programmes de Matin se construisent avec la communauté. Revenez bientôt, ou dites-nous ce qui vous intéresse.',
-    lede: 'Langues, arts, jeunesse et accueil : des activités pour apprendre, créer et se rencontrer.',
+    lede: "Programmes et initiatives en dialogue interculturel, en planification culturelle et en recherche, notamment des expositions d'art, des événements culturels, des ateliers, des festivals et des initiatives culturelles communautaires.",
     learnMore: 'En savoir plus',
     audience: 'Public',
     schedule: 'Horaire',

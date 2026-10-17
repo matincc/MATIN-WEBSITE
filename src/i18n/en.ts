@@ -177,7 +177,7 @@ const en: Dictionary = {
     title: 'Programs',
     empty:
       "Matin's first programs are being shaped with the community. Check back soon, or tell us what interests you.",
-    lede: 'Languages, arts, youth and newcomer support: activities to learn, create and connect.',
+    lede: 'Programs and initiatives in intercultural dialogue, cultural planning and research, including art exhibitions, cultural events, workshops, festivals and community cultural initiatives.',
     learnMore: 'Learn more',
     audience: 'Audience',
     schedule: 'Schedule',
