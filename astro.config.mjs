@@ -35,6 +35,14 @@ export default defineConfig({
         access: 'public',
         optional: true,
       }),
+      // netlify = forms stored in Netlify Forms (notifications set up in the Netlify UI);
+      // email = forms sent to /api/submit, which emails the administrative inbox.
+      PUBLIC_FORMS_MODE: envField.enum({
+        context: 'client',
+        access: 'public',
+        values: ['netlify', 'email'],
+        default: 'netlify',
+      }),
       PUBLIC_NEWSLETTER_MODE: envField.enum({
         context: 'client',
         access: 'public',

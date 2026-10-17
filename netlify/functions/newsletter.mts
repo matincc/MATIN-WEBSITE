@@ -8,8 +8,14 @@
  *   BREVO_LIST_ID_EN         ID of the English list (may be the same as FR)
  *   BREVO_DOI_TEMPLATE_ID    ID of the "double opt-in" confirmation template
  * The site uses this endpoint only when PUBLIC_NEWSLETTER_MODE=brevo.
+ *
+ * Brevo keeps the mailing list (with the consent record) and adds an unsubscribe link
+ * to every campaign. Each new sign-up also sends a short notice to the administrative
+ * inbox when notifications are configured (see _shared/notify); that notice is never
+ * the list itself.
  */
 import type { Config, Context } from '@netlify/functions';
+import { adminEmail, emailConfig, montrealNow, sendEmail } from './_shared/notify';
 
 const EMAIL = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
 
@@ -66,7 +72,27 @@ export default async (req: Request, context: Context) => {
     }),
   });
 
-  if (res.ok) return json(200, { ok: true });
+  if (res.ok) {
+    const cfg = emailConfig();
+    if (cfg) {
+      const { text, html } = adminEmail('New Newsletter Subscription', [
+        { label: 'Courriel / Email', value: email },
+        { label: 'Langue / Language', value: lang },
+        {
+          label: 'Consentement / Consent',
+          value: 'oui / yes (confirmation email sent: double opt-in)',
+        },
+        { label: 'Reçu le / Received', value: montrealNow() },
+      ]);
+      await sendEmail(cfg, {
+        to: cfg.to,
+        subject: '[MATIN WEBSITE] New Newsletter Subscription',
+        text,
+        html,
+      }).catch(() => false);
+    }
+    return json(200, { ok: true });
+  }
 
   const detail = await res.text();
   // An already-subscribed address is treated as success, so the form never

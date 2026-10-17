@@ -3,7 +3,8 @@
  *  - accessible inline validation with messages in the page's language
  *    (read from data-msg-* attributes, which come from the translation files);
  *  - an error summary that receives focus;
- *  - AJAX submission to Netlify Forms, with success / error status.
+ *  - AJAX submission to Netlify Forms, or to /api/submit (data-mode="email"), with a
+ *    success message only once the server has confirmed the submission.
  * Without JS, the browser's native validation and a normal POST still work.
  */
 
@@ -164,13 +165,25 @@ export function enhanceForms() {
       const label = submit.innerHTML;
       submit.textContent = m.sending;
       try {
-        const body = new URLSearchParams(new FormData(form) as unknown as Record<string, string>);
-        const res = await fetch(form.getAttribute('action') || '/', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-          body: body.toString(),
-        });
-        if (!res.ok) throw new Error(String(res.status));
+        let res: Response;
+        if (d.mode === 'email') {
+          res = await fetch('/api/submit', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(Object.fromEntries(new FormData(form))),
+          });
+          const result = (await res.json().catch(() => ({}))) as { ok?: boolean };
+          if (res.status === 429) throw new Error('too-many');
+          if (!res.ok || !result.ok) throw new Error(String(res.status));
+        } else {
+          const body = new URLSearchParams(new FormData(form) as unknown as Record<string, string>);
+          res = await fetch(form.getAttribute('action') || '/', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+            body: body.toString(),
+          });
+          if (!res.ok) throw new Error(String(res.status));
+        }
         form.reset();
         if (tokenInput) {
           tokenInput.value = '';
@@ -178,8 +191,9 @@ export function enhanceForms() {
         }
         status.textContent = m.success;
         status.classList.add('is-success');
-      } catch {
-        status.textContent = m.error;
+      } catch (err) {
+        status.textContent =
+          (err as Error).message === 'too-many' && d.msgTooMany ? d.msgTooMany : m.error;
         status.classList.add('is-error');
       } finally {
         submit.disabled = false;

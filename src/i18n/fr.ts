@@ -361,7 +361,7 @@ const fr = {
     send: 'Envoyer',
     sending: 'Envoi…',
     success: 'Merci! Votre message a bien été envoyé. Nous vous répondrons bientôt.',
-    error: "Le message n'a pas pu être envoyé. Veuillez réessayer ou nous écrire directement.",
+    error: "Votre message n'a pas pu être envoyé. Veuillez réessayer dans quelques minutes.",
     errorsIntro: 'Veuillez corriger les champs suivants :',
     errRequired: 'Ce champ est obligatoire.',
     errEmail: 'Veuillez entrer une adresse courriel valide, par exemple nom@exemple.com.',
@@ -375,6 +375,8 @@ const fr = {
     languages: 'Langues parlées',
     motivation: 'Pourquoi souhaitez-vous vous impliquer?',
     any: 'Peu importe',
+    errTooMany:
+      'Trop de messages ont été envoyés depuis cette connexion. Veuillez réessayer dans quelques minutes.',
   },
   faq: {
     title: 'Foire aux questions',

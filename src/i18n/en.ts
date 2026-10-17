@@ -360,7 +360,7 @@ const en: Dictionary = {
     send: 'Send',
     sending: 'Sending…',
     success: 'Thank you! Your message has been sent. We will get back to you soon.',
-    error: 'Your message could not be sent. Please try again or email us directly.',
+    error: 'Your message could not be sent. Please try again in a few minutes.',
     errorsIntro: 'Please correct the following fields:',
     errRequired: 'This field is required.',
     errEmail: 'Please enter a valid email address, for example name@example.com.',
@@ -373,6 +373,8 @@ const en: Dictionary = {
     languages: 'Languages spoken',
     motivation: 'Why would you like to get involved?',
     any: 'No preference',
+    errTooMany:
+      'Too many messages were sent from this connection. Please try again in a few minutes.',
   },
   faq: {
     title: 'Frequently Asked Questions',

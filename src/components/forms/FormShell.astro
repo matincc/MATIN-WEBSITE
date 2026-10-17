@@ -1,11 +1,13 @@
 ---
 /**
- * Shared wrapper for Netlify Forms: honeypot, bilingual validation messages,
- * error summary, consent checkbox and status region. Fields go in the slot.
- * Netlify detects the form at deploy time from the static HTML (data-netlify).
+ * Shared wrapper for every form: honeypot, bilingual validation messages, error summary,
+ * consent checkbox and status region. Fields go in the slot.
+ * PUBLIC_FORMS_MODE=netlify: sent to Netlify Forms (detected at deploy time from the
+ * static HTML, data-netlify). PUBLIC_FORMS_MODE=email: sent to /api/submit, which emails
+ * the administrative inbox (netlify/functions/submit.mts).
  */
 import { Send } from '@lucide/astro';
-import { PUBLIC_TURNSTILE_SITE_KEY } from 'astro:env/client';
+import { PUBLIC_FORMS_MODE, PUBLIC_TURNSTILE_SITE_KEY } from 'astro:env/client';
 import { href, type UiLang } from '@/i18n/routes';
 import { useTranslations } from '@/i18n/ui';
 
@@ -34,6 +36,8 @@ const t = useTranslations(lang);
   data-netlify="true"
   netlify-honeypot="bot-field"
   data-enhanced-form
+  data-mode={PUBLIC_FORMS_MODE}
+  data-msg-too-many={t('form.errTooMany')}
   data-msg-required={t('form.errRequired')}
   data-msg-email={t('form.errEmail')}
   data-msg-consent={t('form.errConsent')}
