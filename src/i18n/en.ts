@@ -91,11 +91,6 @@ const en: Dictionary = {
     involvedText:
       "Matin is building a welcoming space in Montréal where people from different backgrounds can meet, share perspectives, and learn from one another. We're shaping our future programs with the community, one conversation at a time.",
     involvedPrimary: 'Help shape Matin',
-    involvedSecondary: 'Stay connected',
-    ctaTitle: 'Help shape what comes next',
-    ctaText:
-      "Matin is building its future programs with the Montréal community. Tell us how you'd like to stay connected or contribute as the Institute grows.",
-    ctaButton: 'Express your interest',
   },
   newsletter: {
     eyebrow: 'Cultures in Dialogue',

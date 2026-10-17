@@ -93,11 +93,6 @@ const fr = {
     involvedText:
       'Matin bâtit à Montréal un espace accueillant où des personnes de tous horizons peuvent se rencontrer, partager leurs points de vue et apprendre les unes des autres. Nous façonnons nos futurs programmes avec la communauté, une conversation à la fois.',
     involvedPrimary: 'Contribuer à façonner Matin',
-    involvedSecondary: 'Rester en contact',
-    ctaTitle: 'Aidez-nous à imaginer la suite',
-    ctaText:
-      "Matin construit ses futurs programmes avec la communauté montréalaise. Dites-nous comment vous aimeriez rester en contact ou contribuer à mesure que l'Institut grandit.",
-    ctaButton: 'Manifester votre intérêt',
   },
   newsletter: {
     eyebrow: 'Cultures en dialogue',

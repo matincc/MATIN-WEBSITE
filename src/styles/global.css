@@ -21,7 +21,8 @@
   --matin-blue: #103b59; /* deep petroleum blue: headings, navigation, buttons, links, footer */
   --matin-gold: #c69c46; /* warm gold: highlights, decorative lines, the hero tagline */
   --matin-cream: #f7f3ea; /* soft warm cream: page and section backgrounds */
-  --matin-teal: #6ba8ac; /* secondary accent: light section backgrounds, tags, illustrations */
+  --matin-teal: #6ba8ac; /* secondary accent: tags, illustrations */
+  --matin-sand: #efe4d2; /* warm sand: alternate section backgrounds */
   --matin-ink: #293442; /* body text */
   --matin-white: #ffffff; /* cards, text on blue */
   --matin-red: #b33b42; /* maple red: sparingly, only for the Canadian brand identity */
@@ -46,10 +47,10 @@
   --color-gold-dark: var(--matin-blue);
   /* Secondary text uses the body ink too (no extra grey in the palette). */
   --color-muted: var(--matin-ink);
-  /* Very light teal: alternate section backgrounds. */
-  --color-tint: color-mix(in srgb, var(--matin-teal) 14%, var(--matin-white));
-  /* Card borders and dividers: light teal. */
-  --color-line: color-mix(in srgb, var(--matin-teal) 30%, var(--matin-white));
+  /* Warm sand: alternate section backgrounds. */
+  --color-tint: var(--matin-sand);
+  /* Card borders and dividers: light gold. */
+  --color-line: color-mix(in srgb, var(--matin-gold) 32%, var(--matin-white));
   /* Primary button hover: slightly darker blue. */
   --color-primary-hover: color-mix(in srgb, var(--matin-blue) 85%, black);
 
@@ -220,6 +221,16 @@
   /* On blue sections: white button with blue text. */
   .on-dark .btn-outline {
     @apply border-gold bg-white text-primary hover:bg-cream;
+  }
+  /* Blue bands: gold label, white title, gold main button with blue text (4.6:1). */
+  .on-dark .eyebrow {
+    @apply text-gold;
+  }
+  .on-dark .section-title {
+    @apply text-white;
+  }
+  .on-dark .btn-primary {
+    @apply bg-gold text-primary hover:bg-cream;
   }
   /* Shared card style: white, softly rounded, very light border, no shadow. */
   .card {

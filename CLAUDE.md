@@ -26,21 +26,22 @@ These rules apply to every page, now and in the future. Read them before changin
 
 ## 3. Colors: the Matin color system
 
-Six variables, defined once in `:root` in `src/styles/global.css`. They are the ONLY colors on the site. The Tailwind tokens (`text-primary`, `bg-cream`, `bg-tint`, `var(--color-gold)`…) all point at them; use those tokens or the variables, never raw hex, rgb or named colors.
+The variables below, defined once in `:root` in `src/styles/global.css`. They are the ONLY colors on the site. The Tailwind tokens (`text-primary`, `bg-cream`, `bg-tint`, `var(--color-gold)`…) all point at them; use those tokens or the variables, never raw hex, rgb or named colors.
 
 | Variable | Value | Use |
 | --- | --- | --- |
 | `--matin-blue` | `#103B59` | Deep petroleum blue, primary brand color: headings, footer, President band, main buttons, links, icons, small labels (token `primary`) |
 | `--matin-gold` | `#C69C46` | Warm gold: thin lines, dividers, maple leaves, secondary-button borders, hover and active underlines, the homepage tagline (token `gold`) |
 | `--matin-cream` | `#F7F3EA` | Soft warm cream: main page background (token `cream`) |
-| `--matin-teal` | `#6BA8AC` | Secondary accent: light section backgrounds (`tint`), card borders (`line`), illustrations (token `turquoise`) |
+| `--matin-sand` | `#EFE4D2` | Warm sand: alternate section backgrounds (token `tint`); card borders are a light gold mix (token `line`) |
+| `--matin-teal` | `#6BA8AC` | Secondary accent: illustrations only (token `turquoise`); no longer used for backgrounds |
 | `--matin-ink` | `#293442` | Body text, also secondary text (tokens `ink`, `muted`) |
 | `--matin-white` | `#FFFFFF` | Cards, inputs, text on blue (token `white`) |
 | `--matin-red` | `#B33B42` | Maple red: use sparingly, only for the Canadian brand identity (token `maple`); not used yet |
 
-- Proportions: about 60% cream/white, 25% blue, 10% teal, 5% gold.
-- Page background is cream; cards are white on cream; alternate sections use the light teal `tint`. Long text is ink on cream or white.
-- The footer and the President band are blue with white or cream text (class `on-dark`).
+- Warm palette (owner's choice, Oct 2026): proportions about 60% cream/white, 15% sand, 20% blue, 5% gold.
+- Page background is cream; cards are white on cream; alternate sections use the warm sand `tint`. Long text is ink on cream or white.
+- The footer, the President band and the homepage Get Involved band are blue with white or cream text (class `on-dark`). On blue bands the small label is gold, the title white, and `.btn-primary` becomes a gold button with blue text (4.6:1); this is the only place gold fills a button.
 - **Gold is never a large background and never text on cream or white** (2.3:1, fails). Gold text is only allowed on blue (4.6:1), plus the homepage tagline "Cultures in Dialogue" (large bold italic on the photo, at the owner's request). Teal is never text on cream or white either (2.5:1).
 - The old `gold-dark` token now maps to blue: use it (or `primary`) for small labels, dates and icons.
 - No green and no dark green anywhere.
@@ -57,7 +58,7 @@ Six variables, defined once in `:root` in `src/styles/global.css`. They are the 
 
 - Real heading hierarchy: one `h1` per page, then `h2`/`h3` in order.
 - Contrast (WCAG AA, checked): ink on cream 11.4, blue on cream 10.6, blue on white 11.7, white on blue 11.7, gold on blue 4.6. Never gold or teal small text on cream or white.
-- Buttons (pill-shaped, gentle lift on hover): `.btn-primary` = petroleum blue with white text, darker blue on hover; `.btn-outline` = secondary, light background with a thin gold border and blue text.
+- Buttons (pill-shaped, gentle lift on hover): `.btn-primary` = petroleum blue with white text, darker blue on hover (gold with blue text inside `on-dark` bands); `.btn-outline` = secondary, light background with a thin gold border and blue text.
 - Links: blue, gold underline on hover. Header navigation: blue text, a thin gold underline grows in on hover and stays under the current page.
 - Everything works with the keyboard, with visible focus styles (blue outline; gold on blue sections).
 - Decorative icons, lines and maple leaves get `aria-hidden="true"`. Meaningful images get proper alt text in both languages.

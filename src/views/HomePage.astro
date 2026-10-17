@@ -21,7 +21,7 @@ import PostCard from '@/components/content/PostCard.astro';
 import NewsletterForm from '@/components/forms/NewsletterForm.astro';
 import { href, siteAlternates, type UiLang } from '@/i18n/routes';
 import { useTranslations } from '@/i18n/ui';
-import { forLang, getNews, getPastEvents, getSettings, getUpcomingEvents } from '@/lib/content';
+import { forLang, getNews, getPastEvents, getUpcomingEvents } from '@/lib/content';
 import { newsCategories } from '@/lib/taxonomy';
 
 interface Props {
@@ -30,8 +30,7 @@ interface Props {
 const { lang } = Astro.props;
 const t = useTranslations(lang);
 
-const [settings, upcomingAll, pastAll, postsAll] = await Promise.all([
-  getSettings(),
+const [upcomingAll, pastAll, postsAll] = await Promise.all([
   getUpcomingEvents(),
   getPastEvents(),
   getNews(),
@@ -230,7 +229,7 @@ const interestHref = `${href('getInvolved', lang)}#interest`;
   </section>
 
   <!-- Get involved -->
-  <section class="bg-cream py-20 sm:py-24" aria-labelledby="involved-title">
+  <section class="on-dark bg-primary py-20 sm:py-24" aria-labelledby="involved-title">
     <div class="container-site">
       <SectionHeader
         id="involved-title"
@@ -238,7 +237,7 @@ const interestHref = `${href('getInvolved', lang)}#interest`;
         title={t('home.involvedTitle')}
         class="mb-8"
       />
-      <p class="mx-auto max-w-3xl text-center text-lg leading-relaxed sm:text-xl">
+      <p class="mx-auto max-w-3xl text-center text-lg leading-relaxed text-cream sm:text-xl">
         {t('home.involvedText')}
       </p>
       <div class="mt-9 flex flex-col justify-center gap-3 sm:flex-row sm:flex-wrap">
@@ -246,17 +245,16 @@ const interestHref = `${href('getInvolved', lang)}#interest`;
           {t('home.involvedPrimary')}
           <ArrowRight size={18} class="flip-rtl" aria-hidden="true" />
         </a>
-        {settings.formsEnabled && (
-          <a href="#newsletter" class="btn btn-outline">
-            {t('home.involvedSecondary')}
-          </a>
-        )}
       </div>
     </div>
   </section>
 
   <!-- Newsletter -->
-  <section id="newsletter" class="scroll-mt-24 bg-tint py-20" aria-labelledby="newsletter-title">
+  <section
+    id="newsletter"
+    class="scroll-mt-24 bg-cream py-16 sm:py-20"
+    aria-labelledby="newsletter-title"
+  >
     <div class="container-site">
       <div class="card newsletter-card">
         <SectionHeader
@@ -268,17 +266,6 @@ const interestHref = `${href('getInvolved', lang)}#interest`;
         />
         <NewsletterForm lang={lang} id="home-newsletter" />
       </div>
-    </div>
-  </section>
-
-  <!-- Interest call to action -->
-  <section class="bg-cream py-20 sm:py-24" aria-labelledby="cta-title">
-    <div class="container-site max-w-3xl text-center">
-      <SectionHeader id="cta-title" title={t('home.ctaTitle')} class="mb-6" />
-      <p class="mx-auto max-w-2xl text-lg leading-relaxed sm:text-xl">{t('home.ctaText')}</p>
-      <a href={interestHref} class="btn btn-primary mt-9">
-        {t('home.ctaButton')}
-      </a>
     </div>
   </section>
 </BaseLayout>
