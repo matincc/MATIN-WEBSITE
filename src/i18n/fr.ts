@@ -52,6 +52,7 @@ const fr = {
     story: 'Notre histoire',
     team: 'Notre équipe',
     president: 'Le mot du président',
+    ourPresident: 'Notre président',
   },
   search: {
     title: 'Rechercher',
@@ -281,8 +282,9 @@ const fr = {
     documentsLede: 'Par souci de transparence, nos documents officiels sont accessibles à tous.',
     download: 'Télécharger',
     comingSoon: 'Bientôt disponible',
-    meetPresident: 'Rencontrer notre président',
     onLinkedin: '{name} sur LinkedIn',
+    ourPresident: 'Notre président',
+    discoverPresident: 'En savoir plus sur notre président',
   },
   gallery: {
     title: 'Galerie',

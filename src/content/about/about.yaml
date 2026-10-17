@@ -48,6 +48,40 @@ history:
 # (or .png / .webp) and it replaces the initials automatically.
 president:
   name: 'Reza Moafi'
+  # "Our President" section on the About page: approved biography (October 2026).
+  displayName:
+    fr: 'Reza Moafi, Ph. D.'
+    en: 'Reza Moafi, PhD'
+    fa: 'دکتر رضا معافی'
+  position:
+    fr: 'Fondateur et président | Institut interculturel Matin'
+    en: 'Founder & President | Matin Intercultural Institute'
+    fa: 'بنیان‌گذار و رئیس | مؤسسه بین‌فرهنگی متین'
+  bio:
+    en: |
+      Reza Moafi is a cultural planning and management professional with more than 20 years of experience in cultural policy, strategic planning, research, and community development in Iran and Canada.
+
+      He holds a PhD in Cultural Management and Planning and has held significant leadership and professional positions, including Cultural Planning Specialist with Tehran City Council, Founder and CEO of MFH Institute, and Chairperson of the Board of Tehran Conservatory of Music.
+
+      His professional experience in Montréal has further shaped his approach to community engagement, cultural diversity, and collaboration among communities, cultural organizations, and public institutions.
+
+      As Founder and President of Matin Intercultural Institute, he draws on his academic background and international professional experience to promote intercultural dialogue, research-informed cultural planning, and inclusive cultural initiatives that connect people, institutions, and communities.
+    fr: |
+      Reza Moafi est un professionnel de la planification et de la gestion culturelles qui possède plus de vingt ans d’expérience en politiques culturelles, en planification stratégique, en recherche et en développement communautaire, en Iran et au Canada.
+
+      Titulaire d’un doctorat en gestion et planification culturelles, il a notamment exercé les fonctions de spécialiste en planification culturelle auprès du Conseil municipal de Téhéran, de fondateur et directeur général de MFH Institute, ainsi que de président du conseil d’administration du Conservatoire de musique de Téhéran.
+
+      Son parcours professionnel à Montréal a renforcé son engagement envers la participation citoyenne, la diversité culturelle et la collaboration entre les communautés, les organismes culturels et les institutions publiques.
+
+      Fondateur et président de l’Institut interculturel Matin, il s’appuie sur son parcours universitaire et son expérience professionnelle internationale pour favoriser le dialogue interculturel, la planification culturelle fondée sur la recherche et le développement d’initiatives culturelles inclusives qui rapprochent les personnes, les institutions et les communautés.
+    fa: |
+      رضا معافی کارشناس برنامه‌ریزی و مدیریت فرهنگی است و بیش از ۲۰ سال تجربه در سیاست‌گذاری فرهنگی، برنامه‌ریزی راهبردی، پژوهش و توسعه اجتماعی در ایران و کانادا دارد.
+
+      او دارای دکترای مدیریت و برنامه‌ریزی فرهنگی است و مسئولیت‌های مدیریتی و حرفه‌ای مهمی بر عهده داشته است؛ از جمله کارشناس برنامه‌ریزی فرهنگی در شورای شهر تهران، بنیان‌گذار و مدیرعامل MFH Institute و رئیس هیئت‌مدیره هنرستان موسیقی تهران.
+
+      تجربه حرفه‌ای او در مونترال نگاهش را به مشارکت اجتماعی، تنوع فرهنگی و همکاری میان جوامع، سازمان‌های فرهنگی و نهادهای عمومی عمیق‌تر کرده است.
+
+      او به‌عنوان بنیان‌گذار و رئیس مؤسسه بین‌فرهنگی متین، با تکیه بر پیشینه دانشگاهی و تجربه حرفه‌ای بین‌المللی خود، در پی ترویج گفت‌وگوی بین‌فرهنگی، برنامه‌ریزی فرهنگیِ مبتنی بر پژوهش و ابتکارهای فرهنگی فراگیری است که مردم، نهادها و جوامع را به هم پیوند می‌دهد.
   # Personal LinkedIn (confirmed by Matin). The Institute's page is in settings/site.yaml.
   linkedin: https://www.linkedin.com/in/rezamoafi/
   # The profile page stays unpublished until the verified biography below is filled in

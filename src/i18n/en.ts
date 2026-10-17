@@ -51,6 +51,7 @@ const en: Dictionary = {
     story: 'Our Story',
     team: 'Our Team',
     president: 'A Word from Our President',
+    ourPresident: 'Our President',
   },
   search: {
     title: 'Search',
@@ -280,8 +281,9 @@ const en: Dictionary = {
       'In the spirit of transparency, our official documents are available to everyone.',
     download: 'Download',
     comingSoon: 'Coming soon',
-    meetPresident: 'Meet Our President',
     onLinkedin: '{name} on LinkedIn',
+    ourPresident: 'Our President',
+    discoverPresident: 'Discover More About Our President',
   },
   gallery: {
     title: 'Gallery',

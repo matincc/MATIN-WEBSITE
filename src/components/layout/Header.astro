@@ -36,12 +36,13 @@ const aboutLinks = [
   { id: 'who-we-are', label: t('nav.whoWeAre') },
   { id: 'mission', label: t('nav.mission') },
   { id: 'vision', label: t('nav.vision') },
+  { id: 'our-president', label: t('nav.ourPresident') },
   { id: 'values', label: t('nav.values') },
   { id: 'story', label: t('nav.story') },
   ...(hasTeam ? [{ id: 'team', label: t('nav.team') }] : []),
   { id: 'president', label: t('nav.president') },
 ]
-  .filter((l) => lang !== 'fa' || l.id === 'values' || l.id === 'team')
+  .filter((l) => lang !== 'fa' || ['our-president', 'values', 'team'].includes(l.id))
   .map((l) => ({ ...l, href: `${aboutHref}#${l.id}` }));
 
 const current = Astro.url.pathname;

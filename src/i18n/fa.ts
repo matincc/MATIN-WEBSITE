@@ -57,6 +57,7 @@ const fa: DeepPartial<Dictionary> = {
     story: 'داستان ما',
     team: 'تیم ما',
     president: 'سخن رئیس',
+    ourPresident: 'رئیس ما',
   },
   home: {
     heroEyebrow: 'مؤسسه بین‌فرهنگی متین',
@@ -199,9 +200,10 @@ const fa: DeepPartial<Dictionary> = {
     history: 'داستان ما',
     founderTitle: 'سخن رئیس متین',
     team: 'تیم ما',
-    meetPresident: 'آشنایی با رئیس متین',
     onLinkedin: '{name} در لینکدین',
     presidentPhotoAlt: 'تصویر {name}',
+    ourPresident: 'رئیس ما',
+    discoverPresident: 'بیشتر درباره رئیس ما',
   },
   involved: {
     title: 'مشارکت',

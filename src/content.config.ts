@@ -293,6 +293,12 @@ const about = defineCollection({
       name: z.string(),
       title: bi,
       message: bi,
+      /** Name with credentials as it appears in the "Our President" section. */
+      displayName: biOpt,
+      /** Position line, e.g. « Fondateur et président | Institut interculturel Matin ». */
+      position: biOpt,
+      /** Approved biography (Markdown, one paragraph per blank line). */
+      bio: biOpt,
       /** Personal LinkedIn profile (not the Institute's page). */
       linkedin: z.url().optional(),
       /**
