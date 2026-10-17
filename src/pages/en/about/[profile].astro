@@ -1,0 +1,13 @@
+---
+import type { GetStaticPaths } from 'astro';
+import PresidentPage from '@/views/PresidentPage.astro';
+import { presidentProfileVisible } from '@/lib/content';
+
+// Built only once the profile is approved (about.yaml: president.profilePublished).
+export const getStaticPaths = (async () =>
+  (await presidentProfileVisible())
+    ? [{ params: { profile: 'reza-moafi' } }]
+    : []) satisfies GetStaticPaths;
+---
+
+<PresidentPage lang="en" />

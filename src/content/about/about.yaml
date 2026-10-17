@@ -48,9 +48,24 @@ history:
 # (or .png / .webp) and it replaces the initials automatically.
 president:
   name: 'Reza Moafi'
+  # Personal LinkedIn (confirmed by Matin). The Institute's page is in settings/site.yaml.
+  linkedin: https://www.linkedin.com/in/rezamoafi/
+  # The profile page stays unpublished until the verified biography below is filled in
+  # and approved. Then set profilePublished: true.
+  profilePublished: false
+  profile:
+    summary:
+      fr: ''
+      en: ''
+    education: []
+    experience: []
+    expertise: []
+    leadership: []
+    projects: []
   title:
     fr: 'Fondateur et président'
     en: 'Founder and President'
+    fa: 'بنیان‌گذار و رئیس'
   message:
     fr: "« Les cultures ne sont pas des distances à franchir ; ce sont des paysages vivants que nous pouvons apprendre à parcourir ensemble. Au fil de mes années auprès des quartiers et des communautés, j'ai vu à maintes reprises que l'appartenance ne se décrète pas par les seules politiques. Elle se construit, une conversation à la fois, lorsque chacun se sent écouté et invité à façonner le lieu qu'il appelle chez lui. Matin est né de cette conviction. Nous sommes un jeune institut aux horizons larges, et notre promesse est simple : ici, chaque voix a sa place, chaque histoire compte et chaque différence devient une force partagée. Bienvenue chez vous. »"
     en: '"Cultures are not distances to be crossed; they are living landscapes we can learn to walk together. In my years of working alongside neighbourhoods and communities, I have seen again and again that belonging is never granted by policy alone. It is built, one conversation at a time, when people feel heard and invited to shape the place they call home. Matin was founded on that conviction. We are a young institute with a long horizon, and our promise is simple: here, every voice has a place, every story matters, and every difference becomes a shared source of strength. Welcome home."'

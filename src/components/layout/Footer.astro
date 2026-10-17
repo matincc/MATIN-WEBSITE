@@ -6,7 +6,7 @@ import SocialLinks from '@/components/ui/SocialLinks.astro';
 import NewsletterForm from '@/components/forms/NewsletterForm.astro';
 import { href, type RouteKey, type UiLang } from '@/i18n/routes';
 import { useTranslations, pick } from '@/i18n/ui';
-import { getSettings } from '@/lib/content';
+import { emptySections, forLang, getSettings, getTeam } from '@/lib/content';
 
 interface Props {
   lang: UiLang;
@@ -16,23 +16,28 @@ const { lang, showNewsletter = true } = Astro.props;
 const t = useTranslations(lang);
 const s = await getSettings();
 
-const explore: RouteKey[] = [
-  'about',
-  'programs',
-  'events',
-  'news',
-  'gallery',
-  'getInvolved',
-  'resources',
-  'faq',
-  'contact',
-];
+// Pages without content yet (empty gallery, FAQ…) are left out rather than linked.
+const empty = await emptySections();
+const hasTeam = forLang(await getTeam(), lang).length > 0;
+const explore = (
+  [
+    'about',
+    'events',
+    'news',
+    'programs',
+    'getInvolved',
+    'gallery',
+    'resources',
+    'faq',
+    'contact',
+  ] as RouteKey[]
+).filter((k) => !empty.has(k as 'gallery' | 'faq' | 'resources'));
+const links = explore.map((key) => ({ href: href(key, lang), label: t(`nav.${key}`) }));
+if (hasTeam) links.splice(1, 0, { href: `${href('about', lang)}#team`, label: t('nav.team') });
 const legal: RouteKey[] = ['privacy', 'terms', 'accessibility'];
 const year = new Intl.NumberFormat(lang === 'fa' ? 'fa-IR' : 'en-CA', {
   useGrouping: false,
 }).format(new Date().getFullYear());
-// Shown as plain, non-clickable text in the footer (as requested).
-const plainText: RouteKey[] = ['resources', 'faq'];
 // Contact details appear only once they are set in the site settings.
 const a = s.address;
 const fullAddress = a && `${a.street}, ${a.city} (${a.region}) ${a.postalCode}`;
@@ -40,33 +45,27 @@ const mapsUrl =
   fullAddress &&
   `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(fullAddress)}`;
 const hasContact = Boolean(a || s.phone || s.email);
-// The mission has no Persian translation yet: Persian pages skip it rather than show English.
-const mission = lang !== 'fa' || s.mission.fa ? pick(s.mission, lang) : undefined;
 ---
 
 <footer class="on-dark border-t-4 border-gold bg-primary text-white">
   <div class="container-site grid gap-12 pt-14 pb-12 md:grid-cols-2 lg:grid-cols-12">
-    <div class="lg:col-span-4">
+    <div class:list={[hasContact || s.hours ? 'lg:col-span-4' : 'lg:col-span-5']}>
       <div class="mb-6">
         <Lockup lang={lang} variant="dark" />
       </div>
       <p class="mb-3 font-display text-2xl font-bold text-white">{t('brand.tagline')}</p>
-      {mission && <p class="max-w-sm text-[0.95rem] leading-relaxed">{mission}</p>}
+      <p class="max-w-md text-[0.95rem] leading-relaxed">{t('footer.about')}</p>
       <SocialLinks lang={lang} social={s.social} class="mt-6" />
     </div>
 
-    <nav aria-label={t('a11y.footerNav')} class="lg:col-span-2">
+    <nav aria-label={t('a11y.footerNav')} class="lg:col-span-3">
       <h2 class="footer-title">{t('footer.linksTitle')}</h2>
-      <ul class="space-y-1.5">
-        {explore.map((key) => (
+      <ul class="footer-links">
+        {links.map((l) => (
           <li>
-            {plainText.includes(key) ? (
-              <span class="footer-plain">{t(`nav.${key}`)}</span>
-            ) : (
-              <a href={href(key, lang)} class="footer-link">
-                {t(`nav.${key}`)}
-              </a>
-            )}
+            <a href={l.href} class="footer-link">
+              {l.label}
+            </a>
           </li>
         ))}
       </ul>
@@ -121,7 +120,13 @@ const mission = lang !== 'fa' || s.mission.fa ? pick(s.mission, lang) : undefine
     )}
 
     {showNewsletter && (
-      <div id="stay-connected" class="scroll-mt-24 md:col-span-2 lg:col-span-3">
+      <div
+        id="stay-connected"
+        class:list={[
+          'scroll-mt-24 md:col-span-2',
+          hasContact || s.hours ? 'lg:col-span-3' : 'lg:col-span-4',
+        ]}
+      >
         <h2 class="footer-title">{t('footer.newsletterTitle')}</h2>
         <p class="mb-4 text-[0.95rem]">{t('newsletter.text')}</p>
         <NewsletterForm lang={lang} compact id="footer-newsletter" />
@@ -177,8 +182,10 @@ const mission = lang !== 'fa' || s.mission.fa ? pick(s.mission, lang) : undefine
     text-decoration: underline;
     text-decoration-color: var(--color-gold);
   }
-  .footer-plain {
-    color: var(--color-cream);
-    cursor: default;
+  .footer-links {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, max-content));
+    column-gap: 2.5rem;
+    row-gap: 0.4rem;
   }
 </style>

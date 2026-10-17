@@ -1,0 +1,195 @@
+---
+/**
+ * The President's profile: portrait, verified professional biography and a link to his
+ * personal LinkedIn profile. Each section appears only once it has verified content.
+ * The page is built only when about.yaml sets president.profilePublished (the local
+ * preview always shows it, with a notice and the empty sections outlined).
+ */
+import { Image } from 'astro:assets';
+import type { ImageMetadata } from 'astro';
+import { ArrowLeft, ExternalLink } from '@lucide/astro';
+import PageLayout from '@/layouts/PageLayout.astro';
+import { href, siteAlternates, type UiLang } from '@/i18n/routes';
+import { useTranslations, pick } from '@/i18n/ui';
+import { getSingleton } from '@/lib/content';
+
+interface Props {
+  lang: UiLang;
+}
+const { lang } = Astro.props;
+const t = useTranslations(lang);
+const { president: p } = await getSingleton('about');
+const preview = !p.profilePublished;
+const photos = import.meta.glob<ImageMetadata>('/src/assets/brand/president.{jpg,jpeg,png,webp}', {
+  eager: true,
+  import: 'default',
+});
+const photo = Object.values(photos)[0];
+const role = pick(p.title, lang);
+const summary = pick(p.profile.summary, lang);
+const lists = [
+  { id: 'education', title: t('president.education'), items: p.profile.education },
+  { id: 'experience', title: t('president.experience'), items: p.profile.experience },
+  { id: 'expertise', title: t('president.expertise'), items: p.profile.expertise },
+  { id: 'leadership', title: t('president.leadership'), items: p.profile.leadership },
+  { id: 'projects', title: t('president.projects'), items: p.profile.projects },
+]
+  .map((l) => ({ ...l, items: l.items.map((i) => pick(i, lang)!).filter(Boolean) }))
+  .filter((l) => preview || l.items.length > 0);
+const site = Astro.site ?? new URL(Astro.url.origin);
+const jsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'Person',
+  name: p.name,
+  jobTitle: role,
+  worksFor: { '@id': new URL('/#organization', site).href },
+  ...(photo && { image: new URL(photo.src, site).href }),
+  ...(p.linkedin && { sameAs: [p.linkedin] }),
+};
+---
+
+<PageLayout
+  lang={lang}
+  title={p.name}
+  lede={`${role}, ${t('president.org')}`}
+  alternates={siteAlternates('president')}
+  crumbs={[{ label: t('about.title'), href: href('about', lang) }]}
+  jsonLd={[jsonLd]}
+>
+  <div class="container-site max-w-5xl pt-4 pb-24">
+    {preview && (
+      <p class="preview-note" role="note">
+        {t('president.preview')}
+      </p>
+    )}
+
+    <section class="profile-head" aria-labelledby="profile-title">
+      {photo && (
+        <Image
+          src={photo}
+          alt={t('about.presidentPhotoAlt', { name: p.name })}
+          width={480}
+          height={480}
+          class="profile-photo"
+          loading="eager"
+        />
+      )}
+      <div>
+        <h2 id="profile-title" class="mb-1 text-3xl font-bold">
+          {t('president.profile')}
+        </h2>
+        <p class="mb-6 font-semibold text-gold-dark">{role}</p>
+        {summary ? (
+          <p class="mb-8 text-lg leading-relaxed">{summary}</p>
+        ) : (
+          preview && <p class="empty-slot mb-8">—</p>
+        )}
+        {p.linkedin && (
+          <a href={p.linkedin} class="btn btn-primary" target="_blank" rel="noopener noreferrer">
+            {t('president.linkedinCta')}
+            <ExternalLink size={18} aria-hidden="true" />
+            <span class="sr-only">{t('a11y.externalLink')}</span>
+          </a>
+        )}
+      </div>
+    </section>
+
+    {lists.map((l) => (
+      <section class="profile-section" aria-labelledby={`${l.id}-title`}>
+        <h2 id={`${l.id}-title`} class="mb-4 text-2xl font-bold">
+          {l.title}
+        </h2>
+        {l.items.length > 0 ? (
+          <ul class="profile-list">
+            {l.items.map((i) => (
+              <li>{i}</li>
+            ))}
+          </ul>
+        ) : (
+          <p class="empty-slot">—</p>
+        )}
+      </section>
+    ))}
+
+    {(p.linkedin || p.profile.links.length > 0) && (
+      <section class="profile-section" aria-labelledby="connections-title">
+        <h2 id="connections-title" class="mb-4 text-2xl font-bold">
+          {t('president.connections')}
+        </h2>
+        <ul class="profile-list">
+          {p.linkedin && (
+            <li>
+              <a href={p.linkedin} target="_blank" rel="noopener noreferrer">
+                LinkedIn<span class="sr-only"> {t('a11y.externalLink')}</span>
+              </a>
+            </li>
+          )}
+          {p.profile.links.map((link) => (
+            <li>
+              <a href={link.url} target="_blank" rel="noopener noreferrer">
+                {link.label}
+                <span class="sr-only"> {t('a11y.externalLink')}</span>
+              </a>
+            </li>
+          ))}
+        </ul>
+      </section>
+    )}
+
+    <a href={`${href('about', lang)}#president`} class="link-arrow mt-12">
+      <ArrowLeft size={18} class="flip-rtl" aria-hidden="true" />
+      {t('president.readMessage')}
+    </a>
+  </div>
+</PageLayout>
+
+<style>
+  .preview-note {
+    margin-bottom: 2rem;
+    padding: 1rem 1.25rem;
+    border-radius: 0.75rem;
+    border: 1.5px dashed var(--color-primary);
+    background: var(--color-white);
+    font-weight: 600;
+  }
+  .profile-head {
+    display: grid;
+    gap: 2.5rem;
+    align-items: start;
+  }
+  @media (min-width: 768px) {
+    .profile-head {
+      grid-template-columns: 18rem minmax(0, 1fr);
+    }
+  }
+  .profile-photo {
+    width: 18rem;
+    max-width: 100%;
+    aspect-ratio: 1;
+    object-fit: cover;
+    border-radius: var(--radius-card);
+    border: 3px solid var(--color-gold);
+  }
+  .profile-section {
+    margin-top: 3rem;
+    padding-top: 2rem;
+    border-top: 1px solid var(--color-line);
+  }
+  .profile-list {
+    display: grid;
+    gap: 0.6rem;
+    padding-inline-start: 1.25rem;
+    list-style: disc;
+    font-size: 1.05rem;
+    line-height: 1.6;
+  }
+  .profile-list ::marker {
+    color: var(--color-gold);
+  }
+  .empty-slot {
+    padding: 0.75rem 1rem;
+    border-radius: 0.75rem;
+    border: 1.5px dashed var(--color-line);
+    color: var(--color-muted);
+  }
+</style>

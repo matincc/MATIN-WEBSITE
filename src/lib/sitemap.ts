@@ -10,7 +10,15 @@ import {
   siteAlternates,
   type RouteKey,
 } from '@/i18n/routes';
-import { getEvents, getNews, getPrograms, NEWS_PAGE_SIZE, newsCategories, slugOf } from './content';
+import {
+  getEvents,
+  getNews,
+  getPrograms,
+  NEWS_PAGE_SIZE,
+  newsCategories,
+  presidentProfileVisible,
+  slugOf,
+} from './content';
 
 export interface PagePair {
   fr: string;
@@ -21,7 +29,10 @@ export interface PagePair {
 }
 
 export async function allPagePairs(): Promise<PagePair[]> {
-  const keys = (Object.keys(routes) as RouteKey[]).filter((k) => k !== 'search');
+  const profile = await presidentProfileVisible();
+  const keys = (Object.keys(routes) as RouteKey[]).filter(
+    (k) => k !== 'search' && (k !== 'president' || profile),
+  );
   const pairs: PagePair[] = keys.map((key) => siteAlternates(key));
 
   for (const p of await getPrograms()) {

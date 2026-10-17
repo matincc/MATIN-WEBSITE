@@ -11,6 +11,7 @@ export const defaultLang: Lang = 'fr';
 export const routes = {
   home: { fr: '', en: '' },
   about: { fr: 'a-propos', en: 'about' },
+  president: { fr: 'a-propos/reza-moafi', en: 'about/reza-moafi' },
   programs: { fr: 'programmes', en: 'programs' },
   events: { fr: 'evenements', en: 'events' },
   eventsArchive: { fr: 'evenements/archives', en: 'events/past' },
@@ -69,6 +70,7 @@ export const FA_FALLBACK: Lang = 'en';
 export const faRoutes: Partial<Record<RouteKey, string>> = {
   home: '',
   about: 'about',
+  president: 'about/reza-moafi',
   getInvolved: 'get-involved',
   contact: 'contact',
 };

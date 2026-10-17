@@ -124,12 +124,17 @@ export function forLang<T extends { data: { faReviewed?: boolean } }>(
   return lang === 'fa' ? items.filter((i) => i.data.faReviewed) : items;
 }
 
+/** Published team members in display order (drafts only on the local preview). */
 export async function getTeam() {
-  const team = (await getCollection('team')).sort((a, b) => a.data.order - b.data.order);
-  return {
-    staff: team.filter((m) => m.data.group === 'staff'),
-    board: team.filter((m) => m.data.group === 'board'),
-  };
+  return (await getCollection('team', (m) => import.meta.env.DEV || !m.data.draft)).sort(
+    (a, b) => a.data.order - b.data.order,
+  );
+}
+
+/** The President's profile page: built once approved, or on the local preview. */
+export async function presidentProfileVisible() {
+  const about = await getSingleton('about');
+  return import.meta.env.DEV || about.president.profilePublished;
 }
 
 export async function getSingleton<C extends 'about' | 'involvement'>(collection: C) {
@@ -173,3 +178,17 @@ export const initials = (name: string) =>
     .slice(0, 2)
     .map((w) => w[0]?.toUpperCase() ?? '')
     .join('') || 'M';
+
+/** Pages that are shown in the navigation only once they have content. */
+export async function emptySections(): Promise<Set<'gallery' | 'faq' | 'resources'>> {
+  const [gallery, faq, resources] = await Promise.all([
+    getCollection('gallery'),
+    getCollection('faq'),
+    getCollection('resources'),
+  ]);
+  const empty = new Set<'gallery' | 'faq' | 'resources'>();
+  if (gallery.length === 0) empty.add('gallery');
+  if (faq.length === 0) empty.add('faq');
+  if (resources.length === 0) empty.add('resources');
+  return empty;
+}

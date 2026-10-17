@@ -1,0 +1,12 @@
+# Draft until the Team section is ready to publish (with the other members' approved
+# profiles). Remove `draft: true` to show it on the About page.
+name: 'Reza Moafi'
+role:
+  fr: 'Fondateur et président'
+  en: 'Founder and President'
+  fa: 'بنیان‌گذار و رئیس'
+photo: ../../assets/brand/president.jpg
+linkedin: https://www.linkedin.com/in/rezamoafi/
+order: 1
+faReviewed: true
+draft: true

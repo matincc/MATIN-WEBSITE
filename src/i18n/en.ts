@@ -48,6 +48,9 @@ const en: Dictionary = {
     terms: 'Terms of Use',
     accessibility: 'Accessibility Statement',
     search: 'Search',
+    story: 'Our Story',
+    team: 'Our Team',
+    president: 'A Word from Our President',
   },
   search: {
     title: 'Search',
@@ -180,6 +183,8 @@ const en: Dictionary = {
     report: 'Report',
     highlights: 'Highlights',
     photos: 'Photos',
+    filterLanguage: 'Language',
+    allLanguages: 'All languages',
   },
   programs: {
     title: 'Programs',
@@ -244,6 +249,20 @@ const en: Dictionary = {
     copy: 'Copy link',
     copied: 'Link copied!',
   },
+  president: {
+    profile: 'Professional Profile',
+    education: 'Education',
+    experience: 'Professional Experience',
+    expertise: 'Areas of Expertise',
+    leadership: 'Leadership & Institutional Activities',
+    projects: 'Selected Projects & Publications',
+    connections: 'Professional Connections',
+    linkedinCta: 'View Full Profile on LinkedIn',
+    readMessage: "Read the President's message",
+    preview:
+      'Preview: this page is not published. It will go online once the verified biography has been added and approved.',
+    org: 'Matin Intercultural Institute',
+  },
   about: {
     title: 'About',
     lede: 'Matin is a Montréal intercultural institute that brings cultures together through dialogue, creativity and sharing.',
@@ -254,13 +273,15 @@ const en: Dictionary = {
     history: 'Our story',
     founderTitle: 'A WORD FROM OUR PRESIDENT',
     presidentPhotoAlt: 'Portrait of {name}',
-    team: 'Our team',
+    team: 'Our Team',
     board: 'Board of directors',
     documents: 'Annual reports & governance',
     documentsLede:
       'In the spirit of transparency, our official documents are available to everyone.',
     download: 'Download',
     comingSoon: 'Coming soon',
+    meetPresident: 'Meet Our President',
+    onLinkedin: '{name} on LinkedIn',
   },
   gallery: {
     title: 'Gallery',
@@ -311,7 +332,7 @@ const en: Dictionary = {
   },
   contact: {
     title: 'Contact',
-    lede: 'A question, an idea, a wish to collaborate? Write to us — we usually reply within two business days.',
+    lede: 'A question, an idea, a wish to collaborate? Write to us: we read every message and will reply as soon as we can.',
     formTitle: 'Write to us',
     infoTitle: 'Contact details',
     address: 'Address',
@@ -427,6 +448,8 @@ const en: Dictionary = {
     newsletterTitle: 'Newsletter',
     rights: 'All rights reserved.',
     charity: 'Registered charity number:',
+    about:
+      'Matin Intercultural Institute is a Montréal-based non-profit organization dedicated to cultural planning, intercultural dialogue, and community-based cultural initiatives. Through research, collaboration, and cultural projects, Matin seeks to strengthen the place of culture in our communities and public life.',
   },
   consent: {
     title: 'Your privacy',

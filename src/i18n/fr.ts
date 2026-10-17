@@ -49,6 +49,9 @@ const fr = {
     terms: "Conditions d'utilisation",
     accessibility: "Déclaration d'accessibilité",
     search: 'Rechercher',
+    story: 'Notre histoire',
+    team: 'Notre équipe',
+    president: 'Le mot du président',
   },
   search: {
     title: 'Rechercher',
@@ -182,6 +185,8 @@ const fr = {
     report: 'Compte rendu',
     highlights: 'Moments forts',
     photos: 'Photos',
+    filterLanguage: 'Langue',
+    allLanguages: 'Toutes les langues',
   },
   programs: {
     title: 'Programmes',
@@ -246,6 +251,20 @@ const fr = {
     copy: 'Copier le lien',
     copied: 'Lien copié!',
   },
+  president: {
+    profile: 'Profil professionnel',
+    education: 'Études',
+    experience: 'Expérience professionnelle',
+    expertise: "Domaines d'expertise",
+    leadership: 'Leadership et engagement institutionnel',
+    projects: 'Projets et publications choisis',
+    connections: 'Profils professionnels',
+    linkedinCta: 'Voir le profil complet sur LinkedIn',
+    readMessage: 'Lire le mot du président',
+    preview:
+      "Aperçu : cette page n'est pas publiée. Elle sera mise en ligne une fois la biographie vérifiée ajoutée et approuvée.",
+    org: 'Institut interculturel Matin',
+  },
   about: {
     title: 'À propos',
     lede: 'Matin est un institut interculturel montréalais qui rassemble les cultures autour du dialogue, de la création et du partage.',
@@ -262,6 +281,8 @@ const fr = {
     documentsLede: 'Par souci de transparence, nos documents officiels sont accessibles à tous.',
     download: 'Télécharger',
     comingSoon: 'Bientôt disponible',
+    meetPresident: 'Rencontrer notre président',
+    onLinkedin: '{name} sur LinkedIn',
   },
   gallery: {
     title: 'Galerie',
@@ -312,7 +333,7 @@ const fr = {
   },
   contact: {
     title: 'Contact',
-    lede: 'Une question, une idée, une envie de collaborer? Écrivez-nous, nous répondons habituellement en deux jours ouvrables.',
+    lede: 'Une question, une idée, une envie de collaborer ? Écrivez-nous : nous lisons chaque message et vous répondrons dès que possible.',
     formTitle: 'Écrivez-nous',
     infoTitle: 'Coordonnées',
     address: 'Adresse',
@@ -428,6 +449,8 @@ const fr = {
     newsletterTitle: 'Infolettre',
     rights: 'Tous droits réservés.',
     charity: "Numéro d'organisme de bienfaisance :",
+    about:
+      "L'Institut interculturel Matin est un organisme à but non lucratif montréalais qui se consacre à la planification culturelle, au dialogue interculturel et aux initiatives culturelles ancrées dans les communautés. Par la recherche, la collaboration et des projets culturels, Matin cherche à renforcer la place de la culture dans nos communautés et dans la vie publique.",
   },
   consent: {
     title: 'Votre vie privée',

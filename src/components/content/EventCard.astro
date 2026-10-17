@@ -5,7 +5,7 @@
  * organizer's page (Matin never hosts registration for them).
  */
 import {
-  Building2,
+  Building,
   CalendarDays,
   ExternalLink,
   Languages,
@@ -95,7 +95,7 @@ const verified = d.lastVerified && formatDate(new Date(d.lastVerified), lang);
       </span>
     </li>
     <li>
-      <Building2 size={17} aria-hidden="true" />
+      <Building size={17} aria-hidden="true" />
       <span>
         {t('events.organizedBy')} <strong>{d.organizer.name}</strong>
       </span>

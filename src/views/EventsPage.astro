@@ -13,7 +13,7 @@ import { alternatesFor, path, type Lang } from '@/i18n/routes';
 import { useTranslations, pick } from '@/i18n/ui';
 import { getUpcomingEvents, getPastEvents, isMatinEvent, picksOf, slugOf } from '@/lib/content';
 import { formatDate } from '@/lib/dates';
-import { eventFormats, eventRegions, eventSubjects } from '@/lib/taxonomy';
+import { eventFormats, eventLanguages, eventRegions, eventSubjects } from '@/lib/taxonomy';
 
 interface Props {
   lang: Lang;
@@ -39,6 +39,10 @@ const subjects = present(
 const formats = present(
   eventFormats,
   upcoming.map((e) => e.data.format),
+);
+const languages = present(
+  eventLanguages,
+  upcoming.flatMap((e) => (e.data.language ? [e.data.language] : [])),
 );
 const loc = lang === 'fr' ? 'fr-CA' : 'en-CA';
 const months = [...new Set(upcoming.map((e) => e.data.start.slice(0, 7)))].map((key) => {
@@ -74,6 +78,12 @@ const filters = [
     label: t('events.filterFormat'),
     all: t('events.allFormats'),
     options: formats.map((v) => ({ value: v, label: t(`agendaFormats.${v}`) })),
+  },
+  {
+    key: 'language',
+    label: t('events.filterLanguage'),
+    all: t('events.allLanguages'),
+    options: languages.map((v) => ({ value: v, label: t(`agendaLanguages.${v}`) })),
   },
 ].filter((f) => f.options.length > 1);
 const showFilters = upcoming.length >= FILTER_MIN_EVENTS && filters.length > 0;
@@ -141,6 +151,7 @@ const showFilters = upcoming.length >= FILTER_MIN_EVENTS && filters.length > 0;
               data-subject={event.data.subject}
               data-month={event.data.start.slice(0, 7)}
               data-format={event.data.format}
+              data-language={event.data.language}
             >
               <EventCard event={event} lang={lang} />
             </li>

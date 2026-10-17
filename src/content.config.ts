@@ -258,12 +258,19 @@ const team = defineCollection({
   loader: yaml('team'),
   schema: ({ image }) =>
     z.object({
-      name: z.string(),
+      name: z.string().min(1),
+      /** Official position or role. */
       role: bi,
-      bio: bi,
+      /** Short professional biography (two or three sentences). */
+      bio: biOpt,
+      /** Square portrait, supplied and approved by the person. */
       photo: image().optional(),
-      group: z.enum(['staff', 'board']),
+      linkedin: z.url().optional(),
+      group: z.enum(['staff', 'board']).default('board'),
       order: z.number().default(100),
+      /** Until a profile is complete and approved: visible only on the local preview. */
+      draft: z.boolean().default(false),
+      faReviewed,
       placeholder: z.boolean().default(false),
     }),
 });
@@ -286,6 +293,31 @@ const about = defineCollection({
       name: z.string(),
       title: bi,
       message: bi,
+      /** Personal LinkedIn profile (not the Institute's page). */
+      linkedin: z.url().optional(),
+      /**
+       * The profile page (/en/about/reza-moafi/) is published only when this is true;
+       * until then it exists only on the local preview. Fill in verified content only.
+       */
+      profilePublished: z.boolean().default(false),
+      profile: z
+        .object({
+          summary: biOpt,
+          education: z.array(bi).default([]),
+          experience: z.array(bi).default([]),
+          expertise: z.array(bi).default([]),
+          leadership: z.array(bi).default([]),
+          projects: z.array(bi).default([]),
+          links: z.array(z.object({ label: z.string(), url: z.url() })).default([]),
+        })
+        .default({
+          education: [],
+          experience: [],
+          expertise: [],
+          leadership: [],
+          projects: [],
+          links: [],
+        }),
     }),
     placeholder: z.boolean().default(false),
   }),

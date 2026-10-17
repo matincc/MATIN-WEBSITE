@@ -4,6 +4,7 @@ import Lockup from '@/components/brand/Lockup.astro';
 import LangToggle from './LangToggle.astro';
 import { href, type Alternates, type RouteKey, type UiLang } from '@/i18n/routes';
 import { useTranslations } from '@/i18n/ui';
+import { emptySections, forLang, getTeam } from '@/lib/content';
 
 interface Props {
   lang: UiLang;
@@ -21,17 +22,26 @@ const items: RouteKey[] = [
   'getInvolved',
   'contact',
 ];
-const links = items.map((key) => ({ key, href: href(key, lang), label: t(`nav.${key}`) }));
+// The gallery appears in the menu once it has an album.
+const empty = await emptySections();
+const links = items
+  .filter((key) => key !== 'gallery' || !empty.has('gallery'))
+  .map((key) => ({ key, href: href(key, lang), label: t(`nav.${key}`) }));
 const aboutHref = href('about', lang);
 // Sub-links of "About": anchors on the About page. The Persian About page has the
-// values section only (the other texts are not translated yet).
+// values and team sections only (the other texts are not translated yet).
+// "Our team" appears once at least one member is published.
+const hasTeam = forLang(await getTeam(), lang).length > 0;
 const aboutLinks = [
   { id: 'who-we-are', label: t('nav.whoWeAre') },
   { id: 'mission', label: t('nav.mission') },
   { id: 'vision', label: t('nav.vision') },
   { id: 'values', label: t('nav.values') },
+  { id: 'story', label: t('nav.story') },
+  ...(hasTeam ? [{ id: 'team', label: t('nav.team') }] : []),
+  { id: 'president', label: t('nav.president') },
 ]
-  .filter((l) => lang !== 'fa' || l.id === 'values')
+  .filter((l) => lang !== 'fa' || l.id === 'values' || l.id === 'team')
   .map((l) => ({ ...l, href: `${aboutHref}#${l.id}` }));
 
 const current = Astro.url.pathname;
