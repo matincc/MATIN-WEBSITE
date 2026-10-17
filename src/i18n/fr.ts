@@ -66,18 +66,18 @@ const fr = {
       "L'Institut interculturel Matin est un organisme à but non lucratif montréalais qui rassemble des personnes de toutes origines par le dialogue, les arts et la recherche, pour bâtir la compréhension mutuelle et un sentiment d'appartenance partagé.",
     whoCardsLabel: 'En savoir plus sur Matin',
     areasEyebrow: "Nos champs d'action",
-    areasTitle: 'Comment Matin rapproche les cultures',
+    areasTitle: 'Relier les cultures, les communautés et les idées',
     areasLede:
-      "Matin développe des occasions de dialogue, d'échanges culturels et d'apprentissage partagé à Montréal et partout au Québec.",
-    area1Title: 'Dialogue interculturel et échanges communautaires',
+      'Matin œuvre à la croisée du dialogue interculturel, de la planification culturelle et de la recherche, afin de soutenir des communautés inclusives et des collaborations culturelles porteuses de sens.',
+    area1Title: 'Dialogue interculturel et engagement communautaire',
     area1Text:
-      'Créer des occasions pour les personnes et les communautés de partager leurs points de vue et de bâtir une compréhension mutuelle.',
-    area2Title: 'Arts et collaborations culturelles',
+      "Créer des occasions de dialogue, d'échanges culturels et de participation active entre des communautés diverses. Par des initiatives concertées et des expériences partagées, Matin souhaite renforcer la compréhension mutuelle, les liens sociaux et le sentiment d'appartenance.",
+    area2Title: 'Planification culturelle et développement des communautés',
     area2Text:
-      'Encourager les projets culturels communs, les activités créatives et les événements communautaires entre les cultures.',
-    area3Title: 'Recherche et dialogue public',
+      'Soutenir la planification culturelle et le développement des milieux de vie en collaboration avec les municipalités, les institutions publiques, les organismes culturels et les communautés locales. Matin souhaite contribuer à des stratégies, des initiatives et des projets culturels inclusifs qui répondent aux besoins des communautés.',
+    area3Title: 'Recherche, politiques culturelles et dialogue public',
     area3Text:
-      'Explorer les questions culturelles par la recherche, les publications, les tables rondes et les conférences.',
+      "Explorer les questions liées à la diversité culturelle, aux relations interculturelles, à l'identité, à l'appartenance et aux politiques culturelles. Matin souhaite contribuer à la recherche, à l'échange de connaissances, aux publications et aux débats publics qui relient les perspectives universitaires, l'expérience des communautés et la prise de décision publique.",
     eventsTitle: 'Événements',
     eventsUpcoming: 'À venir',
     eventsPast: 'Événements passés',

@@ -64,18 +64,18 @@ const en: Dictionary = {
       'Matin Intercultural Institute is a Montréal-based non-profit that brings together people of all origins through dialogue, the arts, and research, to build mutual understanding and a shared sense of belonging.',
     whoCardsLabel: 'Learn more about Matin',
     areasEyebrow: 'Our areas of work',
-    areasTitle: 'How Matin Brings Cultures Together',
+    areasTitle: 'Connecting Cultures, Communities & Ideas',
     areasLede:
-      'Matin is developing opportunities for dialogue, cultural exchange and shared learning in Montréal and across Québec.',
-    area1Title: 'Intercultural Dialogue & Community Exchange',
+      'Matin works at the intersection of intercultural dialogue, cultural planning, and research to support inclusive communities and meaningful cultural collaboration.',
+    area1Title: 'Intercultural Dialogue & Community Engagement',
     area1Text:
-      'Creating opportunities for people and communities to share perspectives and build mutual understanding.',
-    area2Title: 'Arts & Cultural Collaboration',
+      'Creating opportunities for dialogue, cultural exchange, and meaningful participation among diverse communities. Through collaborative initiatives and shared experiences, Matin seeks to strengthen mutual understanding, social connections, and a sense of belonging.',
+    area2Title: 'Cultural Planning & Community Development',
     area2Text:
-      'Encouraging shared cultural projects, creative activities and community events across cultures.',
-    area3Title: 'Research & Public Conversation',
+      'Supporting cultural planning and community-based development through collaboration with municipalities, public institutions, cultural organizations, and local communities. Matin aims to contribute to inclusive cultural strategies, initiatives, and projects that respond to community needs.',
+    area3Title: 'Research, Cultural Policy & Public Dialogue',
     area3Text:
-      'Exploring cultural questions through research, publications, roundtables and conferences.',
+      'Exploring questions related to cultural diversity, intercultural relations, identity, belonging, and cultural policy. Matin seeks to contribute to research, knowledge exchange, publications, and public discussions that connect academic perspectives with community experiences and public decision-making.',
     eventsTitle: 'Events',
     eventsUpcoming: 'Upcoming Events',
     eventsPast: 'Past Events',
