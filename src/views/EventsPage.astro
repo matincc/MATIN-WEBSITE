@@ -1,13 +1,19 @@
 ---
-import { ArrowRight, CalendarDays, List } from '@lucide/astro';
+/**
+ * Events & Cultural Agenda: Matin's Picks, the upcoming agenda (Matin's own events and
+ * selected external events, by date), a Matin Events module and, once there is one,
+ * the archive of Matin's past events. Filters appear only when there are enough events.
+ */
+import { ArrowRight } from '@lucide/astro';
 import PageLayout from '@/layouts/PageLayout.astro';
+import SectionHeader from '@/components/ui/SectionHeader.astro';
 import EventCard from '@/components/content/EventCard.astro';
-import EventCalendar from '@/components/content/EventCalendar.astro';
 import ExpireEvents from '@/components/content/ExpireEvents.astro';
 import { alternatesFor, path, type Lang } from '@/i18n/routes';
 import { useTranslations, pick } from '@/i18n/ui';
-import { getUpcomingEvents, getPastEvents, slugOf } from '@/lib/content';
+import { getUpcomingEvents, getPastEvents, isMatinEvent, picksOf, slugOf } from '@/lib/content';
 import { formatDate } from '@/lib/dates';
+import { eventFormats, eventRegions, eventSubjects } from '@/lib/taxonomy';
 
 interface Props {
   lang: Lang;
@@ -15,7 +21,25 @@ interface Props {
 const { lang } = Astro.props;
 const t = useTranslations(lang);
 const [upcoming, past] = await Promise.all([getUpcomingEvents(), getPastEvents()]);
-const categories = [...new Set(upcoming.map((e) => e.data.category))];
+const picks = picksOf(upcoming);
+const matinUpcoming = upcoming.filter(isMatinEvent);
+
+/** Filters only list values that occur, and only show when there is something to filter. */
+const FILTER_MIN_EVENTS = 4;
+const present = <T extends string>(all: readonly T[], values: T[]) =>
+  all.filter((v) => values.includes(v));
+const regions = present(
+  eventRegions,
+  upcoming.map((e) => e.data.region),
+);
+const subjects = present(
+  eventSubjects,
+  upcoming.map((e) => e.data.subject),
+);
+const formats = present(
+  eventFormats,
+  upcoming.map((e) => e.data.format),
+);
 const loc = lang === 'fr' ? 'fr-CA' : 'en-CA';
 const months = [...new Set(upcoming.map((e) => e.data.start.slice(0, 7)))].map((key) => {
   const [y, m] = key.split('-').map(Number);
@@ -26,6 +50,33 @@ const months = [...new Set(upcoming.map((e) => e.data.start.slice(0, 7)))].map((
   }).format(new Date(Date.UTC(y, m - 1, 15)));
   return { key, label: label.charAt(0).toUpperCase() + label.slice(1) };
 });
+const filters = [
+  {
+    key: 'region',
+    label: t('events.filterRegion'),
+    all: t('events.allRegions'),
+    options: regions.map((v) => ({ value: v, label: t(`agendaRegions.${v}`) })),
+  },
+  {
+    key: 'subject',
+    label: t('events.filterSubject'),
+    all: t('events.allSubjects'),
+    options: subjects.map((v) => ({ value: v, label: t(`agendaSubjects.${v}`) })),
+  },
+  {
+    key: 'month',
+    label: t('events.filterMonth'),
+    all: t('events.allMonths'),
+    options: months.map((m) => ({ value: m.key, label: m.label })),
+  },
+  {
+    key: 'format',
+    label: t('events.filterFormat'),
+    all: t('events.allFormats'),
+    options: formats.map((v) => ({ value: v, label: t(`agendaFormats.${v}`) })),
+  },
+].filter((f) => f.options.length > 1);
+const showFilters = upcoming.length >= FILTER_MIN_EVENTS && filters.length > 0;
 ---
 
 <PageLayout
@@ -35,167 +86,166 @@ const months = [...new Set(upcoming.map((e) => e.data.start.slice(0, 7)))].map((
   alternates={alternatesFor('events')}
   searchable={false}
 >
+  {picks.length > 0 && (
+    <section class="container-site pt-4 pb-14" aria-labelledby="picks-title">
+      <SectionHeader
+        id="picks-title"
+        title={t('events.picksTitle')}
+        lede={t('events.picksLede')}
+        class="mb-10"
+      />
+      <ul class="grid gap-6 md:grid-cols-2 lg:grid-cols-3" data-upcoming-list>
+        {picks.map((event) => (
+          <li>
+            <EventCard event={event} lang={lang} />
+          </li>
+        ))}
+      </ul>
+    </section>
+  )}
+
   <section class="container-site pt-4 pb-20" aria-labelledby="upcoming-title">
-    <div class="mb-10 flex flex-col gap-6 lg:flex-row lg:items-end lg:justify-between">
-      <h2 id="upcoming-title" class="section-title">
-        {t('events.upcoming')}
-      </h2>
+    <SectionHeader id="upcoming-title" title={t('events.upcoming')} class="mb-10" />
 
-      {upcoming.length > 0 && (
-        <div class="invisible flex flex-wrap items-end gap-4" data-events-toolbar>
+    {showFilters && (
+      <form
+        class="invisible mb-10 flex flex-wrap items-end gap-4"
+        aria-label={t('events.filtersLabel')}
+        data-events-toolbar
+      >
+        {filters.map((f) => (
           <div class="flex flex-col gap-1.5">
-            <label
-              for="filter-category"
-              class="text-xs font-bold tracking-wider text-muted uppercase"
-            >
-              {t('events.filterCategory')}
+            <label for={`filter-${f.key}`} class="filter-label">
+              {f.label}
             </label>
-            <select id="filter-category" class="select" data-filter-category>
-              <option value="">{t('events.allCategories')}</option>
-              {categories.map((c) => (
-                <option value={c}>{t(`categories.${c}`)}</option>
+            <select id={`filter-${f.key}`} class="select" data-filter={f.key}>
+              <option value="">{f.all}</option>
+              {f.options.map((o) => (
+                <option value={o.value}>{o.label}</option>
               ))}
             </select>
           </div>
-          <div class="flex flex-col gap-1.5">
-            <label for="filter-month" class="text-xs font-bold tracking-wider text-muted uppercase">
-              {t('events.filterMonth')}
-            </label>
-            <select id="filter-month" class="select" data-filter-month>
-              <option value="">{t('events.allMonths')}</option>
-              {months.map((m) => (
-                <option value={m.key}>{m.label}</option>
-              ))}
-            </select>
-          </div>
-          <div role="group" aria-label={t('events.viewLabel')} class="view-toggle">
-            <button type="button" aria-pressed="true" data-view="list">
-              <List size={18} aria-hidden="true" />
-              {t('events.listView')}
-            </button>
-            <button type="button" aria-pressed="false" data-view="calendar">
-              <CalendarDays size={18} aria-hidden="true" />
-              {t('events.calendarView')}
-            </button>
-          </div>
-        </div>
-      )}
-    </div>
+        ))}
+        <button type="reset" class="btn btn-outline reset-btn">
+          {t('events.showAll')}
+        </button>
+      </form>
+    )}
 
-    <div data-view-panel="list">
+    <div>
       {upcoming.length > 0 && (
-        <ul id="event-list" class="grid gap-8 md:grid-cols-2 lg:grid-cols-3" data-upcoming-list>
+        <ul id="event-list" class="grid gap-6 md:grid-cols-2 lg:grid-cols-3" data-upcoming-list>
           {upcoming.map((event) => (
-            <li data-category={event.data.category} data-month={event.data.start.slice(0, 7)}>
-              <EventCard event={event} lang={lang} headingLevel="h3" />
+            <li
+              data-region={event.data.region}
+              data-subject={event.data.subject}
+              data-month={event.data.start.slice(0, 7)}
+              data-format={event.data.format}
+            >
+              <EventCard event={event} lang={lang} />
             </li>
           ))}
         </ul>
       )}
-      <p
-        class="card p-8 text-center text-lg text-muted"
-        data-upcoming-empty
-        hidden={upcoming.length > 0}
-      >
-        {t('home.eventsEmpty')}
+      <p class="empty-note" data-upcoming-empty hidden={upcoming.length > 0}>
+        {t('events.emptyAgenda')}
       </p>
-      <p class="card p-8 text-center text-muted" data-events-noresults hidden>
+      <p class="empty-note" data-events-noresults hidden>
         {t('events.noResults')}
       </p>
     </div>
-
-    {upcoming.length > 0 && (
-      <div data-view-panel="calendar" hidden>
-        <EventCalendar lang={lang} events={upcoming} />
-      </div>
-    )}
   </section>
   <ExpireEvents />
 
-  <section class="bg-tint pt-16 pb-24" aria-labelledby="past-title">
+  <section class="bg-tint py-16 sm:py-20" aria-labelledby="matin-events-title">
     <div class="container-site">
-      <h2 id="past-title" class="section-title mb-10">
-        {t('events.past')}
-      </h2>
-      {past.length > 0 ? (
-        <ul class="divide-y divide-line overflow-hidden rounded-[var(--radius-card)] border border-line bg-white">
-          {past.map((e) => (
-            <li class="relative flex flex-col gap-1 px-6 py-5 transition hover:bg-tint sm:flex-row sm:items-center sm:gap-6">
-              <time
-                datetime={e.data.start.slice(0, 10)}
-                class="w-44 shrink-0 text-sm font-semibold text-gold-dark"
-              >
-                {formatDate(e.startDate, lang, false)}
-              </time>
-              <a
-                href={path('events', lang, slugOf(e, lang))}
-                class="font-display text-lg font-bold text-primary no-underline after:absolute after:inset-0 hover:text-ink"
-              >
-                {pick(e.data.title, lang)}
-              </a>
-              <span class="text-sm text-muted sm:ml-auto">
-                {t(`categories.${e.data.category}`)}
-              </span>
+      <SectionHeader id="matin-events-title" title={t('events.matinTitle')} class="mb-10" />
+      {matinUpcoming.length > 0 ? (
+        <ul class="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+          {matinUpcoming.map((event) => (
+            <li>
+              <EventCard event={event} lang={lang} />
             </li>
           ))}
         </ul>
       ) : (
-        <p class="text-muted">{t('events.noPast')}</p>
+        <div class="card mx-auto flex max-w-3xl flex-col items-center gap-5 p-8 text-center">
+          <p class="text-lg">{t('events.matinEmpty')}</p>
+          <a href={`${path('home', lang)}#newsletter`} class="btn btn-primary">
+            {t('events.stayConnected')}
+            <ArrowRight size={18} aria-hidden="true" />
+          </a>
+        </div>
       )}
-      <a href={path('eventsArchive', lang)} class="link-arrow mt-8">
-        {t('events.viewArchive')}
-        <ArrowRight size={18} aria-hidden="true" />
-      </a>
+
+      {past.length > 0 && (
+        <div class="mt-16">
+          <h3 class="mb-6 text-2xl font-bold">{t('events.past')}</h3>
+          <ul class="divide-y divide-line overflow-hidden rounded-[var(--radius-card)] border border-line bg-white">
+            {past.slice(0, 5).map((e) => (
+              <li class="relative flex flex-col gap-1 px-6 py-5 transition hover:bg-cream sm:flex-row sm:items-center sm:gap-6">
+                <time
+                  datetime={e.data.start.slice(0, 10)}
+                  class="w-44 shrink-0 text-sm font-semibold text-gold-dark"
+                >
+                  {formatDate(e.startDate, lang, false)}
+                </time>
+                <a
+                  href={path('events', lang, slugOf(e, lang))}
+                  class="text-lg font-bold text-primary no-underline after:absolute after:inset-0 hover:text-ink"
+                >
+                  {pick(e.data.title, lang)}
+                </a>
+                <span class="text-sm text-muted sm:ms-auto">
+                  {t(`agendaSubjects.${e.data.subject}`)}
+                </span>
+              </li>
+            ))}
+          </ul>
+          <a href={path('eventsArchive', lang)} class="link-arrow mt-8">
+            {t('events.viewArchive')}
+            <ArrowRight size={18} aria-hidden="true" />
+          </a>
+        </div>
+      )}
     </div>
   </section>
 </PageLayout>
 
 <script>
-  const toolbar = document.querySelector<HTMLElement>('[data-events-toolbar]');
+  const toolbar = document.querySelector<HTMLFormElement>('[data-events-toolbar]');
   if (toolbar) {
     // Visible only once JS can make the controls work; space was reserved to avoid a layout shift.
     toolbar.classList.remove('invisible');
     const list = document.getElementById('event-list');
     const noResults = document.querySelector<HTMLElement>('[data-events-noresults]');
-    const cat = toolbar.querySelector<HTMLSelectElement>('[data-filter-category]')!;
-    const month = toolbar.querySelector<HTMLSelectElement>('[data-filter-month]')!;
-    const calendar = document.querySelector<HTMLElement>('[data-calendar]');
+    const selects = [...toolbar.querySelectorAll<HTMLSelectElement>('[data-filter]')];
 
     const filter = () => {
       let shown = 0;
       list?.querySelectorAll<HTMLElement>(':scope > li').forEach((li) => {
         // Items already hidden because they ended stay hidden.
         if (li.dataset.expired) return;
-        const ok =
-          (!cat.value || li.dataset.category === cat.value) &&
-          (!month.value || li.dataset.month === month.value);
+        const ok = selects.every((s) => !s.value || li.dataset[s.dataset.filter!] === s.value);
         li.hidden = !ok;
         if (ok) shown++;
       });
       if (noResults) noResults.hidden = shown > 0;
-      calendar?.querySelectorAll<HTMLElement>('li[data-category]').forEach((li) => {
-        li.hidden = !!cat.value && li.dataset.category !== cat.value;
-      });
-      if (month.value)
-        calendar?.dispatchEvent(new CustomEvent('calendar:goto', { detail: month.value }));
     };
-    cat.addEventListener('change', filter);
-    month.addEventListener('change', filter);
-
-    const buttons = toolbar.querySelectorAll<HTMLButtonElement>('[data-view]');
-    buttons.forEach((btn) =>
-      btn.addEventListener('click', () => {
-        const view = btn.dataset.view!;
-        buttons.forEach((b) => b.setAttribute('aria-pressed', String(b === btn)));
-        document.querySelectorAll<HTMLElement>('[data-view-panel]').forEach((p) => {
-          p.hidden = p.dataset.viewPanel !== view;
-        });
-      }),
-    );
+    selects.forEach((s) => s.addEventListener('change', filter));
+    // "Show all events": the reset button clears the selects, then the list is refreshed.
+    toolbar.addEventListener('reset', () => setTimeout(filter));
   }
 </script>
 
 <style>
+  .filter-label {
+    font-size: 0.8rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--color-ink);
+  }
   .select {
     min-height: 2.75rem;
     min-width: 11rem;
@@ -207,29 +257,22 @@ const months = [...new Set(upcoming.map((e) => e.data.start.slice(0, 7)))].map((
       no-repeat right 0.9rem center;
     appearance: none;
     font-weight: 600;
-    font-size: 0.9rem;
+    font-size: 0.95rem;
     color: var(--color-primary);
   }
-  .view-toggle {
-    display: inline-flex;
-    padding: 4px;
-    border-radius: 999px;
-    background: var(--color-tint);
+  .reset-btn {
+    min-height: 2.75rem;
+    padding: 0.5rem 1.25rem;
+    font-size: 0.95rem;
   }
-  .view-toggle button {
-    display: inline-flex;
-    align-items: center;
-    gap: 0.45rem;
-    min-height: 2.5rem;
-    padding: 0 1rem;
-    border-radius: 999px;
-    font-weight: 600;
-    font-size: 0.9rem;
-    color: var(--color-primary);
-    cursor: pointer;
-  }
-  .view-toggle button[aria-pressed='true'] {
-    background: var(--color-primary);
-    color: var(--color-white);
+  .empty-note {
+    max-width: 48rem;
+    margin-inline: auto;
+    padding: 1.25rem 1.5rem;
+    border-radius: 1rem;
+    border-inline-start: 4px solid var(--color-gold);
+    background: var(--color-white);
+    font-size: 1.1rem;
+    text-align: center;
   }
 </style>

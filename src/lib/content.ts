@@ -27,33 +27,55 @@ export async function getSettings() {
 
 export type EventEntry = CollectionEntry<'events'> & { startDate: Date; endDate: Date };
 
-/** All events with real Date objects; an event without an end lasts 2 h by default. */
-export async function getEvents(): Promise<EventEntry[]> {
-  const events = await getCollection('events');
+/** Matin's own and co-organized events have a page on this site; selected events link out. */
+export const isMatinEvent = (e: EventEntry) => e.data.kind !== 'selected';
+
+/**
+ * Every agenda entry with real Date objects; an event without an end lasts 2 h by default.
+ * Drafts are only included on the local preview (npm run dev).
+ */
+export async function getAgendaEvents(): Promise<EventEntry[]> {
+  const events = await getCollection('events', (e) => import.meta.env.DEV || !e.data.draft);
   return events.map((e) => {
-    const startDate = montrealTime(e.data.start);
+    const startDate = montrealTime(e.data.start, e.data.timeZone);
     const endDate = e.data.end
-      ? montrealTime(e.data.end)
+      ? montrealTime(e.data.end, e.data.timeZone)
       : new Date(startDate.getTime() + 2 * 3600_000);
     return Object.assign(e, { startDate, endDate });
   });
 }
 
+/** Matin's own and co-organized events: the ones with a detail page, .ics file and archive. */
+export async function getEvents(): Promise<EventEntry[]> {
+  return (await getAgendaEvents()).filter(isMatinEvent);
+}
+
 /**
- * Upcoming = not yet ended at build time. The site rebuilds daily (scheduled
- * function) and a small client script hides anything that ends between builds.
+ * Upcoming agenda (all kinds) = not yet ended at build time. The site rebuilds daily
+ * (scheduled function) and a small client script hides anything that ends between builds.
  */
 export async function getUpcomingEvents(limit?: number, now = new Date()) {
-  const list = (await getEvents())
+  const list = (await getAgendaEvents())
     .filter((e) => e.endDate >= now)
     .sort((a, b) => a.startDate.getTime() - b.startDate.getTime());
   return limit ? list.slice(0, limit) : list;
 }
 
+/** Past Matin events only: external events are never presented as Matin's history. */
 export async function getPastEvents(now = new Date()) {
   return (await getEvents())
     .filter((e) => e.endDate < now)
     .sort((a, b) => b.startDate.getTime() - a.startDate.getTime());
+}
+
+/** "Matin's Picks": up to 3 upcoming events featured until a date that has not passed. */
+export function picksOf(upcoming: EventEntry[], now = new Date()) {
+  const today = now.toISOString().slice(0, 10);
+  return upcoming
+    .filter(
+      (e) => e.data.status !== 'cancelled' && e.data.featuredUntil && e.data.featuredUntil >= today,
+    )
+    .slice(0, 3);
 }
 
 export async function getPrograms() {

@@ -18,3 +18,39 @@ export const resourceCategories = ['guide', 'newcomers', 'community', 'partners'
 /** News categories: official Matin news, and Matin's own reflections on Montréal culture. */
 export const newsCategories = ['updates', 'community'] as const;
 export type NewsCategory = (typeof newsCategories)[number];
+
+/* Events & Cultural Agenda */
+
+/** Who runs the event. Only `matin` and `co-organized` events get a page on this site. */
+export const eventKinds = ['matin', 'co-organized', 'selected'] as const;
+export type EventKind = (typeof eventKinds)[number];
+
+/** Subjects of the agenda; keep this list short. */
+export const eventSubjects = [
+  'dialogue',
+  'policy',
+  'cities',
+  'community',
+  'arts',
+  'research',
+] as const;
+export type EventSubject = (typeof eventSubjects)[number];
+
+/** Montréal and Québec come first; the order is the order of the filter. */
+export const eventRegions = ['montreal', 'quebec', 'canada', 'international'] as const;
+export type EventRegion = (typeof eventRegions)[number];
+
+export const eventFormats = ['in-person', 'online', 'hybrid'] as const;
+export const eventLanguages = ['fr', 'en', 'bilingual', 'other'] as const;
+export const eventStatuses = ['scheduled', 'postponed', 'cancelled'] as const;
+export const priceTypes = ['free', 'paid', 'unknown'] as const;
+
+/** Decorative cover art (built for program categories) used when an event has no image. */
+export const subjectCover: Record<EventSubject, Category> = {
+  dialogue: 'community',
+  policy: 'lectures',
+  cities: 'community',
+  community: 'community',
+  arts: 'arts',
+  research: 'lectures',
+};

@@ -4,26 +4,26 @@ import { NBSP } from './frenchTypo';
 export const TIME_ZONE = 'America/Toronto'; // Montréal uses Eastern Time.
 
 /**
- * Event times are entered in the CMS as Montréal local time without an offset
- * ("2026-10-24T19:00"). Convert them to a real instant, accounting for EST/EDT.
+ * Event times are entered as local time without an offset ("2026-10-24T19:00"),
+ * Montréal by default. Convert them to a real instant, accounting for daylight saving.
  */
-export function montrealTime(local: string): Date {
+export function montrealTime(local: string, timeZone = TIME_ZONE): Date {
   const [datePart, timePart = '00:00'] = local.split('T');
   const [y, m, d] = datePart.split('-').map(Number);
   const [hh, mm] = timePart.split(':').map(Number);
   const asUtc = Date.UTC(y, m - 1, d, hh, mm);
   // Offset of Montréal at (approximately) that instant, in minutes.
-  const offset = tzOffsetMinutes(new Date(asUtc));
+  const offset = tzOffsetMinutes(new Date(asUtc), timeZone);
   const guess = new Date(asUtc - offset * 60_000);
   // Re-check once in case the guess crossed a DST boundary.
-  const offset2 = tzOffsetMinutes(guess);
+  const offset2 = tzOffsetMinutes(guess, timeZone);
   return offset2 === offset ? guess : new Date(asUtc - offset2 * 60_000);
 }
 
-function tzOffsetMinutes(date: Date): number {
+function tzOffsetMinutes(date: Date, timeZone: string): number {
   const parts = Object.fromEntries(
     new Intl.DateTimeFormat('en-US', {
-      timeZone: TIME_ZONE,
+      timeZone,
       hourCycle: 'h23',
       year: 'numeric',
       month: '2-digit',
@@ -56,21 +56,21 @@ export function formatDate(date: Date, lang: Lang, dateOnly = true): string {
 }
 
 /** « samedi 24 octobre 2026 » / "Saturday, October 24, 2026" */
-export function formatLongDate(date: Date, lang: Lang): string {
+export function formatLongDate(date: Date, lang: Lang, timeZone = TIME_ZONE): string {
   return new Intl.DateTimeFormat(locale(lang), {
     weekday: 'long',
     day: 'numeric',
     month: 'long',
     year: 'numeric',
-    timeZone: TIME_ZONE,
+    timeZone,
   }).format(date);
 }
 
 /** Québec 24 h style « 19 h » / « 19 h 30 »; English "7:00 p.m." */
-export function formatTime(date: Date, lang: Lang): string {
+export function formatTime(date: Date, lang: Lang, timeZone = TIME_ZONE): string {
   const parts = Object.fromEntries(
     new Intl.DateTimeFormat('en-US', {
-      timeZone: TIME_ZONE,
+      timeZone,
       hourCycle: 'h23',
       hour: '2-digit',
       minute: '2-digit',
@@ -86,22 +86,36 @@ export function formatTime(date: Date, lang: Lang): string {
     hour: 'numeric',
     minute: '2-digit',
     hourCycle: lang === 'fa' ? 'h23' : undefined,
-    timeZone: TIME_ZONE,
+    timeZone,
   }).format(date);
 }
 
-export function formatTimeRange(start: Date, end: Date | undefined, lang: Lang): string {
-  return end ? `${formatTime(start, lang)} – ${formatTime(end, lang)}` : formatTime(start, lang);
+export function formatTimeRange(
+  start: Date,
+  end: Date | undefined,
+  lang: Lang,
+  timeZone = TIME_ZONE,
+): string {
+  return end
+    ? `${formatTime(start, lang, timeZone)} – ${formatTime(end, lang, timeZone)}`
+    : formatTime(start, lang, timeZone);
+}
+
+/** Short time-zone name for that date: « HAE » / "EDT", "CET"… */
+export function formatZone(date: Date, lang: Lang, timeZone = TIME_ZONE): string {
+  return (
+    new Intl.DateTimeFormat(locale(lang), { timeZone, timeZoneName: 'short' })
+      .formatToParts(date)
+      .find((p) => p.type === 'timeZoneName')?.value ?? ''
+  );
 }
 
 /** Short pieces for date badges: { day: "24", month: "oct." } */
-export function dateBadge(date: Date, lang: Lang) {
-  const day = new Intl.DateTimeFormat(locale(lang), { day: 'numeric', timeZone: TIME_ZONE }).format(
-    date,
-  );
+export function dateBadge(date: Date, lang: Lang, timeZone = TIME_ZONE) {
+  const day = new Intl.DateTimeFormat(locale(lang), { day: 'numeric', timeZone }).format(date);
   const month = new Intl.DateTimeFormat(locale(lang), {
     month: 'short',
-    timeZone: TIME_ZONE,
+    timeZone,
   }).format(date);
   return { day, month };
 }

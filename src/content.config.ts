@@ -6,7 +6,19 @@
 import { defineCollection } from 'astro:content';
 import { glob } from 'astro/loaders';
 import { z } from 'astro/zod';
-import { categories, faqTopics, newsCategories, resourceCategories } from './lib/taxonomy';
+import {
+  categories,
+  eventFormats,
+  eventKinds,
+  eventLanguages,
+  eventRegions,
+  eventStatuses,
+  eventSubjects,
+  faqTopics,
+  newsCategories,
+  priceTypes,
+  resourceCategories,
+} from './lib/taxonomy';
 
 /**
  * A short text in French and English: both required (Bill 96: French never less complete).
@@ -58,33 +70,70 @@ const programs = defineCollection({
     }),
 });
 
+/** Calendar date, e.g. 2026-10-17 */
+const isoDate = z.string().regex(/^\d{4}-\d{2}-\d{2}$/, 'Use the format YYYY-MM-DD');
+
+/**
+ * Events & Cultural Agenda. One file per event: Matin's own events (`matin`), events
+ * Matin documentably co-organizes (`co-organized`), and external events Matin selects
+ * for its agenda (`selected`). Only real, verified events: see GUIDE_ADMIN.md.
+ */
 const events = defineCollection({
   loader: yaml('events'),
   schema: ({ image }) =>
     z
       .object({
+        kind: z.enum(eventKinds),
+        /** The actual organizer, always shown. For Matin's own events: "Matin". */
+        organizer: z.object({ name: z.string().min(1), url: z.url().optional() }),
         title: bi,
         urlSlug: slugs,
+        /** Short original summary written by Matin (never copied from the organizer). */
         summary: bi,
-        body: bi,
-        category: z.enum(categories),
+        /** Why this event matters to Matin's audiences; required for selected events. */
+        whyItMatters: biOpt,
+        /** Full description, Markdown: Matin and co-organized events only. */
+        body: biOpt,
+        subject: z.enum(eventSubjects),
+        region: z.enum(eventRegions),
+        city: z.string().min(1),
+        country: z.string().default('Canada'),
+        format: z.enum(eventFormats).default('in-person'),
+        /** Only when verified. */
+        language: z.enum(eventLanguages).optional(),
         start: localDateTime,
         end: localDateTime.optional(),
-        location: z.object({
-          name: z.string(),
-          address: z.string(),
-          mapUrl: z.url().optional(),
-        }),
+        /** Time zone of the times above; Montréal by default. */
+        timeZone: z.string().default('America/Toronto'),
+        /** Venue; leave out for online events. */
+        location: z
+          .object({
+            name: z.string(),
+            address: z.string().optional(),
+            mapUrl: z.url().optional(),
+          })
+          .optional(),
+        /** Never guess: `unknown` until the organizer states it. */
         price: z
           .object({
-            free: z.boolean().default(true),
+            type: z.enum(priceTypes),
             label: biOpt, // e.g. « 15 $ / 10 $ étudiants »
           })
-          .default({ free: true }),
+          .default({ type: 'unknown' }),
+        status: z.enum(eventStatuses).default('scheduled'),
+        /** Official event page at the organizer (required for selected events). */
+        eventUrl: z.url().optional(),
+        registrationUrl: z.url().optional(),
+        /** Where the information was checked, and when (YYYY-MM-DD). */
+        sourceUrl: z.url().optional(),
+        lastVerified: isoDate.optional(),
+        /** "Matin's Picks": shown in the highlights row until this date (YYYY-MM-DD). */
+        featuredUntil: isoDate.optional(),
+        /** Drafts appear only on the local preview (npm run dev), never on the live site. */
+        draft: z.boolean().default(false),
         image: image().optional(),
         imageAlt: biOpt,
-        registrationUrl: z.url().optional(),
-        /* After the event (each part is shown only when filled in): */
+        /* After a Matin event (each part is shown only when filled in): */
         report: biOpt, // full report, Markdown
         highlights: z.array(bi).default([]), // key highlights / outcomes
         photos: z
@@ -97,11 +146,26 @@ const events = defineCollection({
           )
           .default([]),
         faReviewed,
-        placeholder: z.boolean().default(false),
       })
       .refine((e) => !e.end || e.end > e.start, {
         message: 'End time must be after start time',
         path: ['end'],
+      })
+      .refine((e) => e.kind !== 'selected' || (e.eventUrl && e.lastVerified), {
+        message: 'Selected events need eventUrl and lastVerified',
+        path: ['eventUrl'],
+      })
+      .refine((e) => e.kind !== 'selected' || (e.whyItMatters?.fr && e.whyItMatters?.en), {
+        message: 'Selected events need whyItMatters in French and English',
+        path: ['whyItMatters'],
+      })
+      .refine((e) => e.kind === 'selected' || (e.body?.fr && e.body?.en), {
+        message: 'Matin events need a body in French and English',
+        path: ['body'],
+      })
+      .refine((e) => e.format === 'online' || e.location, {
+        message: 'In-person and hybrid events need a location',
+        path: ['location'],
       }),
 });
 

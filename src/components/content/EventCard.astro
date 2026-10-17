@@ -1,84 +1,252 @@
 ---
-import { Picture } from 'astro:assets';
-import { Clock, MapPin, Ticket } from '@lucide/astro';
-import CoverArt from './CoverArt.astro';
+/**
+ * Agenda card for every kind of event. Matin's own and co-organized events link to their
+ * page on this site; selected external events name their organizer and link out to the
+ * organizer's page (Matin never hosts registration for them).
+ */
+import {
+  Building2,
+  CalendarDays,
+  ExternalLink,
+  Languages,
+  MapPin,
+  MonitorPlay,
+  Ticket,
+} from '@lucide/astro';
 import type { EventEntry } from '@/lib/content';
-import { slugOf } from '@/lib/content';
-import { path, type Lang } from '@/i18n/routes';
+import { isMatinEvent, slugOf } from '@/lib/content';
+import { baseLang, href as link, type UiLang } from '@/i18n/routes';
 import { useTranslations, pick } from '@/i18n/ui';
-import { dateBadge, formatLongDate, formatTimeRange } from '@/lib/dates';
+import { dateBadge, formatDate, formatLongDate, formatTimeRange, formatZone } from '@/lib/dates';
 
 interface Props {
   event: EventEntry;
-  lang: Lang;
+  lang: UiLang;
   headingLevel?: 'h2' | 'h3';
 }
 const { event, lang, headingLevel = 'h3' } = Astro.props;
 const t = useTranslations(lang);
 const d = event.data;
-const href = path('events', lang, slugOf(event, lang));
-const badge = dateBadge(event.startDate, lang);
+const tz = d.timeZone;
+const ours = isMatinEvent(event);
+const href = ours ? link('events', lang, slugOf(event, baseLang(lang))) : d.eventUrl;
+const badge = dateBadge(event.startDate, lang, tz);
 const Heading = headingLevel;
-const price = d.price.free ? t('events.free') : pick(d.price.label, lang);
+const price =
+  d.price.type === 'free'
+    ? t('events.free')
+    : d.price.type === 'paid'
+      ? pick(d.price.label, lang) || t('events.paid')
+      : t('events.priceUnknown');
+const place = [
+  d.format !== 'online' && d.location?.name,
+  d.city,
+  d.country !== 'Canada' && d.country,
+]
+  .filter(Boolean)
+  .join(', ');
+const why = pick(d.whyItMatters, lang);
+const verified = d.lastVerified && formatDate(new Date(d.lastVerified), lang);
 ---
 
 <article
-  class="card group relative flex flex-col overflow-hidden transition-colors duration-200 hover:border-gold"
+  class:list={['card agenda-card', { 'is-cancelled': d.status === 'cancelled' }]}
   data-event-end={event.endDate.toISOString()}
 >
-  <div class="relative aspect-[16/9]">
-    {d.image ? (
-      <Picture
-        src={d.image}
-        alt={pick(d.imageAlt, lang) ?? ''}
-        formats={['avif', 'webp']}
-        widths={[400, 640, 800]}
-        sizes="(min-width: 1024px) 33vw, (min-width: 640px) 50vw, 100vw"
-        class="size-full object-cover"
-      />
-    ) : (
-      <CoverArt category={d.category} seed={event.id} class="size-full" />
-    )}
-    <div class="absolute top-4 left-4 flex min-w-[4.25rem] flex-col items-center rounded-2xl bg-white/95 px-3 py-2 text-center border border-line">
-      <span class="font-display text-[1.75rem] leading-none font-bold text-primary">
-        {badge.day}
+  <div class="flex items-start gap-4">
+    <div class="date-badge" aria-hidden="true">
+      <span class="date-badge__day">{badge.day}</span>
+      <span class="date-badge__month">{badge.month.replace('.', '')}</span>
+    </div>
+    <div class="flex flex-wrap gap-2 pt-1">
+      <span class:list={['pill', ours ? 'pill--matin' : 'pill--selected']}>
+        {t(`agendaKinds.${d.kind}`)}
       </span>
-      <span class="mt-1 text-[0.7rem] font-bold tracking-[0.14em] text-gold-dark uppercase">
-        {badge.month.replace('.', '')}
-      </span>
+      {d.status !== 'scheduled' && (
+        <span class="pill pill--status">{t(`agendaStatus.${d.status}`)}</span>
+      )}
     </div>
   </div>
 
-  <div class="flex flex-1 flex-col p-6">
-    <p class="eyebrow mb-2">{t(`categories.${d.category}`)}</p>
-    <Heading class="mb-3 text-xl font-bold">
+  <p class="agenda-subject">{t(`agendaSubjects.${d.subject}`)}</p>
+  <Heading class="agenda-title">{pick(d.title, lang)}</Heading>
+
+  <ul class="agenda-meta">
+    <li>
+      <CalendarDays size={17} aria-hidden="true" />
+      <span>
+        <time datetime={event.startDate.toISOString()}>
+          {formatLongDate(event.startDate, lang, tz)}
+        </time>
+        {' · '}
+        {formatTimeRange(event.startDate, d.end ? event.endDate : undefined, lang, tz)}{' '}
+        {formatZone(event.startDate, lang, tz)}
+      </span>
+    </li>
+    <li>
+      {d.format === 'online' ? (
+        <MonitorPlay size={17} aria-hidden="true" />
+      ) : (
+        <MapPin size={17} aria-hidden="true" />
+      )}
+      <span>
+        {d.format === 'online' ? t('agendaFormats.online') : place}
+        {d.format === 'hybrid' && ` · ${t('agendaFormats.online')}`}
+      </span>
+    </li>
+    <li>
+      <Building2 size={17} aria-hidden="true" />
+      <span>
+        {t('events.organizedBy')} <strong>{d.organizer.name}</strong>
+      </span>
+    </li>
+    {d.language && (
+      <li>
+        <Languages size={17} aria-hidden="true" />
+        <span>{t(`agendaLanguages.${d.language}`)}</span>
+      </li>
+    )}
+    <li>
+      <Ticket size={17} aria-hidden="true" />
+      <span>{price}</span>
+    </li>
+  </ul>
+
+  <p class="agenda-summary">{pick(d.summary, lang)}</p>
+
+  {why && (
+    <p class="agenda-why">
+      <strong>{t('events.whyItMatters')}</strong>
+      {why}
+    </p>
+  )}
+
+  <div class="mt-auto flex flex-col gap-3 pt-2">
+    {href && (
       <a
         href={href}
-        class="text-primary no-underline after:absolute after:inset-0 after:content-['']"
+        class="btn btn-outline agenda-cta"
+        target={ours ? undefined : '_blank'}
+        rel={ours ? undefined : 'noopener noreferrer'}
       >
-        {pick(d.title, lang)}
+        {ours ? t('events.details') : t('events.viewExternal')}
+        {!ours && <ExternalLink size={16} aria-hidden="true" />}
+        {!ours && <span class="sr-only">{t('a11y.externalLink')}</span>}
       </a>
-    </Heading>
-    <p class="mb-5 text-[0.95rem] text-muted">{pick(d.summary, lang)}</p>
-    <ul class="mt-auto space-y-1.5 text-sm text-ink">
-      <li class="flex items-start gap-2">
-        <Clock size={16} class="mt-[3px] shrink-0 text-ink" aria-hidden="true" />
-        <span>
-          <span>{formatLongDate(event.startDate, lang)}</span>
-          {' · '}
-          {formatTimeRange(event.startDate, d.end ? event.endDate : undefined, lang)}
-        </span>
-      </li>
-      <li class="flex items-start gap-2">
-        <MapPin size={16} class="mt-[3px] shrink-0 text-ink" aria-hidden="true" />
-        <span>{d.location.name}</span>
-      </li>
-      {price && (
-        <li class="flex items-start gap-2">
-          <Ticket size={16} class="mt-[3px] shrink-0 text-ink" aria-hidden="true" />
-          <span class="font-semibold">{price}</span>
-        </li>
-      )}
-    </ul>
+    )}
+    {!ours && verified && (
+      <p class="agenda-checked">{t('events.lastChecked', { date: verified })}</p>
+    )}
   </div>
 </article>
+
+<style>
+  .agenda-card {
+    display: flex;
+    flex-direction: column;
+    gap: 0.9rem;
+    height: 100%;
+    padding: 1.75rem;
+  }
+  .date-badge {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    min-width: 4.25rem;
+    padding: 0.5rem 0.75rem;
+    border: 1px solid var(--color-line);
+    border-radius: 1rem;
+    background: var(--color-cream);
+  }
+  .date-badge__day {
+    font-size: 1.75rem;
+    font-weight: 700;
+    line-height: 1;
+    color: var(--color-primary);
+  }
+  .date-badge__month {
+    margin-top: 0.25rem;
+    font-size: 0.75rem;
+    font-weight: 700;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--color-primary);
+  }
+  .pill {
+    display: inline-block;
+    padding: 0.25rem 0.75rem;
+    border-radius: 999px;
+    font-size: 0.85rem;
+    font-weight: 700;
+    line-height: 1.4;
+  }
+  .pill--matin {
+    background: var(--color-primary);
+    color: var(--color-white);
+  }
+  .pill--selected {
+    background: var(--color-tint);
+    color: var(--color-primary);
+  }
+  .pill--status {
+    border: 1.5px solid var(--color-ink);
+    color: var(--color-ink);
+  }
+  .agenda-subject {
+    font-size: 0.85rem;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--color-primary);
+  }
+  .agenda-title {
+    font-size: clamp(1.25rem, 1.15rem + 0.35vw, 1.4rem);
+    line-height: 1.3;
+    font-weight: 700;
+    text-wrap: balance;
+  }
+  .is-cancelled .agenda-title {
+    text-decoration: line-through;
+    text-decoration-color: var(--color-gold);
+  }
+  .agenda-meta {
+    display: grid;
+    gap: 0.4rem;
+    font-size: 0.95rem;
+    color: var(--color-ink);
+  }
+  .agenda-meta li {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.55rem;
+  }
+  .agenda-meta :global(svg) {
+    flex-shrink: 0;
+    margin-top: 0.2rem;
+    color: var(--color-primary);
+  }
+  .agenda-summary {
+    font-size: 1rem;
+    line-height: 1.6;
+  }
+  .agenda-why {
+    padding-inline-start: 0.9rem;
+    border-inline-start: 3px solid var(--color-gold);
+    font-size: 0.95rem;
+    line-height: 1.55;
+  }
+  .agenda-why strong {
+    display: block;
+    color: var(--color-primary);
+  }
+  .agenda-cta {
+    align-self: flex-start;
+    min-height: 2.75rem;
+    padding: 0.5rem 1.25rem;
+    font-size: 1rem;
+  }
+  .agenda-checked {
+    font-size: 0.8rem;
+    color: var(--color-muted);
+  }
+</style>

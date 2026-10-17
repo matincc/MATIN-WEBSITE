@@ -47,7 +47,7 @@ export function eventIcs(event: EventEntry, lang: Lang, url: string): string {
     `DTEND:${utcStamp(event.endDate)}`,
     `SUMMARY:${esc(d.title[lang])}`,
     `DESCRIPTION:${esc(`${d.summary[lang]}\n\n${url}`)}`,
-    `LOCATION:${esc(`${d.location.name}, ${d.location.address}`)}`,
+    `LOCATION:${esc(placeOf(event))}`,
     `URL:${url}`,
     'END:VEVENT',
     'END:VCALENDAR',
@@ -62,15 +62,22 @@ export function googleCalendarUrl(event: EventEntry, lang: Lang, url: string): s
     text: d.title[lang],
     dates: `${utcStamp(event.startDate)}/${utcStamp(event.endDate)}`,
     details: `${d.summary[lang]}\n\n${url}`,
-    location: `${d.location.name}, ${d.location.address}`,
-    ctz: 'America/Toronto',
+    location: placeOf(event),
+    ctz: d.timeZone,
   });
   return `https://calendar.google.com/calendar/render?${params}`;
 }
 
-export function mapUrl(location: { name: string; address: string; mapUrl?: string }): string {
+/** Venue, address and city on one line; "Online" events have only their city. */
+function placeOf(event: EventEntry): string {
+  const { location, city, format } = event.data;
+  if (format === 'online' || !location) return city;
+  return [location.name, location.address ?? city].join(', ');
+}
+
+export function mapUrl(location: { name: string; address?: string; mapUrl?: string }): string {
   return (
     location.mapUrl ??
-    `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(location.address)}`
+    `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(location.address ?? location.name)}`
   );
 }

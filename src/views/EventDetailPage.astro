@@ -17,7 +17,8 @@ import Lightbox from '@/components/ui/Lightbox.astro';
 import { path, type Lang } from '@/i18n/routes';
 import { useTranslations, pick } from '@/i18n/ui';
 import { renderMarkdown, slugOf, type EventEntry } from '@/lib/content';
-import { formatLongDate, formatTimeRange } from '@/lib/dates';
+import { formatLongDate, formatTimeRange, formatZone } from '@/lib/dates';
+import { subjectCover } from '@/lib/taxonomy';
 import { googleCalendarUrl, mapUrl } from '@/lib/calendar';
 
 interface Props {
@@ -35,7 +36,14 @@ const alternates = {
 const site = Astro.site ?? new URL(Astro.url.origin);
 const url = new URL(alternates[lang], site).href;
 const ended = event.endDate < new Date();
-const price = d.price.free ? t('events.free') : pick(d.price.label, lang);
+const tz = d.timeZone;
+const price =
+  d.price.type === 'free'
+    ? t('events.free')
+    : d.price.type === 'paid'
+      ? pick(d.price.label, lang) || t('events.paid')
+      : t('events.priceUnknown');
+const online = d.format === 'online' || !d.location;
 // After the event: report, highlights and captioned photos (each shown only if filled in).
 const report = d.report && pick(d.report, lang);
 const highlights = d.highlights.map((h) => pick(h, lang)!).filter(Boolean);
@@ -55,32 +63,50 @@ const jsonLd = {
   description: pick(d.summary, lang),
   startDate: event.startDate.toISOString(),
   endDate: event.endDate.toISOString(),
-  eventStatus: 'https://schema.org/EventScheduled',
-  eventAttendanceMode: 'https://schema.org/OfflineEventAttendanceMode',
+  eventStatus: {
+    scheduled: 'https://schema.org/EventScheduled',
+    postponed: 'https://schema.org/EventPostponed',
+    cancelled: 'https://schema.org/EventCancelled',
+  }[d.status],
+  eventAttendanceMode: {
+    'in-person': 'https://schema.org/OfflineEventAttendanceMode',
+    online: 'https://schema.org/OnlineEventAttendanceMode',
+    hybrid: 'https://schema.org/MixedEventAttendanceMode',
+  }[d.format],
   inLanguage: lang === 'fr' ? 'fr-CA' : 'en-CA',
   url,
   image: [new URL('/og-default.jpg', site).href],
-  location: {
-    '@type': 'Place',
-    name: d.location.name,
-    address: { '@type': 'PostalAddress', streetAddress: d.location.address, addressCountry: 'CA' },
-  },
-  organizer: { '@id': new URL('/#organization', site).href },
-  offers: {
-    '@type': 'Offer',
-    price: d.price.free ? 0 : undefined,
-    priceCurrency: 'CAD',
-    availability: 'https://schema.org/InStock',
-    url: d.registrationUrl ?? url,
-  },
-  isAccessibleForFree: d.price.free,
+  location: online
+    ? { '@type': 'VirtualLocation', url: d.registrationUrl ?? url }
+    : {
+        '@type': 'Place',
+        name: d.location!.name,
+        address: {
+          '@type': 'PostalAddress',
+          streetAddress: d.location!.address,
+          addressLocality: d.city,
+          addressCountry: d.country === 'Canada' ? 'CA' : d.country,
+        },
+      },
+  organizer:
+    d.kind === 'co-organized'
+      ? [
+          { '@id': new URL('/#organization', site).href },
+          { '@type': 'Organization', name: d.organizer.name, url: d.organizer.url },
+        ]
+      : { '@id': new URL('/#organization', site).href },
+  // Price details only when stated; never guessed.
+  ...(d.price.type === 'free' && {
+    offers: { '@type': 'Offer', price: 0, priceCurrency: 'CAD', url: d.registrationUrl ?? url },
+    isAccessibleForFree: true,
+  }),
 };
 ---
 
 <PageLayout
   lang={lang}
   title={title}
-  eyebrow={t(`categories.${d.category}`)}
+  eyebrow={t(`agendaKinds.${d.kind}`)}
   lede={pick(d.summary, lang)}
   alternates={alternates}
   crumbs={[{ label: t('events.title'), href: path('events', lang) }]}
@@ -101,7 +127,7 @@ const jsonLd = {
             loading="eager"
           />
         ) : (
-          <CoverArt category={d.category} seed={event.id} class="size-full" />
+          <CoverArt category={subjectCover[d.subject]} seed={event.id} class="size-full" />
         )}
         {ended && (
           <span class="absolute top-4 left-4 rounded-full border border-line bg-white px-4 py-1.5 text-sm font-bold text-ink">
@@ -109,7 +135,7 @@ const jsonLd = {
           </span>
         )}
       </div>
-      <Prose html={renderMarkdown(d.body[lang], lang)} class="text-lg" />
+      <Prose html={renderMarkdown(d.body?.[lang] ?? '', lang)} class="text-lg" />
       {report && (
         <section class="mt-14" aria-labelledby="report-title">
           <h2 id="report-title" class="mb-5 text-3xl font-bold">
@@ -186,9 +212,10 @@ const jsonLd = {
               </p>
               <div class="mt-0.5 font-semibold text-ink">
                 <time datetime={event.startDate.toISOString()} class="block">
-                  {formatLongDate(event.startDate, lang)}
+                  {formatLongDate(event.startDate, lang, tz)}
                 </time>
-                {formatTimeRange(event.startDate, d.end ? event.endDate : undefined, lang)}
+                {formatTimeRange(event.startDate, d.end ? event.endDate : undefined, lang, tz)}{' '}
+                {formatZone(event.startDate, lang, tz)}
               </div>
             </div>
           </li>
@@ -198,19 +225,26 @@ const jsonLd = {
               <p class="text-xs font-bold tracking-wider text-muted uppercase">
                 {t('events.where')}
               </p>
-              <div class="mt-0.5 text-ink">
-                <span class="block font-semibold">{d.location.name}</span>
-                <span class="block text-sm">{d.location.address}</span>
-                <a
-                  href={mapUrl(d.location)}
-                  class="mt-1 inline-block text-sm font-semibold"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                >
-                  {t('events.viewMap')}
-                  <span class="sr-only">{t('a11y.externalLink')}</span>
-                </a>
-              </div>
+              {online ? (
+                <div class="mt-0.5 font-semibold text-ink">{t('agendaFormats.online')}</div>
+              ) : (
+                <div class="mt-0.5 text-ink">
+                  <span class="block font-semibold">{d.location!.name}</span>
+                  <span class="block text-sm">{d.location!.address ?? d.city}</span>
+                  {d.format === 'hybrid' && (
+                    <span class="block text-sm">{t('agendaFormats.hybrid')}</span>
+                  )}
+                  <a
+                    href={mapUrl(d.location!)}
+                    class="mt-1 inline-block text-sm font-semibold"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    {t('events.viewMap')}
+                    <span class="sr-only">{t('a11y.externalLink')}</span>
+                  </a>
+                </div>
+              )}
             </div>
           </li>
           {price && (

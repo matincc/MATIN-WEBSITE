@@ -14,7 +14,7 @@ Ce guide explique comment mettre à jour le site de Matin **sans installer aucun
 - Vous modifiez ces fichiers sur GitHub, puis vous cliquez sur **« Commit changes »** (enregistrer).
 - Le site se met à jour **tout seul en 1 à 3 minutes**.
 - **Si une erreur se glisse** (un champ oublié, par exemple), la mise à jour est refusée et **l'ancienne version reste en ligne**. Rien ne casse. Vous recevez un courriel de Netlify et il suffit de corriger le fichier.
-- Les événements terminés passent automatiquement dans « Événements passés » chaque matin.
+- Les événements terminés quittent l'agenda automatiquement chaque matin ; ceux de Matin passent dans « Événements passés de Matin ».
 
 ### Avant de commencer
 
@@ -34,53 +34,39 @@ Pas besoin de vous soucier des espaces avant « : » ou à l'intérieur des « g
 
 ---
 
-### 1. Ajouter un événement
+### 1. Ajouter un événement à l'agenda
+
+L'agenda culturel réunit trois sortes d'événements :
+
+- **Événement sélectionné** (`kind: selected`) : un événement organisé par quelqu'un d'autre, que Matin recommande. Il n'a pas de page sur notre site : sa fiche nomme le vrai organisateur et renvoie vers la page officielle de l'organisateur.
+- **Événement de Matin** (`kind: matin`) : organisé par Matin. Il a sa propre page.
+- **Coorganisé** (`kind: co-organized`) : seulement si la coorganisation est confirmée par écrit.
+
+**Avant d'ajouter un événement sélectionné, vérifiez :**
+
+1. qu'il a un lien réel avec la mission de Matin (dialogue interculturel, politiques et planification culturelles, villes, communautés, recherche, initiatives artistiques pertinentes) ;
+2. que l'organisateur est crédible ;
+3. la date, l'heure, le lieu, le prix et le statut **sur la page officielle de l'organisateur**, le jour même ;
+4. que vous écrivez **votre propre résumé** (n'utilisez pas le texte ni les images de l'organisateur).
+
+Priorité à Montréal et au Québec (environ les trois quarts de l'agenda), puis le reste du Canada, et parfois l'international quand le lien avec notre mission est clair. Sources à surveiller : `EVENTS_WATCHLIST.md`.
+
+**Marche à suivre :**
 
 1. Allez dans le dossier **`src/content/events`**.
 2. Cliquez sur **Add file → Create new file**.
-3. Nommez le fichier, par exemple `atelier-cuisine-2026.yaml`.
-4. Collez ce modèle et remplacez les textes :
+3. Nommez le fichier avec la date et un mot-clé, par exemple `2026-11-forum-culture-montreal.yaml`.
+4. Copiez le modèle qui convient depuis **`src/content/events/README.md`** (« Selected external event » ou « Matin event ») et remplacez les textes.
+5. Remplissez `lastVerified` avec la date du jour où vous avez vérifié la page de l'organisateur.
+6. Prix : `free` (gratuit), `paid` (payant, avec un `label` si le montant est connu) ou `unknown` (inconnu). **Ne devinez jamais.**
+7. Pour le mettre dans **« Les choix de Matin »**, ajoutez `featuredUntil: "AAAA-MM-JJ"` (au plus 3 sont affichés).
+8. Un événement reporté ou annulé : ajoutez `status: postponed` ou `status: cancelled`.
+9. Pour préparer un événement sans le publier : ajoutez `draft: true`. Il reste invisible sur le site.
+10. Cliquez sur **Commit changes…**, puis de nouveau sur **Commit changes**.
 
-```yaml
-category: community # language, arts, youth, community, newcomers, lectures, music, celebration
-urlSlug:
-  fr: atelier-cuisine-du-monde
-  en: world-cooking-workshop
-title:
-  fr: "Atelier : cuisines du monde"
-  en: "Workshop: World Cuisines"
-summary:
-  fr: "Une phrase qui donne envie de venir."
-  en: "One sentence that makes people want to come."
-body:
-  fr: |
-    Description complète en français. Vous pouvez faire plusieurs paragraphes.
+Il manque une information obligatoire (par exemple le lien officiel ou la date de vérification) ? La mise à jour est refusée, la version précédente reste en ligne, et le courriel de Netlify indique le champ manquant.
 
-    - Une liste à puces commence par un tiret
-    - **Texte en gras** entre deux astérisques doubles
-  en: |
-    Full description in English.
-start: "2026-11-21T14:00"
-end: "2026-11-21T17:00"
-location:
-  name: "Locaux de Matin"
-  address: "1234, rue Exemple, Montréal, QC"
-price:
-  free: true
-registrationUrl: https://www.zeffy.com/… # facultatif : supprimez la ligne s'il n'y a pas d'inscription
-```
-
-5. Pour un événement **payant**, remplacez le bloc `price` par :
-
-```yaml
-price:
-  free: false
-  label:
-    fr: "15 $ · 10 $ étudiants"
-    en: "$15 · $10 students"
-```
-
-6. Cliquez sur **Commit changes…**, puis de nouveau sur **Commit changes**.
+**Chaque semaine (suggestion) :** revérifiez les événements à venir (dates, annulations, liens) et mettez à jour `lastVerified`. Les événements terminés quittent l'agenda automatiquement.
 
 ### 2. Publier une actualité
 
@@ -139,7 +125,7 @@ Les événements ne vont **pas** dans les actualités : ils ont leur propre doss
 
 ### 2 bis. Après un événement : compte rendu et photos
 
-Ouvrez le fichier de l'événement (dossier `src/content/events`) et ajoutez ce qui suit. Chaque partie n'apparaît que si elle est remplie. L'événement passe automatiquement dans « Événements passés » une fois terminé.
+Ouvrez le fichier de l'événement (dossier `src/content/events`) et ajoutez ce qui suit. Chaque partie n'apparaît que si elle est remplie. Une fois terminé, l'événement passe automatiquement dans « Événements passés de Matin ».
 
 ```yaml
 report:
@@ -282,7 +268,7 @@ This guide explains how to update the Matin website **without installing any sof
 - You edit these files on GitHub, then click **"Commit changes"** (save).
 - The website **updates itself within 1–3 minutes**.
 - **If there's a mistake** (a missing field, for example), the update is rejected and **the previous version stays online**. Nothing breaks. Netlify emails you, and you simply fix the file.
-- Events that have ended move to "Past events" automatically every morning.
+- Events that have ended leave the agenda automatically every morning; Matin's own move to "Past Matin events".
 
 ### Before you start
 
@@ -298,13 +284,39 @@ This guide explains how to update the Matin website **without installing any sof
 5. **File names:** lowercase, no accents or spaces, with hyphens. For example `world-music-night.yaml`.
 6. **Remove `placeholder: true`** (or set `placeholder: false`) once the content is real.
 
-### 1. Add an event
+### 1. Add an event to the agenda
+
+The cultural agenda has three kinds of event:
+
+- **Selected event** (`kind: selected`): organized by someone else and recommended by Matin. It has no page on our site; its card names the real organizer and links to the organizer's official page.
+- **Matin event** (`kind: matin`): organized by Matin. It gets its own page.
+- **Co-organized** (`kind: co-organized`): only when the co-organization is confirmed in writing.
+
+**Before adding a selected event, check:**
+
+1. that it is genuinely related to Matin's mission (intercultural dialogue, cultural policy and planning, cities, communities, research, relevant arts initiatives);
+2. that the organizer is credible;
+3. the date, time, place, price and status **on the organizer's official page**, on the same day;
+4. that you write **your own summary** (don't reuse the organizer's text or images).
+
+Montréal and Québec first (about three quarters of the agenda), then the rest of Canada, and occasionally international events with a clear link to our mission. Sources to watch: `EVENTS_WATCHLIST.md`.
+
+**Steps:**
 
 1. Go to the **`src/content/events`** folder.
-2. Click **Add file → Create new file** and name the file, e.g. `cooking-workshop-2026.yaml`.
-3. Paste the **event template** from the French section above (the field names are the same in both languages) and replace the texts.
-4. For a **paid** event, use the `price` block with `free: false` and a `label`.
-5. Click **Commit changes…**, then **Commit changes** again.
+2. Click **Add file → Create new file**.
+3. Name the file with the date and a keyword, e.g. `2026-11-culture-montreal-forum.yaml`.
+4. Copy the right template from **`src/content/events/README.md`** ("Selected external event" or "Matin event") and replace the texts.
+5. Set `lastVerified` to the date you checked the organizer's page.
+6. Price: `free`, `paid` (with a `label` if the amount is known) or `unknown`. **Never guess.**
+7. To show it in **"Matin's Picks"**, add `featuredUntil: "YYYY-MM-DD"` (3 at most are shown).
+8. Postponed or cancelled: add `status: postponed` or `status: cancelled`.
+9. To prepare an event without publishing it, add `draft: true`. It stays invisible on the site.
+10. Click **Commit changes…**, then **Commit changes** again.
+
+Missing a required field (the official link or the check date, for example)? The update is rejected, the previous version stays online, and Netlify's email names the missing field.
+
+**Every week (suggested):** re-check upcoming events (dates, cancellations, links) and update `lastVerified`. Events that have ended leave the agenda automatically.
 
 ### 2. Publish a news post
 
@@ -316,7 +328,7 @@ To add a picture, upload it to `src/assets/uploads/news` (**Add file → Upload 
 
 ### 2b. After an event: report and photos
 
-Open the event's file and add the `report`, `highlights` and `photos` blocks (template in the French section, “2 bis”). Each part only appears when filled in. The event moves to “Past events” automatically once it's over.
+Open the event's file and add the `report`, `highlights` and `photos` blocks (template in the French section, “2 bis”). Each part only appears when filled in. The event moves to “Past Matin events” automatically once it's over.
 
 ### 3. Add photos to the gallery
 

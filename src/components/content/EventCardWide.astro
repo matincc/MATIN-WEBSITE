@@ -8,8 +8,9 @@ import { CalendarDays, MapPin } from '@lucide/astro';
 import CoverArt from './CoverArt.astro';
 import { slugOf, type EventEntry } from '@/lib/content';
 import { baseLang, href as link, type UiLang } from '@/i18n/routes';
-import { pick } from '@/i18n/ui';
+import { pick, useTranslations } from '@/i18n/ui';
 import { formatLongDate, formatTimeRange } from '@/lib/dates';
+import { subjectCover } from '@/lib/taxonomy';
 
 interface Props {
   event: EventEntry;
@@ -18,6 +19,7 @@ interface Props {
 }
 const { event, lang, past = false } = Astro.props;
 const d = event.data;
+const t = useTranslations(lang);
 const href = link('events', lang, slugOf(event, baseLang(lang)));
 ---
 
@@ -36,7 +38,11 @@ const href = link('events', lang, slugOf(event, baseLang(lang)));
         class="absolute inset-0 size-full object-cover"
       />
     ) : (
-      <CoverArt category={d.category} seed={event.id} class="absolute inset-0 size-full" />
+      <CoverArt
+        category={subjectCover[d.subject]}
+        seed={event.id}
+        class="absolute inset-0 size-full"
+      />
     )}
   </div>
   <div class="flex flex-col gap-3 p-6 sm:p-7">
@@ -44,10 +50,10 @@ const href = link('events', lang, slugOf(event, baseLang(lang)));
       <CalendarDays size={18} class="mt-1 shrink-0" aria-hidden="true" />
       <span>
         <time datetime={event.startDate.toISOString()}>
-          {formatLongDate(event.startDate, lang)}
+          {formatLongDate(event.startDate, lang, d.timeZone)}
         </time>
         {' · '}
-        {formatTimeRange(event.startDate, d.end ? event.endDate : undefined, lang)}
+        {formatTimeRange(event.startDate, d.end ? event.endDate : undefined, lang, d.timeZone)}
       </span>
     </p>
     <h4 class="text-2xl leading-snug font-bold">
@@ -61,7 +67,9 @@ const href = link('events', lang, slugOf(event, baseLang(lang)));
     <p class="text-[1.05rem] text-ink/85">{pick(d.summary, lang)}</p>
     <p class="mt-auto flex items-start gap-2 pt-1 text-[0.95rem] text-muted">
       <MapPin size={17} class="mt-1 shrink-0 text-ink" aria-hidden="true" />
-      <span>{d.location.name}</span>
+      <span>
+        {d.format === 'online' ? t('agendaFormats.online') : (d.location?.name ?? d.city)}
+      </span>
     </p>
   </div>
 </article>
