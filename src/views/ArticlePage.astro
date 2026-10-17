@@ -1,33 +1,45 @@
 ---
 import { Picture } from 'astro:assets';
 import type { CollectionEntry } from 'astro:content';
-import { ArrowLeft, ExternalLink } from '@lucide/astro';
+import { ArrowLeft, ArrowRight, ExternalLink } from '@lucide/astro';
 import PageLayout from '@/layouts/PageLayout.astro';
 import PostCard from '@/components/content/PostCard.astro';
 import Prose from '@/components/ui/Prose.astro';
 import ShareButtons from '@/components/ui/ShareButtons.astro';
-import { categorySegment, categorySlugs, path, type Lang } from '@/i18n/routes';
+import {
+  baseLang,
+  categorySegment,
+  categorySlugs,
+  href,
+  path,
+  type Alternates,
+  type UiLang,
+} from '@/i18n/routes';
 import { useTranslations, pick } from '@/i18n/ui';
-import { getNews, renderMarkdown, slugOf } from '@/lib/content';
+import { forLang, getNews, hasPersian, renderMarkdown, slugOf } from '@/lib/content';
 import { formatDate } from '@/lib/dates';
 
 interface Props {
-  lang: Lang;
+  lang: UiLang;
   post: CollectionEntry<'news'>;
 }
 const { lang, post } = Astro.props;
 const t = useTranslations(lang);
 const d = post.data;
 const title = pick(d.title, lang)!;
-const alternates = {
+const alternates: Alternates = {
   fr: path('news', 'fr', slugOf(post, 'fr')),
   en: path('news', 'en', slugOf(post, 'en')),
+  ...(hasPersian(post) && { fa: `/fa/news/${slugOf(post, 'en')}/` }),
 };
 const site = Astro.site ?? new URL(Astro.url.origin);
-const url = new URL(alternates[lang], site).href;
+const url = new URL(alternates[lang] ?? alternates.en, site).href;
+const base = baseLang(lang);
+const author = typeof d.author === 'string' ? d.author : pick(d.author, lang)!;
+const body = lang === 'fa' ? (d.body.fa ?? d.body.en) : d.body[lang];
 
 // Related: same category first, then most recent.
-const all = (await getNews()).filter((p) => p.id !== post.id);
+const all = forLang(await getNews(), lang).filter((p) => p.id !== post.id);
 const related = [
   ...all.filter((p) => p.data.category === d.category),
   ...all.filter((p) => p.data.category !== d.category),
@@ -39,8 +51,9 @@ const jsonLd = {
   headline: title,
   description: pick(d.excerpt, lang),
   datePublished: d.date.toISOString(),
-  inLanguage: lang === 'fr' ? 'fr-CA' : 'en-CA',
-  author: { '@type': 'Person', name: d.author },
+  inLanguage: { fr: 'fr-CA', en: 'en-CA', fa: 'fa' }[lang],
+  ...(d.updated && { dateModified: d.updated.toISOString() }),
+  author: { '@type': 'Organization', name: author },
   publisher: { '@id': new URL('/#organization', site).href },
   image: [new URL('/og-default.jpg', site).href],
   mainEntityOfPage: url,
@@ -52,7 +65,7 @@ const jsonLd = {
   title={title}
   lede={pick(d.excerpt, lang)}
   alternates={alternates}
-  crumbs={[{ label: t('news.title'), href: path('news', lang) }]}
+  crumbs={[{ label: t('news.title'), href: href('news', lang) }]}
   type="article"
   jsonLd={[jsonLd]}
 >
@@ -63,15 +76,23 @@ const jsonLd = {
         {formatDate(d.date, lang)}
       </time>
     </span>
+    {d.updated && (
+      <span>
+        {t('news.updatedOn')}{' '}
+        <time datetime={d.updated.toISOString().slice(0, 10)} class="font-semibold text-ink">
+          {formatDate(d.updated, lang)}
+        </time>
+      </span>
+    )}
     <span aria-hidden="true" class="text-gold">
       •
     </span>
     <span>
-      {t('news.by')} <span class="font-semibold text-ink">{d.author}</span>
+      {t('news.by')} <span class="font-semibold text-ink">{author}</span>
     </span>
     {[d.category].map((c) => (
       <a
-        href={path('news', lang, categorySegment[lang], categorySlugs[c][lang])}
+        href={href('news', lang, categorySegment[base], categorySlugs[c][base])}
         class="rounded-full border border-line bg-tint px-3 py-1 text-sm font-bold text-ink no-underline hover:underline"
       >
         {t(`newsCategories.${c}`)}
@@ -93,7 +114,7 @@ const jsonLd = {
         />
       </div>
     )}
-    <Prose html={renderMarkdown(d.body[lang], lang)} class="mx-auto max-w-2xl text-lg" />
+    <Prose html={renderMarkdown(body, lang)} class="mx-auto max-w-2xl text-lg" />
     {d.source && (
       <aside class="mx-auto mt-10 max-w-2xl rounded-2xl border-s-4 border-gold bg-tint p-5 text-sm">
         <p class="mb-1 font-bold text-ink">{t('news.sourceIntro')}</p>
@@ -116,10 +137,18 @@ const jsonLd = {
         ))}
       </ul>
     )}
+    <aside class="get-involved card mx-auto mt-12 max-w-2xl p-6 sm:p-8">
+      <h2 class="mb-2 text-xl font-bold">{t('news.getInvolvedTitle')}</h2>
+      <p class="mb-5">{t('news.getInvolvedText')}</p>
+      <a href={href('getInvolved', lang)} class="btn btn-outline">
+        {t('news.getInvolvedCta')}
+        <ArrowRight size={18} class="flip-rtl" aria-hidden="true" />
+      </a>
+    </aside>
     <div class="mx-auto mt-10 flex max-w-2xl flex-col gap-6 border-t border-line pt-6 sm:flex-row sm:items-center sm:justify-between">
       <ShareButtons lang={lang} url={url} title={title} />
-      <a href={path('news', lang)} class="link-arrow text-sm">
-        <ArrowLeft size={18} aria-hidden="true" />
+      <a href={href('news', lang)} class="link-arrow text-sm">
+        <ArrowLeft size={18} class="flip-rtl" aria-hidden="true" />
         {t('news.backToNews')}
       </a>
     </div>

@@ -22,7 +22,6 @@ import NewsletterForm from '@/components/forms/NewsletterForm.astro';
 import { href, siteAlternates, type UiLang } from '@/i18n/routes';
 import { useTranslations } from '@/i18n/ui';
 import { forLang, getNews, getUpcomingEvents, isMatinEvent } from '@/lib/content';
-import { newsCategories } from '@/lib/taxonomy';
 
 interface Props {
   lang: UiLang;
@@ -37,13 +36,8 @@ const upcoming = forLang(upcomingAll, lang)
   .filter((e) => e.data.status !== 'cancelled')
   .sort((a, b) => Number(!isMatinEvent(a)) - Number(!isMatinEvent(b)))
   .slice(0, 3);
-const posts = forLang(postsAll, lang);
-const newsTabs = newsCategories.map((c) => ({
-  id: c,
-  label: t(`newsCategories.${c}`),
-  posts: posts.filter((p) => p.data.category === c).slice(0, 2),
-}));
-const anyNews = newsTabs.some((tab) => tab.posts.length);
+// Up to 3 recent articles; a single article is shown as one wide, featured card.
+const posts = forLang(postsAll, lang).slice(0, 3);
 
 const aboutHref = href('about', lang);
 const whoCards = [
@@ -57,7 +51,6 @@ const areas = [
   { title: t('home.area2Title'), text: t('home.area2Text'), icon: Landmark },
   { title: t('home.area3Title'), text: t('home.area3Text'), icon: BookOpen },
 ];
-const interestHref = `${href('getInvolved', lang)}#interest`;
 ---
 
 <BaseLayout
@@ -163,53 +156,27 @@ const interestHref = `${href('getInvolved', lang)}#interest`;
   </section>
   <ExpireEvents />
 
-  <!-- News: shown once there is at least one real post -->
-  {anyNews && (
+  <!-- News & Insights: shown once there is at least one published article -->
+  {posts.length > 0 && (
     <section class="bg-tint py-20 sm:py-24" aria-labelledby="news-title">
       <div class="container-site">
-        <SectionHeader
-          id="news-title"
-          title={t('home.newsTitle')}
-          link={{ href: href('news', lang), label: t('home.newsAll') }}
-        />
-        <div data-tabs>
-          <div role="tablist" aria-label={t('home.newsTabs')} class="tablist">
-            {newsTabs.map((tab, i) => (
-              <button
-                type="button"
-                role="tab"
-                id={`tab-${tab.id}`}
-                aria-controls={`panel-${tab.id}`}
-                aria-selected={i === 0 ? 'true' : 'false'}
-                tabindex={i === 0 ? 0 : -1}
-                class="tab"
-              >
-                {tab.label}
-              </button>
+        <SectionHeader id="news-title" title={t('home.newsTitle')} />
+        {posts.length === 1 ? (
+          <PostCard post={posts[0]} lang={lang} featured />
+        ) : (
+          <ul class="grid gap-10 md:grid-cols-2 lg:grid-cols-3">
+            {posts.map((post) => (
+              <li>
+                <PostCard post={post} lang={lang} />
+              </li>
             ))}
-          </div>
-          {newsTabs.map((tab, i) => (
-            <div
-              role="tabpanel"
-              id={`panel-${tab.id}`}
-              aria-labelledby={`tab-${tab.id}`}
-              tabindex="0"
-              hidden={i > 0}
-              class="pt-8"
-            >
-              {tab.posts.length > 0 ? (
-                <ul class="grid gap-10 md:grid-cols-2">
-                  {tab.posts.map((post) => (
-                    <li>
-                      <PostCard post={post} lang={lang} />
-                    </li>
-                  ))}
-                </ul>
-              ) : (
-                <p class="empty-line">{t('home.newsEmptyCategory')}</p>
-              )}
-            </div>
-          ))}
+          </ul>
+        )}
+        <div class="mt-12 text-center">
+          <a href={href('news', lang)} class="btn btn-outline">
+            {t('home.newsAll')}
+            <ArrowRight size={18} class="flip-rtl" aria-hidden="true" />
+          </a>
         </div>
       </div>
     </section>
@@ -228,9 +195,12 @@ const interestHref = `${href('getInvolved', lang)}#interest`;
         {t('home.involvedText')}
       </p>
       <div class="mt-9 flex flex-col justify-center gap-3 sm:flex-row sm:flex-wrap">
-        <a href={interestHref} class="btn btn-primary">
+        <a href={href('getInvolved', lang)} class="btn btn-primary">
           {t('home.involvedPrimary')}
           <ArrowRight size={18} class="flip-rtl" aria-hidden="true" />
+        </a>
+        <a href="#newsletter" class="btn btn-outline">
+          {t('home.involvedSecondary')}
         </a>
       </div>
     </div>
@@ -262,38 +232,6 @@ const interestHref = `${href('getInvolved', lang)}#interest`;
     const note = document.querySelector<HTMLElement>('[data-newsletter-confirmed]');
     if (note) note.hidden = false;
   }
-
-  // Accessible tabs (WAI-ARIA pattern): arrow keys move between tabs (mirrored in RTL).
-  document.querySelectorAll<HTMLElement>('[data-tabs]').forEach((root) => {
-    const tabs = [...root.querySelectorAll<HTMLButtonElement>('[role="tab"]')];
-    const select = (tab: HTMLButtonElement, focus = false) => {
-      tabs.forEach((t) => {
-        const on = t === tab;
-        t.setAttribute('aria-selected', String(on));
-        t.tabIndex = on ? 0 : -1;
-        const panel = document.getElementById(t.getAttribute('aria-controls')!);
-        if (panel) panel.hidden = !on;
-      });
-      if (focus) tab.focus();
-    };
-    tabs.forEach((tab, i) => {
-      tab.addEventListener('click', () => select(tab));
-      tab.addEventListener('keydown', (e) => {
-        const rtl = getComputedStyle(root).direction === 'rtl';
-        const next = rtl ? 'ArrowLeft' : 'ArrowRight';
-        const prev = rtl ? 'ArrowRight' : 'ArrowLeft';
-        let j = -1;
-        if (e.key === next) j = (i + 1) % tabs.length;
-        if (e.key === prev) j = (i - 1 + tabs.length) % tabs.length;
-        if (e.key === 'Home') j = 0;
-        if (e.key === 'End') j = tabs.length - 1;
-        if (j >= 0) {
-          e.preventDefault();
-          select(tabs[j], true);
-        }
-      });
-    });
-  });
 </script>
 
 <style>
@@ -353,39 +291,6 @@ const interestHref = `${href('getInvolved', lang)}#interest`;
     font-size: clamp(1.3rem, 1.1rem + 0.5vw, 1.5rem);
     line-height: 1.3;
     text-wrap: balance;
-  }
-  .tablist {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: center;
-    gap: 0.5rem;
-    border-block-end: 2px solid var(--color-line);
-  }
-  .tab {
-    position: relative;
-    min-height: 3rem;
-    padding: 0.6rem 1.2rem;
-    font-size: 1.05rem;
-    font-weight: 700;
-    color: var(--color-muted);
-    cursor: pointer;
-    border-radius: 0.75rem 0.75rem 0 0;
-  }
-  .tab:hover {
-    color: var(--color-ink);
-    background: var(--color-white);
-  }
-  .tab[aria-selected='true'] {
-    color: var(--color-ink);
-  }
-  .tab[aria-selected='true']::after {
-    content: '';
-    position: absolute;
-    inset-inline: 0.6rem;
-    bottom: -2px;
-    height: 3px;
-    border-radius: 3px;
-    background: var(--color-gold);
   }
   .newsletter-card {
     max-width: 48rem;

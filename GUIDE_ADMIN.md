@@ -68,14 +68,14 @@ Il manque une information obligatoire (par exemple le lien officiel ou la date d
 
 **Chaque semaine (suggestion) :** revérifiez les événements à venir (dates, annulations, liens) et mettez à jour `lastVerified`. Les événements terminés quittent l'agenda automatiquement.
 
-### 2. Publier une actualité
+### 2. Publier un article (Actualités et perspectives)
 
 Dossier **`src/content/news`**, même méthode (Add file → Create new file), puis ce modèle :
 
 ```yaml
 date: 2026-11-02
 author: "Équipe Matin"
-category: updates # updates = Nouvelles de Matin · community = Culture et communauté à Montréal
+category: matin-news # matin-news, perspectives, culture-cities, research, partnerships
 tags: [bénévolat, fête]
 urlSlug:
   fr: retour-sur-la-fete
@@ -116,10 +116,17 @@ source:
   url: https://exemple.org/page
 ```
 
-**Les deux catégories :**
+**Les cinq catégories** (une catégorie n'apparaît sur le site qu'une fois qu'elle contient un article publié) :
 
-- `updates` : **Nouvelles de Matin**. Annonces officielles, comptes rendus d'activités, partenariats, nouvelles des bénévoles.
-- `community` : **Culture et communauté à Montréal**. Réflexions ou critiques écrites par Matin sur la vie culturelle et communautaire montréalaise.
+- `matin-news` : **Nouvelles de Matin**. Développements et annonces de l'Institut.
+- `perspectives` : **Perspectives**. Articles sur le dialogue interculturel, la diversité culturelle et la planification culturelle.
+- `culture-cities` : **Culture et villes**. Politiques culturelles, développement culturel urbain, espaces publics.
+- `research` : **Recherche et publications**. Recherches, rapports et publications choisis.
+- `partnerships` : **Partenariats et initiatives**. Seulement des collaborations confirmées.
+
+**Brouillon :** ajoutez `draft: true` pour préparer un article sans le publier (il n'apparaît nulle part sur le site ni dans les moteurs de recherche). Le jour de la publication, retirez cette ligne et mettez `date` à la date du jour. Après une mise à jour importante, ajoutez `updated: AAAA-MM-JJ`.
+
+**Persan :** ajoutez `fa:` dans `title`, `excerpt` et `body`, puis `faReviewed: true` après relecture : l'article aura alors sa page en persan.
 
 Les événements ne vont **pas** dans les actualités : ils ont leur propre dossier.
 
@@ -318,11 +325,15 @@ Missing a required field (the official link or the check date, for example)? The
 
 **Every week (suggested):** re-check upcoming events (dates, cancellations, links) and update `lastVerified`. Events that have ended leave the agenda automatically.
 
-### 2. Publish a news post
+### 2. Publish an article (News & Insights)
 
 In the **`src/content/news`** folder, use the same method with the **news template** above.
 
-Choose the `category`: `updates` (**Matin Updates**: announcements, activity reports, partnerships) or `community` (**Montréal Culture & Community**: Matin's own reflections on Montréal cultural life). Events don't go in the news; they have their own folder.
+Choose the `category` (a category appears on the site only once it has a published article): `matin-news` (**Matin News**: the Institute's developments and announcements), `perspectives` (**Perspectives**: articles on intercultural dialogue, cultural diversity and cultural planning), `culture-cities` (**Culture & Cities**: cultural policy, urban cultural development, public space), `research` (**Research & Publications**: selected research, reports and publications) or `partnerships` (**Partnerships & Initiatives**: confirmed collaborations only). Events don't go in News & Insights; they have their own folder.
+
+**Draft:** add `draft: true` to prepare an article without publishing it (it appears nowhere on the site or in search engines). On publication day, remove that line and set `date` to that day. After a substantial update, add `updated: YYYY-MM-DD`.
+
+**Persian:** add `fa:` in `title`, `excerpt` and `body`, then `faReviewed: true` once reviewed: the article then gets its Persian page.
 
 To add a picture, upload it to `src/assets/uploads/news` (**Add file → Upload files**), then add the `image:`, `imageAlt:` and `imagePermission: true` lines. Only use photos Matin owns or has permission to publish. For a post about an outside event or topic, add the `source:` block (name and address); it is shown under the post.
 

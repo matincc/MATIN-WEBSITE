@@ -1,59 +1,100 @@
 ---
+/**
+ * News & Insights card. `featured` lays the image beside the text on wider screens:
+ * used on the homepage when there is a single article.
+ */
 import { Picture } from 'astro:assets';
 import type { CollectionEntry } from 'astro:content';
+import { ArrowRight } from '@lucide/astro';
 import CoverArt from './CoverArt.astro';
-import { slugOf } from '@/lib/content';
-import { baseLang, href as link, type UiLang } from '@/i18n/routes';
+import { articleHref } from '@/lib/content';
+import { type UiLang } from '@/i18n/routes';
 import { useTranslations, pick } from '@/i18n/ui';
 import { formatDate } from '@/lib/dates';
+import type { Category, NewsCategory } from '@/lib/taxonomy';
 
 interface Props {
   post: CollectionEntry<'news'>;
   lang: UiLang;
   headingLevel?: 'h2' | 'h3';
+  featured?: boolean;
 }
-const { post, lang, headingLevel = 'h3' } = Astro.props;
+const { post, lang, headingLevel = 'h3', featured = false } = Astro.props;
 const t = useTranslations(lang);
 const d = post.data;
-const href = link('news', lang, slugOf(post, baseLang(lang)));
+const href = articleHref(post, lang);
 const Heading = headingLevel;
 // Illustration used when the article has no photo.
-const cover = d.category === 'updates' ? 'community' : 'celebration';
+const covers: Record<NewsCategory, Category> = {
+  'matin-news': 'community',
+  perspectives: 'lectures',
+  'culture-cities': 'community',
+  research: 'lectures',
+  partnerships: 'community',
+};
 ---
 
-<article class="group relative flex flex-col">
-  <div class="relative mb-5 aspect-[3/2] overflow-hidden rounded-[var(--radius-card)] shadow-soft">
+<article class:list={['group relative flex flex-col', featured && 'post--featured']}>
+  <div class="post__media relative mb-5 aspect-[3/2] overflow-hidden rounded-[var(--radius-card)]">
     {d.image ? (
       <Picture
         src={d.image}
         alt={pick(d.imageAlt, lang) ?? ''}
         formats={['avif', 'webp']}
         widths={[400, 640, 800]}
-        sizes="(min-width: 1024px) 33vw, (min-width: 640px) 50vw, 100vw"
+        sizes={
+          featured
+            ? '(min-width: 768px) 45vw, 100vw'
+            : '(min-width: 1024px) 33vw, (min-width: 640px) 50vw, 100vw'
+        }
         class="size-full object-cover transition duration-500 group-hover:scale-[1.03]"
       />
     ) : (
       <CoverArt
-        category={cover}
+        category={covers[d.category]}
         seed={post.id}
         class="size-full transition duration-500 group-hover:scale-[1.03]"
       />
     )}
   </div>
-  <p class="mb-2 text-sm text-muted">
-    <time datetime={d.date.toISOString().slice(0, 10)}>{formatDate(d.date, lang)}</time>
-    <span aria-hidden="true" class="mx-1.5 text-gold">
-      •
-    </span>
-    <span class="font-semibold text-gold-dark">{t(`newsCategories.${d.category}`)}</span>
-  </p>
-  <Heading class="mb-2 text-xl leading-snug font-bold">
-    <a
-      href={href}
-      class="text-primary no-underline group-hover:text-ink after:absolute after:inset-0 after:content-['']"
+  <div class="post__body flex flex-col">
+    <p class="mb-2 text-sm text-muted">
+      <time datetime={d.date.toISOString().slice(0, 10)}>{formatDate(d.date, lang)}</time>
+      <span aria-hidden="true" class="mx-1.5 text-gold">
+        •
+      </span>
+      <span class="font-semibold text-gold-dark">{t(`newsCategories.${d.category}`)}</span>
+    </p>
+    <Heading
+      class:list={['mb-2 leading-snug font-bold', featured ? 'text-2xl sm:text-3xl' : 'text-xl']}
     >
-      {pick(d.title, lang)}
-    </a>
-  </Heading>
-  <p class="text-[0.95rem] text-muted">{pick(d.excerpt, lang)}</p>
+      <a
+        href={href}
+        class="text-primary no-underline group-hover:text-ink after:absolute after:inset-0 after:content-['']"
+      >
+        {pick(d.title, lang)}
+      </a>
+    </Heading>
+    <p class:list={['text-muted', featured ? 'text-lg' : 'text-[0.95rem]']}>
+      {pick(d.excerpt, lang)}
+    </p>
+    <span class="link-arrow mt-4" aria-hidden="true">
+      {t('news.readMore')}
+      <ArrowRight size={18} class="flip-rtl" />
+    </span>
+  </div>
 </article>
+
+<style>
+  @media (min-width: 768px) {
+    .post--featured {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+      align-items: center;
+      gap: 2.5rem;
+    }
+    .post--featured .post__media {
+      margin-bottom: 0;
+    }
+  }
+</style>

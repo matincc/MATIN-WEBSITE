@@ -10,8 +10,7 @@ import {
   siteAlternates,
   type RouteKey,
 } from '@/i18n/routes';
-import { getEvents, getNews, getPrograms, NEWS_PAGE_SIZE, slugOf } from './content';
-import { newsCategories } from './taxonomy';
+import { getEvents, getNews, getPrograms, NEWS_PAGE_SIZE, newsCategories, slugOf } from './content';
 
 export interface PagePair {
   fr: string;
@@ -46,7 +45,7 @@ export async function allPagePairs(): Promise<PagePair[]> {
       lastmod: post.data.date,
     });
   }
-  for (const c of newsCategories) {
+  for (const c of newsCategories(posts)) {
     pairs.push({
       fr: path('news', 'fr', categorySegment.fr, categorySlugs[c].fr),
       en: path('news', 'en', categorySegment.en, categorySlugs[c].en),

@@ -15,8 +15,17 @@ export const faqTopics = ['general', 'programs', 'events', 'volunteering', 'dona
 
 export const resourceCategories = ['guide', 'newcomers', 'community', 'partners'] as const;
 
-/** News categories: official Matin news, and Matin's own reflections on Montréal culture. */
-export const newsCategories = ['updates', 'community'] as const;
+/**
+ * News & Insights categories. A category appears on the site only once it has a
+ * published article.
+ */
+export const newsCategories = [
+  'matin-news',
+  'perspectives',
+  'culture-cities',
+  'research',
+  'partnerships',
+] as const;
 export type NewsCategory = (typeof newsCategories)[number];
 
 /* Events & Cultural Agenda */

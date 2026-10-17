@@ -4,7 +4,7 @@ import type { Lang } from '@/i18n/routes';
 import { typo } from './frenchTypo';
 import { montrealTime } from './dates';
 import { newsCategories as newsCategoryList, type NewsCategory } from '@/lib/taxonomy';
-import type { UiLang } from '@/i18n/routes';
+import { baseLang, href, type UiLang } from '@/i18n/routes';
 import { pick } from '@/i18n/ui';
 
 /** URL slug of an entry in a given language (falls back to the file name). */
@@ -87,14 +87,25 @@ export async function getPrograms() {
   return (await getCollection('programs')).sort((a, b) => a.data.order - b.data.order);
 }
 
+/** Published articles, newest first (drafts only on the local preview). */
 export async function getNews(limit?: number) {
-  const list = (await getCollection('news')).sort(
+  const list = (await getCollection('news', (p) => import.meta.env.DEV || !p.data.draft)).sort(
     (a, b) => b.data.date.getTime() - a.data.date.getTime(),
   );
   return limit ? list.slice(0, limit) : list;
 }
 
 export const NEWS_PAGE_SIZE = 6;
+
+/** An article has a Persian page once its Persian text is written and reviewed. */
+export const hasPersian = (post: CollectionEntry<'news'>) =>
+  post.data.faReviewed && !!post.data.body.fa;
+
+/** Link to an article in the page's language (Persian page when it exists). */
+export function articleHref(post: CollectionEntry<'news'>, lang: UiLang): string {
+  if (lang === 'fa' && hasPersian(post)) return `/fa/news/${slugOf(post, 'en')}/`;
+  return href('news', lang, slugOf(post, baseLang(lang)));
+}
 
 /** News categories that have at least one post, in the canonical order. */
 export function newsCategories(posts: CollectionEntry<'news'>[]): NewsCategory[] {

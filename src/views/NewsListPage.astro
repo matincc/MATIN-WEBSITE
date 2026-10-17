@@ -6,7 +6,8 @@ import PostCard from '@/components/content/PostCard.astro';
 import Pagination from '@/components/ui/Pagination.astro';
 import { categorySegment, categorySlugs, path, type Lang } from '@/i18n/routes';
 import { useTranslations } from '@/i18n/ui';
-import { newsCategories, type NewsCategory as Category } from '@/lib/taxonomy';
+import type { NewsCategory as Category } from '@/lib/taxonomy';
+import { getNews, newsCategories as newsCategoriesOf } from '@/lib/content';
 
 interface Props {
   lang: Lang;
@@ -16,8 +17,8 @@ interface Props {
   category?: Category;
 }
 const { lang, posts, current = 1, last = 1, category } = Astro.props;
-// Both categories are always listed, even before they have articles.
-const categories = newsCategories;
+// Only categories that have published articles are listed (the menu needs at least two).
+const categories = newsCategoriesOf(await getNews());
 const t = useTranslations(lang);
 
 const pageHref = (l: Lang, n: number) => (n === 1 ? path('news', l) : path('news', l, 'page', n));
@@ -44,30 +45,32 @@ const metaTitle =
 >
   <section class="container-site pt-4 pb-24">
     <div class="mb-12 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-      <nav aria-label={t('news.categories')}>
-        <ul class="flex flex-wrap gap-2">
-          <li>
-            <a
-              href={path('news', lang)}
-              class="chip-link"
-              aria-current={!category ? 'page' : undefined}
-            >
-              {t('news.allCategories')}
-            </a>
-          </li>
-          {categories.map((c) => (
+      {categories.length > 1 && (
+        <nav aria-label={t('news.categories')}>
+          <ul class="flex flex-wrap gap-2">
             <li>
               <a
-                href={catHref(lang, c)}
+                href={path('news', lang)}
                 class="chip-link"
-                aria-current={category === c ? 'page' : undefined}
+                aria-current={!category ? 'page' : undefined}
               >
-                {t(`newsCategories.${c}`)}
+                {t('news.allCategories')}
               </a>
             </li>
-          ))}
-        </ul>
-      </nav>
+            {categories.map((c) => (
+              <li>
+                <a
+                  href={catHref(lang, c)}
+                  class="chip-link"
+                  aria-current={category === c ? 'page' : undefined}
+                >
+                  {t(`newsCategories.${c}`)}
+                </a>
+              </li>
+            ))}
+          </ul>
+        </nav>
+      )}
       <a href={`/${lang}/rss.xml`} class="link-arrow shrink-0 text-sm">
         <Rss size={18} class="text-gold-dark" aria-hidden="true" />
         {t('news.rss')}

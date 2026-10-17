@@ -1,15 +1,16 @@
 ---
 /**
- * Get Involved. French/English: interest form, volunteering and partnerships.
- * Persian: introduction and interest form (the sections that have Persian text).
+ * Get Involved: three pathways (individual participation, institutional and professional
+ * collaboration, staying connected), the expression-of-interest form and, in French and
+ * English, volunteer roles. The newsletter form is the one in the footer (#stay-connected).
  * Membership and donations are not offered (Matin hasn't opened them).
  */
-import { HandHeart, Handshake, Send } from '@lucide/astro';
+import { ArrowRight, Building2, Mail, UsersRound } from '@lucide/astro';
 import PageLayout from '@/layouts/PageLayout.astro';
 import SectionHeader from '@/components/ui/SectionHeader.astro';
 import InterestForm from '@/components/forms/InterestForm.astro';
 import VolunteerForm from '@/components/forms/VolunteerForm.astro';
-import { href, siteAlternates, type UiLang } from '@/i18n/routes';
+import { siteAlternates, type UiLang } from '@/i18n/routes';
 import { useTranslations, pick } from '@/i18n/ui';
 import { getSingleton } from '@/lib/content';
 
@@ -20,19 +21,30 @@ const { lang } = Astro.props;
 const t = useTranslations(lang);
 const inv = await getSingleton('involvement');
 const full = lang !== 'fa';
-// "interest" stays the same in every language: the homepage links to #interest.
-const ids =
-  lang === 'fr'
-    ? { volunteer: 'benevolat', partners: 'partenariats' }
-    : { volunteer: 'volunteer', partners: 'partnerships' };
-const jump = [
-  { id: 'interest', label: t('involved.interest'), icon: Send },
-  ...(full
-    ? [
-        { id: ids.volunteer, label: t('involved.volunteer'), icon: HandHeart },
-        { id: ids.partners, label: t('involved.partners'), icon: Handshake },
-      ]
-    : []),
+const volunteerId = lang === 'fr' ? 'benevolat' : 'volunteer';
+// "interest" stays the same in every language: other pages link to #interest.
+const pathways = [
+  {
+    icon: UsersRound,
+    title: t('involved.pathIndividualTitle'),
+    text: t('involved.pathIndividualText'),
+    cta: t('involved.pathIndividualCta'),
+    href: '#interest',
+  },
+  {
+    icon: Building2,
+    title: t('involved.pathInstitutionalTitle'),
+    text: t('involved.pathInstitutionalText'),
+    cta: t('involved.pathInstitutionalCta'),
+    href: '#interest',
+  },
+  {
+    icon: Mail,
+    title: t('involved.pathConnectedTitle'),
+    text: t('involved.pathConnectedText'),
+    cta: t('involved.pathConnectedCta'),
+    href: '#stay-connected',
+  },
 ];
 ---
 
@@ -42,23 +54,27 @@ const jump = [
   lede={t('involved.lede')}
   alternates={siteAlternates('getInvolved')}
 >
-  {jump.length > 1 && (
-    <nav slot="hero" aria-label={t('involved.jumpTo')} class="mt-8">
-      <ul class="flex flex-wrap justify-center gap-2">
-        {jump.map((j) => (
-          <li>
-            <a href={`#${j.id}`} class="jump">
-              <j.icon size={17} aria-hidden="true" />
-              {j.label}
-            </a>
-          </li>
-        ))}
-      </ul>
-    </nav>
-  )}
+  <!-- Pathways -->
+  <section class="container-site pt-4 pb-16" aria-labelledby="paths-title">
+    <SectionHeader id="paths-title" title={t('involved.pathsTitle')} class="mb-10" />
+    <ul class="grid gap-6 md:grid-cols-3">
+      {pathways.map((p) => (
+        <li class="card path-card">
+          <p.icon size={34} stroke-width={1.25} class="text-gold-dark" aria-hidden="true" />
+          <h3 class="text-xl leading-snug font-bold">{p.title}</h3>
+          <p>{p.text}</p>
+          <a href={p.href} class="link-arrow mt-auto">
+            {p.cta}
+            <ArrowRight size={18} class="flip-rtl" aria-hidden="true" />
+          </a>
+        </li>
+      ))}
+    </ul>
+    <p class="mx-auto mt-8 max-w-3xl text-center text-sm text-muted">{t('involved.pathsNote')}</p>
+  </section>
 
   <!-- Interest -->
-  <section id="interest" class="scroll-mt-24 pt-6 pb-20" aria-labelledby="interest-title">
+  <section id="interest" class="scroll-mt-24 bg-tint py-20" aria-labelledby="interest-title">
     <div class="container-site grid gap-10 lg:grid-cols-[1fr_1.3fr]">
       <div>
         <SectionHeader id="interest-title" title={t('interest.title')} />
@@ -73,7 +89,7 @@ const jump = [
   {full && (
     <>
       <!-- Volunteer -->
-      <section id={ids.volunteer} class="bg-tint pt-8 pb-20" aria-labelledby="volunteer-title">
+      <section id={volunteerId} class="scroll-mt-24 py-20" aria-labelledby="volunteer-title">
         <div class="container-site grid gap-12 lg:grid-cols-[1fr_1.15fr]">
           <div>
             <SectionHeader
@@ -96,44 +112,16 @@ const jump = [
           </div>
         </div>
       </section>
-
-      <!-- Partnerships -->
-      <section id={ids.partners} class="container-site pt-8 pb-20" aria-labelledby="partners-title">
-        <div class="card grid items-center gap-8 p-8 sm:p-12 md:grid-cols-[1fr_auto]">
-          <div>
-            <h2 id="partners-title" class="section-title mb-4">
-              {t('involved.partners')}
-            </h2>
-            {inv.partnersText && <p class="max-w-2xl text-lg">{pick(inv.partnersText, lang)}</p>}
-          </div>
-          <a href={href('contact', lang)} class="btn btn-primary">
-            {t('involved.partnersCta')}
-          </a>
-        </div>
-      </section>
     </>
   )}
 </PageLayout>
 
 <style>
-  .jump {
-    display: inline-flex;
-    align-items: center;
-    gap: 0.45rem;
-    min-height: 2.75rem;
-    padding: 0.4rem 1.1rem;
-    border-radius: 999px;
-    font-weight: 700;
-    color: var(--color-ink);
-    background: var(--color-white);
-    border: 1px solid var(--color-line);
-    text-decoration: none;
-  }
-  .jump:hover {
-    background: var(--color-tint);
-    text-decoration: underline;
-  }
-  .jump :global(svg) {
-    color: var(--color-gold-dark);
+  .path-card {
+    display: flex;
+    flex-direction: column;
+    gap: 0.85rem;
+    height: 100%;
+    padding: 2rem;
   }
 </style>

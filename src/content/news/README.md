@@ -3,15 +3,23 @@
 One YAML file per article, e.g. `nouveau-partenariat.yaml`. Full guide: `GUIDE_ADMIN.md`.
 Events do not go here: they have their own folder (`src/content/events`).
 
-Two categories:
+Five categories (a category appears on the site only once it has a published article):
 
-- `updates`: **Matin Updates / Nouvelles de Matin**. Official announcements, activity reports, partnerships, volunteer updates.
-- `community`: **Montréal Culture & Community / Culture et communauté à Montréal**. Matin's own reflections or reviews of Montréal cultural events, community initiatives and intercultural topics.
+- `matin-news`: **Matin News / Nouvelles de Matin**. The Institute's developments and announcements.
+- `perspectives`: **Perspectives**. Articles on intercultural dialogue, cultural diversity and cultural planning.
+- `culture-cities`: **Culture & Cities / Culture et villes**. Cultural policy, urban cultural development, public space.
+- `research`: **Research & Publications / Recherche et publications**. Selected research, reports and publications.
+- `partnerships`: **Partnerships & Initiatives / Partenariats et initiatives**. Confirmed collaborations only.
+
+Add `draft: true` while an article is being reviewed: drafts appear only on the local preview
+(`npm run dev`), never on the live site, in listings, feeds, the sitemap or search engines.
 
 ```yaml
 date: 2027-03-02
 author: "Équipe Matin"
-category: updates # or: community
+category: matin-news # perspectives, culture-cities, research, partnerships
+# updated: 2027-03-10   (optional, after a substantial update)
+# draft: true          (while under review)
 urlSlug:
   fr: titre-en-francais
   en: title-in-english

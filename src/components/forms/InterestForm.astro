@@ -19,10 +19,11 @@ const { lang } = Astro.props;
 const t = useTranslations(lang);
 const { formsEnabled } = await getSettings();
 const areas = [
-  { name: 'interest_volunteering', label: t('interest.volunteering') },
-  { name: 'interest_programs', label: t('interest.programs') },
-  { name: 'interest_collaboration', label: t('interest.collaboration') },
-  { name: 'interest_updates', label: t('interest.updates') },
+  { name: 'interest_partnerships', label: t('interest.areaPartnerships') },
+  { name: 'interest_research', label: t('interest.areaResearch') },
+  { name: 'interest_programs', label: t('interest.areaPrograms') },
+  { name: 'interest_volunteering', label: t('interest.areaVolunteering') },
+  { name: 'interest_updates', label: t('interest.areaUpdates') },
 ];
 ---
 
@@ -73,12 +74,19 @@ const areas = [
     label={t('interest.preferredLanguage')}
     required
     placeholderOption="—"
-    options={[t('interest.langFr'), t('interest.langEn')]}
+    options={[t('interest.langFr'), t('interest.langEn'), t('interest.langFa')]}
+  />
+  <Field
+    lang={lang}
+    id="interest-organization"
+    name="organization"
+    label={t('interest.organization')}
+    autocomplete="organization"
   />
   <fieldset class="field">
     <legend class="field-label mb-1">{t('interest.areas')}</legend>
     <p class="mb-2 text-sm text-muted">{t('interest.areasHint')}</p>
-    <div class="grid gap-2 sm:grid-cols-2">
+    <div class="grid gap-2">
       {areas.map((a) => (
         <label class="check">
           <input type="checkbox" name={a.name} value="oui" />
@@ -86,6 +94,7 @@ const areas = [
         </label>
       ))}
     </div>
+    <p class="mt-2 text-sm text-muted">{t('interest.updatesNote')}</p>
   </fieldset>
   <Field
     lang={lang}

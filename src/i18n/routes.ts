@@ -31,8 +31,11 @@ export type RouteKey = keyof typeof routes;
 /** Translated URL segments for news categories, e.g. /fr/actualites/categorie/nouvelles-matin/ */
 export const categorySegment = { fr: 'categorie', en: 'category' } as const;
 export const categorySlugs = {
-  updates: { fr: 'nouvelles-matin', en: 'matin-updates' },
-  community: { fr: 'culture-et-communaute', en: 'montreal-culture-community' },
+  'matin-news': { fr: 'nouvelles-matin', en: 'matin-news' },
+  perspectives: { fr: 'perspectives', en: 'perspectives' },
+  'culture-cities': { fr: 'culture-et-villes', en: 'culture-cities' },
+  research: { fr: 'recherche-et-publications', en: 'research-publications' },
+  partnerships: { fr: 'partenariats-et-initiatives', en: 'partnerships-initiatives' },
 } as const satisfies Record<string, Record<Lang, string>>;
 
 /** Build a localized path, e.g. path('events', 'en', 'summer-fest') → /en/events/summer-fest/ */

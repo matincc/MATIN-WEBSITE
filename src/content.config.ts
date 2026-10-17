@@ -181,9 +181,13 @@ const news = defineCollection({
         urlSlug: slugs,
         excerpt: bi,
         body: bi,
+        /** Publication date (set it to the day the article is published). */
         date: z.coerce.date(),
-        author: z.string(),
-        /** updates = Matin Updates · community = Montréal Culture & Community */
+        /** Date of a later substantive update, shown under the title. */
+        updated: z.coerce.date().optional(),
+        /** A name, or { fr, en, fa } for an institutional signature. */
+        author: z.union([z.string(), bi]),
+        /** matin-news, perspectives, culture-cities, research, partnerships */
         category: z.enum(newsCategories),
         tags: z.array(z.string()).default([]),
         image: image().optional(),
@@ -195,6 +199,8 @@ const news = defineCollection({
         imagePermission: z.boolean().optional(),
         /** When the article discusses an external event or issue: link and attribution. */
         source: z.object({ url: z.url(), name: z.string().min(1) }).optional(),
+        /** Drafts appear only on the local preview (npm run dev): never listed, built or indexed. */
+        draft: z.boolean().default(false),
         faReviewed,
         placeholder: z.boolean().default(false),
       })

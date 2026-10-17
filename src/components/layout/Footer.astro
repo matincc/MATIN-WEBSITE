@@ -121,7 +121,7 @@ const mission = lang !== 'fa' || s.mission.fa ? pick(s.mission, lang) : undefine
     )}
 
     {showNewsletter && (
-      <div class="md:col-span-2 lg:col-span-3">
+      <div id="stay-connected" class="scroll-mt-24 md:col-span-2 lg:col-span-3">
         <h2 class="footer-title">{t('footer.newsletterTitle')}</h2>
         <p class="mb-4 text-[0.95rem]">{t('newsletter.text')}</p>
         <NewsletterForm lang={lang} compact id="footer-newsletter" />
