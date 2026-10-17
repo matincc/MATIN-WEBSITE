@@ -5,6 +5,7 @@ import { typo } from './frenchTypo';
 import { montrealTime } from './dates';
 import { newsCategories as newsCategoryList, type NewsCategory } from '@/lib/taxonomy';
 import type { UiLang } from '@/i18n/routes';
+import { pick } from '@/i18n/ui';
 
 /** URL slug of an entry in a given language (falls back to the file name). */
 export function slugOf(
@@ -26,6 +27,10 @@ export async function getSettings() {
 }
 
 export type EventEntry = CollectionEntry<'events'> & { startDate: Date; endDate: Date };
+
+/** City of an event in the page's language. */
+export const cityOf = (e: EventEntry, lang: UiLang) =>
+  typeof e.data.city === 'string' ? e.data.city : pick(e.data.city, lang)!;
 
 /** Matin's own and co-organized events have a page on this site; selected events link out. */
 export const isMatinEvent = (e: EventEntry) => e.data.kind !== 'selected';

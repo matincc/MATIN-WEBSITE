@@ -101,6 +101,31 @@ export function formatTimeRange(
     : formatTime(start, lang, timeZone);
 }
 
+/**
+ * When an event happens: one day with its hours (« samedi 24 octobre 2026 · 19 h – 21 h HAE »),
+ * or a date range for multi-day and all-day events (« 2 nov. – 8 nov. 2026 »).
+ */
+export function formatWhen(
+  start: Date,
+  end: Date | undefined,
+  lang: Lang,
+  { allDay = false, timeZone = TIME_ZONE } = {},
+): string {
+  const day = (d: Date) => d.toLocaleDateString('en-CA', { timeZone });
+  if (end && day(end) !== day(start)) {
+    const fmt = new Intl.DateTimeFormat(locale(lang), {
+      day: 'numeric',
+      month: 'long',
+      year: 'numeric',
+      timeZone,
+    });
+    return fmt.formatRange(start, end);
+  }
+  const date = formatLongDate(start, lang, timeZone);
+  if (allDay) return date;
+  return `${date} · ${formatTimeRange(start, end, lang, timeZone)} ${formatZone(start, lang, timeZone)}`;
+}
+
 /** Short time-zone name for that date: « HAE » / "EDT", "CET"… */
 export function formatZone(date: Date, lang: Lang, timeZone = TIME_ZONE): string {
   return (

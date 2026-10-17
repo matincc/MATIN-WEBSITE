@@ -1,0 +1,27 @@
+kind: selected
+organizer:
+  name: 'Mundial Montréal'
+  url: https://www.mundialmontreal.com
+title:
+  fr: 'Mundial Montréal 2026'
+  en: 'Mundial Montréal 2026'
+summary:
+  fr: "Le rendez-vous annuel des professionnels des musiques du monde : vitrines d'artistes venus de partout, soirées OFF Mundial dans des salles montréalaises et activités de réseautage. Un laissez-passer festival donne accès aux vitrines et aux soirées."
+  en: 'The annual gathering of world music professionals: showcases by artists from around the globe, OFF Mundial nights in Montréal venues and networking activities. A festival pass gives access to the showcases and evening shows.'
+whyItMatters:
+  fr: 'Montréal y accueille des artistes du monde entier : un exemple de collaboration culturelle internationale ancrée dans la ville.'
+  en: 'Montréal welcomes artists from around the world: an example of international cultural collaboration rooted in the city.'
+subject: arts
+region: montreal
+city: Montréal
+format: in-person
+start: '2026-11-17T00:00'
+end: '2026-11-21T23:59'
+allDay: true
+price:
+  type: paid
+eventUrl: https://www.mundialmontreal.com
+registrationUrl: https://www.mundialmontreal.com/billetterie/
+sourceUrl: https://www.mundialmontreal.com
+lastVerified: '2026-10-17'
+draft: true

@@ -1,5 +1,5 @@
 /** "Add to calendar" helpers: .ics files (RFC 5545) and Google Calendar links. */
-import type { EventEntry } from './content';
+import { cityOf, type EventEntry } from './content';
 import type { Lang } from '@/i18n/routes';
 
 /** 20261024T230000Z */
@@ -47,7 +47,7 @@ export function eventIcs(event: EventEntry, lang: Lang, url: string): string {
     `DTEND:${utcStamp(event.endDate)}`,
     `SUMMARY:${esc(d.title[lang])}`,
     `DESCRIPTION:${esc(`${d.summary[lang]}\n\n${url}`)}`,
-    `LOCATION:${esc(placeOf(event))}`,
+    `LOCATION:${esc(placeOf(event, lang))}`,
     `URL:${url}`,
     'END:VEVENT',
     'END:VCALENDAR',
@@ -62,15 +62,16 @@ export function googleCalendarUrl(event: EventEntry, lang: Lang, url: string): s
     text: d.title[lang],
     dates: `${utcStamp(event.startDate)}/${utcStamp(event.endDate)}`,
     details: `${d.summary[lang]}\n\n${url}`,
-    location: placeOf(event),
+    location: placeOf(event, lang),
     ctz: d.timeZone,
   });
   return `https://calendar.google.com/calendar/render?${params}`;
 }
 
 /** Venue, address and city on one line; "Online" events have only their city. */
-function placeOf(event: EventEntry): string {
-  const { location, city, format } = event.data;
+function placeOf(event: EventEntry, lang: Lang): string {
+  const { location, format } = event.data;
+  const city = cityOf(event, lang);
   if (format === 'online' || !location) return city;
   return [location.name, location.address ?? city].join(', ');
 }

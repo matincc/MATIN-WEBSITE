@@ -16,8 +16,8 @@ import ShareButtons from '@/components/ui/ShareButtons.astro';
 import Lightbox from '@/components/ui/Lightbox.astro';
 import { path, type Lang } from '@/i18n/routes';
 import { useTranslations, pick } from '@/i18n/ui';
-import { renderMarkdown, slugOf, type EventEntry } from '@/lib/content';
-import { formatLongDate, formatTimeRange, formatZone } from '@/lib/dates';
+import { cityOf, renderMarkdown, slugOf, type EventEntry } from '@/lib/content';
+import { formatWhen } from '@/lib/dates';
 import { subjectCover } from '@/lib/taxonomy';
 import { googleCalendarUrl, mapUrl } from '@/lib/calendar';
 
@@ -84,7 +84,7 @@ const jsonLd = {
         address: {
           '@type': 'PostalAddress',
           streetAddress: d.location!.address,
-          addressLocality: d.city,
+          addressLocality: cityOf(event, lang),
           addressCountry: d.country === 'Canada' ? 'CA' : d.country,
         },
       },
@@ -211,11 +211,12 @@ const jsonLd = {
                 {t('events.when')}
               </p>
               <div class="mt-0.5 font-semibold text-ink">
-                <time datetime={event.startDate.toISOString()} class="block">
-                  {formatLongDate(event.startDate, lang, tz)}
+                <time datetime={event.startDate.toISOString()}>
+                  {formatWhen(event.startDate, d.end ? event.endDate : undefined, lang, {
+                    allDay: d.allDay,
+                    timeZone: tz,
+                  })}
                 </time>
-                {formatTimeRange(event.startDate, d.end ? event.endDate : undefined, lang, tz)}{' '}
-                {formatZone(event.startDate, lang, tz)}
               </div>
             </div>
           </li>
@@ -230,7 +231,7 @@ const jsonLd = {
               ) : (
                 <div class="mt-0.5 text-ink">
                   <span class="block font-semibold">{d.location!.name}</span>
-                  <span class="block text-sm">{d.location!.address ?? d.city}</span>
+                  <span class="block text-sm">{d.location!.address ?? cityOf(event, lang)}</span>
                   {d.format === 'hybrid' && (
                     <span class="block text-sm">{t('agendaFormats.hybrid')}</span>
                   )}

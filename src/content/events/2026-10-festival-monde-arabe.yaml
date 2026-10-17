@@ -1,0 +1,27 @@
+kind: selected
+organizer:
+  name: 'Festival du Monde Arabe de Montréal'
+  url: https://festivalarabe.com
+title:
+  fr: 'Festival du Monde Arabe de Montréal, 27e édition'
+  en: 'Festival du Monde Arabe de Montréal, 27th edition'
+summary:
+  fr: "Pendant un peu plus de deux semaines, le festival présente des spectacles de musique et d'arts de la scène ancrés dans les cultures du monde arabe, dans plusieurs salles de Montréal."
+  en: 'For a little over two weeks, the festival presents music and performing-arts shows rooted in the cultures of the Arab world, in several Montréal venues.'
+whyItMatters:
+  fr: 'Un rendez-vous montréalais de longue date où les arts servent de pont entre les cultures.'
+  en: 'A long-standing Montréal gathering where the arts act as a bridge between cultures.'
+subject: arts
+region: montreal
+city: Montréal
+format: in-person
+start: '2026-10-30T00:00'
+end: '2026-11-15T23:59'
+allDay: true
+price:
+  type: unknown
+eventUrl: https://festivalarabe.com
+sourceUrl: https://festivalarabe.com
+lastVerified: '2026-10-17'
+featuredUntil: '2026-11-15'
+draft: true

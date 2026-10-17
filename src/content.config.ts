@@ -96,16 +96,19 @@ const events = defineCollection({
         body: biOpt,
         subject: z.enum(eventSubjects),
         region: z.enum(eventRegions),
-        city: z.string().min(1),
+        /** A name, or { fr, en } when it needs translating (e.g. « Partout au Québec »). */
+        city: z.union([z.string().min(1), bi]),
         country: z.string().default('Canada'),
         format: z.enum(eventFormats).default('in-person'),
         /** Only when verified. */
         language: z.enum(eventLanguages).optional(),
         start: localDateTime,
         end: localDateTime.optional(),
+        /** Festivals, weeks, fairs: show the dates only (put the hours in the summary). */
+        allDay: z.boolean().default(false),
         /** Time zone of the times above; Montréal by default. */
         timeZone: z.string().default('America/Toronto'),
-        /** Venue; leave out for online events. */
+        /** Venue; leave out for online events and for multi-venue festivals (allDay). */
         location: z
           .object({
             name: z.string(),
@@ -163,7 +166,7 @@ const events = defineCollection({
         message: 'Matin events need a body in French and English',
         path: ['body'],
       })
-      .refine((e) => e.format === 'online' || e.location, {
+      .refine((e) => e.format === 'online' || e.allDay || e.location, {
         message: 'In-person and hybrid events need a location',
         path: ['location'],
       }),

@@ -14,10 +14,10 @@ import {
   Ticket,
 } from '@lucide/astro';
 import type { EventEntry } from '@/lib/content';
-import { isMatinEvent, slugOf } from '@/lib/content';
+import { cityOf, isMatinEvent, slugOf } from '@/lib/content';
 import { baseLang, href as link, type UiLang } from '@/i18n/routes';
 import { useTranslations, pick } from '@/i18n/ui';
-import { dateBadge, formatDate, formatLongDate, formatTimeRange, formatZone } from '@/lib/dates';
+import { dateBadge, formatDate, formatWhen } from '@/lib/dates';
 
 interface Props {
   event: EventEntry;
@@ -40,7 +40,7 @@ const price =
       : t('events.priceUnknown');
 const place = [
   d.format !== 'online' && d.location?.name,
-  d.city,
+  cityOf(event, lang),
   d.country !== 'Canada' && d.country,
 ]
   .filter(Boolean)
@@ -76,11 +76,11 @@ const verified = d.lastVerified && formatDate(new Date(d.lastVerified), lang);
       <CalendarDays size={17} aria-hidden="true" />
       <span>
         <time datetime={event.startDate.toISOString()}>
-          {formatLongDate(event.startDate, lang, tz)}
+          {formatWhen(event.startDate, d.end ? event.endDate : undefined, lang, {
+            allDay: d.allDay,
+            timeZone: tz,
+          })}
         </time>
-        {' · '}
-        {formatTimeRange(event.startDate, d.end ? event.endDate : undefined, lang, tz)}{' '}
-        {formatZone(event.startDate, lang, tz)}
       </span>
     </li>
     <li>
