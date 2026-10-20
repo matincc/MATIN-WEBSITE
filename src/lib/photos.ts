@@ -11,11 +11,9 @@ import type { ImageMetadata } from 'astro';
 import tamtams from '@/assets/photos/tamtams.jpg';
 import library from '@/assets/photos/library.jpg';
 import publicart from '@/assets/photos/publicart.jpg';
-import dancecircle from '@/assets/photos/dancecircle.jpg';
-import folkdance from '@/assets/photos/folkdance.jpg';
 import drummers from '@/assets/photos/drummers.jpg';
 import nuitblanche from '@/assets/photos/nuitblanche.jpg';
-import parade from '@/assets/photos/parade.jpg';
+import placejc from '@/assets/photos/placejc.jpg';
 
 export interface Photo {
   src: ImageMetadata;
@@ -26,7 +24,6 @@ export interface Photo {
 
 const CC_BY_SA_2 = 'https://creativecommons.org/licenses/by-sa/2.0/';
 const CC_BY_SA_3 = 'https://creativecommons.org/licenses/by-sa/3.0/';
-const CC_BY_SA_4 = 'https://creativecommons.org/licenses/by-sa/4.0/';
 const CC_BY_2 = 'https://creativecommons.org/licenses/by/2.0/';
 
 export const photos = {
@@ -76,38 +73,16 @@ export const photos = {
         'https://commons.wikimedia.org/wiki/File:Nuit_blanche_%C3%A0_Montr%C3%A9al_-_MONTR%C3%89AL_EN_LUMI%C3%88RE_(12889789765).jpg',
     },
   },
-  /** A drummer performing on stage in Montréal. */
-  parade: {
-    src: parade,
-    focus: '50% 30%',
+  /** Place Jacques-Cartier, Old Montréal, on a sunny day. */
+  placejc: {
+    src: placejc,
+    focus: '40% 60%',
     credit: {
-      author: 'Jeangagnon',
-      license: 'CC BY-SA 3.0',
-      licenseUrl: CC_BY_SA_3,
-      source: 'https://commons.wikimedia.org/wiki/File:Parade_Afriqu-en_fete_42.jpg',
-    },
-  },
-  /** A dance circle in the street during a summer festival in Montréal. */
-  dancecircle: {
-    src: dancecircle,
-    focus: '30% 55%',
-    credit: {
-      author: 'Jeangagnon',
-      license: 'CC BY-SA 3.0',
-      licenseUrl: CC_BY_SA_3,
-      source: 'https://commons.wikimedia.org/wiki/File:Parade_Afriqu-en_fete_20.jpg',
-    },
-  },
-  /** Folk dancers on rue Saint-Denis, Fête nationale du Québec. */
-  folkdance: {
-    src: folkdance,
-    focus: '50% 55%',
-    credit: {
-      author: 'Jeangagnon',
-      license: 'CC BY-SA 4.0',
-      licenseUrl: CC_BY_SA_4,
+      author: 'Ken Lund',
+      license: 'CC BY-SA 2.0',
+      licenseUrl: CC_BY_SA_2,
       source:
-        'https://commons.wikimedia.org/wiki/File:Fete_nationale_du_Quebec,_rue_Saint-Denis,_2017-06-24_-_058.jpg',
+        'https://commons.wikimedia.org/wiki/File:Place_Jacques-Cartier,_Vieux-Montr%C3%A9al,_Montreal,_Quebec_(29773761810).jpg',
     },
   },
   /** Drummers in a summer street parade in Montréal. */

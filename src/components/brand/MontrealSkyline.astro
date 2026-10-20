@@ -2,7 +2,7 @@
 /**
  * A quiet Montréal silhouette for the footer: Mont-Royal, the downtown towers, the
  * inclined tower of the Olympic Stadium and the Jacques-Cartier Bridge. Flat shapes in a
- * light tone of the background colour, drawn on one baseline. Decorative only.
+ * darker shade of the footer colour, drawn on one baseline. Decorative only.
  */
 interface Props {
   class?: string;
@@ -53,11 +53,12 @@ const { class: className = '' } = Astro.props;
     width: 100%;
     height: 100%;
   }
-  /* Light tints of the cream on navy, so the band stays calm. */
+  /* Shades of the footer's deep terracotta: lighter hill, darker city that matches the
+     copyright bar it stands on. */
   .skyline__far {
-    fill: color-mix(in srgb, var(--color-cream) 7%, var(--color-primary));
+    fill: color-mix(in srgb, var(--color-terracotta-deep) 82%, black);
   }
   .skyline__near {
-    fill: color-mix(in srgb, var(--color-cream) 13%, var(--color-primary));
+    fill: color-mix(in srgb, var(--color-terracotta-deep) 62%, black);
   }
 </style>

@@ -24,3 +24,9 @@ eventUrl: https://festivalarabe.com
 sourceUrl: https://festivalarabe.com
 lastVerified: '2026-10-17'
 featuredUntil: '2026-11-15'
+# Official 2026 visual, from the festival's website (festivalarabe.com), used to
+# present the festival and link to it. Replace if the organizer asks.
+image: ../../assets/uploads/events/festival-monde-arabe-2026/fma-2026.jpg
+imageAlt:
+  fr: 'Visuel officiel 2026 du Festival du Monde Arabe de Montréal : une frise ancienne et des tapis aux tons rouges et dorés.'
+  en: 'Official 2026 visual of the Festival du Monde Arabe de Montréal: an ancient frieze and carpets in red and gold tones.'

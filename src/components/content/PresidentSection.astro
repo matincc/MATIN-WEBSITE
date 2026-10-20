@@ -34,7 +34,11 @@ const linkedinPath =
 ---
 
 {bio && (
-  <section id="our-president" class="scroll-mt-24 py-20" aria-labelledby="our-president-title">
+  <section
+    id="our-president"
+    class="president-band on-terracotta scroll-mt-24 py-20"
+    aria-labelledby="our-president-title"
+  >
     <div class="container-site">
       <SectionHeader align="start" id="our-president-title" title={t('about.ourPresident')} />
       <div class="president-bio">
@@ -84,7 +88,17 @@ const linkedinPath =
 )}
 
 <style>
+  /* Warm terracotta band (owner's request, Oct 2026); the white card keeps the
+     biography in ink and navy on white. */
+  .president-band {
+    background: var(--color-terracotta);
+  }
+  /* Inside the white card the focus ring is navy again (white would vanish). */
+  .president-bio :global(:focus-visible) {
+    outline-color: var(--color-primary);
+  }
   .president-bio {
+    color: var(--color-ink);
     display: grid;
     gap: 2.5rem;
     max-width: 76rem;
