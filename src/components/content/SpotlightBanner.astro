@@ -1,0 +1,186 @@
+---
+/**
+ * Large homepage banner for one highlighted event (`spotlight: true` in its YAML file).
+ * Deep blue panel: text on one side, the event's artwork turning slowly on the other.
+ * It disappears on its own once the event has ended (at build time and in the browser).
+ */
+import { Picture } from 'astro:assets';
+import { CalendarDays, ExternalLink, MapPin, Building } from '@lucide/astro';
+import { cityOf, isMatinEvent, slugOf, type EventEntry } from '@/lib/content';
+import { baseLang, href as link, type UiLang } from '@/i18n/routes';
+import { pick, useTranslations } from '@/i18n/ui';
+import { formatWhen } from '@/lib/dates';
+
+interface Props {
+  event: EventEntry;
+  lang: UiLang;
+}
+const { event, lang } = Astro.props;
+const d = event.data;
+const t = useTranslations(lang);
+const ours = isMatinEvent(event);
+const href = ours ? link('events', lang, slugOf(event, baseLang(lang))) : d.eventUrl;
+---
+
+<article class="spotlight on-dark" data-reveal data-spotlight-end={event.endDate.toISOString()}>
+  <div class="spotlight__text">
+    <p class="spotlight__label">{t('home.spotlightLabel')}</p>
+    <h3 class="spotlight__title">{pick(d.title, lang)}</h3>
+    <ul class="spotlight__meta">
+      <li>
+        <CalendarDays size={20} aria-hidden="true" />
+        <time datetime={event.startDate.toISOString()}>
+          {formatWhen(event.startDate, d.end ? event.endDate : undefined, lang, {
+            allDay: d.allDay,
+            timeZone: d.timeZone,
+          })}
+        </time>
+      </li>
+      <li>
+        <MapPin size={20} aria-hidden="true" />
+        <span>{cityOf(event, lang)}</span>
+      </li>
+      <li>
+        <Building size={20} aria-hidden="true" />
+        <span>{t('events.organizedBy')} {d.organizer.name}</span>
+      </li>
+    </ul>
+    <p class="spotlight__summary">{pick(d.summary, lang)}</p>
+    {
+      href && (
+        <a
+          href={href}
+          class="btn btn-primary self-start"
+          target={ours ? undefined : '_blank'}
+          rel={ours ? undefined : 'noopener noreferrer'}
+        >
+          {ours ? t('events.details') : t('home.spotlightCta')}
+          {!ours && <ExternalLink size={18} aria-hidden="true" />}
+          {!ours && <span class="sr-only">{t('a11y.externalLink')}</span>}
+        </a>
+      )
+    }
+  </div>
+  {
+    d.image && (
+      <div class="spotlight__art">
+        <div class="spotlight__disc">
+          <Picture
+            src={d.image}
+            alt={pick(d.imageAlt, lang) ?? ''}
+            formats={['avif', 'webp']}
+            widths={[480, 800]}
+            sizes="(min-width: 1024px) 30rem, 80vw"
+            class="spotlight__img"
+          />
+        </div>
+      </div>
+    )
+  }
+</article>
+
+<script>
+  document.querySelectorAll<HTMLElement>('[data-spotlight-end]').forEach((el) => {
+    if (Date.parse(el.dataset.spotlightEnd!) < Date.now()) el.hidden = true;
+  });
+</script>
+
+<style>
+  .spotlight {
+    position: relative;
+    display: grid;
+    gap: 2rem;
+    align-items: center;
+    overflow: hidden;
+    padding: clamp(1.75rem, 1rem + 3vw, 3.5rem);
+    border-radius: calc(var(--radius-card) * 1.5);
+    background: var(--color-primary);
+    color: var(--color-cream);
+    border-inline-start: 6px solid var(--color-gold);
+  }
+  @media (min-width: 64rem) {
+    .spotlight {
+      grid-template-columns: minmax(0, 3fr) minmax(0, 2fr);
+      gap: 3rem;
+    }
+  }
+  .spotlight__text {
+    display: flex;
+    flex-direction: column;
+    gap: 1.1rem;
+  }
+  .spotlight__label {
+    align-self: flex-start;
+    padding: 0.3rem 0.95rem;
+    border-radius: 999px;
+    background: var(--color-gold);
+    color: var(--color-primary);
+    font-size: 0.9rem;
+    font-weight: 800;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+  }
+  .spotlight__title {
+    font-size: clamp(1.75rem, 1.2rem + 2vw, 2.75rem);
+    font-weight: 800;
+    line-height: 1.15;
+    color: var(--color-white);
+    text-wrap: balance;
+  }
+  .spotlight__meta {
+    display: grid;
+    gap: 0.5rem;
+    font-size: 1.1rem;
+    font-weight: 600;
+  }
+  .spotlight__meta li {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.6rem;
+  }
+  .spotlight__meta li:first-child {
+    color: var(--color-gold);
+    font-size: 1.25rem;
+    font-weight: 800;
+  }
+  .spotlight__meta :global(svg) {
+    flex-shrink: 0;
+    margin-top: 0.2rem;
+    color: var(--color-gold);
+  }
+  .spotlight__summary {
+    max-width: 62ch;
+    font-size: 1.1rem;
+    line-height: 1.65;
+  }
+  .spotlight__art {
+    display: grid;
+    place-items: center;
+  }
+  /* The artwork is drawn around its centre, so a round crop of it can turn slowly. */
+  .spotlight__disc {
+    width: min(100%, 26rem);
+    aspect-ratio: 1;
+    border-radius: 50%;
+    overflow: hidden;
+    border: 2px solid color-mix(in srgb, var(--color-gold) 60%, transparent);
+    animation: spotlight-turn 90s linear infinite;
+  }
+  .spotlight__disc :global(img) {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transform: scale(1.12);
+  }
+  @keyframes spotlight-turn {
+    to {
+      rotate: 360deg;
+    }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .spotlight__disc {
+      animation: none;
+    }
+  }
+</style>

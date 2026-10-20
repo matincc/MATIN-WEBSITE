@@ -82,6 +82,9 @@ const en: Dictionary = {
       'Exploring questions related to cultural diversity, intercultural relations, identity, belonging, and cultural policy. Matin seeks to contribute to research, knowledge exchange, publications, and public discussions that connect academic perspectives with community experiences and public decision-making.',
     eventsTitle: 'Selected Upcoming Events',
     eventsAll: 'Explore All Events',
+    spotlightLabel: "Don't miss",
+    spotlightCta: 'See the official program',
+    ribbonLabel: 'The word "dialogue" in several languages',
     eventsEmpty:
       'We are curating upcoming cultural events in Montréal and Québec. Explore our agenda again soon.',
     newsTitle: 'News & Insights',

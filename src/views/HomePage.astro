@@ -14,6 +14,8 @@ import {
 } from '@lucide/astro';
 import BaseLayout from '@/layouts/BaseLayout.astro';
 import HomeHero from '@/components/brand/HomeHero.astro';
+import CulturesRibbon from '@/components/brand/CulturesRibbon.astro';
+import SpotlightBanner from '@/components/content/SpotlightBanner.astro';
 import SectionHeader from '@/components/ui/SectionHeader.astro';
 import EventCard from '@/components/content/EventCard.astro';
 import ExpireEvents from '@/components/content/ExpireEvents.astro';
@@ -32,8 +34,11 @@ const t = useTranslations(lang);
 const [upcomingAll, postsAll] = await Promise.all([getUpcomingEvents(), getNews()]);
 // Persian pages only list entries whose Persian translation has been reviewed.
 // Up to 3 upcoming events, Matin's own first (the sort is stable, so dates stay in order).
-const upcoming = forLang(upcomingAll, lang)
-  .filter((e) => e.data.status !== 'cancelled')
+const visible = forLang(upcomingAll, lang).filter((e) => e.data.status !== 'cancelled');
+// One highlighted event gets the large banner; it is not repeated in the cards below.
+const spotlight = visible.find((e) => e.data.spotlight);
+const upcoming = visible
+  .filter((e) => e !== spotlight)
   .sort((a, b) => Number(!isMatinEvent(a)) - Number(!isMatinEvent(b)))
   .slice(0, 3);
 // Up to 3 recent articles; a single article is shown as one wide, featured card.
@@ -67,17 +72,18 @@ const areas = [
   </div>
 
   <HomeHero lang={lang} />
+  <CulturesRibbon lang={lang} />
 
   <!-- Who we are -->
   <section id="who-we-are" class="scroll-mt-24 bg-cream py-20 sm:py-24" aria-labelledby="who-title">
     <div class="container-site">
       <SectionHeader id="who-title" title={t('home.whoTitle')} class="mb-8" />
-      <p class="who-text mx-auto text-center">{t('home.whoText')}</p>
+      <p class="who-text mx-auto text-center" data-reveal>{t('home.whoText')}</p>
       <nav aria-label={t('home.whoCardsLabel')} class="mt-12">
         <ul class="grid gap-5 sm:grid-cols-3">
-          {whoCards.map((c) => (
-            <li>
-              <a href={`${aboutHref}#${c.id}`} class="card who-card on-dark">
+          {whoCards.map((c, i) => (
+            <li data-reveal style={`--reveal-delay:${i * 120}ms`}>
+              <a href={`${aboutHref}#${c.id}`} class="card card-lift who-card on-dark">
                 <c.icon
                   size={28}
                   stroke-width={1.25}
@@ -104,10 +110,12 @@ const areas = [
         lede={t('home.areasLede')}
       />
       <ul class="grid gap-6 lg:grid-cols-3">
-        {areas.map((a) => (
-          <li>
-            <a href={href('programs', lang)} class="card area-card">
-              <a.icon size={36} stroke-width={1.25} class="text-gold-dark" aria-hidden="true" />
+        {areas.map((a, i) => (
+          <li data-reveal style={`--reveal-delay:${i * 140}ms`}>
+            <a href={href('programs', lang)} class="card card-lift area-card">
+              <span class="area-icon" aria-hidden="true">
+                <a.icon size={34} stroke-width={1.5} />
+              </span>
               <h3 class="area-title font-bold">{a.title}</h3>
               <p class="text-[1.07rem] leading-relaxed">{a.text}</p>
               <span class="link-arrow mt-auto pt-2">
@@ -123,26 +131,31 @@ const areas = [
 
   <!-- Selected upcoming events: a compact preview of the agenda -->
   <section
-    class:list={['bg-cream', upcoming.length > 0 ? 'py-20 sm:py-24' : 'py-16']}
+    class:list={['bg-cream', upcoming.length > 0 || spotlight ? 'py-20 sm:py-24' : 'py-16']}
     aria-labelledby="events-title"
   >
     <div class="container-site">
       <SectionHeader
         id="events-title"
         title={t('home.eventsTitle')}
-        class={upcoming.length > 0 ? 'mb-12' : 'mb-8'}
+        class={upcoming.length > 0 || spotlight ? 'mb-12' : 'mb-8'}
       />
+      {spotlight && (
+        <div class="mb-12">
+          <SpotlightBanner event={spotlight} lang={lang} />
+        </div>
+      )}
       <div>
         {upcoming.length > 0 && (
           <ul class="grid gap-6 md:grid-cols-2 lg:grid-cols-3" data-upcoming-list>
-            {upcoming.map((event) => (
-              <li>
+            {upcoming.map((event, i) => (
+              <li data-reveal style={`--reveal-delay:${i * 120}ms`}>
                 <EventCard event={event} lang={lang} />
               </li>
             ))}
           </ul>
         )}
-        <p class="empty-line" data-upcoming-empty hidden={upcoming.length > 0}>
+        <p class="empty-line" data-upcoming-empty hidden={upcoming.length > 0 || !!spotlight}>
           {t('home.eventsEmpty')}
         </p>
       </div>
@@ -282,8 +295,25 @@ const areas = [
     text-decoration: none;
     transition: border-color 0.2s;
   }
+  .area-card {
+    border-block-start: 4px solid var(--color-gold);
+  }
   .area-card:hover {
     border-color: var(--color-gold);
+  }
+  /* Round blue badge with a gold icon at the top of each card. */
+  .area-icon {
+    display: grid;
+    place-items: center;
+    width: 4.25rem;
+    height: 4.25rem;
+    border-radius: 50%;
+    background: var(--color-primary);
+    color: var(--color-gold);
+    transition: transform 0.3s cubic-bezier(0.2, 0.7, 0.2, 1);
+  }
+  .area-card:hover .area-icon {
+    transform: rotate(-8deg) scale(1.06);
   }
   .area-title {
     /* Long titles: keep them on balanced lines with the same height in all three cards */

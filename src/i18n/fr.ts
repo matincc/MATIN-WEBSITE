@@ -84,6 +84,9 @@ const fr = {
       "Explorer les questions liées à la diversité culturelle, aux relations interculturelles, à l'identité, à l'appartenance et aux politiques culturelles. Matin souhaite contribuer à la recherche, à l'échange de connaissances, aux publications et aux débats publics qui relient les perspectives universitaires, l'expérience des communautés et la prise de décision publique.",
     eventsTitle: 'Événements à venir sélectionnés',
     eventsAll: 'Explorer tous les événements',
+    spotlightLabel: 'À ne pas manquer',
+    spotlightCta: 'Voir le programme officiel',
+    ribbonLabel: 'Le mot « dialogue » dans plusieurs langues',
     eventsEmpty:
       'Nous sélectionnons des événements culturels à venir à Montréal et au Québec. Revenez consulter notre agenda bientôt.',
     newsTitle: 'Actualités et perspectives',

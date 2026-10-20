@@ -4,6 +4,7 @@
  * page on this site; selected external events name their organizer and link out to the
  * organizer's page (Matin never hosts registration for them).
  */
+import { Picture } from 'astro:assets';
 import {
   Building,
   CalendarDays,
@@ -50,9 +51,20 @@ const verified = d.lastVerified && formatDate(new Date(d.lastVerified), lang);
 ---
 
 <article
-  class:list={['card agenda-card', { 'is-cancelled': d.status === 'cancelled' }]}
+  class:list={['card card-lift agenda-card', { 'is-cancelled': d.status === 'cancelled' }]}
   data-event-end={event.endDate.toISOString()}
 >
+  {d.image && (
+    <div class="agenda-image">
+      <Picture
+        src={d.image}
+        alt={pick(d.imageAlt, lang) ?? ''}
+        formats={['avif', 'webp']}
+        widths={[400, 640, 800]}
+        sizes="(min-width: 1024px) 28rem, (min-width: 768px) 45vw, 100vw"
+      />
+    </div>
+  )}
   <div class="flex items-start gap-4">
     <div class="date-badge" aria-hidden="true">
       <span class="date-badge__day">{badge.day}</span>
@@ -147,6 +159,23 @@ const verified = d.lastVerified && formatDate(new Date(d.lastVerified), lang);
     gap: 0.9rem;
     height: 100%;
     padding: 1.75rem;
+  }
+  .agenda-image {
+    margin: -1.75rem -1.75rem 0.25rem;
+    aspect-ratio: 16 / 9;
+    overflow: hidden;
+    border-start-start-radius: var(--radius-card);
+    border-start-end-radius: var(--radius-card);
+  }
+  .agenda-image :global(img) {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.6s cubic-bezier(0.2, 0.7, 0.2, 1);
+  }
+  .agenda-card:hover .agenda-image :global(img) {
+    transform: scale(1.05);
   }
   .date-badge {
     display: flex;
