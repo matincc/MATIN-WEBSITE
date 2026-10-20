@@ -17,7 +17,7 @@ import HomeHero from '@/components/brand/HomeHero.astro';
 import CulturesRibbon from '@/components/brand/CulturesRibbon.astro';
 import SpotlightBanner from '@/components/content/SpotlightBanner.astro';
 import SectionHeader from '@/components/ui/SectionHeader.astro';
-import EventCard from '@/components/content/EventCard.astro';
+import EventRow from '@/components/content/EventRow.astro';
 import ExpireEvents from '@/components/content/ExpireEvents.astro';
 import PostCard from '@/components/content/PostCard.astro';
 import NewsletterForm from '@/components/forms/NewsletterForm.astro';
@@ -147,10 +147,10 @@ const areas = [
       )}
       <div>
         {upcoming.length > 0 && (
-          <ul class="grid gap-6 md:grid-cols-2 lg:grid-cols-3" data-upcoming-list>
+          <ul class="grid gap-6" data-upcoming-list>
             {upcoming.map((event, i) => (
               <li data-reveal style={`--reveal-delay:${i * 120}ms`}>
-                <EventCard event={event} lang={lang} />
+                <EventRow event={event} lang={lang} />
               </li>
             ))}
           </ul>

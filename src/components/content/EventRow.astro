@@ -1,0 +1,264 @@
+---
+/**
+ * Wide, horizontal agenda card for the homepage, shown one per row under the spotlight
+ * banner: a deep blue date panel on one side, larger text in the middle, the call to
+ * action at the end. Stacks on phones. Same rules as EventCard: selected external events
+ * name their organizer and link out to the organizer's page.
+ */
+import { Building, CalendarDays, ExternalLink, MapPin, MonitorPlay, Ticket } from '@lucide/astro';
+import type { EventEntry } from '@/lib/content';
+import { cityOf, isMatinEvent, slugOf } from '@/lib/content';
+import { baseLang, href as link, type UiLang } from '@/i18n/routes';
+import { useTranslations, pick } from '@/i18n/ui';
+import { dateBadge, formatWhen } from '@/lib/dates';
+
+interface Props {
+  event: EventEntry;
+  lang: UiLang;
+}
+const { event, lang } = Astro.props;
+const t = useTranslations(lang);
+const d = event.data;
+const tz = d.timeZone;
+const ours = isMatinEvent(event);
+const href = ours ? link('events', lang, slugOf(event, baseLang(lang))) : d.eventUrl;
+const start = dateBadge(event.startDate, lang, tz);
+const endBadge = d.end ? dateBadge(event.endDate, lang, tz) : undefined;
+// Show the end date in the panel only when the event runs over several days.
+const end = endBadge && (endBadge.day !== start.day || endBadge.month !== start.month) ? endBadge : undefined;
+const clean = (m: string) => m.replace('.', '');
+const price =
+  d.price.type === 'free'
+    ? t('events.free')
+    : d.price.type === 'paid'
+      ? pick(d.price.label, lang) || t('events.paid')
+      : t('events.priceUnknown');
+const place = [d.format !== 'online' && d.location?.name, cityOf(event, lang)]
+  .filter(Boolean)
+  .join(', ');
+const why = pick(d.whyItMatters, lang);
+---
+
+<article class="card card-lift event-row" data-event-end={event.endDate.toISOString()}>
+  <div class="event-row__date on-dark" aria-hidden="true">
+    <span class="event-row__day">{start.day}</span>
+    <span class="event-row__month">{clean(start.month)}</span>
+    {
+      end && (
+        <>
+          <span class="event-row__to" />
+          <span class="event-row__day">{end.day}</span>
+          <span class="event-row__month">{clean(end.month)}</span>
+        </>
+      )
+    }
+  </div>
+
+  <div class="event-row__body">
+    <div class="flex flex-wrap items-center gap-2">
+      <span class:list={['pill', ours ? 'pill--matin' : 'pill--selected']}>
+        {t(`agendaKinds.${d.kind}`)}
+      </span>
+      <span class="event-row__subject">{t(`agendaSubjects.${d.subject}`)}</span>
+    </div>
+    <h3 class="event-row__title">{pick(d.title, lang)}</h3>
+    <p class="event-row__summary">{pick(d.summary, lang)}</p>
+    {
+      why && (
+        <p class="event-row__why">
+          <strong>{t('events.whyItMatters')}</strong> {why}
+        </p>
+      )
+    }
+    <ul class="event-row__meta">
+      <li>
+        <CalendarDays size={19} aria-hidden="true" />
+        <time datetime={event.startDate.toISOString()}>
+          {formatWhen(event.startDate, d.end ? event.endDate : undefined, lang, {
+            allDay: d.allDay,
+            timeZone: tz,
+          })}
+        </time>
+      </li>
+      <li>
+        {d.format === 'online' ? (
+          <MonitorPlay size={19} aria-hidden="true" />
+        ) : (
+          <MapPin size={19} aria-hidden="true" />
+        )}
+        <span>{d.format === 'online' ? t('agendaFormats.online') : place}</span>
+      </li>
+      <li>
+        <Building size={19} aria-hidden="true" />
+        <span>
+          {t('events.organizedBy')} <strong>{d.organizer.name}</strong>
+        </span>
+      </li>
+      <li>
+        <Ticket size={19} aria-hidden="true" />
+        <span>{price}</span>
+      </li>
+    </ul>
+  </div>
+
+  {
+    href && (
+      <div class="event-row__action">
+        <a
+          href={href}
+          class="btn btn-primary"
+          target={ours ? undefined : '_blank'}
+          rel={ours ? undefined : 'noopener noreferrer'}
+        >
+          {ours ? t('events.details') : t('events.viewExternal')}
+          {!ours && <ExternalLink size={18} aria-hidden="true" />}
+          {!ours && <span class="sr-only">{t('a11y.externalLink')}</span>}
+        </a>
+      </div>
+    )
+  }
+</article>
+
+<style>
+  .event-row {
+    display: grid;
+    overflow: hidden;
+    border-inline-start: 6px solid var(--color-gold);
+  }
+  @media (min-width: 48rem) {
+    .event-row {
+      grid-template-columns: 11rem minmax(0, 1fr);
+    }
+  }
+  @media (min-width: 72rem) {
+    .event-row {
+      grid-template-columns: 12rem minmax(0, 1fr) auto;
+      align-items: stretch;
+    }
+  }
+
+  /* Deep blue date panel with large gold numbers. */
+  .event-row__date {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.6rem;
+    padding: 1.25rem;
+    background: var(--color-primary);
+    color: var(--color-cream);
+    text-align: center;
+  }
+  @media (min-width: 48rem) {
+    .event-row__date {
+      flex-direction: column;
+      gap: 0.15rem;
+      padding: 2rem 1rem;
+    }
+  }
+  .event-row__day {
+    font-size: clamp(2.25rem, 1.8rem + 1.5vw, 3.25rem);
+    font-weight: 800;
+    line-height: 1;
+    color: var(--color-gold);
+  }
+  .event-row__month {
+    font-size: 1rem;
+    font-weight: 800;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+  }
+  .event-row__to {
+    width: 1.5rem;
+    height: 2px;
+    margin: 0.35rem;
+    background: var(--color-turquoise);
+  }
+
+  .event-row__body {
+    display: flex;
+    flex-direction: column;
+    gap: 0.85rem;
+    padding: clamp(1.5rem, 1rem + 1.5vw, 2.25rem);
+  }
+  .event-row__subject {
+    font-size: 0.95rem;
+    font-weight: 800;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--color-primary);
+  }
+  .event-row__title {
+    font-size: clamp(1.5rem, 1.2rem + 1vw, 2rem);
+    font-weight: 800;
+    line-height: 1.2;
+    color: var(--color-primary);
+    text-wrap: balance;
+  }
+  .event-row__summary {
+    max-width: 75ch;
+    font-size: 1.15rem;
+    line-height: 1.65;
+  }
+  .event-row__why {
+    max-width: 75ch;
+    padding: 0.75rem 1rem;
+    border-radius: 0.75rem;
+    background: var(--color-tint);
+    font-size: 1.05rem;
+    line-height: 1.55;
+  }
+  .event-row__why strong {
+    color: var(--color-primary);
+  }
+  .event-row__meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem 1.75rem;
+    font-size: 1.05rem;
+  }
+  .event-row__meta li {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.5rem;
+  }
+  .event-row__meta :global(svg) {
+    flex-shrink: 0;
+    margin-top: 0.2rem;
+    color: var(--color-primary);
+  }
+
+  .event-row__action {
+    display: flex;
+    align-items: center;
+    padding: 0 clamp(1.5rem, 1rem + 1.5vw, 2.25rem) clamp(1.5rem, 1rem + 1.5vw, 2.25rem);
+  }
+  @media (min-width: 48rem) {
+    .event-row__action {
+      grid-column: 2;
+    }
+  }
+  @media (min-width: 72rem) {
+    .event-row__action {
+      grid-column: auto;
+      padding-block: 2rem;
+      padding-inline: 0 2.25rem;
+    }
+  }
+
+  .pill {
+    display: inline-block;
+    padding: 0.3rem 0.85rem;
+    border-radius: 999px;
+    font-size: 0.9rem;
+    font-weight: 700;
+    line-height: 1.4;
+  }
+  .pill--matin {
+    background: var(--color-primary);
+    color: var(--color-white);
+  }
+  .pill--selected {
+    background: var(--color-tint);
+    color: var(--color-primary);
+  }
+</style>
