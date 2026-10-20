@@ -91,7 +91,7 @@ const hasContact = Boolean(a || s.phone || s.email);
               {s.phone && (
                 <p class="flex gap-3">
                   <Phone size={18} class="mt-1 shrink-0 text-gold" aria-hidden="true" />
-                  <a href={`tel:${s.phone.replace(/[^\d+]/g, '')}`} class="footer-link">
+                  <a href={`tel:${s.phone.replace(/[^\d+]/g, '')}`} class="footer-link" dir="ltr">
                     {s.phone}
                   </a>
                 </p>
@@ -99,7 +99,7 @@ const hasContact = Boolean(a || s.phone || s.email);
               {s.email && (
                 <p class="flex gap-3">
                   <Mail size={18} class="mt-1 shrink-0 text-gold" aria-hidden="true" />
-                  <a href={`mailto:${s.email}`} class="footer-link break-all">
+                  <a href={`mailto:${s.email}`} class="footer-link break-all" dir="ltr">
                     {s.email}
                   </a>
                 </p>
