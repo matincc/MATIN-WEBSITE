@@ -1,11 +1,10 @@
 ---
 /**
- * About page, in this order: Who We Are, Our Mission, Our Vision, Our President,
- * Our values, Our story, Our team, A word from our President. The Persian page shows
- * the values, Our President and the team (the other texts have no Persian translation
- * yet) and links to the English page.
+ * About page, in this order: Who We Are, Our Mission, Our Vision, Our values, Our story,
+ * A word from our President. The Persian page shows the values (the other texts have no
+ * Persian translation yet) and links to the English page. The President's biography
+ * and the team are on the Our Team page (TeamPage.astro).
  */
-import { Image } from 'astro:assets';
 import {
   DoorOpen,
   HeartHandshake,
@@ -16,12 +15,11 @@ import {
   Users,
 } from '@lucide/astro';
 import PageLayout from '@/layouts/PageLayout.astro';
-import PresidentSection from '@/components/content/PresidentSection.astro';
 import SectionHeader from '@/components/ui/SectionHeader.astro';
 import { path, siteAlternates, type UiLang } from '@/i18n/routes';
 import { faAboutMore } from '@/i18n/fa';
 import { useTranslations, pick } from '@/i18n/ui';
-import { forLang, getSettings, getSingleton, getTeam, initials } from '@/lib/content';
+import { getSettings, getSingleton } from '@/lib/content';
 
 interface Props {
   lang: UiLang;
@@ -29,12 +27,7 @@ interface Props {
 const { lang } = Astro.props;
 const t = useTranslations(lang);
 const full = lang !== 'fa';
-const [settings, about, teamAll] = await Promise.all([
-  getSettings(),
-  getSingleton('about'),
-  getTeam(),
-]);
-const team = forLang(teamAll, lang);
+const [settings, about] = await Promise.all([getSettings(), getSingleton('about')]);
 
 // Same accents as the Mission / Vision / Values links on the homepage.
 const blocks = [
@@ -88,8 +81,6 @@ const president = about.president;
     </div>
   )}
 
-  {full && <PresidentSection lang={lang} />}
-
   <!-- Our values -->
   <section id="values" class="scroll-mt-24 bg-tint py-20" aria-labelledby="values-title">
     <div class="container-site">
@@ -122,59 +113,6 @@ const president = about.president;
     </section>
   )}
 
-  {!full && (
-    <>
-      <PresidentSection lang={lang} />
-      <!-- Our team: published members only; hidden while there are none -->
-      {team.length > 0 && (
-        <section id="team" class="scroll-mt-24 bg-tint py-20" aria-labelledby="team-title">
-          <div class="container-site">
-            <SectionHeader align="start" id="team-title" title={t('about.team')} />
-            <ul class="team-grid">
-              {team.map((m) => (
-                <li class="card team-card">
-                  {m.data.photo ? (
-                    <Image
-                      src={m.data.photo}
-                      alt={t('about.presidentPhotoAlt', { name: m.data.name })}
-                      width={480}
-                      height={480}
-                      class="team-card__photo"
-                    />
-                  ) : (
-                    <span class="team-card__photo team-card__initials" aria-hidden="true">
-                      {initials(m.data.name)}
-                    </span>
-                  )}
-                  <div class="flex flex-1 flex-col gap-2 p-6">
-                    <h3 class="text-xl font-bold">{m.data.name}</h3>
-                    <p class="font-semibold text-gold-dark">{pick(m.data.role, lang)}</p>
-                    {m.data.bio && pick(m.data.bio, lang) && (
-                      <p class="text-[0.97rem] leading-relaxed">{pick(m.data.bio, lang)}</p>
-                    )}
-                    {m.data.linkedin && (
-                      <a
-                        href={m.data.linkedin}
-                        class="link-arrow mt-auto pt-2"
-                        target="_blank"
-                        rel="noopener noreferrer"
-                      >
-                        LinkedIn
-                        <span class="sr-only">
-                          {t('about.onLinkedin', { name: m.data.name })} {t('a11y.externalLink')}
-                        </span>
-                      </a>
-                    )}
-                  </div>
-                </li>
-              ))}
-            </ul>
-          </div>
-        </section>
-      )}
-    </>
-  )}
-
   {full && (
     <>
       <!-- Our story -->
@@ -192,54 +130,6 @@ const president = about.president;
           ))}
         </ol>
       </section>
-
-      <!-- Our team: published members only; hidden while there are none -->
-      {team.length > 0 && (
-        <section id="team" class="scroll-mt-24 bg-tint py-20" aria-labelledby="team-title">
-          <div class="container-site">
-            <SectionHeader align="start" id="team-title" title={t('about.team')} />
-            <ul class="team-grid">
-              {team.map((m) => (
-                <li class="card team-card">
-                  {m.data.photo ? (
-                    <Image
-                      src={m.data.photo}
-                      alt={t('about.presidentPhotoAlt', { name: m.data.name })}
-                      width={480}
-                      height={480}
-                      class="team-card__photo"
-                    />
-                  ) : (
-                    <span class="team-card__photo team-card__initials" aria-hidden="true">
-                      {initials(m.data.name)}
-                    </span>
-                  )}
-                  <div class="flex flex-1 flex-col gap-2 p-6">
-                    <h3 class="text-xl font-bold">{m.data.name}</h3>
-                    <p class="font-semibold text-gold-dark">{pick(m.data.role, lang)}</p>
-                    {m.data.bio && pick(m.data.bio, lang) && (
-                      <p class="text-[0.97rem] leading-relaxed">{pick(m.data.bio, lang)}</p>
-                    )}
-                    {m.data.linkedin && (
-                      <a
-                        href={m.data.linkedin}
-                        class="link-arrow mt-auto pt-2"
-                        target="_blank"
-                        rel="noopener noreferrer"
-                      >
-                        LinkedIn
-                        <span class="sr-only">
-                          {t('about.onLinkedin', { name: m.data.name })} {t('a11y.externalLink')}
-                        </span>
-                      </a>
-                    )}
-                  </div>
-                </li>
-              ))}
-            </ul>
-          </div>
-        </section>
-      )}
 
       <!-- A word from our President: the only section allowed its deep teal background. -->
       <section
@@ -358,37 +248,6 @@ const president = about.president;
     line-height: 1.3;
     letter-spacing: 0.16em;
     color: var(--color-gold);
-  }
-  /* Team: up to three per row, the same square portrait and card height for everyone. */
-  .team-grid {
-    display: grid;
-    gap: 1.5rem;
-    grid-template-columns: repeat(auto-fill, minmax(15rem, 1fr));
-  }
-  @media (min-width: 1024px) {
-    .team-grid {
-      grid-template-columns: repeat(3, minmax(0, 1fr));
-    }
-  }
-  .team-card {
-    display: flex;
-    flex-direction: column;
-    height: 100%;
-    overflow: hidden;
-  }
-  .team-card__photo {
-    display: block;
-    width: 100%;
-    aspect-ratio: 1;
-    object-fit: cover;
-  }
-  .team-card__initials {
-    display: grid;
-    place-items: center;
-    font-size: 3rem;
-    font-weight: 700;
-    color: var(--color-primary);
-    background: var(--color-cream);
   }
   /* Round badge: cream circle with a thin gold border. */
   .badge {

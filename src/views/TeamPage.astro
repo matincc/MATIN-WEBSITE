@@ -1,0 +1,157 @@
+---
+/**
+ * Our Team (French, English and Persian): the President (portrait and biography, from
+ * src/content/about/about.yaml) and the team. Team members are the published entries
+ * in src/content/team/; until there are five, the remaining places are shown as empty
+ * cards with a simple woman or man silhouette (no text), ready to be filled.
+ */
+import { Image } from 'astro:assets';
+import PageLayout from '@/layouts/PageLayout.astro';
+import PresidentSection from '@/components/content/PresidentSection.astro';
+import PersonSilhouette from '@/components/content/PersonSilhouette.astro';
+import SectionHeader from '@/components/ui/SectionHeader.astro';
+import { siteAlternates, type UiLang } from '@/i18n/routes';
+import { useTranslations, pick } from '@/i18n/ui';
+import { forLang, getTeam, initials } from '@/lib/content';
+
+interface Props {
+  lang: UiLang;
+}
+const { lang } = Astro.props;
+const t = useTranslations(lang);
+const team = forLang(await getTeam(), lang);
+
+// Five places in all: members first, then empty silhouettes.
+const SLOTS = 5;
+const accents = ['coral', 'mustard', 'teal', 'terracotta', 'navy'];
+const figures = ['woman', 'man', 'woman', 'man', 'woman'] as const;
+const empty = Array.from({ length: Math.max(0, SLOTS - team.length) }, (_, i) => {
+  const n = team.length + i;
+  return { accent: accents[n % accents.length], figure: figures[n % figures.length] };
+});
+---
+
+<PageLayout lang={lang} title={t('nav.team')} alternates={siteAlternates('team')}>
+  <PresidentSection lang={lang} />
+
+  <section id="team" class="section-pad scroll-mt-24" aria-labelledby="team-title">
+    <div class="container-site">
+      <SectionHeader id="team-title" title={t('nav.teamMembers')} align="start" class="mb-10" />
+      <ul class="team-grid">
+        {team.map((m, i) => (
+          <li class="card team-card" data-accent={accents[i % accents.length]}>
+            {m.data.photo ? (
+              <Image
+                src={m.data.photo}
+                alt={t('about.presidentPhotoAlt', { name: m.data.name })}
+                width={480}
+                height={480}
+                class="team-card__photo"
+              />
+            ) : (
+              <span class="team-card__photo team-card__initials" aria-hidden="true">
+                {initials(m.data.name)}
+              </span>
+            )}
+            <div class="flex flex-1 flex-col gap-2 p-6">
+              <h3 class="text-xl font-bold">{m.data.name}</h3>
+              <p class="font-semibold text-gold-dark">{pick(m.data.role, lang)}</p>
+              {m.data.bio && pick(m.data.bio, lang) && (
+                <p class="text-[0.97rem] leading-relaxed">{pick(m.data.bio, lang)}</p>
+              )}
+              {m.data.linkedin && (
+                <a
+                  href={m.data.linkedin}
+                  class="link-arrow mt-auto pt-2"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  LinkedIn
+                  <span class="sr-only">
+                    {t('about.onLinkedin', { name: m.data.name })} {t('a11y.externalLink')}
+                  </span>
+                </a>
+              )}
+            </div>
+          </li>
+        ))}
+        {empty.map((slot) => (
+          <li class="team-card team-card--empty" data-accent={slot.accent} aria-hidden="true">
+            <span class="team-card__photo team-card__silhouette">
+              <PersonSilhouette figure={slot.figure} />
+            </span>
+            <span class="team-card__lines">
+              <span />
+              <span />
+            </span>
+          </li>
+        ))}
+      </ul>
+    </div>
+  </section>
+</PageLayout>
+
+<style>
+  /* Five across on wide screens; the same square portrait and height for everyone. */
+  .team-grid {
+    display: grid;
+    gap: 1.5rem;
+    grid-template-columns: repeat(auto-fill, minmax(min(100%, 14rem), 1fr));
+  }
+  @media (min-width: 80rem) {
+    .team-grid {
+      grid-template-columns: repeat(5, minmax(0, 1fr));
+    }
+  }
+  .team-card {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    overflow: hidden;
+    border-block-start: 5px solid var(--accent);
+  }
+  .team-card__photo {
+    display: block;
+    width: 100%;
+    aspect-ratio: 1;
+    object-fit: cover;
+  }
+  .team-card__initials {
+    display: grid;
+    place-items: center;
+    font-size: 3rem;
+    font-weight: 700;
+    color: var(--color-primary);
+    background: var(--color-cream);
+  }
+  /* An empty place: dashed outline, the accent's light wash and a silhouette. */
+  .team-card--empty {
+    border: 2px dashed color-mix(in srgb, var(--accent) 55%, var(--color-white));
+    border-block-start: 5px solid var(--accent);
+    border-radius: var(--radius-card);
+    background: var(--color-white);
+  }
+  .team-card__silhouette {
+    padding: 1.5rem 1.5rem 0;
+    background: color-mix(in srgb, var(--accent) 16%, var(--color-white));
+  }
+  /* Two soft bars where the name and role will go. */
+  .team-card__lines {
+    display: grid;
+    gap: 0.6rem;
+    padding: 1.4rem 1.5rem 1.6rem;
+  }
+  .team-card__lines > span {
+    display: block;
+    height: 0.8rem;
+    border-radius: 999px;
+    background: color-mix(in srgb, var(--color-primary) 10%, var(--color-white));
+  }
+  .team-card__lines > span:first-child {
+    width: 75%;
+    height: 1rem;
+  }
+  .team-card__lines > span:last-child {
+    width: 50%;
+  }
+</style>

@@ -6,7 +6,7 @@ import SocialLinks from '@/components/ui/SocialLinks.astro';
 import NewsletterForm from '@/components/forms/NewsletterForm.astro';
 import { href, type RouteKey, type UiLang } from '@/i18n/routes';
 import { useTranslations, pick } from '@/i18n/ui';
-import { emptySections, forLang, getSettings, getTeam } from '@/lib/content';
+import { emptySections, getSettings } from '@/lib/content';
 
 interface Props {
   lang: UiLang;
@@ -18,10 +18,10 @@ const s = await getSettings();
 
 // Pages without content yet (empty gallery, FAQ…) are left out rather than linked.
 const empty = await emptySections();
-const hasTeam = forLang(await getTeam(), lang).length > 0;
 const explore = (
   [
     'about',
+    'team',
     'events',
     'news',
     'programs',
@@ -33,7 +33,6 @@ const explore = (
   ] as RouteKey[]
 ).filter((k) => !empty.has(k as 'gallery' | 'faq' | 'resources'));
 const links = explore.map((key) => ({ href: href(key, lang), label: t(`nav.${key}`) }));
-if (hasTeam) links.splice(1, 0, { href: `${href('about', lang)}#team`, label: t('nav.team') });
 const legal: RouteKey[] = ['privacy', 'terms', 'accessibility'];
 const year = new Intl.NumberFormat(lang === 'fa' ? 'fa-IR' : 'en-CA', {
   useGrouping: false,
