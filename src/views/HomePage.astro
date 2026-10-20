@@ -136,7 +136,8 @@ const whoCards = [
         align="start"
         class="mb-10"
       />
-      {(upcoming.length > 0 || spotlight) && (
+      {/* The key is only useful (and only true) when Matin's own events are listed. */}
+      {[...upcoming, ...(spotlight ? [spotlight] : [])].some(isMatinEvent) && (
         <ul class="agenda-legend" aria-hidden="true">
           <li>
             <span class="agenda-legend__swatch is-matin" />

@@ -73,9 +73,9 @@ const pathways = [
           </span>
           <h3 class="path-card__title">{p.title}</h3>
           <p class="text-[1.0625rem] leading-relaxed">{p.text}</p>
-          <a href={p.href} class="link-arrow path-card__cta mt-auto">
+          <a href={p.href} class="path-card__btn mt-auto">
             {p.cta}
-            <ArrowRight size={18} class="flip-rtl" aria-hidden="true" />
+            <ArrowRight size={22} class="flip-rtl" aria-hidden="true" />
           </a>
         </li>
       ))}
@@ -153,7 +153,47 @@ const pathways = [
     font-weight: 800;
     line-height: 1.25;
   }
-  .path-card__cta {
-    font-size: 1.0625rem;
+  /* Large button in the card's own colour and shape, like the icon tile above it
+     (owner's request). Text is large and extra bold, so navy on coral (3.5:1) and
+     white on teal (3.9:1) meet the contrast rule for large text. */
+  .path-card__btn {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.75rem;
+    min-height: 3.75rem;
+    margin-block-start: 0.5rem;
+    padding: 0.85rem 1.35rem;
+    border-radius: 1rem;
+    background: var(--accent);
+    color: var(--color-primary);
+    font-family: var(--font-display);
+    font-size: 1.25rem;
+    font-weight: 800;
+    line-height: 1.25;
+    text-decoration: none;
+    transition:
+      transform 0.2s,
+      box-shadow 0.2s;
+  }
+  [data-accent='teal'] .path-card__btn {
+    color: var(--color-white);
+  }
+  .path-card__btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 22px -12px color-mix(in srgb, var(--accent) 80%, black);
+  }
+  .path-card__btn:active {
+    transform: none;
+  }
+  .path-card__btn :global(svg) {
+    flex-shrink: 0;
+    transition: transform 0.2s;
+  }
+  .path-card__btn:hover :global(svg) {
+    transform: translateX(3px);
+  }
+  :global([dir='rtl']) .path-card__btn:hover :global(svg) {
+    transform: scaleX(-1) translateX(3px);
   }
 </style>
