@@ -1,0 +1,63 @@
+---
+/**
+ * A quiet Montréal silhouette for the footer: Mont-Royal, the downtown towers, the
+ * inclined tower of the Olympic Stadium and the Jacques-Cartier Bridge. Flat shapes in a
+ * light tone of the background colour, drawn on one baseline. Decorative only.
+ */
+interface Props {
+  class?: string;
+}
+const { class: className = '' } = Astro.props;
+---
+
+<div class:list={['skyline', className]} aria-hidden="true">
+  <svg viewBox="0 0 1440 140" preserveAspectRatio="xMidYMax slice" focusable="false">
+    <!-- Mont-Royal behind the city -->
+    <path
+      class="skyline__far"
+      d="M0 140 V118 C120 104 210 76 330 64 C430 54 520 70 600 92 C660 108 700 112 760 114 V140 Z"
+    ></path>
+    <!-- Downtown towers -->
+    <g class="skyline__near">
+      <rect x="250" y="86" width="34" height="54"></rect>
+      <rect x="292" y="66" width="30" height="74"></rect>
+      <!-- 1000 De La Gauchetière: copper pyramid top -->
+      <path d="M332 140 V52 L350 34 L368 52 V140 Z"></path>
+      <!-- Place Ville Marie: cruciform slab -->
+      <rect x="378" y="58" width="44" height="82"></rect>
+      <rect x="388" y="50" width="24" height="8"></rect>
+      <rect x="432" y="74" width="26" height="66"></rect>
+      <rect x="466" y="44" width="30" height="96"></rect>
+      <rect x="504" y="80" width="34" height="60"></rect>
+      <rect x="546" y="62" width="26" height="78"></rect>
+      <rect x="580" y="94" width="40" height="46"></rect>
+      <rect x="628" y="84" width="24" height="56"></rect>
+      <!-- Olympic Stadium: shell and inclined tower -->
+      <path d="M860 140 C880 112 960 104 1010 112 C1030 116 1040 124 1046 140 Z"></path>
+      <path d="M1000 140 L1012 140 L1062 58 L1054 54 Z"></path>
+      <!-- Jacques-Cartier Bridge -->
+      <path d="M1120 128 H1440 V132 H1120 Z M1180 128 L1215 92 L1250 128 Z M1250 128 L1285 92 L1320 128 Z"></path>
+      <rect x="1212" y="92" width="6" height="40"></rect>
+      <rect x="1282" y="92" width="6" height="40"></rect>
+    </g>
+  </svg>
+</div>
+
+<style>
+  .skyline {
+    height: clamp(3.5rem, 2rem + 4vw, 6rem);
+    overflow: hidden;
+  }
+  .skyline svg {
+    display: block;
+    width: 100%;
+    height: 100%;
+  }
+  /* Light tints of the cream on navy, so the band stays calm. */
+  .skyline__far {
+    fill: color-mix(in srgb, var(--color-cream) 7%, var(--color-primary));
+  }
+  .skyline__near {
+    fill: color-mix(in srgb, var(--color-cream) 13%, var(--color-primary));
+  }
+</style>

@@ -8,14 +8,21 @@
  */
 import { Picture } from 'astro:assets';
 import {
+  BookOpen,
   Building,
+  MapPinned,
   CalendarDays,
   ExternalLink,
+  Landmark,
   Languages,
   MapPin,
+  MessagesSquare,
   MonitorPlay,
+  Palette,
   Ticket,
+  Users,
 } from '@lucide/astro';
+import DialogueArt from '@/components/brand/DialogueArt.astro';
 import type { EventEntry } from '@/lib/content';
 import { cityOf, isMatinEvent, slugOf } from '@/lib/content';
 import { baseLang, href as link, type UiLang } from '@/i18n/routes';
@@ -59,6 +66,16 @@ const accents = {
   research: 'navy',
 } as const;
 const accent = accents[d.subject] ?? 'navy';
+// Without an event image, the card opens with the dialogue motif and the subject's icon.
+const subjectIcons = {
+  dialogue: MessagesSquare,
+  community: Users,
+  arts: Palette,
+  cities: MapPinned,
+  policy: Landmark,
+  research: BookOpen,
+} as const;
+const SubjectIcon = subjectIcons[d.subject] ?? MessagesSquare;
 ---
 
 <article
@@ -69,6 +86,13 @@ const accent = accents[d.subject] ?? 'navy';
   data-accent={accent}
   data-event-end={event.endDate.toISOString()}
 >
+  {!d.image && (
+    <DialogueArt accent={accent} seed={event.id} class="agenda-image agenda-image--art">
+      <span class="agenda-art-icon">
+        <SubjectIcon size={30} stroke-width={1.6} aria-hidden="true" />
+      </span>
+    </DialogueArt>
+  )}
   {d.image && (
     <div class="agenda-image">
       <Picture
@@ -186,6 +210,23 @@ const accent = accents[d.subject] ?? 'navy';
     margin: -1.75rem -1.75rem 0.25rem;
     aspect-ratio: 16 / 9;
     overflow: hidden;
+  }
+  .agenda-card :global(.agenda-image--art) {
+    margin: -1.75rem -1.75rem 0.25rem;
+    height: clamp(8rem, 6rem + 4vw, 10rem);
+  }
+  .agenda-art-icon {
+    position: absolute;
+    inset: 0;
+    display: grid;
+    place-items: center;
+  }
+  .agenda-art-icon :global(svg) {
+    box-sizing: content-box;
+    padding: 0.9rem;
+    border-radius: 50%;
+    background: var(--color-white);
+    color: var(--color-primary);
   }
   .agenda-image :global(img) {
     display: block;

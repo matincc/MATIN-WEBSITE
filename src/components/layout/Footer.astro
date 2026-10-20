@@ -1,7 +1,7 @@
 ---
 import { MapPin, Phone, Mail, Clock } from '@lucide/astro';
 import Lockup from '@/components/brand/Lockup.astro';
-import LeafRule from '@/components/brand/LeafRule.astro';
+import MontrealSkyline from '@/components/brand/MontrealSkyline.astro';
 import SocialLinks from '@/components/ui/SocialLinks.astro';
 import NewsletterForm from '@/components/forms/NewsletterForm.astro';
 import { href, type RouteKey, type UiLang } from '@/i18n/routes';
@@ -78,7 +78,7 @@ const hasContact = Boolean(a || s.phone || s.email);
     </nav>
 
     {(hasContact || s.hours) && (
-      <div class="lg:col-span-3">
+      <div class:list={[showNewsletter ? 'lg:col-span-2' : 'lg:col-span-3']}>
         {hasContact && (
           <>
             <h2 class="footer-title">{t('footer.contactTitle')}</h2>
@@ -140,34 +140,35 @@ const hasContact = Boolean(a || s.phone || s.email);
     )}
   </div>
 
-  <div class="container-site">
-    <LeafRule class="mx-auto max-w-none" />
-  </div>
-  <div class="container-site flex flex-col gap-4 py-7 text-[0.9375rem] md:flex-row md:items-center md:justify-between">
-    <p>
-      © {year} {t('meta.siteName')}. {t('footer.rights')}
-      {s.charityNumber && (
-        <span class="block md:inline">
-          {t('footer.charity')} {s.charityNumber}
-        </span>
-      )}
-    </p>
-    <nav aria-label={t('a11y.legalNav')}>
-      <ul class="flex flex-wrap gap-x-5 gap-y-2">
-        {legal.map((key) => (
+  <!-- Montréal on the horizon: the city stands on the copyright bar. -->
+  <MontrealSkyline class="mt-4" />
+  <div class="footer-base">
+    <div class="container-site flex flex-col gap-4 py-7 text-[0.9375rem] md:flex-row md:items-center md:justify-between">
+      <p>
+        © {year} {t('meta.siteName')}. {t('footer.rights')}
+        {s.charityNumber && (
+          <span class="block md:inline">
+            {t('footer.charity')} {s.charityNumber}
+          </span>
+        )}
+      </p>
+      <nav aria-label={t('a11y.legalNav')}>
+        <ul class="flex flex-wrap gap-x-5 gap-y-2">
+          {legal.map((key) => (
+            <li>
+              <a href={href(key, lang)} class="footer-link">
+                {t(`nav.${key}`)}
+              </a>
+            </li>
+          ))}
           <li>
-            <a href={href(key, lang)} class="footer-link">
-              {t(`nav.${key}`)}
-            </a>
+            <button type="button" class="footer-link cursor-pointer" data-consent-open>
+              {t('consent.manage')}
+            </button>
           </li>
-        ))}
-        <li>
-          <button type="button" class="footer-link cursor-pointer" data-consent-open>
-            {t('consent.manage')}
-          </button>
-        </li>
-      </ul>
-    </nav>
+        </ul>
+      </nav>
+    </div>
   </div>
 </footer>
 
@@ -179,6 +180,10 @@ const hasContact = Boolean(a || s.phone || s.email);
   }
   .footer-mosaic > span {
     border-radius: 0;
+  }
+  /* Same tone as the skyline's buildings; white text stays above 9:1. */
+  .footer-base {
+    background: color-mix(in srgb, var(--color-cream) 13%, var(--color-primary));
   }
   .footer-title {
     font-family: var(--font-display);

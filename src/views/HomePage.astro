@@ -17,6 +17,7 @@ import ExpireEvents from '@/components/content/ExpireEvents.astro';
 import PostCard from '@/components/content/PostCard.astro';
 import NewsletterForm from '@/components/forms/NewsletterForm.astro';
 import PhotoCredit from '@/components/media/PhotoCredit.astro';
+import AreasGrid from '@/components/content/AreasGrid.astro';
 import { href, siteAlternates, type UiLang } from '@/i18n/routes';
 import { useTranslations } from '@/i18n/ui';
 import { forLang, getNews, getUpcomingEvents, isMatinEvent } from '@/lib/content';
@@ -48,22 +49,6 @@ const whoCards = [
   { id: 'values', label: t('nav.values'), icon: HeartHandshake, accent: 'teal' },
   // The Persian About page has the values section only.
 ].filter((c) => lang !== 'fa' || c.id === 'values');
-const areas = [
-  {
-    title: t('home.area1Title'),
-    text: t('home.area1Text'),
-    photo: photos.tamtams,
-    accent: 'coral',
-  },
-  {
-    title: t('home.area2Title'),
-    text: t('home.area2Text'),
-    photo: photos.streetart,
-    accent: 'mustard',
-  },
-  { title: t('home.area3Title'), text: t('home.area3Text'), photo: photos.library, accent: 'teal' },
-];
-const num = new Intl.NumberFormat(lang === 'fa' ? 'fa-IR' : 'en-CA', { minimumIntegerDigits: 2 });
 ---
 
 <BaseLayout
@@ -137,40 +122,7 @@ const num = new Intl.NumberFormat(lang === 'fa' ? 'fa-IR' : 'en-CA', { minimumIn
         align="start"
         class="mb-12 lg:mb-16"
       />
-      <ul class="areas-grid">
-        {areas.map((a, i) => (
-          <li data-reveal style={`--reveal-delay:${i * 130}ms`}>
-            <article class="area-card card-lift" data-accent={a.accent}>
-              <div class="area-card__media">
-                <Picture
-                  src={a.photo.src}
-                  alt=""
-                  formats={['avif', 'webp']}
-                  widths={[480, 720, 960]}
-                  sizes="(min-width: 64rem) 28rem, (min-width: 48rem) 45vw, 92vw"
-                  style={`object-position:${a.photo.focus}`}
-                />
-                <span class="area-card__num" aria-hidden="true">
-                  {num.format(i + 1)}
-                </span>
-                <PhotoCredit credit={a.photo.credit} variant="overlay" />
-              </div>
-              <div class="area-card__body">
-                <h3 class="area-card__title">
-                  <a href={href('programs', lang)} class="area-card__link">
-                    {a.title}
-                  </a>
-                </h3>
-                <p class="area-card__text">{a.text}</p>
-                <span class="area-card__cta" aria-hidden="true">
-                  {t('common.learnMore')}
-                  <ArrowRight size={18} class="flip-rtl" />
-                </span>
-              </div>
-            </article>
-          </li>
-        ))}
-      </ul>
+      <AreasGrid lang={lang} />
     </div>
   </section>
 
@@ -260,8 +212,21 @@ const num = new Intl.NumberFormat(lang === 'fa' ? 'fa-IR' : 'en-CA', { minimumIn
           />
         </div>
         <span class="involved__block" aria-hidden="true"></span>
+        <span class="involved__circle" aria-hidden="true">
+          <Picture
+            src={photos.drummers.src}
+            alt=""
+            formats={['avif', 'webp']}
+            widths={[240, 400, 560]}
+            sizes="(min-width: 64rem) 15rem, 9rem"
+            style={`object-position:${photos.drummers.focus}`}
+          />
+        </span>
         <figcaption>
-          <PhotoCredit credit={photos.nuitblanche.credit} class="involved__credit" />
+          <PhotoCredit
+            credits={[photos.nuitblanche.credit, photos.drummers.credit]}
+            class="involved__credit"
+          />
         </figcaption>
       </figure>
       <div class="involved__text">
@@ -439,131 +404,6 @@ const num = new Intl.NumberFormat(lang === 'fa' ? 'fa-IR' : 'en-CA', { minimumIn
     color: var(--accent-ink);
   }
 
-  /* ---------- Areas of work ---------- */
-  .areas-grid {
-    display: grid;
-    gap: 2rem;
-  }
-  @media (min-width: 48rem) and (max-width: 63.99rem) {
-    .areas-grid {
-      grid-template-columns: repeat(2, minmax(0, 1fr));
-    }
-    .areas-grid > li:last-child {
-      grid-column: 1 / -1;
-    }
-  }
-  @media (min-width: 64rem) {
-    .areas-grid {
-      grid-template-columns: repeat(3, minmax(0, 1fr));
-      gap: clamp(1.5rem, 0.5rem + 1.5vw, 2.5rem);
-    }
-    /* Editorial stagger: the middle card sits a little lower. */
-    .areas-grid > li:nth-child(2) {
-      margin-block-start: 3rem;
-    }
-  }
-  .area-card {
-    position: relative;
-    display: flex;
-    flex-direction: column;
-    height: 100%;
-    overflow: hidden;
-    border: 1px solid var(--color-line);
-    border-radius: var(--radius-card);
-    background: var(--color-white);
-  }
-  .area-card__media {
-    position: relative;
-    aspect-ratio: 4 / 3;
-    overflow: hidden;
-    border-block-end: 6px solid var(--accent);
-  }
-  .area-card__media :global(img) {
-    display: block;
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    transition: transform 0.7s cubic-bezier(0.2, 0.7, 0.2, 1);
-  }
-  .area-card:hover .area-card__media :global(img) {
-    transform: scale(1.05);
-  }
-  /* Large number on an accent tile (navy on coral/mustard is large text: 3.5:1 and 5.3:1;
-     on teal the number is white, 3.9:1, also large text). */
-  .area-card__num {
-    position: absolute;
-    inset-block-start: 1rem;
-    inset-inline-start: 1rem;
-    display: grid;
-    place-items: center;
-    min-width: 3.5rem;
-    height: 3.5rem;
-    padding-inline: 0.5rem;
-    border-radius: 0.9rem;
-    background: var(--accent);
-    color: var(--color-primary);
-    font-size: 1.5rem;
-    font-weight: 800;
-    line-height: 1;
-  }
-  [data-accent='teal'] .area-card__num {
-    color: var(--color-white);
-  }
-  .area-card__body {
-    display: flex;
-    flex: 1;
-    flex-direction: column;
-    gap: 1rem;
-    padding: clamp(1.75rem, 1.4rem + 1vw, 2.5rem);
-  }
-  .area-card__title {
-    font-size: clamp(1.4rem, 1.2rem + 0.6vw, 1.75rem);
-    font-weight: 800;
-    line-height: 1.2;
-    text-wrap: balance;
-  }
-  .area-card__link {
-    color: var(--color-primary);
-    text-decoration: none;
-  }
-  /* The whole card is clickable; the photo credit links stay above this layer. */
-  .area-card__link::after {
-    content: '';
-    position: absolute;
-    inset: 0;
-    z-index: 1;
-  }
-  .area-card__link:focus-visible {
-    outline: none;
-  }
-  .area-card:has(.area-card__link:focus-visible) {
-    outline: 3px solid var(--color-primary);
-    outline-offset: 3px;
-  }
-  .area-card__text {
-    font-size: 1.125rem;
-    line-height: 1.65;
-  }
-  .area-card__cta {
-    display: inline-flex;
-    align-items: center;
-    gap: 0.5rem;
-    margin-block-start: auto;
-    padding-block-start: 0.75rem;
-    font-weight: 800;
-    font-size: 1.0625rem;
-    color: var(--accent-ink);
-  }
-  .area-card__cta :global(svg) {
-    transition: transform 0.2s;
-  }
-  .area-card:hover .area-card__cta :global(svg) {
-    transform: translateX(4px);
-  }
-  :global([dir='rtl']) .area-card:hover .area-card__cta :global(svg) {
-    transform: scaleX(-1) translateX(4px);
-  }
-
   /* ---------- Events ---------- */
   .agenda-legend {
     display: flex;
@@ -640,6 +480,26 @@ const num = new Intl.NumberFormat(lang === 'fa' ? 'fa-IR' : 'en-CA', { minimumIn
     height: 55%;
     border-radius: var(--radius-card);
     background: var(--color-gold);
+  }
+  /* Daylight circle overlapping the night photo: a second, warmer view. */
+  .involved__circle {
+    position: absolute;
+    z-index: 2;
+    inset-block-start: -2rem;
+    inset-inline-end: -1rem;
+    width: clamp(8rem, 5rem + 7vw, 15rem);
+    aspect-ratio: 1;
+    overflow: hidden;
+    border: 6px solid var(--color-terracotta);
+    border-radius: 50%;
+    outline: 3px solid var(--color-gold);
+  }
+  .involved__circle :global(picture),
+  .involved__circle :global(img) {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
   }
   .involved__figure :global(.involved__credit) {
     position: relative;

@@ -17,12 +17,13 @@ These rules apply to every page, now and in the future. Read them before changin
 
 ## 2. Typography
 
-- **Nunito** (rounded, warm): the whole site, headings (bold) and body text, labels, buttons.
+- **Nunito** (rounded, warm), via `--font-display`: headings (extra bold), navigation, buttons, small-caps labels, links with arrows, the "Intercultural Institute" lockup text.
+- **DM Sans**, via `--font-sans`: body and reading text (400–500), forms, captions. Chosen in Oct 2026 after testing Nunito Sans, Plus Jakarta Sans, Manrope and Outfit on real pages: only Nunito keeps the soft, rounded character for headings; DM Sans reads best for long French text.
 - **Playfair Display, extra bold:** only the "Matin" wordmark (`Lockup.astro`, `Wordmark.astro`, via `--font-brand`), to match the logo.
 - **Playfair Display, bold italic:** only the homepage tagline "Cultures in Dialogue" (gold). Persian pages use Vazirmatn bold for it.
 - **Vazirmatn:** Persian pages.
 - All are self-hosted through `@fontsource` (imported in `src/styles/global.css`); the CSP blocks Google Fonts, so do not add a Google Fonts link.
-- Desktop sizes: small-caps label about 22px; hero headline about 88px; hero paragraph about 22px. Scale down smoothly on tablet and mobile with `clamp()` so nothing overflows.
+- Desktop sizes: small-caps label about 22px; hero headline about 88px (on split layouts it scales with the panel so "Intercultural" / "interculturel" never breaks); hero paragraph about 22px. Scale down smoothly on tablet and mobile with `clamp()` so nothing overflows.
 
 ## 3. Colors: the Matin color system
 
@@ -34,7 +35,7 @@ Navy and cream carry the identity. Coral, mustard, teal and terracotta are the "
 | --- | --- | --- |
 | `--matin-blue` | `#193A53` | Deep navy, primary brand color: headings, hero panel, footer, President band, main buttons, links, icons, small labels (tokens `primary`, `navy`) |
 | `--matin-cream` | `#F5EBDD` | Warm cream: alternate section backgrounds and page banners (tokens `tint`, `cream`) |
-| `--matin-paper` | `#FBF7F1` | Light warm paper: main page background (token `paper`) |
+| `--matin-paper` | `#FFFCF7` | Warm white: main page background (token `paper`) |
 | `--matin-gold` | `#D8A548` | Mustard gold: thin lines, maple leaves, the homepage tagline, the main button on navy (tokens `gold`, `mustard`) |
 | `--matin-coral` | `#D86C58` | Coral: shapes, stripes, icon tiles only, never text (token `coral`) |
 | `--matin-teal` | `#408C8D` | Teal: shapes, stripes, icon tiles; text only when large (token `teal`, alias `turquoise`) |
@@ -48,6 +49,7 @@ Navy and cream carry the identity. Coral, mustard, teal and terracotta are the "
 - Proportions: about 55% paper/white, 15% cream, 20% navy, 10% accents.
 - **Accent sets:** add `data-accent="coral|mustard|teal|terracotta|navy"` to a card or tile; it sets `--accent` (shapes, borders) and `--accent-ink` (text-safe label color). Homepage and About: Mission = coral, Vision = mustard, Values = teal; the three areas of work = coral, mustard, teal; event cards take the accent of their subject (`EventCard.astro`).
 - **Bands:** navy (`on-dark`: mustard labels, white titles, mustard main button with navy text), terracotta (`on-terracotta`) and teal-deep (`on-teal`): white text, cream labels, navy main button. Focus rings: mustard on navy, white on terracotta and teal-deep.
+- **Dialogue motif:** soft, translucent overlapping circles (`DialogueArt.astro`), the shapes of cultures meeting. It is the cover for any entry without a photo (`CoverArt.astro`: news, programs; event cards use it with the subject's icon), and the hero's two overlapping circular photos echo it. Flat colors only.
 - **Mosaic:** the four short color bars (`.mosaic`, coral · mustard · teal · terracotta) are the site's signature: hero panel, page banners, footer edge, newsletter panel. Decorative, `aria-hidden`.
 - **Mustard and coral are never text on paper, cream or white** (2.1 to 3.4:1, fails); teal only as large text. Use navy or the `-deep` variants for small labels, dates and icons.
 - The old `gold-dark` token maps to navy: use it (or `primary`) for small labels, dates and icons.
@@ -66,7 +68,8 @@ Navy and cream carry the identity. Coral, mustard, teal and terracotta are the "
 - **Highlighted event:** `spotlight: true` in an event's YAML file shows it as the large navy banner at the top of the homepage events section until it ends (one at a time).
 - **Section titles:** always use `src/components/ui/SectionHeader.astro`, with under the title a thin gold line on each side of a small gold maple leaf (`LeafRule.astro`, inline SVG). Page sections pass `align="start"`, which puts the title on the reading side with the lede or link beside it on wide screens; `align="center"` is kept for short, isolated headings.
 - **Inner page banners:** `PageLayout.astro`: cream band, breadcrumbs, large start-aligned title, lede beside it on wide screens, mosaic along the bottom edge.
-- **Photography:** authentic, documentary photos only; never artificial-looking corporate stock, and no food or party imagery. The homepage currently uses openly licensed Wikimedia Commons photos of Montréal (`src/lib/photos.ts`). They illustrate themes and are NOT presented as Matin activities: each is always shown with its credit (`PhotoCredit.astro`: author, licence and source links). Replace them with Matin's own photos as they become available. Decorative or illustrative photos use `alt=""`.
+- **Photography:** people first: authentic, candid, documentary photos, natural daylight where possible; never artificial-looking corporate stock, never identifiable politicians or public figures, and no food or party imagery. The site currently uses openly licensed Wikimedia Commons photos of Montréal's cultural life, all listed in `src/lib/photos.ts`. They illustrate themes and are NOT presented as Matin activities: each is always shown with its credit (`PhotoCredit.astro`: author, licence and source links). **To replace one** with a Matin photo, add the file to `src/assets/photos/`, point that entry's `src` at it and update its `credit`; every page using it follows. Illustrative photos use `alt=""`.
+- **Footer:** the four-color mosaic on top, a quiet Montréal skyline silhouette (`MontrealSkyline.astro`: Mont-Royal, downtown, the Olympic Stadium tower, the Jacques-Cartier Bridge) standing on the copyright bar.
 
 ## 5. Accessibility and responsiveness
 

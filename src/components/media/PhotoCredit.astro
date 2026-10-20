@@ -1,27 +1,35 @@
 ---
 /**
- * Credit line for a third-party photo: author · licence · source. Language-neutral
- * (names and licence codes only), always left-to-right. variant="overlay" sits on the
+ * Credit line for third-party photos: author · licence (linked to the source and the
+ * licence). Language-neutral (names and licence codes only), always left-to-right.
+ * Pass `credit` for one photo or `credits` for a collage. variant="overlay" sits on the
  * photo's corner; variant="caption" sits under it.
  */
 import type { Photo } from '@/lib/photos';
 
 interface Props {
-  credit: Photo['credit'];
+  credit?: Photo['credit'];
+  credits?: Photo['credit'][];
   variant?: 'overlay' | 'caption';
   class?: string;
 }
-const { credit, variant = 'caption', class: className = '' } = Astro.props;
+const { credit, credits, variant = 'caption', class: className = '' } = Astro.props;
+const list = credits ?? (credit ? [credit] : []);
 ---
 
 <p class:list={['photo-credit', `photo-credit--${variant}`, className]} dir="ltr" lang="en">
-  <a href={credit.source} target="_blank" rel="noopener noreferrer">
-    {credit.author}
-  </a>
-  <span aria-hidden="true">·</span>
-  <a href={credit.licenseUrl} target="_blank" rel="noopener noreferrer license">
-    {credit.license}
-  </a>
+  {list.map((c, i) => (
+    <span class="photo-credit__item">
+      {i > 0 && <span aria-hidden="true">/</span>}
+      <a href={c.source} target="_blank" rel="noopener noreferrer">
+        {c.author}
+      </a>
+      <span aria-hidden="true">·</span>
+      <a href={c.licenseUrl} target="_blank" rel="noopener noreferrer license">
+        {c.license}
+      </a>
+    </span>
+  ))}
 </p>
 
 <style>
@@ -33,7 +41,17 @@ const { credit, variant = 'caption', class: className = '' } = Astro.props;
     line-height: 1.4;
     letter-spacing: 0.01em;
   }
+  .photo-credit__item {
+    display: inline-flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0 0.4rem;
+  }
+  /* At least 24px tall so each small link is an easy target (WCAG 2.5.8). */
   .photo-credit a {
+    display: inline-flex;
+    align-items: center;
+    min-height: 1.5rem;
     color: inherit;
     text-decoration: underline;
     text-decoration-thickness: 1px;
@@ -50,7 +68,7 @@ const { credit, variant = 'caption', class: className = '' } = Astro.props;
     inset-inline-end: 0.6rem;
     z-index: 2;
     max-width: calc(100% - 1.2rem);
-    padding: 0.2rem 0.6rem;
+    padding: 0 0.6rem;
     border-radius: 999px;
     background: color-mix(in srgb, var(--color-primary) 88%, transparent);
     color: var(--color-white);
