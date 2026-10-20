@@ -3,6 +3,8 @@
  * Agenda card for every kind of event. Matin's own and co-organized events link to their
  * page on this site; selected external events name their organizer and link out to the
  * organizer's page (Matin never hosts registration for them).
+ * Colour: the top stripe, date block and subject label take the subject's accent; Matin's
+ * own events also get a navy outline and a solid navy label, selected events an outlined one.
  */
 import { Picture } from 'astro:assets';
 import {
@@ -48,10 +50,23 @@ const place = [
   .join(', ');
 const why = pick(d.whyItMatters, lang);
 const verified = d.lastVerified && formatDate(new Date(d.lastVerified), lang);
+const accents = {
+  dialogue: 'coral',
+  community: 'terracotta',
+  arts: 'mustard',
+  cities: 'teal',
+  policy: 'teal',
+  research: 'navy',
+} as const;
+const accent = accents[d.subject] ?? 'navy';
 ---
 
 <article
-  class:list={['card card-lift agenda-card', { 'is-cancelled': d.status === 'cancelled' }]}
+  class:list={[
+    'card card-lift agenda-card',
+    { 'is-cancelled': d.status === 'cancelled', 'is-matin': ours },
+  ]}
+  data-accent={accent}
   data-event-end={event.endDate.toISOString()}
 >
   {d.image && (
@@ -159,13 +174,18 @@ const verified = d.lastVerified && formatDate(new Date(d.lastVerified), lang);
     gap: 0.9rem;
     height: 100%;
     padding: 1.75rem;
+    overflow: hidden;
+    border-block-start: 6px solid var(--accent);
+  }
+  /* Matin's own and co-organized events: navy outline all around. */
+  .agenda-card.is-matin {
+    border: 2px solid var(--color-primary);
+    border-block-start: 6px solid var(--accent);
   }
   .agenda-image {
     margin: -1.75rem -1.75rem 0.25rem;
     aspect-ratio: 16 / 9;
     overflow: hidden;
-    border-start-start-radius: var(--radius-card);
-    border-start-end-radius: var(--radius-card);
   }
   .agenda-image :global(img) {
     display: block;
@@ -177,44 +197,46 @@ const verified = d.lastVerified && formatDate(new Date(d.lastVerified), lang);
   .agenda-card:hover .agenda-image :global(img) {
     transform: scale(1.05);
   }
+  /* Date block on a light wash of the subject's accent (navy text, 7:1 or more). */
   .date-badge {
     display: flex;
     flex-direction: column;
     align-items: center;
-    min-width: 4.25rem;
-    padding: 0.5rem 0.75rem;
-    border: 1px solid var(--color-line);
+    min-width: 5rem;
+    padding: 0.65rem 0.85rem;
     border-radius: 1rem;
-    background: var(--color-cream);
+    background: color-mix(in srgb, var(--accent) 20%, var(--color-white));
   }
   .date-badge__day {
-    font-size: 1.75rem;
-    font-weight: 700;
+    font-size: 2.25rem;
+    font-weight: 800;
     line-height: 1;
     color: var(--color-primary);
   }
   .date-badge__month {
-    margin-top: 0.25rem;
-    font-size: 0.75rem;
-    font-weight: 700;
+    margin-top: 0.3rem;
+    font-size: 0.8125rem;
+    font-weight: 800;
     letter-spacing: 0.14em;
     text-transform: uppercase;
     color: var(--color-primary);
   }
   .pill {
     display: inline-block;
-    padding: 0.25rem 0.75rem;
+    padding: 0.25rem 0.8rem;
     border-radius: 999px;
-    font-size: 0.85rem;
-    font-weight: 700;
+    font-size: 0.875rem;
+    font-weight: 800;
     line-height: 1.4;
   }
+  /* Solid navy with mustard text (5.3:1) for Matin; outlined for selected events. */
   .pill--matin {
     background: var(--color-primary);
-    color: var(--color-white);
+    color: var(--color-gold);
   }
   .pill--selected {
-    background: var(--color-tint);
+    border: 1.5px solid var(--color-primary);
+    background: var(--color-white);
     color: var(--color-primary);
   }
   .pill--status {
@@ -222,16 +244,16 @@ const verified = d.lastVerified && formatDate(new Date(d.lastVerified), lang);
     color: var(--color-ink);
   }
   .agenda-subject {
-    font-size: 0.85rem;
-    font-weight: 700;
+    font-size: 0.875rem;
+    font-weight: 800;
     letter-spacing: 0.1em;
     text-transform: uppercase;
-    color: var(--color-primary);
+    color: var(--accent-ink);
   }
   .agenda-title {
-    font-size: clamp(1.25rem, 1.15rem + 0.35vw, 1.4rem);
-    line-height: 1.3;
-    font-weight: 700;
+    font-size: clamp(1.35rem, 1.2rem + 0.45vw, 1.6rem);
+    line-height: 1.25;
+    font-weight: 800;
     text-wrap: balance;
   }
   .is-cancelled .agenda-title {
@@ -240,28 +262,33 @@ const verified = d.lastVerified && formatDate(new Date(d.lastVerified), lang);
   }
   .agenda-meta {
     display: grid;
-    gap: 0.4rem;
-    font-size: 0.95rem;
+    gap: 0.45rem;
+    font-size: 1rem;
     color: var(--color-ink);
   }
   .agenda-meta li {
     display: flex;
     align-items: flex-start;
-    gap: 0.55rem;
+    gap: 0.6rem;
+  }
+  /* Date and place first, in bold: what visitors scan for. */
+  .agenda-meta li:nth-child(-n + 2) {
+    font-weight: 700;
+    color: var(--color-primary);
   }
   .agenda-meta :global(svg) {
     flex-shrink: 0;
-    margin-top: 0.2rem;
+    margin-top: 0.25rem;
     color: var(--color-primary);
   }
   .agenda-summary {
-    font-size: 1rem;
+    font-size: 1.0625rem;
     line-height: 1.6;
   }
   .agenda-why {
     padding-inline-start: 0.9rem;
-    border-inline-start: 3px solid var(--color-gold);
-    font-size: 0.95rem;
+    border-inline-start: 3px solid var(--accent);
+    font-size: 1rem;
     line-height: 1.55;
   }
   .agenda-why strong {
@@ -275,7 +302,7 @@ const verified = d.lastVerified && formatDate(new Date(d.lastVerified), lang);
     font-size: 1rem;
   }
   .agenda-checked {
-    font-size: 0.8rem;
+    font-size: 0.85rem;
     color: var(--color-muted);
   }
 </style>

@@ -13,46 +13,61 @@
 @import '@fontsource-variable/vazirmatn/index.css';
 
 /*
- * Matin colour system. These six variables are the ONLY colours on the site (see
+ * Matin colour system. These variables are the ONLY colours on the site (see
  * CLAUDE.md). Everything else below points at them.
- * Proportions: about 60% cream/white, 25% blue, 10% teal, 5% gold.
+ * Navy and cream carry the identity; coral, mustard, teal and terracotta are the
+ * "cultures in dialogue" accents, used selectively (accents, cards, bands, shapes).
  */
 :root {
-  --matin-blue: #103b59; /* deep petroleum blue: headings, navigation, buttons, links, footer */
-  --matin-gold: #c69c46; /* warm gold: highlights, decorative lines, the hero tagline */
-  --matin-cream: #f7f3ea; /* soft warm cream: page and section backgrounds */
-  --matin-teal: #6ba8ac; /* secondary accent: tags, illustrations */
-  --matin-sand: #efe4d2; /* warm sand: alternate section backgrounds */
+  --matin-blue: #193a53; /* deep navy: headings, navigation, buttons, links, footer */
+  --matin-cream: #f5ebdd; /* warm cream: alternate section backgrounds */
+  --matin-paper: #fbf7f1; /* light warm paper: main page background */
+  --matin-gold: #d8a548; /* mustard gold: lines, maple leaves, the hero tagline, buttons on navy */
+  --matin-coral: #d86c58; /* coral: accents and shapes only (never small text) */
+  --matin-teal: #408c8d; /* teal: accents, shapes, large text only */
+  --matin-terracotta: #a95542; /* terracotta: warm bands with white text */
+  --matin-teal-deep: #2c6a6b; /* text-safe teal: labels and panels (5.3:1+ on cream) */
+  --matin-terracotta-deep: #9a4636; /* text-safe terracotta/coral: labels (5.4:1+ on cream) */
   --matin-ink: #293442; /* body text */
-  --matin-white: #ffffff; /* cards, text on blue */
+  --matin-white: #ffffff; /* cards, text on navy */
   --matin-red: #b33b42; /* maple red: sparingly, only for the Canadian brand identity */
 }
 
 /*
- * Tailwind tokens, all mapped onto the six variables above.
- * Contrast (checked): ink on cream 11.4, blue on cream 10.6, blue on white 11.7,
- * white on blue 11.7, gold on blue 4.6, maple red on white 5.8, ink/blue on tint 10+.
- * Gold and teal on cream or white are only 2.3 to 2.7, so they are never used for
- * small text there: labels, dates and icons use blue instead.
+ * Tailwind tokens, all mapped onto the variables above.
+ * Contrast (checked): ink on paper 11.8 / cream 10.7, navy on paper 11.1 / cream 10.1 /
+ * white 11.9, white on navy 11.9, mustard on navy 5.3, navy on mustard 5.3,
+ * white on terracotta 5.2, white on teal-deep 6.2, teal-deep on cream 5.3,
+ * terracotta-deep on cream 5.4.
+ * Mustard, coral and teal on paper, cream or white are only 2.1 to 3.9: never small
+ * text there. Labels, dates and icons use navy or the "-deep" variants instead.
  */
 @theme {
   --color-primary: var(--matin-blue);
+  --color-navy: var(--matin-blue);
   --color-gold: var(--matin-gold);
+  --color-mustard: var(--matin-gold);
   --color-cream: var(--matin-cream);
+  --color-paper: var(--matin-paper);
+  --color-coral: var(--matin-coral);
+  --color-teal: var(--matin-teal);
   --color-turquoise: var(--matin-teal);
+  --color-terracotta: var(--matin-terracotta);
+  --color-teal-deep: var(--matin-teal-deep);
+  --color-terracotta-deep: var(--matin-terracotta-deep);
   --color-ink: var(--matin-ink);
   --color-white: var(--matin-white);
   --color-maple: var(--matin-red);
-  /* Small labels, dates and icons that used to be dark gold: blue for contrast. */
+  /* Small labels, dates and icons that used to be dark gold: navy for contrast. */
   --color-gold-dark: var(--matin-blue);
   /* Secondary text uses the body ink too (no extra grey in the palette). */
   --color-muted: var(--matin-ink);
-  /* Warm sand: alternate section backgrounds. */
-  --color-tint: var(--matin-sand);
-  /* Card borders and dividers: light gold. */
-  --color-line: color-mix(in srgb, var(--matin-gold) 32%, var(--matin-white));
-  /* Primary button hover: slightly darker blue. */
-  --color-primary-hover: color-mix(in srgb, var(--matin-blue) 85%, black);
+  /* Warm cream: alternate section backgrounds. */
+  --color-tint: var(--matin-cream);
+  /* Card borders and dividers: light mustard. */
+  --color-line: color-mix(in srgb, var(--matin-gold) 30%, var(--matin-white));
+  /* Primary button hover: slightly darker navy. */
+  --color-primary-hover: color-mix(in srgb, var(--matin-blue) 82%, black);
 
   /* One rounded, warm typeface for the whole site: headings and body. */
   --font-display: 'Nunito Variable', system-ui, -apple-system, 'Segoe UI', sans-serif;
@@ -136,8 +151,8 @@
     }
   }
   body {
-    @apply bg-cream font-sans text-ink antialiased;
-    font-size: 1.0625rem;
+    @apply bg-paper font-sans text-ink antialiased;
+    font-size: 1.125rem;
     line-height: 1.7;
     text-rendering: optimizeLegibility;
   }
@@ -162,9 +177,14 @@
     outline-offset: 3px;
     border-radius: 4px;
   }
-  /* On blue sections (footer, President band) the ring is gold (4.7:1 on blue). */
+  /* On navy sections (footer, President band) the ring is mustard (5.3:1 on navy);
+     on terracotta and teal bands it is white (5.2:1 and 6.2:1). */
   .on-dark :focus-visible {
     outline-color: var(--color-gold);
+  }
+  .on-terracotta :focus-visible,
+  .on-teal :focus-visible {
+    outline-color: var(--color-white);
   }
   ::selection {
     background: var(--color-gold);
@@ -176,6 +196,10 @@
   .container-site {
     @apply mx-auto w-full max-w-[90rem] px-5 sm:px-8 lg:px-12;
   }
+  /* Vertical rhythm for full-width sections: generous on desktop, compact on phones. */
+  .section-pad {
+    padding-block: clamp(4rem, 2.6rem + 4.5vw, 7rem);
+  }
   /* Small-caps label in blue (gold text would fail contrast on cream). */
   .eyebrow {
     @apply font-sans font-bold text-gold-dark uppercase;
@@ -183,10 +207,66 @@
     letter-spacing: 0.14em;
   }
   .section-title {
-    @apply font-display text-3xl font-bold sm:text-4xl lg:text-[2.75rem];
+    @apply font-display font-extrabold;
+    font-size: clamp(2.125rem, 1.55rem + 2.1vw, 3.5rem);
+    line-height: 1.08;
+    letter-spacing: -0.01em;
   }
   .lede {
-    @apply text-lg text-muted;
+    @apply text-muted;
+    font-size: clamp(1.125rem, 1.05rem + 0.35vw, 1.3125rem);
+    line-height: 1.65;
+  }
+  /* Eyebrow tones (all text-safe on paper, cream and white). */
+  .eyebrow--terracotta {
+    color: var(--color-terracotta-deep);
+  }
+  .eyebrow--teal {
+    color: var(--color-teal-deep);
+  }
+  /* Signature "mosaic": four short colour bars, the cultures in dialogue. Decorative. */
+  .mosaic {
+    display: flex;
+    gap: 0.375rem;
+    height: 0.375rem;
+  }
+  .mosaic > span {
+    flex: 1;
+    border-radius: 999px;
+  }
+  .mosaic > span:nth-child(1) {
+    background: var(--color-coral);
+  }
+  .mosaic > span:nth-child(2) {
+    background: var(--color-gold);
+  }
+  .mosaic > span:nth-child(3) {
+    background: var(--color-teal);
+  }
+  .mosaic > span:nth-child(4) {
+    background: var(--color-terracotta);
+  }
+  /* Accent sets for cards and tiles: --accent (shapes, borders), --accent-ink (text-safe
+     label colour on paper/cream/white). */
+  [data-accent='coral'] {
+    --accent: var(--color-coral);
+    --accent-ink: var(--color-terracotta-deep);
+  }
+  [data-accent='mustard'] {
+    --accent: var(--color-gold);
+    --accent-ink: var(--color-primary);
+  }
+  [data-accent='teal'] {
+    --accent: var(--color-teal);
+    --accent-ink: var(--color-teal-deep);
+  }
+  [data-accent='terracotta'] {
+    --accent: var(--color-terracotta);
+    --accent-ink: var(--color-terracotta-deep);
+  }
+  [data-accent='navy'] {
+    --accent: var(--color-primary);
+    --accent-ink: var(--color-primary);
   }
   /* Buttons: primary = blue with white text (11.6:1), secondary = blue outline.
      Gold appears only as the hover border/underline accent. */
@@ -218,9 +298,38 @@
   .btn-outline {
     @apply border-[1.5px] border-gold bg-white text-primary hover:bg-cream;
   }
-  /* On blue sections: white button with blue text. */
-  .on-dark .btn-outline {
-    @apply border-gold bg-white text-primary hover:bg-cream;
+  /* On coloured bands: transparent button with a light border and white text. */
+  .on-dark .btn-outline,
+  .on-terracotta .btn-outline,
+  .on-teal .btn-outline {
+    border-color: color-mix(in srgb, var(--color-white) 70%, transparent);
+    background: transparent;
+    color: var(--color-white);
+  }
+  .on-dark .btn-outline:hover,
+  .on-terracotta .btn-outline:hover,
+  .on-teal .btn-outline:hover {
+    border-color: var(--color-white);
+    background: color-mix(in srgb, var(--color-white) 12%, transparent);
+  }
+  /* Terracotta and teal bands: white text, cream labels, navy main button. */
+  .on-terracotta,
+  .on-teal {
+    color: var(--color-white);
+  }
+  .on-terracotta .eyebrow,
+  .on-teal .eyebrow {
+    color: var(--color-cream);
+  }
+  .on-terracotta .section-title,
+  .on-teal .section-title,
+  .on-terracotta .lede,
+  .on-teal .lede {
+    color: var(--color-white);
+  }
+  .on-terracotta .btn-primary,
+  .on-teal .btn-primary {
+    @apply bg-primary text-white hover:bg-primary-hover;
   }
   /* Blue bands: gold label, white title, gold main button with blue text (4.6:1). */
   .on-dark .eyebrow {

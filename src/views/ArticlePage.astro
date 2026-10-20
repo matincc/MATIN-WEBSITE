@@ -114,9 +114,9 @@ const jsonLd = {
         />
       </div>
     )}
-    <Prose html={renderMarkdown(body, lang)} class="mx-auto max-w-2xl text-lg" />
+    <Prose html={renderMarkdown(body, lang)} class="mx-auto max-w-3xl text-lg" />
     {d.source && (
-      <aside class="mx-auto mt-10 max-w-2xl rounded-2xl border-s-4 border-gold bg-tint p-5 text-sm">
+      <aside class="mx-auto mt-10 max-w-3xl rounded-2xl border-s-4 border-gold bg-tint p-5 text-sm">
         <p class="mb-1 font-bold text-ink">{t('news.sourceIntro')}</p>
         <a
           href={d.source.url}
@@ -131,13 +131,13 @@ const jsonLd = {
       </aside>
     )}
     {d.tags.length > 0 && (
-      <ul class="mx-auto mt-10 flex max-w-2xl flex-wrap gap-2" aria-label={t('news.tags')}>
+      <ul class="mx-auto mt-10 flex max-w-3xl flex-wrap gap-2" aria-label={t('news.tags')}>
         {d.tags.map((tag) => (
           <li class="rounded-full border border-line px-3 py-1 text-sm text-muted">#{tag}</li>
         ))}
       </ul>
     )}
-    <aside class="get-involved card mx-auto mt-12 max-w-2xl p-6 sm:p-8">
+    <aside class="get-involved card mx-auto mt-12 max-w-3xl p-6 sm:p-8">
       <h2 class="mb-2 text-xl font-bold">{t('news.getInvolvedTitle')}</h2>
       <p class="mb-5">{t('news.getInvolvedText')}</p>
       <a href={href('getInvolved', lang)} class="btn btn-outline">
@@ -145,7 +145,7 @@ const jsonLd = {
         <ArrowRight size={18} class="flip-rtl" aria-hidden="true" />
       </a>
     </aside>
-    <div class="mx-auto mt-10 flex max-w-2xl flex-col gap-6 border-t border-line pt-6 sm:flex-row sm:items-center sm:justify-between">
+    <div class="mx-auto mt-10 flex max-w-3xl flex-col gap-6 border-t border-line pt-6 sm:flex-row sm:items-center sm:justify-between">
       <ShareButtons lang={lang} url={url} title={title} />
       <a href={href('news', lang)} class="link-arrow text-sm">
         <ArrowLeft size={18} class="flip-rtl" aria-hidden="true" />

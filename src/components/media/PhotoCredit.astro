@@ -1,0 +1,61 @@
+---
+/**
+ * Credit line for a third-party photo: author · licence · source. Language-neutral
+ * (names and licence codes only), always left-to-right. variant="overlay" sits on the
+ * photo's corner; variant="caption" sits under it.
+ */
+import type { Photo } from '@/lib/photos';
+
+interface Props {
+  credit: Photo['credit'];
+  variant?: 'overlay' | 'caption';
+  class?: string;
+}
+const { credit, variant = 'caption', class: className = '' } = Astro.props;
+---
+
+<p class:list={['photo-credit', `photo-credit--${variant}`, className]} dir="ltr" lang="en">
+  <a href={credit.source} target="_blank" rel="noopener noreferrer">
+    {credit.author}
+  </a>
+  <span aria-hidden="true">·</span>
+  <a href={credit.licenseUrl} target="_blank" rel="noopener noreferrer license">
+    {credit.license}
+  </a>
+</p>
+
+<style>
+  .photo-credit {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.35rem;
+    font-size: 0.75rem;
+    line-height: 1.4;
+    letter-spacing: 0.01em;
+  }
+  .photo-credit a {
+    color: inherit;
+    text-decoration: underline;
+    text-decoration-thickness: 1px;
+    text-underline-offset: 2px;
+  }
+  .photo-credit--caption {
+    margin-top: 0.6rem;
+    color: var(--color-ink);
+  }
+  /* Small navy chip on the photo (white on navy, 11.9:1). */
+  .photo-credit--overlay {
+    position: absolute;
+    inset-block-end: 0.6rem;
+    inset-inline-end: 0.6rem;
+    z-index: 2;
+    max-width: calc(100% - 1.2rem);
+    padding: 0.2rem 0.6rem;
+    border-radius: 999px;
+    background: color-mix(in srgb, var(--color-primary) 88%, transparent);
+    color: var(--color-white);
+  }
+  .photo-credit--overlay :focus-visible {
+    outline-color: var(--color-gold);
+  }
+</style>

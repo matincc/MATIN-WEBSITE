@@ -2,7 +2,7 @@
 /**
  * A slow-moving blue ribbon under the homepage hero: the word "dialogue" in many of the
  * languages spoken in Montréal, gold and cream on blue. Decorative motion only; screen
- * readers get one short description. It stops for visitors who prefer reduced motion.
+ * readers get one short description. Dots cycle through the coral, teal and mustard accents. It stops for visitors who prefer reduced motion.
  */
 import type { UiLang } from '@/i18n/routes';
 import { useTranslations } from '@/i18n/ui';
@@ -34,18 +34,16 @@ const words = [
 
 <div class="ribbon on-dark" role="img" aria-label={t('home.ribbonLabel')}>
   <div class="ribbon__track" aria-hidden="true">
-    {
-      [0, 1].map(() => (
-        <ul class="ribbon__list">
-          {words.map((w, i) => (
-            <li lang={w.lang} class:list={['ribbon__word', i % 2 ? 'is-cream' : 'is-gold']}>
-              {w.text}
-              <span class="ribbon__dot" />
-            </li>
-          ))}
-        </ul>
-      ))
-    }
+    {[0, 1].map(() => (
+      <ul class="ribbon__list">
+        {words.map((w, i) => (
+          <li lang={w.lang} class:list={['ribbon__word', i % 2 ? 'is-cream' : 'is-gold']}>
+            {w.text}
+            <span class:list={['ribbon__dot', `dot-${i % 3}`]} />
+          </li>
+        ))}
+      </ul>
+    ))}
   </div>
 </div>
 
@@ -86,10 +84,19 @@ const words = [
     color: var(--color-cream);
   }
   .ribbon__dot {
-    width: 0.45rem;
-    height: 0.45rem;
+    width: 0.5rem;
+    height: 0.5rem;
     border-radius: 50%;
-    background: var(--color-turquoise);
+  }
+  /* Decorative dots cycle through the accent colours. */
+  .dot-0 {
+    background: var(--color-coral);
+  }
+  .dot-1 {
+    background: var(--color-teal);
+  }
+  .dot-2 {
+    background: var(--color-gold);
   }
   @keyframes ribbon-scroll {
     to {

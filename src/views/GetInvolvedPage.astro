@@ -30,6 +30,7 @@ const pathways = [
     text: t('involved.pathIndividualText'),
     cta: t('involved.pathIndividualCta'),
     href: '#interest',
+    accent: 'coral',
   },
   {
     icon: Landmark,
@@ -37,6 +38,7 @@ const pathways = [
     text: t('involved.pathInstitutionalText'),
     cta: t('involved.pathInstitutionalCta'),
     href: '#interest',
+    accent: 'mustard',
   },
   {
     icon: Mail,
@@ -44,6 +46,7 @@ const pathways = [
     text: t('involved.pathConnectedText'),
     cta: t('involved.pathConnectedCta'),
     href: '#stay-connected',
+    accent: 'teal',
   },
 ];
 ---
@@ -56,28 +59,35 @@ const pathways = [
 >
   <!-- Pathways -->
   <section class="container-site pt-4 pb-16" aria-labelledby="paths-title">
-    <SectionHeader id="paths-title" title={t('involved.pathsTitle')} class="mb-10" />
+    <SectionHeader id="paths-title" title={t('involved.pathsTitle')} align="start" class="mb-10" />
     <ul class="grid gap-6 md:grid-cols-3">
-      {pathways.map((p) => (
-        <li class="card path-card">
-          <p.icon size={34} stroke-width={1.25} class="text-gold-dark" aria-hidden="true" />
-          <h3 class="text-xl leading-snug font-bold">{p.title}</h3>
-          <p>{p.text}</p>
-          <a href={p.href} class="link-arrow mt-auto">
+      {pathways.map((p, i) => (
+        <li
+          class="card path-card"
+          data-accent={p.accent}
+          data-reveal
+          style={`--reveal-delay:${i * 110}ms`}
+        >
+          <span class="path-card__icon" aria-hidden="true">
+            <p.icon size={30} stroke-width={1.6} />
+          </span>
+          <h3 class="path-card__title">{p.title}</h3>
+          <p class="text-[1.0625rem] leading-relaxed">{p.text}</p>
+          <a href={p.href} class="link-arrow path-card__cta mt-auto">
             {p.cta}
             <ArrowRight size={18} class="flip-rtl" aria-hidden="true" />
           </a>
         </li>
       ))}
     </ul>
-    <p class="mx-auto mt-8 max-w-3xl text-center text-sm text-muted">{t('involved.pathsNote')}</p>
+    <p class="mt-8 max-w-3xl text-[0.95rem] text-muted">{t('involved.pathsNote')}</p>
   </section>
 
   <!-- Interest -->
   <section id="interest" class="scroll-mt-24 bg-tint py-20" aria-labelledby="interest-title">
     <div class="container-site grid gap-10 lg:grid-cols-[1fr_1.3fr]">
       <div>
-        <SectionHeader id="interest-title" title={t('interest.title')} />
+        <SectionHeader align="start" id="interest-title" title={t('interest.title')} />
         <p class="-mt-4 text-lg leading-relaxed text-ink">{t('interest.intro')}</p>
       </div>
       <div class="card self-start p-6 sm:p-10">
@@ -93,6 +103,7 @@ const pathways = [
         <div class="container-site grid gap-12 lg:grid-cols-[1fr_1.15fr]">
           <div>
             <SectionHeader
+              align="start"
               id="volunteer-title"
               title={t('involved.volunteer')}
               lede={inv.volunteerIntro && pick(inv.volunteerIntro, lang)}
@@ -120,8 +131,29 @@ const pathways = [
   .path-card {
     display: flex;
     flex-direction: column;
-    gap: 0.85rem;
+    gap: 1rem;
     height: 100%;
-    padding: 2rem;
+    padding: clamp(1.75rem, 1.4rem + 1vw, 2.5rem);
+    border-block-start: 6px solid var(--accent);
+  }
+  .path-card__icon {
+    display: grid;
+    place-items: center;
+    width: 3.75rem;
+    height: 3.75rem;
+    border-radius: 1rem;
+    background: var(--accent);
+    color: var(--color-primary);
+  }
+  [data-accent='teal'] .path-card__icon {
+    color: var(--color-white);
+  }
+  .path-card__title {
+    font-size: clamp(1.35rem, 1.2rem + 0.5vw, 1.6rem);
+    font-weight: 800;
+    line-height: 1.25;
+  }
+  .path-card__cta {
+    font-size: 1.0625rem;
   }
 </style>

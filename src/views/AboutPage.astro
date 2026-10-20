@@ -36,11 +36,18 @@ const [settings, about, teamAll] = await Promise.all([
 ]);
 const team = forLang(teamAll, lang);
 
+// Same accents as the Mission / Vision / Values links on the homepage.
 const blocks = [
-  { id: 'who-we-are', title: t('about.whoWeAre'), text: t('home.whoText') },
-  { id: 'mission', title: t('about.mission'), text: pick(settings.mission, lang) },
-  { id: 'vision', title: t('about.vision'), text: pick(about.vision, lang) },
+  { id: 'who-we-are', title: t('about.whoWeAre'), text: t('home.whoText'), accent: 'navy' },
+  {
+    id: 'mission',
+    title: t('about.mission'),
+    text: pick(settings.mission, lang),
+    accent: 'coral',
+  },
+  { id: 'vision', title: t('about.vision'), text: pick(about.vision, lang), accent: 'mustard' },
 ];
+const valueAccents = ['coral', 'mustard', 'teal', 'terracotta'];
 
 // Thin-line icons, all drawn at the same size and stroke width.
 // Equity is four equal squares: never a scale, gavel or other legal symbol.
@@ -63,13 +70,19 @@ const president = about.president;
   alternates={siteAlternates('about')}
 >
   {full && (
-    <div class="container-site grid max-w-4xl gap-8 pb-20">
-      {blocks.map((b) => (
-        <section id={b.id} class="card scroll-mt-24 p-6 sm:p-12" aria-labelledby={`${b.id}-title`}>
-          <h2 id={`${b.id}-title`} class="mb-5 text-3xl font-bold sm:text-4xl">
+    <div class="container-site about-blocks pb-20">
+      {blocks.map((b, i) => (
+        <section
+          id={b.id}
+          class:list={['about-block scroll-mt-24', i === 0 && 'about-block--lead']}
+          data-accent={b.accent}
+          data-reveal
+          aria-labelledby={`${b.id}-title`}
+        >
+          <h2 id={`${b.id}-title`} class="about-block__title">
             {b.title}
           </h2>
-          <p class="text-lg leading-relaxed">{b.text}</p>
+          <p class="about-block__text">{b.text}</p>
         </section>
       ))}
     </div>
@@ -80,13 +93,15 @@ const president = about.president;
   <!-- Our values -->
   <section id="values" class="scroll-mt-24 bg-tint py-20" aria-labelledby="values-title">
     <div class="container-site">
-      <SectionHeader id="values-title" title={t('about.values')} />
+      <SectionHeader align="start" id="values-title" title={t('about.values')} />
       <ul class="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-        {about.values.map((v) => {
+        {about.values.map((v, i) => {
           const Icon = icons[v.icon];
           return (
-            <li class="card p-8">
-              <Icon size={40} stroke-width={1.25} class="mb-5 text-gold-dark" aria-hidden="true" />
+            <li class="card value-card p-8" data-accent={valueAccents[i % valueAccents.length]}>
+              <span class="value-card__icon" aria-hidden="true">
+                <Icon size={30} stroke-width={1.6} />
+              </span>
               <h3 class="mb-2 text-2xl font-bold">{pick(v.title, lang)}</h3>
               <p>{pick(v.text, lang)}</p>
             </li>
@@ -114,7 +129,7 @@ const president = about.president;
       {team.length > 0 && (
         <section id="team" class="scroll-mt-24 bg-tint py-20" aria-labelledby="team-title">
           <div class="container-site">
-            <SectionHeader id="team-title" title={t('about.team')} />
+            <SectionHeader align="start" id="team-title" title={t('about.team')} />
             <ul class="team-grid">
               {team.map((m) => (
                 <li class="card team-card">
@@ -164,7 +179,7 @@ const president = about.president;
     <>
       <!-- Our story -->
       <section id="story" class="container-site scroll-mt-24 py-20" aria-labelledby="history-title">
-        <SectionHeader id="history-title" title={t('about.history')} />
+        <SectionHeader align="start" id="history-title" title={t('about.history')} />
         <ol class="timeline">
           {about.history.map((h) => (
             <li class="timeline__item">
@@ -182,7 +197,7 @@ const president = about.president;
       {team.length > 0 && (
         <section id="team" class="scroll-mt-24 bg-tint py-20" aria-labelledby="team-title">
           <div class="container-site">
-            <SectionHeader id="team-title" title={t('about.team')} />
+            <SectionHeader align="start" id="team-title" title={t('about.team')} />
             <ul class="team-grid">
               {team.map((m) => (
                 <li class="card team-card">
@@ -258,7 +273,80 @@ const president = about.president;
 </PageLayout>
 
 <style>
-  /* Blue band like the footer; gold text on blue is 4.7:1. */
+  /* Who we are (wide lead), then Mission and Vision side by side on wide screens. */
+  .about-blocks {
+    display: grid;
+    gap: 1.75rem;
+  }
+  @media (min-width: 56rem) {
+    .about-blocks {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+    .about-block--lead {
+      grid-column: 1 / -1;
+    }
+  }
+  .about-block {
+    padding: clamp(1.75rem, 1.2rem + 2.2vw, 3.25rem);
+    border: 1px solid var(--color-line);
+    border-block-start: 6px solid var(--accent);
+    border-radius: var(--radius-card);
+    background: var(--color-white);
+  }
+  .about-block__title {
+    margin-block-end: 1.1rem;
+    font-size: clamp(1.75rem, 1.4rem + 1.2vw, 2.5rem);
+    font-weight: 800;
+  }
+  .about-block__text {
+    max-width: 44rem;
+    font-size: clamp(1.125rem, 1.05rem + 0.3vw, 1.25rem);
+    line-height: 1.7;
+  }
+  /* The lead block: navy band, larger type, white text (11.9:1). */
+  .about-block--lead {
+    display: grid;
+    gap: 1rem 4rem;
+    border: none;
+    background: var(--color-primary);
+    color: var(--color-cream);
+  }
+  @media (min-width: 64rem) {
+    .about-block--lead {
+      grid-template-columns: minmax(0, 1fr) minmax(0, 2fr);
+      align-items: start;
+    }
+  }
+  .about-block--lead .about-block__title {
+    color: var(--color-white);
+  }
+  .about-block--lead .about-block__title::after {
+    content: '';
+    display: block;
+    width: 4rem;
+    height: 3px;
+    margin-block-start: 1rem;
+    background: var(--color-gold);
+  }
+  .about-block--lead .about-block__text {
+    max-width: none;
+    font-size: clamp(1.25rem, 1.1rem + 0.6vw, 1.625rem);
+    line-height: 1.6;
+  }
+  .value-card {
+    border-block-start: 5px solid var(--accent);
+  }
+  .value-card__icon {
+    display: grid;
+    place-items: center;
+    width: 3.75rem;
+    height: 3.75rem;
+    margin-block-end: 1.25rem;
+    border-radius: 1rem;
+    background: color-mix(in srgb, var(--accent) 22%, var(--color-white));
+    color: var(--color-primary);
+  }
+  /* Navy band like the footer; mustard text on navy is 5.3:1. */
   .president {
     background: var(--color-primary);
   }
@@ -322,8 +410,7 @@ const president = about.president;
     position: relative;
     display: grid;
     gap: 2rem;
-    max-width: 56rem;
-    margin-inline: auto;
+    max-width: 64rem;
     padding-inline-start: 2rem;
   }
   .timeline::before {
@@ -333,7 +420,7 @@ const president = about.president;
     top: 0.5rem;
     bottom: 0.5rem;
     width: 2px;
-    background: var(--color-gold);
+    background: var(--color-teal);
   }
   .timeline__item {
     position: relative;
@@ -348,8 +435,8 @@ const president = about.president;
     width: 1rem;
     height: 1rem;
     border-radius: 999px;
-    background: var(--color-gold);
-    box-shadow: 0 0 0 4px var(--color-white);
+    background: var(--color-coral);
+    box-shadow: 0 0 0 4px var(--color-paper);
   }
   .timeline__year {
     font-family: var(--font-display);
