@@ -132,7 +132,7 @@ const why = pick(d.whyItMatters, lang);
   }
   @media (min-width: 72rem) {
     .event-row {
-      grid-template-columns: 12rem minmax(0, 1fr) auto;
+      grid-template-columns: 12rem minmax(0, 1fr) minmax(0, 17rem);
       align-items: stretch;
     }
   }
@@ -227,6 +227,9 @@ const why = pick(d.whyItMatters, lang);
     color: var(--color-primary);
   }
 
+  .event-row__action :global(.btn) {
+    text-align: center;
+  }
   .event-row__action {
     display: flex;
     align-items: center;
@@ -240,6 +243,7 @@ const why = pick(d.whyItMatters, lang);
   @media (min-width: 72rem) {
     .event-row__action {
       grid-column: auto;
+      justify-content: center;
       padding-block: 2rem;
       padding-inline: 0 2.25rem;
     }
