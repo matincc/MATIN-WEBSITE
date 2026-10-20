@@ -23,7 +23,7 @@ These rules apply to every page, now and in the future. Read them before changin
 - **Playfair Display, bold italic:** only the homepage tagline "Cultures in Dialogue" (gold). Persian pages use Vazirmatn bold for it.
 - **Vazirmatn:** Persian pages.
 - All are self-hosted through `@fontsource` (imported in `src/styles/global.css`); the CSP blocks Google Fonts, so do not add a Google Fonts link.
-- Desktop sizes: small-caps label about 22px; hero headline about 88px (on split layouts it scales with the panel so "Intercultural" / "interculturel" never breaks); hero paragraph about 22px. Scale down smoothly on tablet and mobile with `clamp()` so nothing overflows.
+- Desktop sizes: small-caps label about 22px; hero headline about 88px; hero paragraph about 22px. Scale down smoothly on tablet and mobile with `clamp()` so nothing overflows.
 
 ## 3. Colors: the Matin color system
 
@@ -33,7 +33,7 @@ Navy and cream carry the identity. Coral, mustard, teal and terracotta are the "
 
 | Variable | Value | Use |
 | --- | --- | --- |
-| `--matin-blue` | `#193A53` | Deep navy, primary brand color: headings, hero panel, the "A word from our President" band, main buttons, links, icons, small labels (tokens `primary`, `navy`) |
+| `--matin-blue` | `#193A53` | Deep navy, primary brand color: headings, the "A word from our President" band, main buttons, links, icons, small labels (tokens `primary`, `navy`) |
 | `--matin-cream` | `#F5EBDD` | Warm cream: alternate section backgrounds and page banners (tokens `tint`, `cream`) |
 | `--matin-paper` | `#FFFCF7` | Warm white: main page background (token `paper`) |
 | `--matin-gold` | `#D8A548` | Mustard gold: thin lines, maple leaves, the homepage tagline, the main button on navy (tokens `gold`, `mustard`) |
@@ -50,7 +50,7 @@ Navy and cream carry the identity. Coral, mustard, teal and terracotta are the "
 - **Accent sets:** add `data-accent="coral|mustard|teal|terracotta|navy"` to a card or tile; it sets `--accent` (shapes, borders) and `--accent-ink` (text-safe label color). Homepage and About: Mission = coral, Vision = mustard, Values = teal; the three areas of work = coral, mustard, teal; event cards take the accent of their subject (`EventCard.astro`).
 - **Bands:** navy (`on-dark`: mustard labels, white titles, mustard main button with navy text), terracotta (`on-terracotta`) and teal-deep (`on-teal`): white text, cream labels, navy main button. Focus rings: mustard on navy, white on terracotta and teal-deep.
 - **Dialogue motif:** soft, translucent overlapping circles (`DialogueArt.astro`), the shapes of cultures meeting. It is the cover for any entry without a photo (`CoverArt.astro`: news, programs; event cards use it with the subject's icon). Flat colors only.
-- **Mosaic:** the four short color bars (`.mosaic`, coral · mustard · teal · terracotta) are the site's signature: hero panel, page banners, footer edge, newsletter panel. Decorative, `aria-hidden`.
+- **Mosaic:** the four short color bars (`.mosaic`, coral · mustard · teal · terracotta) are the site's signature: page banners, footer edge, newsletter panel. Decorative, `aria-hidden`.
 - **Mustard and coral are never text on paper, cream or white** (2.1 to 3.4:1, fails); teal only as large text. Use navy or the `-deep` variants for small labels, dates and icons.
 - The old `gold-dark` token maps to navy: use it (or `primary`) for small labels, dates and icons.
 - No green and no dark green anywhere.
@@ -64,7 +64,7 @@ Navy and cream carry the identity. Coral, mustard, teal and terracotta are the "
 - **Motion and color (owner's request, Oct 2026):** the site should feel alive, not static. Allowed, always within the Matin palette above and never with gradients: a slow zoom on the hero photo and a staggered rise of its text; the navy "dialogue" ribbon under the hero (`CulturesRibbon.astro`); scroll fade-ins with `data-reveal` (optional `--reveal-delay`); a gentle lift with a soft navy shadow on hover for cards that are links (`.card-lift`); the slowly turning artwork in the homepage event banner (`SpotlightBanner.astro`). Every animation stops under `prefers-reduced-motion: reduce`.
 - **Width:** `.container-site` is up to 90rem wide (about 1344px of content). Sections use full-width backgrounds and `.section-pad` for vertical rhythm. Long paragraphs keep a readable measure (about 40 to 46rem) inside two-column compositions rather than stretching across the screen.
 - **Typography scale:** body 18px; section titles `clamp()` up to 56px, extra bold; page titles up to 72px; hero name about 88px.
-- **Hero:** navy text panel on the reading side, the Montréal skyline photo to the edge of the screen on the other, with nothing placed over it (owner's request, Oct 2026); photo on top on phones. Two main calls to action (Get Involved, Explore All Events).
+- **Hero (owner's choice, Oct 2026: keep the original):** the full-width Montréal skyline banner with the institute's name, the tagline in gold italic, a thin gold line and the paragraph centered on the photo (`HomeHero.astro`). Do not redesign it.
 - **Highlighted event:** `spotlight: true` in an event's YAML file shows it as the large navy banner at the top of the homepage events section until it ends (one at a time).
 - **Section titles:** always use `src/components/ui/SectionHeader.astro`, with under the title a thin gold line on each side of a small gold maple leaf (`LeafRule.astro`, inline SVG). Page sections pass `align="start"`, which puts the title on the reading side with the lede or link beside it on wide screens; `align="center"` is kept for short, isolated headings.
 - **Inner page banners:** `PageLayout.astro`: cream band, breadcrumbs, large start-aligned title, lede beside it on wide screens, mosaic along the bottom edge.

@@ -212,21 +212,8 @@ const whoCards = [
           />
         </div>
         <span class="involved__block" aria-hidden="true"></span>
-        <span class="involved__circle" aria-hidden="true">
-          <Picture
-            src={photos.drummers.src}
-            alt=""
-            formats={['avif', 'webp']}
-            widths={[240, 400, 560]}
-            sizes="(min-width: 64rem) 15rem, 9rem"
-            style={`object-position:${photos.drummers.focus}`}
-          />
-        </span>
         <figcaption>
-          <PhotoCredit
-            credits={[photos.nuitblanche.credit, photos.drummers.credit]}
-            class="involved__credit"
-          />
+          <PhotoCredit credit={photos.nuitblanche.credit} class="involved__credit" />
         </figcaption>
       </figure>
       <div class="involved__text">
@@ -483,26 +470,6 @@ const whoCards = [
     height: 55%;
     border-radius: var(--radius-card);
     background: var(--color-gold);
-  }
-  /* Daylight circle overlapping the night photo: a second, warmer view. */
-  .involved__circle {
-    position: absolute;
-    z-index: 2;
-    inset-block-start: -2rem;
-    inset-inline-end: -1rem;
-    width: clamp(8rem, 5rem + 7vw, 15rem);
-    aspect-ratio: 1;
-    overflow: hidden;
-    border: 6px solid var(--color-terracotta);
-    border-radius: 50%;
-    outline: 3px solid var(--color-gold);
-  }
-  .involved__circle :global(picture),
-  .involved__circle :global(img) {
-    display: block;
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
   }
   .involved__figure :global(.involved__credit) {
     position: relative;

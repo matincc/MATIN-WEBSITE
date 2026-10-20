@@ -1,16 +1,14 @@
 ---
 /**
- * Homepage hero: an editorial split. A deep navy panel carries the institute's name,
- * the tagline in mustard italic, the paragraph and the two main calls to action; the
- * Montréal skyline photo fills the other side to the edge of the screen, unobstructed.
- * The mosaic (four colour bars) joins the two. On phones the photo sits above the panel.
- * The text is always on solid navy, so it never depends on the photo for contrast.
+ * Homepage hero: a full-width photo banner (Montréal skyline) right under the
+ * header, with the institute's name, the tagline in gold italic, a thin gold
+ * line, and the paragraph centered on it. The photo is shown as
+ * is, with no veil; the text is dark so it reads on the bright sky.
  */
 import '@fontsource/playfair-display/700-italic.css';
 import { Picture } from 'astro:assets';
-import { ArrowRight } from '@lucide/astro';
 import banner from '@/assets/home/hero-banner.jpg';
-import { href, type UiLang } from '@/i18n/routes';
+import type { UiLang } from '@/i18n/routes';
 import { useTranslations } from '@/i18n/ui';
 
 interface Props {
@@ -26,14 +24,14 @@ const t = useTranslations(lang);
       src={banner}
       formats={['avif', 'webp']}
       fallbackFormat="jpg"
-      widths={[640, 960, 1280, 1600]}
-      sizes="(min-width: 64rem) 55vw, 100vw"
+      widths={[640, 960, 1280]}
+      sizes="100vw"
       alt=""
       loading="eager"
       fetchpriority="high"
     />
   </div>
-  <div class="hero__panel on-dark">
+  <div class="container-site hero__inner">
     <div class="hero__text">
       <h1 id="hero-title" class="hero__title">
         {t('home.heroEyebrow')}
@@ -41,21 +39,6 @@ const t = useTranslations(lang);
       <p class="hero__tagline">{t('home.heroTitle')}</p>
       <span class="hero__rule" aria-hidden="true"></span>
       <p class="hero__paragraph">{t('home.heroText')}</p>
-      <div class="hero__actions">
-        <a href={href('getInvolved', lang)} class="btn btn-primary">
-          {t('home.involvedPrimary')}
-          <ArrowRight size={18} class="flip-rtl" aria-hidden="true" />
-        </a>
-        <a href={href('events', lang)} class="btn btn-outline">
-          {t('home.eventsAll')}
-        </a>
-      </div>
-    </div>
-    <div class="mosaic hero__mosaic" aria-hidden="true">
-      <span></span>
-      <span></span>
-      <span></span>
-      <span></span>
     </div>
   </div>
 </section>
@@ -64,28 +47,30 @@ const t = useTranslations(lang);
   .hero {
     position: relative;
     display: grid;
+    align-items: center;
+    min-height: clamp(34rem, 22rem + 30vw, 44rem);
+    overflow: hidden;
     isolation: isolate;
-    background: var(--color-primary);
+    background: var(--color-white);
+    border-block-end: 1px solid var(--color-line);
   }
 
-  /* Phones and tablets: photo band on top, panel below. */
+  /* Full-width photo behind the text. The skyline sits in the lower middle of
+     the photo, so that is the part kept in view when the sides are cropped. */
   .hero__media {
-    position: relative;
-    height: clamp(13rem, 52vw, 26rem);
-    overflow: hidden;
+    position: absolute;
+    inset: 0;
+    z-index: -1;
   }
-  .hero__media :global(picture),
   .hero__media :global(img) {
     display: block;
     width: 100%;
     height: 100%;
-  }
-  .hero__media :global(img) {
     object-fit: cover;
-    object-position: 50% 88%;
+    object-position: 50% 65%;
     /* Very slow zoom so the city feels alive (stops with reduced motion). */
     animation: hero-drift 28s ease-in-out infinite alternate;
-    transform-origin: 50% 88%;
+    transform-origin: 50% 65%;
   }
   @keyframes hero-drift {
     from {
@@ -95,61 +80,18 @@ const t = useTranslations(lang);
       transform: scale(1.08);
     }
   }
-
-  .hero__panel {
-    position: relative;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    padding: clamp(2.5rem, 1.5rem + 4vw, 4.5rem) clamp(1.25rem, 0.5rem + 3vw, 3rem);
-    background: var(--color-primary);
-    color: var(--color-cream);
-  }
-  .hero__mosaic {
-    position: absolute;
-    inset-inline: clamp(1.25rem, 0.5rem + 3vw, 3rem);
-    inset-block-end: 1.5rem;
-    max-width: 16rem;
-  }
-
-  /* Desktop: navy panel on the reading side (start), photo to the far edge. */
-  @media (min-width: 64rem) {
-    .hero {
-      grid-template-columns: minmax(0, 46fr) minmax(0, 54fr);
-      min-height: clamp(36rem, 26rem + 20vw, 46rem);
-    }
-    .hero__media {
-      grid-column: 2;
-      grid-row: 1;
-      height: auto;
-    }
-    .hero__panel {
-      grid-column: 1;
-      grid-row: 1;
-      padding-inline: max(3rem, calc((100vw - 90rem) / 2 + 3rem)) 3.5rem;
-      padding-block: 5rem 6rem;
-    }
-    .hero__mosaic {
-      inset-inline-start: max(3rem, calc((100vw - 90rem) / 2 + 3rem));
-      inset-block-end: 2.75rem;
-    }
-  }
-
-  /* Name, tagline, line, paragraph and buttons rise in one after the other. */
+  /* Name, tagline, line and paragraph rise in one after the other. */
   .hero__text > * {
     animation: hero-rise 0.9s cubic-bezier(0.2, 0.7, 0.2, 1) both;
   }
   .hero__tagline {
-    animation-delay: 0.12s;
+    animation-delay: 0.15s;
   }
   .hero__text > .hero__rule {
-    animation: hero-line 0.9s 0.3s cubic-bezier(0.2, 0.7, 0.2, 1) both;
+    animation: hero-line 0.9s 0.35s cubic-bezier(0.2, 0.7, 0.2, 1) both;
   }
   .hero__paragraph {
-    animation-delay: 0.36s;
-  }
-  .hero__actions {
-    animation-delay: 0.5s;
+    animation-delay: 0.45s;
   }
   @keyframes hero-rise {
     from {
@@ -168,33 +110,37 @@ const t = useTranslations(lang);
       animation: none;
     }
   }
-
-  /* A size container, so the name can be sized to the space it actually has. */
+  .hero__inner {
+    padding-block: clamp(3rem, 2rem + 4vw, 5.5rem);
+  }
   .hero__text {
-    container-type: inline-size;
-    width: 100%;
-    max-width: 40rem;
+    max-width: 76rem;
+    margin-inline: auto;
+    text-align: center;
   }
-  /* The institute's name: white Nunito ExtraBold, up to about 88px. */
-  /* Never more than 1/6 of the text block's width: the longest word ("Intercultural"
-     is 5.73 times the font size, "interculturel" 5.68, «بین‌فرهنگی» 4.45) always stays
-     on one line, at every screen size and in every language. */
+  /* The institute's name, deep petroleum blue, in the same typography
+     as the original "Cultures in Dialogue" headline: Nunito ExtraBold, up to
+     88px, title case. */
   .hero__title {
-    font-size: min(clamp(2.6rem, 1.2rem + 4.6vw, 5.5rem), 100cqi / 6);
+    font-size: clamp(2.75rem, 1.4rem + 5.4vw, 5.5rem);
     font-weight: 800;
-    line-height: 1.02;
-    letter-spacing: -0.015em;
-    color: var(--color-white);
+    line-height: 1.04;
+    text-wrap: balance;
+    color: var(--color-primary);
+    overflow-wrap: break-word;
   }
-  /* Tagline: mustard gold in the logo's serif, bold italic (5.3:1 on navy). */
+  /* Tagline: warm gold in the logo's serif, bold italic so the strokes are
+     thick enough to read on the bright sky; a crisp 1px shadow (no glow) gives
+     the gold an edge against the clouds. Smaller than the name. */
   .hero__tagline {
-    margin-block-start: 0.85rem;
+    margin-block-start: 0.5rem;
     font-family: var(--font-brand);
     font-style: italic;
     font-weight: 700;
-    font-size: clamp(1.5rem, 0.95rem + 1.9vw, 2.6rem);
-    line-height: 1.25;
+    font-size: clamp(1.5rem, 0.9rem + 2.2vw, 2.75rem);
+    line-height: 1.3;
     color: var(--color-gold);
+    text-shadow: 0 1px 1px color-mix(in srgb, var(--color-primary) 45%, transparent);
   }
   /* Persian: the brand serif has no Persian letters. */
   :global(html[lang='fa']) .hero__tagline {
@@ -202,33 +148,31 @@ const t = useTranslations(lang);
     font-style: normal;
     font-weight: 800;
   }
+  /* Very thin gold line under the tagline. */
   .hero__rule {
     display: block;
-    width: 6rem;
-    height: 2px;
-    margin-block: 1.5rem;
+    width: 7rem;
+    height: 1.5px;
+    margin: 1.25rem auto 1.75rem;
     background: var(--color-gold);
-    transform-origin: left center;
   }
-  :global([dir='rtl']) .hero__rule {
-    transform-origin: right center;
-  }
-  /* About 22px on desktop, cream on navy (10:1). */
+  /* About 30px on desktop with a narrower, balanced measure, so the short
+     paragraph sits on two even lines on wide screens (all three languages). */
   .hero__paragraph {
-    max-width: 36rem;
-    font-size: clamp(1.1875rem, 1.05rem + 0.45vw, 1.375rem);
+    /* Nunito, as in the original banner (the rest of the body text uses DM Sans). */
+    font-family: var(--font-display);
+    max-width: 68ch;
+    margin-inline: auto;
+    font-size: clamp(1.375rem, 1.1rem + 0.85vw, 1.875rem);
     line-height: 1.6;
-    color: var(--color-cream);
-  }
-  .hero__actions {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 0.85rem;
-    margin-block-start: 2.25rem;
-  }
-  @media (max-width: 30rem) {
-    .hero__actions :global(.btn) {
-      width: 100%;
-    }
+    text-wrap: balance;
+    font-weight: 600;
+    color: var(--color-primary);
+    /* Soft white halo so the dark letters stay readable where the paragraph
+       crosses the darker buildings of the skyline. */
+    text-shadow:
+      0 0 3px var(--color-white),
+      0 0 8px var(--color-white),
+      0 0 16px color-mix(in srgb, var(--color-white) 90%, transparent);
   }
 </style>

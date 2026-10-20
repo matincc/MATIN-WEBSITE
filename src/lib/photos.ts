@@ -11,7 +11,6 @@ import type { ImageMetadata } from 'astro';
 import tamtams from '@/assets/photos/tamtams.jpg';
 import library from '@/assets/photos/library.jpg';
 import publicart from '@/assets/photos/publicart.jpg';
-import drummers from '@/assets/photos/drummers.jpg';
 import nuitblanche from '@/assets/photos/nuitblanche.jpg';
 import placejc from '@/assets/photos/placejc.jpg';
 
@@ -83,17 +82,6 @@ export const photos = {
       licenseUrl: CC_BY_SA_2,
       source:
         'https://commons.wikimedia.org/wiki/File:Place_Jacques-Cartier,_Vieux-Montr%C3%A9al,_Montreal,_Quebec_(29773761810).jpg',
-    },
-  },
-  /** Drummers in a summer street parade in Montréal. */
-  drummers: {
-    src: drummers,
-    focus: '84% 58%',
-    credit: {
-      author: 'Jeangagnon',
-      license: 'CC BY-SA 3.0',
-      licenseUrl: CC_BY_SA_3,
-      source: 'https://commons.wikimedia.org/wiki/File:Parade_Afriqu-en_fete_03.jpg',
     },
   },
 } satisfies Record<string, Photo>;
