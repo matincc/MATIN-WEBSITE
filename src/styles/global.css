@@ -174,7 +174,7 @@
 
 @layer components {
   .container-site {
-    @apply mx-auto w-full max-w-7xl px-5 sm:px-8;
+    @apply mx-auto w-full max-w-[90rem] px-5 sm:px-8 lg:px-12;
   }
   /* Small-caps label in blue (gold text would fail contrast on cream). */
   .eyebrow {
@@ -235,6 +235,18 @@
   /* Shared card style: white, softly rounded, very light border, no shadow. */
   .card {
     @apply rounded-[var(--radius-card)] border border-line bg-white;
+  }
+  /* Cards that are links or hold a call to action lift gently on hover. */
+  .card-lift {
+    transition:
+      transform 0.25s cubic-bezier(0.2, 0.7, 0.2, 1),
+      box-shadow 0.25s,
+      border-color 0.2s;
+  }
+  .card-lift:hover,
+  .card-lift:focus-within {
+    transform: translateY(-4px);
+    box-shadow: 0 14px 30px -18px color-mix(in srgb, var(--color-primary) 45%, transparent);
   }
   .link-arrow {
     @apply inline-flex items-center gap-1.5 font-bold text-ink no-underline hover:underline;

@@ -19,7 +19,7 @@ interface Props {
 const { id, eyebrow, title, lede, link, as: Tag = 'h2', class: className = 'mb-12' } = Astro.props;
 ---
 
-<div class:list={['flex flex-col items-center text-center', className]}>
+<div class:list={['flex flex-col items-center text-center', className]} data-reveal>
   {eyebrow && <p class="eyebrow mb-3">{eyebrow}</p>}
   <Tag id={id} class="section-title max-w-3xl">
     {title}

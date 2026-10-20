@@ -132,6 +132,8 @@ const events = defineCollection({
         lastVerified: isoDate.optional(),
         /** "Matin's Picks": shown in the highlights row until this date (YYYY-MM-DD). */
         featuredUntil: isoDate.optional(),
+        /** Large banner at the top of the homepage events section, until the event ends. */
+        spotlight: z.boolean().default(false),
         /** Drafts appear only on the local preview (npm run dev), never on the live site. */
         draft: z.boolean().default(false),
         image: image().optional(),

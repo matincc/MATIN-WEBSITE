@@ -51,7 +51,10 @@ The variables below, defined once in `:root` in `src/styles/global.css`. They ar
 
 - Clean, calm, lots of white space.
 - No gradients, no heavy shadows or effects, no decorative patterns (no waves, rays or glows).
-- **Cards:** one shared style for the whole site, the `.card` class: white, softly rounded corners, very light border, generous padding, no shadow.
+- **Cards:** one shared style for the whole site, the `.card` class: white, softly rounded corners, very light border, generous padding, no shadow at rest (`.card-lift` adds a soft one on hover).
+- **Motion and color (owner's request, Oct 2026):** the site should feel alive, not static. Allowed, always within the Matin palette above and never with gradients: a slow zoom on the hero photo and a staggered rise of its text; the blue "dialogue" ribbon under the hero (`CulturesRibbon.astro`); scroll fade-ins with `data-reveal` (optional `--reveal-delay`); a gentle lift with a soft blue shadow on hover for cards that are links (`.card-lift`); the slowly turning artwork in the homepage event banner (`SpotlightBanner.astro`). Every animation stops under `prefers-reduced-motion: reduce`.
+- **Width:** `.container-site` is up to 90rem wide so large screens are not left with empty sides.
+- **Highlighted event:** `spotlight: true` in an event's YAML file shows it as the large blue banner at the top of the homepage events section until it ends (one at a time).
 - **Section titles:** always use `src/components/ui/SectionHeader.astro`: title centered, and under it a thin gold line on each side of a small gold maple leaf (`LeafRule.astro`, inline SVG). Use this same component for every section title.
 
 ## 5. Accessibility and responsiveness

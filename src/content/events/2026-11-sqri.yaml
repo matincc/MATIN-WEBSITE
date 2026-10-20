@@ -1,0 +1,42 @@
+kind: selected
+organizer:
+  name: "Ministère de l'Immigration, de la Francisation et de l'Intégration"
+  url: https://www.quebec.ca/immigration/semaine-quebecoise-rencontres-interculturelles
+title: # official title, in French only (the organizer does not translate it)
+  fr: 'Semaine québécoise des rencontres interculturelles 2026'
+  en: 'Semaine québécoise des rencontres interculturelles 2026'
+  fa: 'هفتهٔ دیدارهای بین‌فرهنگی کبک ۲۰۲۶'
+summary:
+  fr: "Une semaine d'activités partout au Québec, sous le thème « Le Québec en commun », pour favoriser les rencontres et le partage entre Québécoises et Québécois de toutes origines. Le calendrier des activités est publié par le gouvernement du Québec."
+  en: 'A week of activities across Québec, under the theme "Le Québec en commun," that brings together Quebecers of all origins to meet and share. The calendar of activities is published by the Government of Québec.'
+  fa: 'یک هفته برنامه در سراسر کبک با شعار «کبکِ مشترک» (Le Québec en commun)، برای دیدار و هم‌سخنی کبکی‌ها از همهٔ خاستگاه‌ها. تقویم برنامه‌ها را دولت کبک منتشر می‌کند.'
+whyItMatters:
+  fr: "Le grand rendez-vous annuel du rapprochement interculturel au Québec : une occasion de découvrir, près de chez soi, des initiatives de dialogue entre les cultures."
+  en: 'Québec’s main yearly moment for intercultural connection: a chance to discover dialogue initiatives between cultures close to home.'
+  fa: 'مهم‌ترین رویداد سالانهٔ نزدیکی بین‌فرهنگی در کبک؛ فرصتی برای آشنایی با برنامه‌های گفت‌وگوی میان فرهنگ‌ها در نزدیکی محل زندگی‌تان.'
+subject: dialogue
+region: quebec
+city:
+  fr: 'Partout au Québec'
+  en: 'Across Québec'
+  fa: 'سراسر کبک'
+format: in-person
+language: fr
+start: '2026-11-02T00:00'
+end: '2026-11-08T23:59'
+allDay: true
+price:
+  type: unknown
+eventUrl: https://www.quebec.ca/immigration/semaine-quebecoise-rencontres-interculturelles
+sourceUrl: https://www.quebec.ca/immigration/semaine-quebecoise-rencontres-interculturelles
+lastVerified: '2026-10-20'
+featuredUntil: '2026-11-08'
+# Original artwork made for Matin (not the government's visual identity).
+image: ../../assets/uploads/events/sqri-2026/sqri-2026.jpg
+imageAlt:
+  fr: "Illustration : des cercles de couleurs qui se chevauchent autour d'un même centre, sur fond bleu."
+  en: 'Illustration: overlapping circles of colour around a shared centre, on a blue background.'
+  fa: 'تصویر: دایره‌های رنگی که گرد یک مرکز مشترک روی هم افتاده‌اند، روی زمینهٔ آبی.'
+# Shown as the large banner on the homepage until the event ends.
+spotlight: true
+faReviewed: true

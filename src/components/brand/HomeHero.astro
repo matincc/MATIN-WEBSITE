@@ -68,6 +68,47 @@ const t = useTranslations(lang);
     height: 100%;
     object-fit: cover;
     object-position: 50% 65%;
+    /* Very slow zoom so the city feels alive (stops with reduced motion). */
+    animation: hero-drift 28s ease-in-out infinite alternate;
+    transform-origin: 50% 65%;
+  }
+  @keyframes hero-drift {
+    from {
+      transform: scale(1);
+    }
+    to {
+      transform: scale(1.08);
+    }
+  }
+  /* Name, tagline, line and paragraph rise in one after the other. */
+  .hero__text > * {
+    animation: hero-rise 0.9s cubic-bezier(0.2, 0.7, 0.2, 1) both;
+  }
+  .hero__tagline {
+    animation-delay: 0.15s;
+  }
+  .hero__text > .hero__rule {
+    animation: hero-line 0.9s 0.35s cubic-bezier(0.2, 0.7, 0.2, 1) both;
+  }
+  .hero__paragraph {
+    animation-delay: 0.45s;
+  }
+  @keyframes hero-rise {
+    from {
+      opacity: 0;
+      transform: translateY(22px);
+    }
+  }
+  @keyframes hero-line {
+    from {
+      transform: scaleX(0);
+    }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .hero__media :global(img),
+    .hero__text > * {
+      animation: none;
+    }
   }
   .hero__inner {
     padding-block: clamp(3rem, 2rem + 4vw, 5.5rem);

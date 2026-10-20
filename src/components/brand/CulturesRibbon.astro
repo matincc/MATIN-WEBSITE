@@ -1,0 +1,104 @@
+---
+/**
+ * A slow-moving blue ribbon under the homepage hero: the word "dialogue" in many of the
+ * languages spoken in Montréal, gold and cream on blue. Decorative motion only; screen
+ * readers get one short description. It stops for visitors who prefer reduced motion.
+ */
+import type { UiLang } from '@/i18n/routes';
+import { useTranslations } from '@/i18n/ui';
+
+interface Props {
+  lang: UiLang;
+}
+const { lang } = Astro.props;
+const t = useTranslations(lang);
+
+// "Dialogue" in several languages (each with its own lang attribute).
+const words = [
+  { text: 'Dialogue', lang: 'fr' },
+  { text: 'گفت‌وگو', lang: 'fa' },
+  { text: 'Diálogo', lang: 'es' },
+  { text: 'حوار', lang: 'ar' },
+  { text: '对话', lang: 'zh' },
+  { text: 'Dialogo', lang: 'it' },
+  { text: 'संवाद', lang: 'hi' },
+  { text: 'Diyalog', lang: 'tr' },
+  { text: '대화', lang: 'ko' },
+  { text: 'Διάλογος', lang: 'el' },
+  { text: 'Діалог', lang: 'uk' },
+  { text: 'Diálogo', lang: 'pt' },
+  { text: '対話', lang: 'ja' },
+  { text: 'Dialog', lang: 'de' },
+];
+---
+
+<div class="ribbon on-dark" role="img" aria-label={t('home.ribbonLabel')}>
+  <div class="ribbon__track" aria-hidden="true">
+    {
+      [0, 1].map(() => (
+        <ul class="ribbon__list">
+          {words.map((w, i) => (
+            <li lang={w.lang} class:list={['ribbon__word', i % 2 ? 'is-cream' : 'is-gold']}>
+              {w.text}
+              <span class="ribbon__dot" />
+            </li>
+          ))}
+        </ul>
+      ))
+    }
+  </div>
+</div>
+
+<style>
+  .ribbon {
+    overflow: hidden;
+    background: var(--color-primary);
+    border-block: 1px solid color-mix(in srgb, var(--color-gold) 55%, transparent);
+    padding-block: 1.1rem;
+    direction: ltr;
+  }
+  .ribbon__track {
+    display: flex;
+    width: max-content;
+    animation: ribbon-scroll 60s linear infinite;
+  }
+  .ribbon:hover .ribbon__track {
+    animation-play-state: paused;
+  }
+  .ribbon__list {
+    display: flex;
+    flex-shrink: 0;
+    align-items: center;
+  }
+  .ribbon__word {
+    display: flex;
+    align-items: center;
+    gap: 2.25rem;
+    padding-inline-end: 2.25rem;
+    font-size: clamp(1.25rem, 1rem + 1vw, 1.75rem);
+    font-weight: 800;
+    white-space: nowrap;
+  }
+  .is-gold {
+    color: var(--color-gold);
+  }
+  .is-cream {
+    color: var(--color-cream);
+  }
+  .ribbon__dot {
+    width: 0.45rem;
+    height: 0.45rem;
+    border-radius: 50%;
+    background: var(--color-turquoise);
+  }
+  @keyframes ribbon-scroll {
+    to {
+      transform: translateX(-50%);
+    }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .ribbon__track {
+      animation: none;
+    }
+  }
+</style>
