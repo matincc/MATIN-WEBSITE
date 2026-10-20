@@ -112,8 +112,14 @@ const t = useTranslations(lang);
       animation: none;
     }
   }
+  /* Phones: a taller banner, so the city sits below the (longer, wrapped) text. */
+  @media (max-width: 40rem) {
+    .hero {
+      min-height: 46rem;
+    }
+  }
   .hero__inner {
-    padding-block: clamp(1.5rem, 1rem + 1vw, 2.25rem) clamp(3rem, 2rem + 4vw, 5.5rem);
+    padding-block: clamp(2.25rem, 1rem + 3.3vw, 4.75rem) clamp(3rem, 2rem + 4vw, 5.5rem);
   }
   .hero__text {
     max-width: 76rem;
@@ -163,7 +169,7 @@ const t = useTranslations(lang);
     font-family: var(--font-display);
     max-width: 68ch;
     margin-inline: auto;
-    font-size: clamp(1.5rem, 1.2rem + 1vw, 2.125rem);
+    font-size: clamp(1.25rem, 0.9rem + 1.3vw, 2.125rem);
     line-height: 1.5;
     text-wrap: balance;
     font-weight: 600;

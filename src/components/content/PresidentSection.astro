@@ -97,19 +97,21 @@ const linkedinPath =
   .president-bio :global(:focus-visible) {
     outline-color: var(--color-primary);
   }
+  /* Magazine layout (owner's request, Oct 2026): the portrait sits at the start of the
+     card and the name, title and biography flow beside it, then continue across the
+     full width below it. */
   .president-bio {
-    color: var(--color-ink);
-    display: grid;
-    gap: 2.5rem;
+    display: flow-root;
     max-width: 76rem;
     padding: 2rem;
     border: 1px solid var(--color-line);
     border-radius: var(--radius-card);
     background: var(--color-white);
+    color: var(--color-ink);
   }
   .president-bio__media {
-    justify-self: center;
     width: min(100%, 20rem);
+    margin: 0 auto 2rem;
   }
   .president-bio__photo {
     display: block;
@@ -128,33 +130,36 @@ const linkedinPath =
     background: var(--color-cream);
   }
   .president-bio__name {
-    font-size: clamp(1.75rem, 1.5rem + 1vw, 2.25rem);
-    font-weight: 700;
-    line-height: 1.2;
+    font-size: clamp(2rem, 1.6rem + 1.6vw, 2.875rem);
+    font-weight: 800;
+    line-height: 1.15;
   }
+  /* Its own block beside the portrait, so the coral rule stops at the portrait. */
   .president-bio__position {
-    margin-top: 0.5rem;
+    display: flow-root;
+    margin-top: 0.6rem;
     padding-bottom: 1.25rem;
     border-bottom: 3px solid var(--color-coral);
-    font-weight: 700;
-    letter-spacing: 0.02em;
+    font-family: var(--font-display);
+    font-size: clamp(1.125rem, 1.05rem + 0.35vw, 1.3125rem);
+    font-weight: 800;
     color: var(--color-primary);
   }
+  /* About 20px reading text, comfortable line height. */
   .president-bio__text :global(.president-bio__prose) {
     margin-top: 1.5rem;
-    max-width: 46rem;
-    font-size: 1.125rem;
+    font-size: clamp(1.125rem, 1.05rem + 0.35vw, 1.25rem);
+    line-height: 1.75;
   }
   @media (min-width: 768px) {
     .president-bio {
-      grid-template-columns: minmax(14rem, 22rem) minmax(0, 1fr);
-      align-items: start;
-      gap: 3rem;
       padding: 3rem;
     }
     .president-bio__media {
-      position: sticky;
-      top: 7rem;
+      float: inline-start;
+      width: clamp(15rem, 10rem + 10vw, 21rem);
+      margin: 0.25rem 0 1.5rem;
+      margin-inline-end: 2.75rem;
     }
   }
 </style>
