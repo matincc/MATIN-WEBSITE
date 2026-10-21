@@ -212,6 +212,49 @@ const news = defineCollection({
       }),
 });
 
+/**
+ * Homepage highlights: Matin's own initiatives, posters, videos, announcements and
+ * reports, shown in "Matin in Action" (the featured one) and "Latest From Matin".
+ * Matin's own events and published news appear there automatically; use a highlight
+ * for anything else. Only Matin's own content (organized, hosted or produced by Matin).
+ */
+const highlights = defineCollection({
+  loader: yaml('highlights'),
+  schema: ({ image }) =>
+    z
+      .object({
+        type: z.enum(['initiative', 'event', 'news', 'announcement', 'report', 'video', 'poster']),
+        title: bi,
+        summary: bi,
+        /** Photo, poster or video thumbnail. Posters are shown whole, never cropped. */
+        image: image().optional(),
+        imageAlt: biOpt,
+        /** Confirm that Matin owns the image or has permission to publish it. */
+        imagePermission: z.boolean().optional(),
+        /** The date shown on the card (publication date, or start of the activity). */
+        date: z.coerce.date(),
+        endDate: z.coerce.date().optional(),
+        location: biOpt,
+        /** Where the button leads: a page of this site (/fr/…) or an external link. */
+        url: z.string().min(1),
+        /** Button label; by default one that fits the type (Read more, View event…). */
+        ctaLabel: biOpt,
+        /** The one item shown large in "Matin in Action". */
+        featured: z.boolean().default(false),
+        /** Lower numbers first among items of the same date. */
+        order: z.number().int().default(0),
+        /** Hidden from the homepage after this date (e.g. once an activity is over). */
+        until: z.coerce.date().optional(),
+        /** Drafts appear only on the local preview (npm run dev). */
+        draft: z.boolean().default(false),
+        faReviewed,
+      })
+      .refine((h) => !h.image || h.imagePermission === true, {
+        message: 'Set imagePermission: true to confirm Matin may use this image',
+        path: ['imagePermission'],
+      }),
+});
+
 const settings = defineCollection({
   loader: yaml('settings'),
   schema: z.object({
@@ -295,6 +338,8 @@ const about = defineCollection({
       name: z.string(),
       title: bi,
       message: bi,
+      /** Role line signed under the founder's message. */
+      signature: biOpt,
       /** Name with credentials as it appears in the "Our President" section. */
       displayName: biOpt,
       /** Position line, e.g. « Fondateur et président | Institut interculturel Matin ». */
@@ -420,6 +465,7 @@ export const collections = {
   programs,
   events,
   news,
+  highlights,
   settings,
   team,
   about,

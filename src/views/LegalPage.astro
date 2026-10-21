@@ -22,13 +22,103 @@ const officerMd = officer
   ? `**${officer.name}**, ${officer.title[lang]}  \n[${officer.email}](mailto:${officer.email})`
   : t('legal.officerFallback', { href: path('contact', lang) });
 const body = doc.body[lang].replaceAll('{{privacyOfficer}}', officerMd);
+
+// Give each section heading an anchor and list them in the "On this page" contents.
+const slug = (text: string) =>
+  text
+    .replace(/<[^>]+>/g, '')
+    .normalize('NFD')
+    .replace(/[\u0300-\u036f]/g, '')
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, '-')
+    .replace(/^-|-$/g, '');
+const toc: { id: string; label: string }[] = [];
+const html = renderMarkdown(body, lang).replace(/<h2>(.*?)<\/h2>/g, (_, inner: string) => {
+  const id = slug(inner) || `section-${toc.length + 1}`;
+  toc.push({ id, label: inner.replace(/<[^>]+>/g, '') });
+  return `<h2 id="${id}">${inner}</h2>`;
+});
 ---
 
 <PageLayout lang={lang} title={pick(doc.title, lang)!} alternates={alternatesFor(page)}>
   <p slot="hero" class="mt-6 text-sm text-muted">
     {t('legal.updated', { date: formatDate(doc.updated, lang) })}
   </p>
-  <article class="container-site max-w-3xl pt-4 pb-24">
-    <Prose html={renderMarkdown(body, lang)} class="text-lg" />
-  </article>
+  <div class="container-site legal-layout pt-4 pb-24">
+    {toc.length > 1 && (
+      <nav class="legal-toc" aria-label={t('legal.onThisPage')}>
+        <p class="legal-toc__title">{t('legal.onThisPage')}</p>
+        <ol>
+          {toc.map((h) => (
+            <li>
+              <a href={`#${h.id}`} set:html={h.label} />
+            </li>
+          ))}
+        </ol>
+      </nav>
+    )}
+    <article class="legal-body">
+      <Prose html={html} class="text-lg" />
+    </article>
+  </div>
 </PageLayout>
+
+<style>
+  /* A comfortable reading column (about 80 characters) and, on wide screens, the
+     contents of the page beside it, so the text is not a narrow strip in empty space. */
+  .legal-layout {
+    display: grid;
+    gap: 2.5rem;
+  }
+  .legal-body {
+    max-width: 48rem;
+  }
+  .legal-body :global(h2) {
+    scroll-margin-top: 7rem;
+  }
+  .legal-toc {
+    padding: 1.5rem 1.75rem;
+    border: 1px solid var(--color-line);
+    border-inline-start: 5px solid var(--color-gold);
+    border-radius: 1rem;
+    background: var(--color-white);
+  }
+  .legal-toc__title {
+    margin-block-end: 0.75rem;
+    font-family: var(--font-display);
+    font-size: 1.125rem;
+    font-weight: 800;
+    color: var(--color-primary);
+  }
+  .legal-toc ol {
+    display: grid;
+    gap: 0.5rem;
+    padding-inline-start: 1.25rem;
+    list-style: decimal;
+    font-size: 1.0625rem;
+    line-height: 1.45;
+  }
+  .legal-toc a {
+    text-decoration: none;
+  }
+  .legal-toc a:hover {
+    text-decoration: underline;
+  }
+  @media (min-width: 64rem) {
+    .legal-layout {
+      grid-template-columns: minmax(0, 48rem) minmax(16rem, 24rem);
+      justify-content: space-between;
+      align-items: start;
+      gap: 4rem;
+    }
+    .legal-body {
+      grid-row: 1;
+      grid-column: 1;
+    }
+    .legal-toc {
+      grid-column: 2;
+      position: sticky;
+      top: 7rem;
+    }
+  }
+</style>

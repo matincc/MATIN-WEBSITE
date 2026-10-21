@@ -49,28 +49,56 @@ const jsonLd = {
     </ul>
   </nav>
 
-  <div class="container-site max-w-4xl space-y-14 pt-4 pb-20">
-    {groups.length === 0 && <p class="card p-8 text-center text-lg">{t('faq.empty')}</p>}
-    {groups.map((g) => (
-      <section id={g.topic} aria-labelledby={`${g.topic}-title`}>
-        <h2 id={`${g.topic}-title`} class="mb-6 text-3xl font-bold">
-          {t(`faq.${g.topic}`)}
-        </h2>
-        <Accordion
-          items={g.items.map((f) => ({
-            id: `q-${f.id}`,
-            question: pick(f.data.question, lang)!,
-            answerHtml: renderMarkdown(f.data.answer[lang], lang),
-          }))}
-        />
-      </section>
-    ))}
-
-    <div class="card flex flex-col items-start gap-5 p-8 sm:flex-row sm:items-center sm:justify-between">
+  <div class="container-site faq-layout pt-4 pb-20">
+    <div class="faq-main space-y-14">
+      {groups.length === 0 && <p class="empty-state">{t('faq.empty')}</p>}
+      {groups.map((g) => (
+        <section id={g.topic} aria-labelledby={`${g.topic}-title`}>
+          <h2 id={`${g.topic}-title`} class="mb-6 text-3xl font-bold">
+            {t(`faq.${g.topic}`)}
+          </h2>
+          <Accordion
+            items={g.items.map((f) => ({
+              id: `q-${f.id}`,
+              question: pick(f.data.question, lang)!,
+              answerHtml: renderMarkdown(f.data.answer[lang], lang),
+            }))}
+          />
+        </section>
+      ))}
+    </div>
+    <aside class="faq-aside card">
       <p class="font-display text-2xl font-bold text-primary">{t('faq.stillQuestions')}</p>
       <a href={path('contact', lang)} class="btn btn-primary">
         {t('faq.contactUs')}
       </a>
-    </div>
+    </aside>
   </div>
 </PageLayout>
+
+<style>
+  /* Questions in a reading column, the contact card beside them on wide screens. */
+  .faq-layout {
+    display: grid;
+    gap: 2.5rem;
+  }
+  .faq-aside {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 1.25rem;
+    padding: 2rem;
+    border-block-start: 5px solid var(--color-teal);
+  }
+  @media (min-width: 64rem) {
+    .faq-layout {
+      grid-template-columns: minmax(0, 1fr) minmax(16rem, 22rem);
+      align-items: start;
+      gap: 4rem;
+    }
+    .faq-aside {
+      position: sticky;
+      top: 7rem;
+    }
+  }
+</style>

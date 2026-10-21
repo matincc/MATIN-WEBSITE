@@ -1,9 +1,11 @@
 ---
 /**
- * Branded illustrated cover used when an entry has no photo yet:
- * flat light turquoise, a gold sun, turquoise waves and the category icon. Decorative.
+ * Branded illustrated cover used when an entry has no photo yet: the dialogue motif
+ * (overlapping circles) in an accent tied to the category, with the category icon on a
+ * white disc. Decorative.
  */
 import CategoryIcon from './CategoryIcon.astro';
+import DialogueArt from '@/components/brand/DialogueArt.astro';
 import type { Category } from '@/lib/taxonomy';
 
 interface Props {
@@ -12,38 +14,36 @@ interface Props {
   class?: string;
 }
 const { category, seed = category, class: className = '' } = Astro.props;
-
-// Cheap deterministic variation so neighbouring cards don't look identical.
-const n = [...seed].reduce((acc, ch) => (acc * 31 + ch.charCodeAt(0)) % 997, 7);
-const sunX = 70 + (n % 260);
-const waveShift = (n % 5) * 18;
+const accents = {
+  language: 'teal',
+  arts: 'coral',
+  youth: 'mustard',
+  community: 'terracotta',
+  newcomers: 'teal',
+  lectures: 'navy',
+  music: 'coral',
+  celebration: 'mustard',
+} as const;
 ---
 
-<div class:list={['cover-art relative overflow-hidden', className]} aria-hidden="true">
-  <svg
-    viewBox="0 0 400 240"
-    preserveAspectRatio="xMidYMid slice"
-    class="absolute inset-0 size-full"
-  >
-    <rect width="400" height="240" fill="var(--color-tint)"></rect>
-    <circle cx={sunX} cy="168" r="40" fill="var(--color-gold)"></circle>
-    <path
-      d={`M0 ${170 - waveShift / 3} C 100 ${130 + waveShift} 220 ${210 - waveShift} 400 ${160} V240 H0Z`}
-      fill="var(--color-turquoise)"
-      fill-opacity="0.35"
-    ></path>
-    <path
-      d={`M0 ${195} C 120 ${165 + waveShift / 2} 260 ${230 - waveShift / 2} 400 ${190} V240 H0Z`}
-      fill="var(--color-primary)"
-    ></path>
-    <path
-      d={`M0 ${182} C 110 ${150 + waveShift / 2} 240 ${222 - waveShift / 2} 400 ${176}`}
-      fill="none"
-      stroke="var(--color-gold)"
-      stroke-width="1.5"
-    ></path>
-  </svg>
-  <div class="absolute inset-0 grid place-items-center pb-[16%] text-primary">
-    <CategoryIcon category={category} size={56} strokeWidth={1.25} />
+<DialogueArt accent={accents[category]} seed={seed} class:list={['cover-art', className]}>
+  <div class="cover-art__icon">
+    <CategoryIcon category={category} size={40} strokeWidth={1.5} />
   </div>
-</div>
+</DialogueArt>
+
+<style>
+  .cover-art__icon {
+    position: absolute;
+    inset: 0;
+    display: grid;
+    place-items: center;
+  }
+  .cover-art__icon > :global(svg) {
+    box-sizing: content-box;
+    padding: 1.1rem;
+    border-radius: 50%;
+    background: var(--color-white);
+    color: var(--color-primary);
+  }
+</style>

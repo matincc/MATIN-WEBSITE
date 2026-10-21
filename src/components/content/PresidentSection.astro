@@ -7,6 +7,7 @@
  * a plain framed initials panel is shown.
  */
 import { Image } from 'astro:assets';
+import { ArrowRight } from '@lucide/astro';
 import type { ImageMetadata } from 'astro';
 import SectionHeader from '@/components/ui/SectionHeader.astro';
 import Prose from '@/components/ui/Prose.astro';
@@ -34,7 +35,11 @@ const linkedinPath =
 ---
 
 {bio && (
-  <section id="our-president" class="scroll-mt-24 py-20" aria-labelledby="our-president-title">
+  <section
+    id="our-president"
+    class="president-band on-terracotta scroll-mt-24 py-20"
+    aria-labelledby="our-president-title"
+  >
     <div class="container-site">
       <SectionHeader align="start" id="our-president-title" title={t('about.ourPresident')} />
       <div class="president-bio">
@@ -44,7 +49,7 @@ const linkedinPath =
               src={photo}
               alt={t('about.presidentPhotoAlt', { name: lang === 'fa' ? name : p.name })}
               widths={[320, 480, 640]}
-              sizes="(min-width: 768px) 22rem, 90vw"
+              sizes="(min-width: 768px) 26rem, 90vw"
               class="president-bio__photo"
             />
           ) : (
@@ -60,7 +65,7 @@ const linkedinPath =
           {p.linkedin && (
             <a
               href={p.linkedin}
-              class="btn btn-primary mt-8"
+              class="btn btn-primary president-bio__cta"
               target="_blank"
               rel="noopener noreferrer"
             >
@@ -74,7 +79,8 @@ const linkedinPath =
                 <path d={linkedinPath} />
               </svg>
               {t('about.discoverPresident')}
-              <span class="sr-only">(LinkedIn) {t('a11y.externalLink')}</span>
+              <ArrowRight size={18} class="flip-rtl" aria-hidden="true" />
+              <span class="sr-only">{t('a11y.externalLink')}</span>
             </a>
           )}
         </div>
@@ -84,18 +90,30 @@ const linkedinPath =
 )}
 
 <style>
+  /* Warm terracotta band (owner's request, Oct 2026); the white card keeps the
+     biography in ink and navy on white. */
+  .president-band {
+    background: var(--color-terracotta);
+  }
+  /* Inside the white card the focus ring is navy again (white would vanish). */
+  .president-bio :global(:focus-visible) {
+    outline-color: var(--color-primary);
+  }
+  /* Two balanced columns (owner's brief, Oct 21 2026): the portrait in its own column,
+     staying in view while the biography is read; no text wraps around it. In Persian
+     the grid mirrors, so the portrait is on the right. Stacked on phones. */
   .president-bio {
     display: grid;
-    gap: 2.5rem;
-    max-width: 76rem;
-    padding: 2rem;
+    gap: 2rem;
+    max-width: 84rem;
+    padding: clamp(1.5rem, 1rem + 2.5vw, 3.5rem);
     border: 1px solid var(--color-line);
     border-radius: var(--radius-card);
     background: var(--color-white);
+    color: var(--color-ink);
   }
   .president-bio__media {
-    justify-self: center;
-    width: min(100%, 20rem);
+    width: min(100%, 24rem);
   }
   .president-bio__photo {
     display: block;
@@ -113,34 +131,50 @@ const linkedinPath =
     color: var(--color-primary);
     background: var(--color-cream);
   }
+  .president-bio__text {
+    max-width: 46rem;
+  }
   .president-bio__name {
-    font-size: clamp(1.75rem, 1.5rem + 1vw, 2.25rem);
-    font-weight: 700;
-    line-height: 1.2;
+    font-size: clamp(2rem, 1.6rem + 1.6vw, 2.875rem);
+    font-weight: 800;
+    line-height: 1.15;
   }
   .president-bio__position {
-    margin-top: 0.5rem;
+    margin-top: 0.6rem;
     padding-bottom: 1.25rem;
     border-bottom: 3px solid var(--color-coral);
-    font-weight: 700;
-    letter-spacing: 0.02em;
+    font-family: var(--font-display);
+    font-size: clamp(1.125rem, 1.05rem + 0.35vw, 1.3125rem);
+    font-weight: 800;
     color: var(--color-primary);
   }
+  /* About 19px reading text, a comfortable line and paragraph spacing. */
   .president-bio__text :global(.president-bio__prose) {
-    margin-top: 1.5rem;
-    max-width: 46rem;
-    font-size: 1.125rem;
+    margin-top: 1.75rem;
+    font-size: clamp(1.0625rem, 1rem + 0.3vw, 1.1875rem);
+    line-height: 1.8;
+  }
+  .president-bio__text :global(.president-bio__prose > * + *) {
+    margin-top: 1.15em;
+  }
+  /* The opening sentence (about culture and people) leads, slightly larger. */
+  .president-bio__text :global(.president-bio__prose > p:first-child) {
+    font-size: 1.15em;
+    color: var(--color-primary);
+  }
+  .president-bio__cta {
+    margin-top: 2.25rem;
   }
   @media (min-width: 768px) {
     .president-bio {
-      grid-template-columns: minmax(14rem, 22rem) minmax(0, 1fr);
+      grid-template-columns: minmax(15rem, 2fr) minmax(0, 3fr);
       align-items: start;
-      gap: 3rem;
-      padding: 3rem;
+      gap: clamp(2.5rem, 1rem + 3vw, 4.5rem);
     }
     .president-bio__media {
       position: sticky;
       top: 7rem;
+      width: 100%;
     }
   }
 </style>

@@ -1,0 +1,80 @@
+---
+/**
+ * The "dialogue" motif: soft overlapping circles in the Matin accents, the shapes of
+ * cultures meeting and overlapping. Flat colours only (no gradients). Decorative.
+ * Used as the cover for entries without a photo and as a quiet graphic accent.
+ * `seed` varies the arrangement so neighbouring covers don't look identical.
+ */
+type Accent = 'coral' | 'mustard' | 'teal' | 'terracotta' | 'navy';
+interface Props {
+  accent?: Accent;
+  seed?: string;
+  class?: string;
+}
+const { accent = 'coral', seed = accent, class: className = '' } = Astro.props;
+
+const n = [...seed].reduce((acc, ch) => (acc * 31 + ch.charCodeAt(0)) % 997, 7);
+const others: Record<Accent, [string, string]> = {
+  coral: ['var(--color-teal)', 'var(--color-gold)'],
+  mustard: ['var(--color-coral)', 'var(--color-teal)'],
+  teal: ['var(--color-gold)', 'var(--color-coral)'],
+  terracotta: ['var(--color-gold)', 'var(--color-teal)'],
+  navy: ['var(--color-coral)', 'var(--color-gold)'],
+};
+const main =
+  accent === 'navy'
+    ? 'var(--color-primary)'
+    : `var(--color-${accent === 'mustard' ? 'gold' : accent})`;
+const [second, third] = others[accent];
+// Three circles around the centre, gently shifted by the seed.
+const dx = (n % 7) * 6 - 18;
+const dy = (n % 5) * 5 - 10;
+---
+
+<div class:list={['dialogue-art', className]} data-accent={accent} aria-hidden="true">
+  <svg viewBox="0 0 400 260" preserveAspectRatio="xMidYMid meet" focusable="false">
+    <circle
+      cx={160 + dx}
+      cy={130 + dy}
+      r="74"
+      style={`fill:${main}`}
+      class="dialogue-art__c is-main"
+    ></circle>
+    <circle
+      cx={240 - dx}
+      cy={122 - dy}
+      r="62"
+      style={`fill:${second}`}
+      class="dialogue-art__c"
+    ></circle>
+    <circle
+      cx={204 + dx / 2}
+      cy={186 + dy / 2}
+      r="44"
+      style={`fill:${third}`}
+      class="dialogue-art__c"
+    ></circle>
+  </svg>
+  <slot />
+</div>
+
+<style>
+  .dialogue-art {
+    position: relative;
+    overflow: hidden;
+    background: color-mix(in srgb, var(--accent) 16%, var(--color-white));
+  }
+  .dialogue-art svg {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+  }
+  /* Translucent circles: where they overlap, the colours meet like voices. */
+  .dialogue-art__c {
+    opacity: 0.72;
+  }
+  .dialogue-art__c.is-main {
+    opacity: 0.88;
+  }
+</style>

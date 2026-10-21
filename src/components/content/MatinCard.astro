@@ -1,0 +1,136 @@
+---
+/**
+ * A card in "Latest From Matin": visual, type label, title, date (and place), summary
+ * and a link. The whole card is clickable.
+ */
+import { ArrowRight, CalendarDays, ExternalLink, MapPin } from '@lucide/astro';
+import MatinMedia from './MatinMedia.astro';
+import type { MatinItem } from '@/lib/matin';
+import type { UiLang } from '@/i18n/routes';
+import { useTranslations } from '@/i18n/ui';
+import { ctaFor } from '@/lib/matinLabels';
+
+interface Props {
+  item: MatinItem;
+  lang: UiLang;
+}
+const { item, lang } = Astro.props;
+const t = useTranslations(lang);
+const cta = item.ctaLabel ?? ctaFor(item.type, t);
+---
+
+<article class="matin-card card card-lift">
+  <MatinMedia
+    item={item}
+    sizes="(min-width: 64rem) 28rem, (min-width: 48rem) 45vw, 92vw"
+    class="matin-card__media"
+  />
+  <div class="matin-card__body">
+    <p class="matin-card__type">{t(`matinTypes.${item.type}`)}</p>
+    <h3 class="matin-card__title">
+      <a
+        href={item.url}
+        class="matin-card__link"
+        target={item.external ? '_blank' : undefined}
+        rel={item.external ? 'noopener noreferrer' : undefined}
+      >
+        {item.title}
+        {item.external && <span class="sr-only">{t('a11y.externalLink')}</span>}
+      </a>
+    </h3>
+    <ul class="matin-card__meta">
+      <li>
+        <CalendarDays size={17} aria-hidden="true" />
+        <time datetime={item.datetime}>{item.when}</time>
+      </li>
+      {item.location && (
+        <li>
+          <MapPin size={17} aria-hidden="true" />
+          <span>{item.location}</span>
+        </li>
+      )}
+    </ul>
+    <p class="matin-card__summary">{item.summary}</p>
+    <span class="matin-card__cta" aria-hidden="true">
+      {cta}
+      {item.external ? <ExternalLink size={17} /> : <ArrowRight size={18} class="flip-rtl" />}
+    </span>
+  </div>
+</article>
+
+<style>
+  .matin-card {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    overflow: hidden;
+  }
+  .matin-card :global(.matin-card__media) {
+    aspect-ratio: 16 / 10;
+  }
+  .matin-card__body {
+    display: flex;
+    flex: 1;
+    flex-direction: column;
+    gap: 0.75rem;
+    padding: 1.5rem 1.75rem 1.75rem;
+  }
+  /* Type label: deep terracotta on white (6.4:1). */
+  .matin-card__type {
+    font-family: var(--font-display);
+    font-size: 0.875rem;
+    font-weight: 800;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--color-terracotta-deep);
+  }
+  .matin-card__title {
+    font-size: clamp(1.3rem, 1.15rem + 0.5vw, 1.55rem);
+    font-weight: 800;
+    line-height: 1.25;
+    text-wrap: balance;
+  }
+  .matin-card__link {
+    color: var(--color-primary);
+    text-decoration: none;
+  }
+  .matin-card__link::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+  }
+  .matin-card:hover .matin-card__link {
+    text-decoration: underline;
+    text-decoration-color: var(--color-gold);
+  }
+  .matin-card__meta {
+    display: grid;
+    gap: 0.35rem;
+    font-weight: 700;
+    color: var(--color-primary);
+  }
+  .matin-card__meta li {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.5rem;
+  }
+  .matin-card__meta :global(svg) {
+    flex-shrink: 0;
+    margin-top: 0.25rem;
+  }
+  .matin-card__summary {
+    font-size: 1.0625rem;
+    line-height: 1.6;
+  }
+  .matin-card__cta {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.45rem;
+    margin-top: auto;
+    padding-top: 0.5rem;
+    font-family: var(--font-display);
+    font-weight: 800;
+    color: var(--color-primary);
+  }
+</style>

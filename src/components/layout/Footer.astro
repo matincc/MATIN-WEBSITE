@@ -1,12 +1,12 @@
 ---
 import { MapPin, Phone, Mail, Clock } from '@lucide/astro';
 import Lockup from '@/components/brand/Lockup.astro';
-import LeafRule from '@/components/brand/LeafRule.astro';
+import MontrealSkyline from '@/components/brand/MontrealSkyline.astro';
 import SocialLinks from '@/components/ui/SocialLinks.astro';
 import NewsletterForm from '@/components/forms/NewsletterForm.astro';
 import { href, type RouteKey, type UiLang } from '@/i18n/routes';
 import { useTranslations, pick } from '@/i18n/ui';
-import { emptySections, forLang, getSettings, getTeam } from '@/lib/content';
+import { emptySections, getSettings } from '@/lib/content';
 
 interface Props {
   lang: UiLang;
@@ -18,10 +18,10 @@ const s = await getSettings();
 
 // Pages without content yet (empty gallery, FAQ…) are left out rather than linked.
 const empty = await emptySections();
-const hasTeam = forLang(await getTeam(), lang).length > 0;
 const explore = (
   [
     'about',
+    'team',
     'events',
     'news',
     'programs',
@@ -33,7 +33,6 @@ const explore = (
   ] as RouteKey[]
 ).filter((k) => !empty.has(k as 'gallery' | 'faq' | 'resources'));
 const links = explore.map((key) => ({ href: href(key, lang), label: t(`nav.${key}`) }));
-if (hasTeam) links.splice(1, 0, { href: `${href('about', lang)}#team`, label: t('nav.team') });
 const legal: RouteKey[] = ['privacy', 'terms', 'accessibility'];
 const year = new Intl.NumberFormat(lang === 'fa' ? 'fa-IR' : 'en-CA', {
   useGrouping: false,
@@ -47,7 +46,7 @@ const mapsUrl =
 const hasContact = Boolean(a || s.phone || s.email);
 ---
 
-<footer class="on-dark bg-primary text-white">
+<footer class="footer on-terracotta text-white">
   <div class="mosaic footer-mosaic" aria-hidden="true">
     <span></span>
     <span></span>
@@ -59,8 +58,8 @@ const hasContact = Boolean(a || s.phone || s.email);
       <div class="mb-6">
         <Lockup lang={lang} variant="dark" />
       </div>
-      <p class="mb-3 font-display text-2xl font-bold text-white">{t('brand.tagline')}</p>
-      <p class="max-w-md text-[1.0625rem] leading-relaxed text-cream">{t('footer.about')}</p>
+      <p class="mb-3 font-display text-[1.75rem] font-extrabold text-white">{t('brand.tagline')}</p>
+      <p class="max-w-md text-[1.1875rem] leading-relaxed text-cream">{t('footer.about')}</p>
       <SocialLinks lang={lang} social={s.social} class="mt-6" />
     </div>
 
@@ -78,14 +77,14 @@ const hasContact = Boolean(a || s.phone || s.email);
     </nav>
 
     {(hasContact || s.hours) && (
-      <div class="lg:col-span-3">
+      <div class:list={[showNewsletter ? 'lg:col-span-2' : 'lg:col-span-3']}>
         {hasContact && (
           <>
             <h2 class="footer-title">{t('footer.contactTitle')}</h2>
-            <address class="mb-8 space-y-3 text-[1.0625rem] not-italic">
+            <address class="mb-8 space-y-3 text-[1.1875rem] not-italic">
               {a && (
                 <p class="flex gap-3">
-                  <MapPin size={18} class="mt-1 shrink-0 text-gold" aria-hidden="true" />
+                  <MapPin size={18} class="mt-1 shrink-0 text-cream" aria-hidden="true" />
                   <a href={mapsUrl} class="footer-link" target="_blank" rel="noopener noreferrer">
                     {a.street}
                     <br />
@@ -96,7 +95,7 @@ const hasContact = Boolean(a || s.phone || s.email);
               )}
               {s.phone && (
                 <p class="flex gap-3">
-                  <Phone size={18} class="mt-1 shrink-0 text-gold" aria-hidden="true" />
+                  <Phone size={18} class="mt-1 shrink-0 text-cream" aria-hidden="true" />
                   <a href={`tel:${s.phone.replace(/[^\d+]/g, '')}`} class="footer-link" dir="ltr">
                     {s.phone}
                   </a>
@@ -104,7 +103,7 @@ const hasContact = Boolean(a || s.phone || s.email);
               )}
               {s.email && (
                 <p class="flex gap-3">
-                  <Mail size={18} class="mt-1 shrink-0 text-gold" aria-hidden="true" />
+                  <Mail size={18} class="mt-1 shrink-0 text-cream" aria-hidden="true" />
                   <a href={`mailto:${s.email}`} class="footer-link break-all" dir="ltr">
                     {s.email}
                   </a>
@@ -116,8 +115,8 @@ const hasContact = Boolean(a || s.phone || s.email);
         {s.hours && (
           <>
             <h2 class="footer-title">{t('footer.hoursTitle')}</h2>
-            <p class="flex gap-3 text-[1.0625rem] whitespace-pre-line">
-              <Clock size={18} class="mt-1 shrink-0 text-gold" aria-hidden="true" />
+            <p class="flex gap-3 text-[1.1875rem] whitespace-pre-line">
+              <Clock size={18} class="mt-1 shrink-0 text-cream" aria-hidden="true" />
               <span>{pick(s.hours, lang)}</span>
             </p>
           </>
@@ -134,40 +133,41 @@ const hasContact = Boolean(a || s.phone || s.email);
         ]}
       >
         <h2 class="footer-title">{t('footer.newsletterTitle')}</h2>
-        <p class="mb-4 text-[1.0625rem] text-cream">{t('newsletter.text')}</p>
+        <p class="mb-4 text-[1.125rem] text-cream">{t('newsletter.text')}</p>
         <NewsletterForm lang={lang} compact id="footer-newsletter" />
       </div>
     )}
   </div>
 
-  <div class="container-site">
-    <LeafRule class="mx-auto max-w-none" />
-  </div>
-  <div class="container-site flex flex-col gap-4 py-7 text-[0.9375rem] md:flex-row md:items-center md:justify-between">
-    <p>
-      © {year} {t('meta.siteName')}. {t('footer.rights')}
-      {s.charityNumber && (
-        <span class="block md:inline">
-          {t('footer.charity')} {s.charityNumber}
-        </span>
-      )}
-    </p>
-    <nav aria-label={t('a11y.legalNav')}>
-      <ul class="flex flex-wrap gap-x-5 gap-y-2">
-        {legal.map((key) => (
+  <!-- Montréal on the horizon: the city stands on the copyright bar. -->
+  <MontrealSkyline class="mt-4" />
+  <div class="footer-base">
+    <div class="container-site flex flex-col gap-4 py-7 text-[1.0625rem] md:flex-row md:items-center md:justify-between">
+      <p>
+        © {year} {t('meta.siteName')}. {t('footer.rights')}
+        {s.charityNumber && (
+          <span class="block md:inline">
+            {t('footer.charity')} {s.charityNumber}
+          </span>
+        )}
+      </p>
+      <nav aria-label={t('a11y.legalNav')}>
+        <ul class="flex flex-wrap gap-x-5 gap-y-2">
+          {legal.map((key) => (
+            <li>
+              <a href={href(key, lang)} class="footer-link">
+                {t(`nav.${key}`)}
+              </a>
+            </li>
+          ))}
           <li>
-            <a href={href(key, lang)} class="footer-link">
-              {t(`nav.${key}`)}
-            </a>
+            <button type="button" class="footer-link cursor-pointer" data-consent-open>
+              {t('consent.manage')}
+            </button>
           </li>
-        ))}
-        <li>
-          <button type="button" class="footer-link cursor-pointer" data-consent-open>
-            {t('consent.manage')}
-          </button>
-        </li>
-      </ul>
-    </nav>
+        </ul>
+      </nav>
+    </div>
   </div>
 </footer>
 
@@ -180,27 +180,35 @@ const hasContact = Boolean(a || s.phone || s.email);
   .footer-mosaic > span {
     border-radius: 0;
   }
+  /* Warm footer (owner's request, Oct 2026): deep terracotta, white text 6.4:1. */
+  .footer {
+    background: var(--color-terracotta-deep);
+  }
+  /* Darker warm brown under the skyline; white text 9:1 or more. */
+  .footer-base {
+    background: color-mix(in srgb, var(--color-terracotta-deep) 62%, black);
+  }
   .footer-title {
     font-family: var(--font-display);
-    font-size: 1.3125rem;
+    font-size: 1.5rem;
     font-weight: 800;
     color: var(--color-white);
     margin-bottom: 1rem;
   }
-  /* White on navy 11.9:1; mustard underline on hover. */
+  /* White on deep terracotta 6.4:1; cream underline on hover. */
   .footer-link {
     color: var(--color-white);
     text-decoration: none;
   }
   .footer-link:hover {
     text-decoration: underline;
-    text-decoration-color: var(--color-gold);
+    text-decoration-color: var(--color-cream);
   }
   .footer-links {
     display: grid;
     grid-template-columns: repeat(2, minmax(0, max-content));
     column-gap: 2.5rem;
     row-gap: 0.55rem;
-    font-size: 1.0625rem;
+    font-size: 1.1875rem;
   }
 </style>

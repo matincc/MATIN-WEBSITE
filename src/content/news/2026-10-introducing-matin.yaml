@@ -1,6 +1,5 @@
-# First official article. DRAFT: review all three languages, choose an image if desired,
-# set `date` to the publication day, then remove `draft: true`.
-date: 2026-10-17
+# First official article, published on October 21, 2026 (approved by Matin).
+date: 2026-10-21
 author:
   fr: 'Institut interculturel Matin'
   en: 'Matin Intercultural Institute'
@@ -127,4 +126,3 @@ body:
 
     گفت‌وگوی بعدی با شما آغاز می‌شود.
 faReviewed: true
-draft: true

@@ -1,6 +1,7 @@
 ---
 import '@/styles/global.css';
 import nunito from '@fontsource-variable/nunito/files/nunito-latin-wght-normal.woff2?url';
+import dmSans from '@fontsource-variable/dm-sans/files/dm-sans-latin-wght-normal.woff2?url';
 import playfair800 from '@fontsource/playfair-display/files/playfair-display-latin-800-normal.woff2?url';
 import SEO from '@/components/layout/SEO.astro';
 import Header from '@/components/layout/Header.astro';
@@ -59,6 +60,7 @@ const rssLang = lang === 'fa' ? 'en' : lang;
     <meta name="theme-color" content="#193A53" />
     <meta name="format-detection" content="telephone=no" />
     <link rel="preload" href={nunito} as="font" type="font/woff2" crossorigin />
+    <link rel="preload" href={dmSans} as="font" type="font/woff2" crossorigin />
     <link rel="preload" href={playfair800} as="font" type="font/woff2" crossorigin />
     <link rel="icon" type="image/png" sizes="32x32" href="/icons/favicon-32.png" />
     <link rel="icon" type="image/png" sizes="16x16" href="/icons/favicon-16.png" />

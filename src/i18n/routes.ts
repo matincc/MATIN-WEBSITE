@@ -12,6 +12,7 @@ export const routes = {
   home: { fr: '', en: '' },
   about: { fr: 'a-propos', en: 'about' },
   president: { fr: 'a-propos/reza-moafi', en: 'about/reza-moafi' },
+  team: { fr: 'equipe', en: 'team' },
   programs: { fr: 'programmes', en: 'programs' },
   events: { fr: 'evenements', en: 'events' },
   eventsArchive: { fr: 'evenements/archives', en: 'events/past' },
@@ -71,6 +72,7 @@ export const faRoutes: Partial<Record<RouteKey, string>> = {
   home: '',
   about: 'about',
   president: 'about/reza-moafi',
+  team: 'team',
   getInvolved: 'get-involved',
   contact: 'contact',
 };

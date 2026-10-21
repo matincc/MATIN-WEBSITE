@@ -4,7 +4,7 @@ import Lockup from '@/components/brand/Lockup.astro';
 import LangToggle from './LangToggle.astro';
 import { href, type Alternates, type RouteKey, type UiLang } from '@/i18n/routes';
 import { useTranslations } from '@/i18n/ui';
-import { emptySections, forLang, getTeam } from '@/lib/content';
+import { emptySections } from '@/lib/content';
 
 interface Props {
   lang: UiLang;
@@ -15,6 +15,7 @@ const t = useTranslations(lang);
 
 const items: RouteKey[] = [
   'about',
+  'team',
   'programs',
   'events',
   'news',
@@ -29,21 +30,29 @@ const links = items
   .map((key) => ({ key, href: href(key, lang), label: t(`nav.${key}`) }));
 const aboutHref = href('about', lang);
 // Sub-links of "About": anchors on the About page. The Persian About page has the
-// values and team sections only (the other texts are not translated yet).
-// "Our team" appears once at least one member is published.
-const hasTeam = forLang(await getTeam(), lang).length > 0;
+// values, the story and the founder's note (the other texts are not translated yet).
 const aboutLinks = [
   { id: 'who-we-are', label: t('nav.whoWeAre') },
   { id: 'mission', label: t('nav.mission') },
   { id: 'vision', label: t('nav.vision') },
-  { id: 'our-president', label: t('nav.ourPresident') },
   { id: 'values', label: t('nav.values') },
   { id: 'story', label: t('nav.story') },
-  ...(hasTeam ? [{ id: 'team', label: t('nav.team') }] : []),
   { id: 'president', label: t('nav.president') },
 ]
-  .filter((l) => lang !== 'fa' || ['our-president', 'values', 'team'].includes(l.id))
+  .filter((l) => lang !== 'fa' || ['values', 'story', 'president'].includes(l.id))
   .map((l) => ({ ...l, href: `${aboutHref}#${l.id}` }));
+// Sub-links of "Our Team": the President and the team, on the Our Team page.
+const teamHref = href('team', lang);
+const teamLinks = [
+  { id: 'our-president', label: t('nav.teamPresident') },
+  { id: 'team', label: t('nav.teamMembers') },
+].map((l) => ({ ...l, href: `${teamHref}#${l.id}` }));
+// Menu items that open a dropdown.
+const subMenus: Partial<Record<RouteKey, { id: string; label: string; links: typeof aboutLinks }>> =
+  {
+    about: { id: 'about-submenu', label: t('a11y.aboutSubmenu'), links: aboutLinks },
+    team: { id: 'team-submenu', label: t('a11y.teamSubmenu'), links: teamLinks },
+  };
 
 const current = Astro.url.pathname;
 const isActive = (url: string) => !url.includes('?') && current.startsWith(url);
@@ -56,7 +65,7 @@ const isActive = (url: string) => !url.includes('?') && current.startsWith(url);
     <nav aria-label={t('a11y.mainNav')} class="desktop-nav">
       <ul class="flex items-center gap-1">
         {links.map((l) =>
-          l.key === 'about' ? (
+          subMenus[l.key] ? (
             <li class="has-sub" data-submenu>
               <div class="flex items-center">
                 <a
@@ -70,15 +79,15 @@ const isActive = (url: string) => !url.includes('?') && current.startsWith(url);
                   type="button"
                   class="sub-toggle"
                   aria-expanded="false"
-                  aria-controls="about-submenu"
+                  aria-controls={subMenus[l.key]!.id}
                   data-submenu-toggle
                 >
                   <ChevronDown size={18} aria-hidden="true" />
-                  <span class="sr-only">{t('a11y.aboutSubmenu')}</span>
+                  <span class="sr-only">{subMenus[l.key]!.label}</span>
                 </button>
               </div>
-              <ul id="about-submenu" class="submenu" hidden data-submenu-list>
-                {aboutLinks.map((s) => (
+              <ul id={subMenus[l.key]!.id} class="submenu" hidden data-submenu-list>
+                {subMenus[l.key]!.links.map((s) => (
                   <li>
                     <a href={s.href} class="submenu-link">
                       {s.label}
@@ -150,9 +159,9 @@ const isActive = (url: string) => !url.includes('?') && current.startsWith(url);
             >
               {l.label}
             </a>
-            {l.key === 'about' && (
+            {subMenus[l.key] && (
               <ul class="mobile-sub">
-                {aboutLinks.map((s) => (
+                {subMenus[l.key]!.links.map((s) => (
                   <li>
                     <a href={s.href} class="mobile-sublink" data-menu-anchor>
                       {s.label}
@@ -274,12 +283,21 @@ const isActive = (url: string) => !url.includes('?') && current.startsWith(url);
     }
   }
 
-  /* The full menu needs this width at 20px (French, the longest, needs about
-     1405px); below it, the mobile menu is used. */
+  /* The full menu is shown only where it fits on one row (measured, with "Our Team"):
+     English and Persian from 90rem; French, the longest, from 100rem. Below that,
+     the menu button opens the full-screen menu. */
   .desktop-nav {
     display: none;
   }
-  @media (min-width: 89rem) {
+  @media (min-width: 90rem) {
+    :global(html:not([lang='fr-CA'])) .desktop-nav {
+      display: block;
+    }
+    :global(html:not([lang='fr-CA'])) .menu-btn.mobile-only {
+      display: none;
+    }
+  }
+  @media (min-width: 100rem) {
     .desktop-nav {
       display: block;
     }
@@ -292,7 +310,8 @@ const isActive = (url: string) => !url.includes('?') && current.startsWith(url);
     position: relative;
     display: block;
     padding: 0.55rem 0.75rem;
-    font-weight: 600;
+    font-family: var(--font-display);
+    font-weight: 700;
     font-size: 1.25rem; /* 20px */
     white-space: nowrap;
     color: var(--color-primary);
@@ -300,6 +319,24 @@ const isActive = (url: string) => !url.includes('?') && current.startsWith(url);
     border-radius: 999px;
   }
   /* Thin gold underline: grows in on hover, stays on the current page. */
+  /* Larger menu (owner's request, Oct 2026): 22px wherever it still fits on one row:
+     English and Persian from 90rem; French at 20px from 100rem and 22px from 108rem. */
+  @media (min-width: 90rem) {
+    :global(html:not([lang='fr-CA'])) .nav-link {
+      padding-inline: 0.6rem;
+      font-size: 1.375rem; /* 22px */
+    }
+  }
+  @media (min-width: 100rem) {
+    .nav-link {
+      padding-inline: 0.6rem;
+    }
+  }
+  @media (min-width: 108rem) {
+    .nav-link {
+      font-size: 1.375rem;
+    }
+  }
   .nav-link::after {
     content: '';
     position: absolute;
@@ -358,8 +395,9 @@ const isActive = (url: string) => !url.includes('?') && current.startsWith(url);
     display: block;
     padding: 0.6rem 0.9rem;
     border-radius: 0.6rem;
-    font-weight: 600;
-    font-size: 1rem;
+    font-family: var(--font-display);
+    font-weight: 700;
+    font-size: 1.125rem;
     color: var(--color-ink);
     text-decoration: none;
   }

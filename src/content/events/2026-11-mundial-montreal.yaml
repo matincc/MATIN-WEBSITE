@@ -25,3 +25,9 @@ registrationUrl: https://www.mundialmontreal.com/billetterie/
 sourceUrl: https://www.mundialmontreal.com
 lastVerified: '2026-10-17'
 featuredUntil: '2026-11-21'
+# Official 2026 campaign visual, from mundialmontreal.com, used to present the event
+# and link to it. Replace if the organizer asks.
+image: ../../assets/uploads/events/mundial-montreal-2026/mundial-2026.jpg
+imageAlt:
+  fr: 'Visuel officiel de Mundial Montréal 2026 : cinq artistes aux tenues colorées sur fond bleu vif.'
+  en: 'Official Mundial Montréal 2026 visual: five artists in colourful outfits on a bright blue background.'
