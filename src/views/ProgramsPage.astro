@@ -47,7 +47,7 @@ const present = [...new Set(programs.map((p) => p.data.category))];
         options={present.map((c) => ({ value: c, label: t(`categories.${c}`) }))}
       />
     )}
-    {programs.length === 0 && <p class="programs-empty">{t('programs.empty')}</p>}
+    {programs.length === 0 && <p class="empty-state">{t('programs.empty')}</p>}
     <ul id="program-list" class="grid gap-x-8 gap-y-12 md:grid-cols-2 lg:grid-cols-3">
       {programs.map((program) => (
         <li data-category={program.data.category}>
@@ -55,20 +55,8 @@ const present = [...new Set(programs.map((p) => p.data.category))];
         </li>
       ))}
     </ul>
-    <p class="card p-8 text-center" data-filter-empty="program-list" hidden>
+    <p class="empty-state" data-filter-empty="program-list" hidden>
       {t('programs.noResults')}
     </p>
   </section>
 </PageLayout>
-
-<style>
-  .programs-empty {
-    max-width: 52rem;
-    padding: 1.25rem 1.5rem;
-    border: 1px solid var(--color-line);
-    border-inline-start: 4px solid var(--color-gold);
-    border-radius: 1rem;
-    background: var(--color-white);
-    font-size: 1.125rem;
-  }
-</style>

@@ -95,14 +95,17 @@ const en: Dictionary = {
     involvedEyebrow: 'Get involved',
     involvedTitle: 'The next conversation starts with you',
     involvedText:
-      'Matin brings together people, organizations, and ideas to explore culture, intercultural dialogue, and community life. As we develop our first initiatives, we welcome perspectives, partnerships, and contributions that can help shape our work in Montréal and Québec.',
+      "At Matin, we believe meaningful connections begin with a conversation. We bring people, communities, and ideas together to share experiences, explore cultures, and create new possibilities. Whether you're interested in collaborating, participating, or simply staying in touch, we'd love to hear from you.",
     involvedPrimary: 'Get Involved',
     involvedSecondary: 'Stay Connected',
+    involvedPhotoAlt:
+      'A small group seated in a circle, in conversation, with ideas written on notes on the floor.',
   },
   newsletter: {
     eyebrow: 'Cultures in Dialogue',
     title: 'Stay connected with Matin',
-    text: "Receive occasional updates on Matin's initiatives, selected cultural events, new perspectives, and opportunities to participate or collaborate.",
+    text: "Good conversations don't have to end here. Stay in touch for news, cultural stories, upcoming activities, and opportunities to connect with the Matin community.",
+    privacyNote: 'Only occasional updates from Matin. Unsubscribe anytime.',
     emailLabel: 'Email address',
     emailPlaceholder: 'Your email address',
     consent: 'I agree to receive occasional updates from Matin. See our',
@@ -398,6 +401,7 @@ const en: Dictionary = {
   },
   legal: {
     updated: 'Last updated: {date}',
+    onThisPage: 'On this page',
     officerFallback: 'Write to us through our [Contact page]({href}).',
   },
   notFound: {

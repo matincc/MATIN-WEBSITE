@@ -11,7 +11,7 @@ import type { ImageMetadata } from 'astro';
 import tamtams from '@/assets/photos/tamtams.jpg';
 import library from '@/assets/photos/library.jpg';
 import publicart from '@/assets/photos/publicart.jpg';
-import nuitblanche from '@/assets/photos/nuitblanche.jpg';
+import dialogueCircle from '@/assets/photos/dialogue-circle.jpg';
 import placejc from '@/assets/photos/placejc.jpg';
 
 export interface Photo {
@@ -23,6 +23,7 @@ export interface Photo {
 
 const CC_BY_SA_2 = 'https://creativecommons.org/licenses/by-sa/2.0/';
 const CC_BY_SA_3 = 'https://creativecommons.org/licenses/by-sa/3.0/';
+const CC_BY_SA_4 = 'https://creativecommons.org/licenses/by-sa/4.0/';
 const CC_BY_2 = 'https://creativecommons.org/licenses/by/2.0/';
 
 export const photos = {
@@ -60,16 +61,16 @@ export const photos = {
         'https://commons.wikimedia.org/wiki/File:Alexandre_Castonguay,_Roue_de_v%C3%A9lo,_2017_(36606693183).jpg',
     },
   },
-  /** Nuit blanche, Montréal en Lumière, Quartier des spectacles. */
-  nuitblanche: {
-    src: nuitblanche,
-    focus: '45% 60%',
+  /** A discussion circle at Wikimania 2017 in Montréal: people seated in a circle in
+      conversation, ideas written on notes on the floor. */
+  dialogueCircle: {
+    src: dialogueCircle,
+    focus: '50% 22%',
     credit: {
-      author: 'Matias Garabedian',
-      license: 'CC BY-SA 2.0',
-      licenseUrl: CC_BY_SA_2,
-      source:
-        'https://commons.wikimedia.org/wiki/File:Nuit_blanche_%C3%A0_Montr%C3%A9al_-_MONTR%C3%89AL_EN_LUMI%C3%88RE_(12889789765).jpg',
+      author: 'Iñaki LL',
+      license: 'CC BY-SA 4.0',
+      licenseUrl: CC_BY_SA_4,
+      source: 'https://commons.wikimedia.org/wiki/File:Strategy_discussion_1_WM_2017.jpg',
     },
   },
   /** Place Jacques-Cartier, Old Montréal, on a sunny day. */

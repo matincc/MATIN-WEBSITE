@@ -97,14 +97,17 @@ const fr = {
     involvedEyebrow: "S'impliquer",
     involvedTitle: 'La prochaine conversation commence avec vous',
     involvedText:
-      'Matin réunit des personnes, des organismes et des idées autour de la culture, du dialogue interculturel et de la vie des communautés. Alors que nous développons nos premières initiatives, nous accueillons les points de vue, les partenariats et les contributions qui peuvent aider à façonner notre travail à Montréal et au Québec.',
+      "Chez Matin, nous croyons que les liens significatifs commencent par une conversation. Nous rassemblons des personnes, des communautés et des idées pour partager des expériences, explorer les cultures et créer de nouvelles possibilités. Que vous souhaitiez collaborer, participer ou simplement rester en contact, nous serions ravis d'avoir de vos nouvelles.",
     involvedPrimary: "S'impliquer",
     involvedSecondary: 'Rester en contact',
+    involvedPhotoAlt:
+      'Un petit groupe assis en cercle, en pleine conversation, avec des idées notées sur des papillons au sol.',
   },
   newsletter: {
     eyebrow: 'Cultures en dialogue',
     title: 'Restez en contact avec Matin',
-    text: "Recevez des nouvelles ponctuelles sur les initiatives de Matin, une sélection d'événements culturels, de nouveaux regards et des occasions de participer ou de collaborer.",
+    text: "Les belles conversations n'ont pas à s'arrêter ici. Restez en contact pour recevoir nos nouvelles, des récits culturels, nos activités à venir et des occasions de rejoindre la communauté de Matin.",
+    privacyNote: 'Seulement des nouvelles occasionnelles de Matin. Désabonnement en tout temps.',
     emailLabel: 'Adresse courriel',
     emailPlaceholder: 'Votre adresse courriel',
     consent: "J'accepte de recevoir des nouvelles ponctuelles de Matin. Voir notre",
@@ -398,6 +401,7 @@ const fr = {
     contactUs: 'Contactez-nous',
   },
   legal: {
+    onThisPage: 'Sur cette page',
     updated: 'Dernière mise à jour : {date}',
     officerFallback: 'Écrivez-nous par notre [page Contact]({href}).',
   },

@@ -43,7 +43,7 @@ const videos = albums.flatMap((a) => a.data.videos);
     <h2 id="albums-title" class="sr-only">
       {t('gallery.albums')}
     </h2>
-    {albums.length === 0 && <p class="card p-8 text-center text-lg">{t('gallery.empty')}</p>}
+    {albums.length === 0 && <p class="empty-state">{t('gallery.empty')}</p>}
     <div class="space-y-20">
       {albumsWithLarge.map(({ album, photos }) => (
         <section aria-labelledby={`album-${album.id}`}>

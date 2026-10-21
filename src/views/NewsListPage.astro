@@ -94,7 +94,7 @@ const metaTitle =
         )}
       </>
     ) : (
-      <p class="card p-8 text-center text-muted">{t('news.empty')}</p>
+      <p class="empty-state">{t('news.empty')}</p>
     )}
 
     <Pagination lang={lang} current={current} last={last} href={(n) => pageHref(lang, n)} />

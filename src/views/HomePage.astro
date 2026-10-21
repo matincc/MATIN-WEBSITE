@@ -5,7 +5,7 @@
  * The photographs are openly licensed views of Montréal (see src/lib/photos.ts), shown
  * with their credits; they illustrate the themes, they do not document Matin activities.
  */
-import { ArrowRight, Eye, HeartHandshake, Target } from '@lucide/astro';
+import { ArrowRight, Eye, HeartHandshake, LockKeyhole, Target } from '@lucide/astro';
 import { Picture } from 'astro:assets';
 import BaseLayout from '@/layouts/BaseLayout.astro';
 import HomeHero from '@/components/brand/HomeHero.astro';
@@ -164,7 +164,7 @@ const whoCards = [
             ))}
           </ul>
         )}
-        <p class="empty-line" data-upcoming-empty hidden={upcoming.length > 0 || !!spotlight}>
+        <p class="empty-state" data-upcoming-empty hidden={upcoming.length > 0 || !!spotlight}>
           {t('home.eventsEmpty')}
         </p>
       </div>
@@ -198,23 +198,23 @@ const whoCards = [
     </section>
   )}
 
-  <!-- Get involved: warm terracotta band with a photo of Montréal's cultural life -->
+  <!-- Get involved: warm terracotta band, a people-centred photo beside the invitation -->
   <section class="involved on-terracotta" aria-labelledby="involved-title">
     <div class="container-site involved__grid">
       <figure class="involved__figure" data-reveal>
         <div class="involved__photo">
           <Picture
-            src={photos.nuitblanche.src}
-            alt=""
+            src={photos.dialogueCircle.src}
+            alt={t('home.involvedPhotoAlt')}
             formats={['avif', 'webp']}
             widths={[640, 960, 1280]}
             sizes="(min-width: 64rem) 40rem, 92vw"
-            style={`object-position:${photos.nuitblanche.focus}`}
+            style={`object-position:${photos.dialogueCircle.focus}`}
           />
         </div>
         <span class="involved__block" aria-hidden="true"></span>
         <figcaption>
-          <PhotoCredit credit={photos.nuitblanche.credit} class="involved__credit" />
+          <PhotoCredit credit={photos.dialogueCircle.credit} class="involved__credit" />
         </figcaption>
       </figure>
       <div class="involved__text">
@@ -235,13 +235,14 @@ const whoCards = [
           </a>
           <a href="#newsletter" class="btn btn-outline">
             {t('home.involvedSecondary')}
+            <ArrowRight size={18} class="flip-rtl" aria-hidden="true" />
           </a>
         </div>
       </div>
     </div>
   </section>
 
-  <!-- Newsletter: one wide card, invitation on teal, form on white -->
+  <!-- Newsletter: one warm card, invitation on one side, the form on the other -->
   <section
     id="newsletter"
     class="scroll-mt-24 bg-paper py-14 sm:py-20"
@@ -249,10 +250,11 @@ const whoCards = [
   >
     <div class="container-site">
       <div class="newsletter-card">
-        <div class="newsletter-card__intro on-teal">
+        <div class="newsletter-card__intro">
           <SectionHeader
             id="newsletter-title"
             eyebrow={t('newsletter.eyebrow')}
+            eyebrowTone="terracotta"
             title={t('newsletter.title')}
             align="start"
             class="mb-5"
@@ -267,6 +269,10 @@ const whoCards = [
         </div>
         <div class="newsletter-card__form">
           <NewsletterForm lang={lang} id="home-newsletter" />
+          <p class="newsletter-card__note">
+            <LockKeyhole size={18} aria-hidden="true" />
+            {t('newsletter.privacyNote')}
+          </p>
         </div>
       </div>
     </div>
@@ -281,17 +287,6 @@ const whoCards = [
 </script>
 
 <style>
-  .empty-line {
-    max-width: 52rem;
-    padding: 1.25rem 1.5rem;
-    border-radius: 1rem;
-    font-size: 1.125rem;
-    background: var(--color-white);
-    color: var(--color-ink);
-    border: 1px solid var(--color-line);
-    border-inline-start: 4px solid var(--color-gold);
-  }
-
   /* ---------- Who we are ---------- */
   .who-grid {
     display: grid;
@@ -443,7 +438,7 @@ const whoCards = [
   @media (min-width: 64rem) {
     .involved__grid {
       grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
-      gap: clamp(3.5rem, 2rem + 4vw, 6.5rem);
+      gap: clamp(3rem, 1.5rem + 3vw, 5rem);
     }
   }
   .involved__figure {
@@ -452,7 +447,7 @@ const whoCards = [
   .involved__photo {
     position: relative;
     z-index: 1;
-    aspect-ratio: 4 / 3;
+    aspect-ratio: 3 / 2;
     overflow: hidden;
     border-radius: var(--radius-card);
   }
@@ -485,45 +480,70 @@ const whoCards = [
   }
 
   /* ---------- Newsletter ---------- */
+  /* One warm cream card: the invitation and the form share the same surface, with a
+     terracotta edge; the button is deep teal (white text 6.2:1). */
   .newsletter-card {
     display: grid;
-    max-width: 80rem;
-    margin-inline: auto;
-    overflow: hidden;
-    border: 1px solid var(--color-line);
+    gap: 2.25rem;
+    align-items: center;
+    padding: clamp(2rem, 1.2rem + 3vw, 4rem);
     border-radius: calc(var(--radius-card) * 1.4);
-    background: var(--color-white);
+    border-inline-start: 8px solid var(--color-terracotta);
+    background: var(--color-tint);
   }
   @media (min-width: 56rem) {
     .newsletter-card {
-      grid-template-columns: minmax(0, 1fr) minmax(0, 1.1fr);
+      grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+      gap: clamp(3rem, 1rem + 4vw, 6rem);
     }
   }
-  .newsletter-card__intro {
-    position: relative;
-    padding: clamp(2rem, 1.4rem + 2.5vw, 3.5rem);
-    padding-block-end: clamp(3.5rem, 2.8rem + 2.5vw, 5rem);
-    background: var(--color-teal-deep);
-  }
   .newsletter-card__intro :global(.section-title) {
-    font-size: clamp(1.875rem, 1.4rem + 1.6vw, 2.75rem);
+    font-size: clamp(2rem, 1.5rem + 1.6vw, 3rem);
   }
   .newsletter-card__text {
-    max-width: 34rem;
-    font-size: 1.1875rem;
+    max-width: 36rem;
+    font-size: clamp(1.125rem, 1.05rem + 0.35vw, 1.3125rem);
     line-height: 1.65;
+    color: var(--color-ink);
   }
   .newsletter-card__mosaic {
-    position: absolute;
-    inset-inline-start: clamp(2rem, 1.4rem + 2.5vw, 3.5rem);
-    inset-block-end: clamp(1.5rem, 1.2rem + 1vw, 2.25rem);
     width: 12rem;
+    margin-block-start: 1.75rem;
   }
   .newsletter-card__form {
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    padding: clamp(2rem, 1.4rem + 2.5vw, 3.5rem);
     font-size: 1.0625rem;
+  }
+  /* Field and button on one aligned row, the same height and shape. */
+  .newsletter-card__form :global(.newsletter__label) {
+    font-size: 1.0625rem;
+    color: var(--color-primary);
+  }
+  .newsletter-card__form :global(.newsletter__input) {
+    min-height: 3.5rem;
+    border-color: color-mix(in srgb, var(--color-primary) 30%, transparent);
+    font-size: 1.0625rem;
+  }
+  .newsletter-card__form :global(.newsletter__row .btn-primary) {
+    min-height: 3.5rem;
+    background: var(--color-teal-deep);
+    color: var(--color-white);
+  }
+  .newsletter-card__form :global(.newsletter__row .btn-primary:hover) {
+    background: color-mix(in srgb, var(--color-teal-deep) 82%, black);
+  }
+  .newsletter-card__note {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin-block-start: 1.25rem;
+    padding-block-start: 1.25rem;
+    border-block-start: 1px solid color-mix(in srgb, var(--color-primary) 15%, transparent);
+    font-size: 1rem;
+    font-weight: 500;
+    color: var(--color-ink);
+  }
+  .newsletter-card__note :global(svg) {
+    flex-shrink: 0;
+    color: var(--color-teal-deep);
   }
 </style>

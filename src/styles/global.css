@@ -449,6 +449,29 @@
   .form-status.is-error {
     @apply border-l-4 border-gold bg-tint text-ink;
   }
+  /* One empty-state style for every list that has no entries yet: full content width,
+     a mustard accent on the starting edge, and an optional action at the end. */
+  .empty-state {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem 2rem;
+    padding: 1.5rem 1.75rem;
+    border: 1px solid var(--color-line);
+    border-inline-start: 5px solid var(--color-gold);
+    border-radius: 1rem;
+    background: var(--color-white);
+    color: var(--color-ink);
+    font-size: 1.125rem;
+    line-height: 1.6;
+  }
+  .empty-state[hidden] {
+    display: none;
+  }
+  .empty-state > p {
+    flex: 1 1 22rem;
+  }
   .sr-only-focusable:not(:focus):not(:focus-within) {
     @apply sr-only;
   }
