@@ -53,7 +53,7 @@ const en: Dictionary = {
     team: 'Our Team',
     teamPresident: 'President',
     teamMembers: 'Team',
-    president: 'A Word from Our President',
+    president: 'A Personal Note From Our Founder',
     ourPresident: 'Our President',
   },
   search: {
@@ -281,7 +281,7 @@ const en: Dictionary = {
     vision: 'Our Vision',
     values: 'Our values',
     history: 'Our story',
-    founderTitle: 'A WORD FROM OUR PRESIDENT',
+    founderTitle: 'A Personal Note From Our Founder',
     presidentPhotoAlt: 'Portrait of {name}',
     team: 'Our Team',
     board: 'Board of directors',

@@ -30,7 +30,7 @@ const links = items
   .map((key) => ({ key, href: href(key, lang), label: t(`nav.${key}`) }));
 const aboutHref = href('about', lang);
 // Sub-links of "About": anchors on the About page. The Persian About page has the
-// values section only (the other texts are not translated yet).
+// values, the story and the founder's note (the other texts are not translated yet).
 const aboutLinks = [
   { id: 'who-we-are', label: t('nav.whoWeAre') },
   { id: 'mission', label: t('nav.mission') },
@@ -39,7 +39,7 @@ const aboutLinks = [
   { id: 'story', label: t('nav.story') },
   { id: 'president', label: t('nav.president') },
 ]
-  .filter((l) => lang !== 'fa' || l.id === 'values')
+  .filter((l) => lang !== 'fa' || ['values', 'story', 'president'].includes(l.id))
   .map((l) => ({ ...l, href: `${aboutHref}#${l.id}` }));
 // Sub-links of "Our Team": the President and the team, on the Our Team page.
 const teamHref = href('team', lang);

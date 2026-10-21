@@ -33,7 +33,7 @@ Navy and cream carry the identity. Coral, mustard, teal and terracotta are the "
 
 | Variable | Value | Use |
 | --- | --- | --- |
-| `--matin-blue` | `#193A53` | Deep navy, primary brand color: headings, the "A word from our President" band, main buttons, links, icons, small labels (tokens `primary`, `navy`) |
+| `--matin-blue` | `#193A53` | Deep navy, primary brand color: headings, the "A Personal Note From Our Founder" band, main buttons, links, icons, small labels (tokens `primary`, `navy`) |
 | `--matin-cream` | `#F5EBDD` | Warm cream: alternate section backgrounds and page banners (tokens `tint`, `cream`) |
 | `--matin-paper` | `#FFFCF7` | Warm white: main page background (token `paper`) |
 | `--matin-gold` | `#D8A548` | Mustard gold: thin lines, maple leaves, the homepage tagline, the main button on navy (tokens `gold`, `mustard`) |
@@ -70,7 +70,9 @@ Navy and cream carry the identity. Coral, mustard, teal and terracotta are the "
 - **Inner page banners:** `PageLayout.astro`: cream band, breadcrumbs, large start-aligned title, lede beside it on wide screens, mosaic along the bottom edge.
 - **Photography:** people first: authentic, candid, documentary photos, natural daylight where possible; never artificial-looking corporate stock, never identifiable politicians or public figures, and no food or party imagery. The site currently uses openly licensed Wikimedia Commons photos of Montréal's cultural life, all listed in `src/lib/photos.ts`. They illustrate themes and are NOT presented as Matin activities: each is always shown with its credit (`PhotoCredit.astro`: author, licence and source links). **To replace one** with a Matin photo, add the file to `src/assets/photos/`, point that entry's `src` at it and update its `credit`; every page using it follows. Illustrative photos use `alt=""`.
 - **Footer (owner's request, Oct 2026):** warm, not navy: deep terracotta (`on-terracotta`, white text, cream icons) with larger text (about 19px), the four-color mosaic on top, and a quiet Montréal skyline silhouette (`MontrealSkyline.astro`: Mont-Royal, downtown, the Olympic Stadium tower, the Jacques-Cartier Bridge) in a darker warm brown, standing on the copyright bar of the same color.
-- **Header menu:** About (dropdown: Who We Are, Mission, Vision, Values, Story, A Word from Our President), Our Team (dropdown: President, Team), Programs, Events, News & Insights, Get Involved, Contact. The full menu shows only where it fits on one row (English and Persian from 90rem at 22px; French from 100rem at 20px, 22px from 108rem); below that, the menu button. Re-measure if an item is added: the page must never scroll sideways.
+- **Header menu:** About (dropdown: Who We Are, Mission, Vision, Values, Story, A Personal Note From Our Founder), Our Team (dropdown: President, Team), Programs, Events, News & Insights, Get Involved, Contact. The full menu shows only where it fits on one row (English and Persian from 90rem at 22px; French from 100rem at 20px, 22px from 108rem); below that, the menu button. Re-measure if an item is added: the page must never scroll sideways.
+- **Our Story** (About): a timeline built from `history` in `about.yaml`, one entry per real, approved milestone, oldest first (paragraphs separated by a blank line); add an entry to extend it, no design change needed. Large terracotta year (Persian digits on the Persian page), terracotta marker, wide white card with a 52rem reading measure.
+- **A Personal Note From Our Founder** (About): navy band, a centred letter of about 52rem, gold quotation mark, the message paragraphs from `president.message`, signed with `displayName` and `signature`.
 - **Our Team page** (`TeamPage.astro`, owner's request, Oct 2026): the President ("Meet Reza Moafi": portrait in its own column, staying in view, with the approved biography of Oct 21 2026 beside it in about 19px text, no wrapping around the photo; mirrored in Persian; LinkedIn button) on a terracotta band, then the team: published members from `src/content/team/`, then empty places with a simple woman/man silhouette (`PersonSilhouette.astro`, no text) up to five.
 
 ## 5. Accessibility and responsiveness
@@ -95,7 +97,7 @@ When asked for another page (Programs, Events, News, Get Involved, Contact), wri
 
 - **Stack:** Astro 7 (static), Tailwind CSS 4, TypeScript. Deployed on Netlify. `npm run dev` for local work, `npm run build` to check types, build and index search.
 - **Pages:** `src/pages/{fr,en,fa}/…` are thin wrappers; the markup lives in `src/views/*.astro` and takes a `lang` prop.
-- **Languages:** French (default) and English are complete; Persian (`fa`, RTL) covers Home, About (values only), Get Involved and Contact. Localized URLs are in `src/i18n/routes.ts`.
+- **Languages:** French (default) and English are complete; Persian (`fa`, RTL) covers Home, About (values, Our Story, founder's note), Our Team, Get Involved and Contact. Localized URLs are in `src/i18n/routes.ts`.
 - **Interface strings:** `src/i18n/fr.ts` (defines the type), `en.ts`, `fa.ts`.
 - **Editable content:** YAML in `src/content/` (schemas in `src/content.config.ts`). About page texts: `src/content/about/about.yaml`; mission and contact details: `src/content/settings/site.yaml`.
 - **Logo:** the original files are `assets/logo-circle.jpg` and `assets/logo-vertical.jpg`. `npm run icons` cuts the circle into `src/assets/brand/logo-circle.png` (not currently shown on any page) and the favicons. Never redraw, recolor or add rings around the logo.

@@ -39,11 +39,34 @@ values:
       en: 'We work to make our activities accessible to as many people as possible.'
       fa: 'دسترس‌پذیر کردن فعالیت‌هایمان برای هرچه بیشتر مردم.'
 history:
+  # One entry per milestone, oldest first; add a new entry to extend the timeline (no
+  # design change needed). Only real, approved milestones. `text` may hold several
+  # paragraphs separated by a blank line. Approved texts of October 21, 2026.
   - year: '2026'
-    title: { fr: 'Matin voit le jour', en: 'Matin is born' }
+    title:
+      fr: 'Un nouveau matin se lève'
+      en: 'A New Morning Begins'
+      fa: 'صبحی تازه آغاز می‌شود'
     text:
-      fr: "En 2026, l'Institut interculturel Matin commence son histoire à Montréal. Nous sommes jeunes, et c'est notre force : tout reste à construire. Nous partons avec une mission claire, une vision partagée et des valeurs qui nous tiennent à cœur, et nous bâtissons les partenariats, les programmes et la communauté qui leur donneront vie. Venez écrire les premières pages avec nous."
-      en: 'In 2026, Matin Intercultural Institute begins its story in Montréal. We are new, and that is our strength: everything is still ahead of us. We start with a clear mission, a shared vision, and values we hold dear, and we are building the partnerships, programs, and community that will bring them to life. Come write the first pages with us.'
+      fr: |
+        En 2026, l'Institut interculturel Matin voit le jour à Montréal, animé par la conviction que la culture peut rapprocher les personnes et les communautés.
+
+        Notre histoire ne fait que commencer. Nous tissons des liens, explorons des idées et cherchons à créer des occasions de dialogue et de collaboration.
+
+        Nous vous invitons à prendre part à la suite de cette aventure.
+      en: |
+        In 2026, Matin Intercultural Institute began its journey in Montréal, inspired by a belief in the power of culture to connect people and communities.
+
+        We are at the beginning of our story, building relationships, exploring ideas, and creating opportunities for dialogue and collaboration.
+
+        We invite you to be part of what comes next.
+      fa: |
+        مؤسسه بین‌فرهنگی متین در سال ۲۰۲۶ در مونترال فعالیت خود را آغاز کرد؛ با این باور که فرهنگ می‌تواند زمینه‌ساز آشنایی، ارتباط و همکاری میان انسان‌ها و جوامع مختلف باشد.
+
+        ما تازه در آغاز راه هستیم؛ در حال شکل دادن به ارتباط‌های تازه، بررسی ایده‌ها و فراهم کردن فرصت‌هایی برای گفت‌وگو و همکاری.
+
+        خوشحال می‌شویم شما هم در ادامه این مسیر همراه ما باشید.
+
 # The badge shows the initials until a photo exists: add src/assets/brand/president.jpg
 # (or .png / .webp) and it replaces the initials automatically.
 president:
@@ -113,6 +136,35 @@ president:
     fr: 'Fondateur et président'
     en: 'Founder and President'
     fa: 'بنیان‌گذار و رئیس'
+  # "A Personal Note From Our Founder" on the About page: approved texts of October 21,
+  # 2026 (the Persian text is the source). Paragraphs are separated by a blank line.
   message:
-    fr: "« Les cultures ne sont pas des distances à franchir ; ce sont des paysages vivants que nous pouvons apprendre à parcourir ensemble. Au fil de mes années auprès des quartiers et des communautés, j'ai vu à maintes reprises que l'appartenance ne se décrète pas par les seules politiques. Elle se construit, une conversation à la fois, lorsque chacun se sent écouté et invité à façonner le lieu qu'il appelle chez lui. Matin est né de cette conviction. Nous sommes un jeune institut aux horizons larges, et notre promesse est simple : ici, chaque voix a sa place, chaque histoire compte et chaque différence devient une force partagée. Bienvenue chez vous. »"
-    en: '"Cultures are not distances to be crossed; they are living landscapes we can learn to walk together. In my years of working alongside neighbourhoods and communities, I have seen again and again that belonging is never granted by policy alone. It is built, one conversation at a time, when people feel heard and invited to shape the place they call home. Matin was founded on that conviction. We are a young institute with a long horizon, and our promise is simple: here, every voice has a place, every story matters, and every difference becomes a shared source of strength. Welcome home."'
+    fr: |
+      « Mes années de travail dans le domaine de la culture et mon expérience de vie dans deux sociétés différentes m'ont appris qu'une simple conversation, une nouvelle rencontre ou même le fait d'écouter l'histoire de quelqu'un peut parfois changer notre façon de voir le monde.
+
+      Pour moi, Matin est bien plus que le nom d'un institut. C'est le début d'une nouvelle expérience : une occasion de se retrouver, de poser des questions, de s'écouter et d'apprendre les uns des autres.
+
+      Nous n'en sommes qu'au début de cette aventure. Nous ne savons pas exactement où elle nous mènera, mais nous savons que nous souhaitons la partager avec davantage de personnes.
+
+      Ce serait un plaisir de vous compter parmi nous. »
+    en: |
+      "Years of working in culture and living in two different societies have taught me that sometimes a simple conversation, a new connection, or even listening to someone else's story can change the way we see the world.
+
+      For me, Matin is more than the name of an institute. It marks the beginning of something new — a chance to sit together, ask questions, listen, and learn from one another.
+
+      We're only at the beginning of this journey. We don't know exactly where it will take us, but we know we want to share it with more people along the way.
+
+      We'd be delighted to have you be part of it."
+    fa: |
+      «سال‌ها کار در حوزه فرهنگ و زندگی در دو جامعه متفاوت به من یاد داده است که گاهی یک گفت‌وگوی ساده، یک آشنایی تازه یا حتی شنیدن داستان زندگی دیگری می‌تواند نگاه ما را به جهان تغییر دهد.
+
+      متین برای من فقط نام یک مؤسسه نیست؛ آغاز تجربه‌ای تازه است. فرصتی برای کنار هم نشستن، پرسیدن، شنیدن و آموختن از یکدیگر.
+
+      ما تازه در ابتدای راه هستیم. نمی‌دانیم این مسیر ما را دقیقاً به کجا خواهد برد، اما می‌دانیم که می‌خواهیم آن را با آدم‌های بیشتری تجربه کنیم.
+
+      خوشحال می‌شویم شما هم بخشی از این مسیر باشید.»
+  # Signature under the message.
+  signature:
+    fr: 'Fondateur et président, Institut interculturel Matin'
+    en: 'Founder & President, Matin Intercultural Institute'
+    fa: 'بنیان‌گذار و رئیس مؤسسه بین‌فرهنگی متین'

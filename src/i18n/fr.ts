@@ -54,7 +54,7 @@ const fr = {
     team: 'Notre équipe',
     teamPresident: 'Président',
     teamMembers: 'Équipe',
-    president: 'Le mot du président',
+    president: 'Quelques mots de notre fondateur',
     ourPresident: 'Notre président',
   },
   search: {
@@ -283,7 +283,7 @@ const fr = {
     vision: 'Notre vision',
     values: 'Nos valeurs',
     history: 'Notre histoire',
-    founderTitle: 'UN MOT DE NOTRE PRÉSIDENT',
+    founderTitle: 'Quelques mots de notre fondateur',
     presidentPhotoAlt: 'Portrait de {name}',
     team: 'Notre équipe',
     board: "Conseil d'administration",

@@ -295,6 +295,8 @@ const about = defineCollection({
       name: z.string(),
       title: bi,
       message: bi,
+      /** Role line signed under the founder's message. */
+      signature: biOpt,
       /** Name with credentials as it appears in the "Our President" section. */
       displayName: biOpt,
       /** Position line, e.g. « Fondateur et président | Institut interculturel Matin ». */
