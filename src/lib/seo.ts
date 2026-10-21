@@ -18,7 +18,7 @@ export function organizationJsonLd(
     name: lang === 'fr' ? 'Institut interculturel Matin' : 'Matin Intercultural Institute',
     alternateName: [
       lang === 'fr' ? 'Matin Intercultural Institute' : 'Institut interculturel Matin',
-      'مؤسسه بین‌فرهنگی متین',
+      'مؤسسه میان‌فرهنگی متین',
     ],
     slogan: lang === 'fr' ? 'Cultures en dialogue' : 'Cultures in Dialogue',
     url: new URL(`/${lang}/`, site).href,

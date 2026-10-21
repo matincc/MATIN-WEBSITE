@@ -1,0 +1,59 @@
+# Matin's Autumn Walk: approved texts (Oct 21, 2026); practical details from the official
+# poster (free, open to all, conversations in French, part of the Semaine québécoise des
+# rencontres interculturelles 2026, inquiries by email). The poster: add it as `image`
+# with `imageIsPoster: true` once the file is in src/assets/uploads/events/autumn-walk-2026/.
+kind: matin
+organizer:
+  name: Matin
+urlSlug:
+  fr: promenade-automne-2026
+  en: autumn-walk-2026
+title:
+  fr: "Une promenade d'automne pour se rencontrer"
+  en: 'An Autumn Walk, A Chance to Connect'
+  fa: 'یک پیاده‌روی پاییزی، فرصتی برای آشنایی'
+summary:
+  fr: "Parfois, une simple promenade suffit pour engager une belle conversation. Joignez-vous à l'Institut interculturel Matin pour une promenade automnale au parc Angrignon, à LaSalle. Une occasion de profiter des couleurs de l'automne, de faire de nouvelles rencontres, d'échanger et de passer un moment agréable dans une ambiance conviviale."
+  en: 'Sometimes, a simple walk is all it takes to start a conversation. Join Matin Intercultural Institute for an autumn walk in Angrignon Park, LaSalle. An opportunity to enjoy the colours of the season, meet new people, share stories, and connect in a relaxed and welcoming atmosphere.'
+  fa: 'گاهی یک پیاده‌روی ساده می‌تواند آغاز یک گفت‌وگوی خوب باشد. مؤسسه میان‌فرهنگی متین شما را به یک پیاده‌روی پاییزی در پارک آنگرینیون لاسال دعوت می‌کند؛ فرصتی برای لذت بردن از رنگ‌های پاییز، آشنایی با افراد جدید، شنیدن داستان‌های یکدیگر و گذراندن لحظاتی دوستانه در فضایی صمیمی.'
+body:
+  fr: |
+    **Activité gratuite, ouverte à toutes et à tous.**
+
+    Les échanges se dérouleront en français.
+
+    Dans le cadre de la Semaine québécoise des rencontres interculturelles 2026.
+
+    Renseignements : [matincc.mtl@gmail.com](mailto:matincc.mtl@gmail.com)
+  en: |
+    **Free activity, open to everyone.**
+
+    Conversations will be in French.
+
+    Part of the Semaine québécoise des rencontres interculturelles 2026.
+
+    Inquiries: [matincc.mtl@gmail.com](mailto:matincc.mtl@gmail.com)
+  fa: |
+    **این برنامه رایگان است و شرکت در آن برای همه آزاد است.**
+
+    گفت‌وگوها به زبان فرانسوی خواهد بود.
+
+    این برنامه بخشی از «هفتهٔ دیدارهای بین‌فرهنگی کبک ۲۰۲۶» است.
+
+    برای اطلاعات بیشتر: [matincc.mtl@gmail.com](mailto:matincc.mtl@gmail.com)
+subject: dialogue
+region: montreal
+city: Montréal
+format: in-person
+language: fr
+start: '2026-11-07T14:00'
+end: '2026-11-07T14:45'
+location:
+  name:
+    fr: 'Parc Angrignon'
+    en: 'Angrignon Park'
+    fa: 'پارک آنگرینیون'
+  address: 'LaSalle, Montréal (Québec)'
+price:
+  type: free
+faReviewed: true

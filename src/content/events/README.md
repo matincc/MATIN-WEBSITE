@@ -103,6 +103,16 @@ price:
 # highlights:
 #   - fr: "Un moment fort ou un résultat"
 #     en: "A highlight or outcome"
+# --- Official poster (optional) ---
+# image: ../../assets/uploads/events/nom-evenement/affiche.jpg
+# imageAlt: { fr: "Affiche officielle…", en: "Official poster…", fa: "پوستر رسمی…" }
+# imageIsPoster: true   shown whole (never cropped) on the homepage and the event page
+#
+# --- Persian page (optional) ---
+# Add fa to title, summary and body, then faReviewed: true: the event gets a Persian page
+# (/fa/events/<english-slug>/). A venue name can differ per language:
+# location: { name: { fr: "Parc Angrignon", en: "Angrignon Park", fa: "پارک آنگرینیون" } }
+#
 # photos:
 #   - image: ../../assets/uploads/events/nom-evenement/photo-1.jpg
 #     alt: { fr: "Description de la photo", en: "Photo description" }

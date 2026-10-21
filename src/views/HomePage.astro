@@ -103,7 +103,7 @@ const whoCards = [
           <MatinMedia
             item={featured}
             sizes="(min-width: 64rem) 46rem, 92vw"
-            class:list={['feature__media', featured.type === 'poster' && 'is-poster']}
+            class:list={['feature__media', featured.poster && 'is-poster']}
           />
           <div class="feature__body">
             <p class="feature__type">{t(`matinTypes.${featured.type}`)}</p>

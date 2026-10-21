@@ -69,7 +69,7 @@ const fr = {
     latestTitle: 'Les nouvelles de Matin',
     latestEmpty:
       "Les premières activités de Matin seront annoncées ici. Abonnez-vous à l'infolettre pour être parmi les premiers informés.",
-    ctaEvent: "Voir l'événement",
+    ctaEvent: "Découvrir l'activité",
     ctaPoster: "Voir l'affiche",
     ctaVideo: 'Regarder la vidéo',
     ctaRead: 'Lire la suite',

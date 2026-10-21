@@ -24,7 +24,7 @@ interface Props {
   class?: string;
 }
 const { item, sizes, class: className = '' } = Astro.props;
-const poster = item.type === 'poster';
+const poster = item.poster;
 const accents = {
   initiative: 'coral',
   event: 'teal',

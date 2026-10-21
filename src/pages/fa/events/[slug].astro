@@ -1,0 +1,18 @@
+---
+import type { GetStaticPaths } from 'astro';
+import EventDetailPage from '@/views/EventDetailPage.astro';
+import { getEvents, slugOf } from '@/lib/content';
+
+// Persian pages only for Matin's own events whose Persian text has been reviewed.
+export const getStaticPaths = (async () =>
+  (await getEvents())
+    .filter((event) => event.data.faReviewed && event.data.kind !== 'selected')
+    .map((event) => ({
+      params: { slug: slugOf(event, 'en') },
+      props: { event },
+    }))) satisfies GetStaticPaths;
+
+const { event } = Astro.props;
+---
+
+<EventDetailPage lang="fa" event={event} />

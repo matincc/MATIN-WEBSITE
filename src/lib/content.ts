@@ -28,6 +28,12 @@ export async function getSettings() {
 
 export type EventEntry = CollectionEntry<'events'> & { startDate: Date; endDate: Date };
 
+/** Venue name of an event in the page's language. */
+export const placeName = (e: EventEntry, lang: UiLang) => {
+  const n = e.data.location?.name;
+  return typeof n === 'string' ? n : n ? (pick(n, lang) ?? n.en) : undefined;
+};
+
 /** City of an event in the page's language. */
 export const cityOf = (e: EventEntry, lang: UiLang) =>
   typeof e.data.city === 'string' ? e.data.city : pick(e.data.city, lang)!;

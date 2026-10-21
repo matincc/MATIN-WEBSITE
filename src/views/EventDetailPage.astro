@@ -14,27 +14,33 @@ import CoverArt from '@/components/content/CoverArt.astro';
 import Prose from '@/components/ui/Prose.astro';
 import ShareButtons from '@/components/ui/ShareButtons.astro';
 import Lightbox from '@/components/ui/Lightbox.astro';
-import { path, type Lang } from '@/i18n/routes';
+import { baseLang, href, path, type Alternates, type UiLang } from '@/i18n/routes';
 import { useTranslations, pick } from '@/i18n/ui';
-import { cityOf, renderMarkdown, slugOf, type EventEntry } from '@/lib/content';
+import { cityOf, placeName, renderMarkdown, slugOf, type EventEntry } from '@/lib/content';
 import { formatWhen } from '@/lib/dates';
 import { subjectCover } from '@/lib/taxonomy';
 import { googleCalendarUrl, mapUrl } from '@/lib/calendar';
 
 interface Props {
-  lang: Lang;
+  lang: UiLang;
   event: EventEntry;
 }
 const { lang, event } = Astro.props;
 const t = useTranslations(lang);
 const d = event.data;
 const title = pick(d.title, lang)!;
-const alternates = {
+// Matin events with a reviewed Persian text also have a Persian page (/fa/events/…).
+const faPage = d.faReviewed && d.kind !== 'selected';
+const alternates: Alternates = {
   fr: path('events', 'fr', slugOf(event, 'fr')),
   en: path('events', 'en', slugOf(event, 'en')),
+  ...(faPage && { fa: `/fa/events/${slugOf(event, 'en')}/` }),
 };
+// Calendar files and links use French or English (the fallback language for Persian).
+const calLang = baseLang(lang);
+const place = placeName(event, lang);
 const site = Astro.site ?? new URL(Astro.url.origin);
-const url = new URL(alternates[lang], site).href;
+const url = new URL(alternates[lang] ?? alternates.en, site).href;
 const ended = event.endDate < new Date();
 const tz = d.timeZone;
 const price =
@@ -54,7 +60,7 @@ const photos = await Promise.all(
       .src,
   })),
 );
-const icsHref = `/ics/${event.id}-${lang}.ics`;
+const icsHref = `/ics/${event.id}-${calLang}.ics`;
 
 const jsonLd = {
   '@context': 'https://schema.org',
@@ -73,14 +79,14 @@ const jsonLd = {
     online: 'https://schema.org/OnlineEventAttendanceMode',
     hybrid: 'https://schema.org/MixedEventAttendanceMode',
   }[d.format],
-  inLanguage: lang === 'fr' ? 'fr-CA' : 'en-CA',
+  inLanguage: lang === 'fr' ? 'fr-CA' : lang === 'fa' ? 'fa' : 'en-CA',
   url,
   image: [new URL('/og-default.jpg', site).href],
   location: online
     ? { '@type': 'VirtualLocation', url: d.registrationUrl ?? url }
     : {
         '@type': 'Place',
-        name: d.location!.name,
+        name: place,
         address: {
           '@type': 'PostalAddress',
           streetAddress: d.location!.address,
@@ -109,14 +115,29 @@ const jsonLd = {
   eyebrow={t(`agendaKinds.${d.kind}`)}
   lede={pick(d.summary, lang)}
   alternates={alternates}
-  crumbs={[{ label: t('events.title'), href: path('events', lang) }]}
+  crumbs={[{ label: t('events.title'), href: href('events', lang) }]}
   type="event"
   jsonLd={[jsonLd]}
 >
   <div class="container-site grid gap-12 pt-6 pb-24 lg:grid-cols-[1fr_23rem]">
     <article>
-      <div class="relative mb-10 aspect-[16/9] overflow-hidden rounded-[var(--radius-card)] shadow-soft">
-        {d.image ? (
+      <div
+        class:list={[
+          'relative mb-10 overflow-hidden rounded-[var(--radius-card)] shadow-soft',
+          d.image && d.imageIsPoster ? 'event-poster' : 'aspect-[16/9]',
+        ]}
+      >
+        {d.image && d.imageIsPoster ? (
+          <Picture
+            src={d.image}
+            alt={pick(d.imageAlt, lang) ?? ''}
+            formats={['avif', 'webp']}
+            widths={[480, 720, 960, 1280]}
+            sizes="(min-width: 1024px) 40rem, 100vw"
+            class="mx-auto block h-auto w-full max-w-[40rem]"
+            loading="eager"
+          />
+        ) : d.image ? (
           <Picture
             src={d.image}
             alt={pick(d.imageAlt, lang) ?? ''}
@@ -135,7 +156,7 @@ const jsonLd = {
           </span>
         )}
       </div>
-      <Prose html={renderMarkdown(d.body?.[lang] ?? '', lang)} class="text-lg" />
+      <Prose html={renderMarkdown(pick(d.body, lang) ?? '', lang)} class="text-lg" />
       {report && (
         <section class="mt-14" aria-labelledby="report-title">
           <h2 id="report-title" class="mb-5 text-3xl font-bold">
@@ -230,13 +251,13 @@ const jsonLd = {
                 <div class="mt-0.5 font-semibold text-ink">{t('agendaFormats.online')}</div>
               ) : (
                 <div class="mt-0.5 text-ink">
-                  <span class="block font-semibold">{d.location!.name}</span>
+                  <span class="block font-semibold">{place}</span>
                   <span class="block text-sm">{d.location!.address ?? cityOf(event, lang)}</span>
                   {d.format === 'hybrid' && (
                     <span class="block text-sm">{t('agendaFormats.hybrid')}</span>
                   )}
                   <a
-                    href={mapUrl(d.location!)}
+                    href={mapUrl(d.location!, place)}
                     class="mt-1 inline-block text-sm font-semibold"
                     target="_blank"
                     rel="noopener noreferrer"
@@ -288,7 +309,7 @@ const jsonLd = {
               {t('events.icsDownload')}
             </a>
             <a
-              href={googleCalendarUrl(event, lang, url)}
+              href={googleCalendarUrl(event, calLang, url)}
               class="btn btn-outline"
               target="_blank"
               rel="noopener noreferrer"
@@ -301,10 +322,18 @@ const jsonLd = {
         </div>
       )}
 
-      <a href={path('events', lang)} class="link-arrow">
+      <a href={href('events', lang)} class="link-arrow">
         <ArrowLeft size={18} aria-hidden="true" />
         {t('events.backToEvents')}
       </a>
     </aside>
   </div>
 </PageLayout>
+
+<style>
+  /* An official poster is shown whole, on a cream ground. */
+  .event-poster {
+    padding: clamp(0.75rem, 0.5rem + 1vw, 1.5rem);
+    background: var(--color-tint);
+  }
+</style>

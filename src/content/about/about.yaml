@@ -61,7 +61,7 @@ history:
 
         We invite you to be part of what comes next.
       fa: |
-        مؤسسه بین‌فرهنگی متین در سال ۲۰۲۶ در مونترال فعالیت خود را آغاز کرد؛ با این باور که فرهنگ می‌تواند زمینه‌ساز آشنایی، ارتباط و همکاری میان انسان‌ها و جوامع مختلف باشد.
+        مؤسسه میان‌فرهنگی متین در سال ۲۰۲۶ در مونترال فعالیت خود را آغاز کرد؛ با این باور که فرهنگ می‌تواند زمینه‌ساز آشنایی، ارتباط و همکاری میان انسان‌ها و جوامع مختلف باشد.
 
         ما تازه در آغاز راه هستیم؛ در حال شکل دادن به ارتباط‌های تازه، بررسی ایده‌ها و فراهم کردن فرصت‌هایی برای گفت‌وگو و همکاری.
 
@@ -80,7 +80,7 @@ president:
   position:
     fr: 'Fondateur et président | Institut interculturel Matin'
     en: 'Founder & President | Matin Intercultural Institute'
-    fa: 'بنیان‌گذار و رئیس مؤسسه بین‌فرهنگی متین'
+    fa: 'بنیان‌گذار و رئیس مؤسسه میان‌فرهنگی متین'
   bio:
     en: |
       For Reza Moafi, culture is, above all, about people — their lived experiences, their identities, and the connections they build within and across communities.
@@ -117,7 +117,7 @@ president:
 
       زندگی و فعالیت حرفه‌ای در مونترال نیز فرصتی برای گسترش تجربه‌های او در زمینه تنوع فرهنگی، گفت‌وگوی بین‌فرهنگی و ارتباط میان جوامع مختلف فراهم کرده است.
 
-      او با تأسیس مؤسسه بین‌فرهنگی متین می‌کوشد تجربه‌های علمی و حرفه‌ای خود را در مسیر گسترش گفت‌وگو، پژوهش، مشارکت اجتماعی و شکل‌گیری همکاری‌های فرهنگی در جامعه چندفرهنگی کانادا به کار گیرد.
+      او با تأسیس مؤسسه میان‌فرهنگی متین می‌کوشد تجربه‌های علمی و حرفه‌ای خود را در مسیر گسترش گفت‌وگو، پژوهش، مشارکت اجتماعی و شکل‌گیری همکاری‌های فرهنگی در جامعه چندفرهنگی کانادا به کار گیرد.
   # Personal LinkedIn (confirmed by Matin). The Institute's page is in settings/site.yaml.
   linkedin: https://www.linkedin.com/in/rezamoafi/
   # The profile page stays unpublished until the verified biography below is filled in
@@ -167,4 +167,4 @@ president:
   signature:
     fr: 'Fondateur et président, Institut interculturel Matin'
     en: 'Founder & President, Matin Intercultural Institute'
-    fa: 'بنیان‌گذار و رئیس مؤسسه بین‌فرهنگی متین'
+    fa: 'بنیان‌گذار و رئیس مؤسسه میان‌فرهنگی متین'

@@ -67,7 +67,7 @@ const en: Dictionary = {
     latestTitle: 'Latest From Matin',
     latestEmpty:
       "Matin's first activities will be announced here. Subscribe to our newsletter to be among the first to know.",
-    ctaEvent: 'View Event',
+    ctaEvent: 'Discover the Activity',
     ctaPoster: 'See the Poster',
     ctaVideo: 'Watch the Video',
     ctaRead: 'Read More',

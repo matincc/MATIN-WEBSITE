@@ -14,6 +14,7 @@ import {
   getNews,
   getUpcomingEvents,
   isMatinEvent,
+  placeName,
   slugOf,
   type EventEntry,
 } from '@/lib/content';
@@ -28,6 +29,8 @@ export interface MatinItem {
   summary: string;
   image?: ImageMetadata;
   imageAlt: string;
+  /** The image is a poster: always shown whole, never cropped. */
+  poster: boolean;
   /** Date line, already formatted for the language. */
   when: string;
   datetime: string;
@@ -67,6 +70,7 @@ function fromHighlight(h: CollectionEntry<'highlights'>, lang: UiLang, now: Date
     summary: pick(d.summary, lang)!,
     image: d.image,
     imageAlt: pick(d.imageAlt, lang) ?? '',
+    poster: d.type === 'poster',
     when,
     datetime: d.date.toISOString().slice(0, 10),
     location: pick(d.location, lang) || undefined,
@@ -82,6 +86,11 @@ function fromHighlight(h: CollectionEntry<'highlights'>, lang: UiLang, now: Date
 
 function fromEvent(e: EventEntry, lang: UiLang): MatinItem {
   const d = e.data;
+  // Persian page when the event's Persian text has been reviewed.
+  const url =
+    lang === 'fa' && d.faReviewed
+      ? `/fa/events/${slugOf(e, 'en')}/`
+      : href('events', lang, slugOf(e, baseLang(lang)));
   return {
     id: `event-${e.id}`,
     type: 'event',
@@ -89,13 +98,17 @@ function fromEvent(e: EventEntry, lang: UiLang): MatinItem {
     summary: pick(d.summary, lang)!,
     image: d.image,
     imageAlt: pick(d.imageAlt, lang) ?? '',
+    poster: d.imageIsPoster,
     when: formatWhen(e.startDate, d.end ? e.endDate : undefined, lang, {
       allDay: d.allDay,
       timeZone: d.timeZone,
     }),
     datetime: e.startDate.toISOString(),
-    location: d.format === 'online' ? undefined : cityOf(e, lang) || undefined,
-    url: href('events', lang, slugOf(e, baseLang(lang))),
+    location:
+      d.format === 'online'
+        ? undefined
+        : [placeName(e, lang), cityOf(e, lang)].filter(Boolean).join(', ') || undefined,
+    url,
     external: false,
     featured: false,
     upcoming: true,
@@ -113,6 +126,7 @@ function fromNews(p: CollectionEntry<'news'>, lang: UiLang): MatinItem {
     summary: pick(d.excerpt, lang)!,
     image: d.image,
     imageAlt: pick(d.imageAlt, lang) ?? '',
+    poster: false,
     when: formatDate(d.date, lang),
     datetime: d.date.toISOString().slice(0, 10),
     url: articleHref(p, lang),

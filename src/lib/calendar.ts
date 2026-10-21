@@ -1,5 +1,5 @@
 /** "Add to calendar" helpers: .ics files (RFC 5545) and Google Calendar links. */
-import { cityOf, type EventEntry } from './content';
+import { cityOf, placeName, type EventEntry } from './content';
 import type { Lang } from '@/i18n/routes';
 
 /** 20261024T230000Z */
@@ -73,12 +73,16 @@ function placeOf(event: EventEntry, lang: Lang): string {
   const { location, format } = event.data;
   const city = cityOf(event, lang);
   if (format === 'online' || !location) return city;
-  return [location.name, location.address ?? city].join(', ');
+  return [placeName(event, lang), location.address ?? city].join(', ');
 }
 
-export function mapUrl(location: { name: string; address?: string; mapUrl?: string }): string {
+export function mapUrl(
+  location: { address?: string; mapUrl?: string },
+  name: string | undefined,
+): string {
+  const query = [name, location.address].filter(Boolean).join(', ');
   return (
     location.mapUrl ??
-    `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(location.address ?? location.name)}`
+    `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(query)}`
   );
 }

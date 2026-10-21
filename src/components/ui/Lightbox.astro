@@ -5,11 +5,11 @@
  * without JS the link simply opens the large image.
  */
 import { ChevronLeft, ChevronRight, X } from '@lucide/astro';
-import type { Lang } from '@/i18n/routes';
+import type { UiLang } from '@/i18n/routes';
 import { useTranslations } from '@/i18n/ui';
 
 interface Props {
-  lang: Lang;
+  lang: UiLang;
 }
 const t = useTranslations(Astro.props.lang);
 ---

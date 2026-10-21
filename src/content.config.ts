@@ -111,7 +111,8 @@ const events = defineCollection({
         /** Venue; leave out for online events and for multi-venue festivals (allDay). */
         location: z
           .object({
-            name: z.string(),
+            /** One name, or { fr, en, fa } when it is written differently per language. */
+            name: z.union([z.string(), bi]),
             address: z.string().optional(),
             mapUrl: z.url().optional(),
           })
@@ -138,6 +139,8 @@ const events = defineCollection({
         draft: z.boolean().default(false),
         image: image().optional(),
         imageAlt: biOpt,
+        /** The image is the official poster: always shown whole, never cropped. */
+        imageIsPoster: z.boolean().default(false),
         /* After a Matin event (each part is shown only when filled in): */
         report: biOpt, // full report, Markdown
         highlights: z.array(bi).default([]), // key highlights / outcomes

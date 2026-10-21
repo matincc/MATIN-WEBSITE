@@ -123,7 +123,10 @@ export function formatWhen(
   }
   const date = formatLongDate(start, lang, timeZone);
   if (allDay) return date;
-  return `${date} · ${formatTimeRange(start, end, lang, timeZone)} ${formatZone(start, lang, timeZone)}`;
+  const range = formatTimeRange(start, end, lang, timeZone);
+  // Persian has no common short name for Montréal's time zone (only « −۵ گرینویچ »).
+  if (lang === 'fa') return `${date} · ${range}`;
+  return `${date} · ${range} ${formatZone(start, lang, timeZone)}`;
 }
 
 /** Short time-zone name for that date: « HAE » / "EDT", "CET"… */

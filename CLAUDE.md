@@ -9,6 +9,8 @@ These rules apply to every page, now and in the future. Read them before changin
   - EN: course, class, training, teaching, school
   - FR: cours, formation, enseignement, école
   - (CSS class names and code keywords such as `class=` are not user-facing and are fine.)
+  - **One approved exception (owner's decision, Oct 21 2026):** the President's biography keeps « university teaching » / « l'enseignement universitaire » / «تدریس در دانشگاه», because it describes his personal career, not Matin's services.
+- **Persian name (owner's decision, Oct 21 2026):** «مؤسسه میان‌فرهنگی متین» (with میان‌فرهنگی) everywhere. The general phrase «گفت‌وگوی بین‌فرهنگی» (intercultural dialogue) and other organizations' official names are unchanged.
 - Tone: professional and credible, but warm and human. Not stiff, not overly casual.
 - No food or party imagery.
 - Use the texts the institute provides **EXACTLY** as written: no rewording, no "improvements," same order, same punctuation (including French « » quotation marks and spaces before French colons and semicolons). `src/lib/frenchTypo.ts` only turns existing spaces into non-breaking ones; it never adds or removes punctuation.
@@ -98,7 +100,7 @@ When asked for another page (Programs, Events, News, Get Involved, Contact), wri
 
 - **Stack:** Astro 7 (static), Tailwind CSS 4, TypeScript. Deployed on Netlify. `npm run dev` for local work, `npm run build` to check types, build and index search.
 - **Pages:** `src/pages/{fr,en,fa}/…` are thin wrappers; the markup lives in `src/views/*.astro` and takes a `lang` prop.
-- **Languages:** French (default) and English are complete; Persian (`fa`, RTL) covers Home, About (values, Our Story, founder's note), Our Team, Get Involved and Contact. Localized URLs are in `src/i18n/routes.ts`.
+- **Languages:** French (default) and English are complete; Persian (`fa`, RTL) covers Home, About (values, Our Story, founder's note), Our Team, Get Involved, Contact, published articles with a reviewed Persian text, and Matin's own events with `faReviewed: true` (`/fa/events/<english-slug>/`). Localized URLs are in `src/i18n/routes.ts`.
 - **Interface strings:** `src/i18n/fr.ts` (defines the type), `en.ts`, `fa.ts`.
 - **Editable content:** YAML in `src/content/` (schemas in `src/content.config.ts`). About page texts: `src/content/about/about.yaml`; mission and contact details: `src/content/settings/site.yaml`.
 - **Logo:** the original files are `assets/logo-circle.jpg` and `assets/logo-vertical.jpg`. `npm run icons` cuts the circle into `src/assets/brand/logo-circle.png` (not currently shown on any page) and the favicons. Never redraw, recolor or add rings around the logo.

@@ -24,7 +24,7 @@ import {
 } from '@lucide/astro';
 import DialogueArt from '@/components/brand/DialogueArt.astro';
 import type { EventEntry } from '@/lib/content';
-import { cityOf, isMatinEvent, slugOf } from '@/lib/content';
+import { cityOf, isMatinEvent, placeName, slugOf } from '@/lib/content';
 import { baseLang, href as link, type UiLang } from '@/i18n/routes';
 import { useTranslations, pick } from '@/i18n/ui';
 import { dateBadge, formatDate, formatWhen } from '@/lib/dates';
@@ -49,7 +49,7 @@ const price =
       ? pick(d.price.label, lang) || t('events.paid')
       : t('events.priceUnknown');
 const place = [
-  d.format !== 'online' && d.location?.name,
+  d.format !== 'online' && placeName(event, lang),
   cityOf(event, lang),
   d.country !== 'Canada' && d.country,
 ]

@@ -6,7 +6,7 @@
 import { Picture } from 'astro:assets';
 import { CalendarDays, MapPin } from '@lucide/astro';
 import CoverArt from './CoverArt.astro';
-import { cityOf, slugOf, type EventEntry } from '@/lib/content';
+import { cityOf, placeName, slugOf, type EventEntry } from '@/lib/content';
 import { baseLang, href as link, type UiLang } from '@/i18n/routes';
 import { pick, useTranslations } from '@/i18n/ui';
 import { formatWhen } from '@/lib/dates';
@@ -71,7 +71,7 @@ const href = link('events', lang, slugOf(event, baseLang(lang)));
       <span>
         {d.format === 'online'
           ? t('agendaFormats.online')
-          : (d.location?.name ?? cityOf(event, lang))}
+          : (placeName(event, lang) ?? cityOf(event, lang))}
       </span>
     </p>
   </div>
