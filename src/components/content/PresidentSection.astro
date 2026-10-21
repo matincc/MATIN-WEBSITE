@@ -7,6 +7,7 @@
  * a plain framed initials panel is shown.
  */
 import { Image } from 'astro:assets';
+import { ArrowRight } from '@lucide/astro';
 import type { ImageMetadata } from 'astro';
 import SectionHeader from '@/components/ui/SectionHeader.astro';
 import Prose from '@/components/ui/Prose.astro';
@@ -48,7 +49,7 @@ const linkedinPath =
               src={photo}
               alt={t('about.presidentPhotoAlt', { name: lang === 'fa' ? name : p.name })}
               widths={[320, 480, 640]}
-              sizes="(min-width: 768px) 22rem, 90vw"
+              sizes="(min-width: 768px) 26rem, 90vw"
               class="president-bio__photo"
             />
           ) : (
@@ -64,7 +65,7 @@ const linkedinPath =
           {p.linkedin && (
             <a
               href={p.linkedin}
-              class="btn btn-primary mt-8"
+              class="btn btn-primary president-bio__cta"
               target="_blank"
               rel="noopener noreferrer"
             >
@@ -78,7 +79,8 @@ const linkedinPath =
                 <path d={linkedinPath} />
               </svg>
               {t('about.discoverPresident')}
-              <span class="sr-only">(LinkedIn) {t('a11y.externalLink')}</span>
+              <ArrowRight size={18} class="flip-rtl" aria-hidden="true" />
+              <span class="sr-only">{t('a11y.externalLink')}</span>
             </a>
           )}
         </div>
@@ -97,21 +99,21 @@ const linkedinPath =
   .president-bio :global(:focus-visible) {
     outline-color: var(--color-primary);
   }
-  /* Magazine layout (owner's request, Oct 2026): the portrait sits at the start of the
-     card and the name, title and biography flow beside it, then continue across the
-     full width below it. */
+  /* Two balanced columns (owner's brief, Oct 21 2026): the portrait in its own column,
+     staying in view while the biography is read; no text wraps around it. In Persian
+     the grid mirrors, so the portrait is on the right. Stacked on phones. */
   .president-bio {
-    display: flow-root;
-    max-width: 76rem;
-    padding: 2rem;
+    display: grid;
+    gap: 2rem;
+    max-width: 84rem;
+    padding: clamp(1.5rem, 1rem + 2.5vw, 3.5rem);
     border: 1px solid var(--color-line);
     border-radius: var(--radius-card);
     background: var(--color-white);
     color: var(--color-ink);
   }
   .president-bio__media {
-    width: min(100%, 20rem);
-    margin: 0 auto 2rem;
+    width: min(100%, 24rem);
   }
   .president-bio__photo {
     display: block;
@@ -129,14 +131,15 @@ const linkedinPath =
     color: var(--color-primary);
     background: var(--color-cream);
   }
+  .president-bio__text {
+    max-width: 46rem;
+  }
   .president-bio__name {
     font-size: clamp(2rem, 1.6rem + 1.6vw, 2.875rem);
     font-weight: 800;
     line-height: 1.15;
   }
-  /* Its own block beside the portrait, so the coral rule stops at the portrait. */
   .president-bio__position {
-    display: flow-root;
     margin-top: 0.6rem;
     padding-bottom: 1.25rem;
     border-bottom: 3px solid var(--color-coral);
@@ -145,21 +148,33 @@ const linkedinPath =
     font-weight: 800;
     color: var(--color-primary);
   }
-  /* About 20px reading text, comfortable line height. */
+  /* About 19px reading text, a comfortable line and paragraph spacing. */
   .president-bio__text :global(.president-bio__prose) {
-    margin-top: 1.5rem;
-    font-size: clamp(1.125rem, 1.05rem + 0.35vw, 1.25rem);
-    line-height: 1.75;
+    margin-top: 1.75rem;
+    font-size: clamp(1.0625rem, 1rem + 0.3vw, 1.1875rem);
+    line-height: 1.8;
+  }
+  .president-bio__text :global(.president-bio__prose > * + *) {
+    margin-top: 1.15em;
+  }
+  /* The opening sentence (about culture and people) leads, slightly larger. */
+  .president-bio__text :global(.president-bio__prose > p:first-child) {
+    font-size: 1.15em;
+    color: var(--color-primary);
+  }
+  .president-bio__cta {
+    margin-top: 2.25rem;
   }
   @media (min-width: 768px) {
     .president-bio {
-      padding: 3rem;
+      grid-template-columns: minmax(15rem, 2fr) minmax(0, 3fr);
+      align-items: start;
+      gap: clamp(2.5rem, 1rem + 3vw, 4.5rem);
     }
     .president-bio__media {
-      float: inline-start;
-      width: clamp(15rem, 10rem + 10vw, 21rem);
-      margin: 0.25rem 0 1.5rem;
-      margin-inline-end: 2.75rem;
+      position: sticky;
+      top: 7rem;
+      width: 100%;
     }
   }
 </style>

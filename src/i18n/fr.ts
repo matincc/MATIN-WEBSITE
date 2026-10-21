@@ -292,8 +292,8 @@ const fr = {
     download: 'Télécharger',
     comingSoon: 'Bientôt disponible',
     onLinkedin: '{name} sur LinkedIn',
-    ourPresident: 'Notre président',
-    discoverPresident: 'En savoir plus sur notre président',
+    ourPresident: 'Faites connaissance avec Reza Moafi',
+    discoverPresident: 'Échanger avec Reza sur LinkedIn',
   },
   gallery: {
     title: 'Galerie',

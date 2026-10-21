@@ -211,8 +211,8 @@ const fa: DeepPartial<Dictionary> = {
     team: 'تیم ما',
     onLinkedin: '{name} در لینکدین',
     presidentPhotoAlt: 'تصویر {name}',
-    ourPresident: 'رئیس ما',
-    discoverPresident: 'بیشتر درباره رئیس ما',
+    ourPresident: 'با رضا معافی آشنا شوید',
+    discoverPresident: 'ارتباط با رضا معافی در لینکدین',
   },
   involved: {
     title: 'مشارکت',

@@ -48,40 +48,53 @@ history:
 # (or .png / .webp) and it replaces the initials automatically.
 president:
   name: 'Reza Moafi'
-  # "Our President" section on the About page: approved biography (October 2026).
+  # President's biography on the Our Team page: approved texts (October 21, 2026).
+  # The Persian text is the authoritative source; EN and FR are the approved versions.
   displayName:
-    fr: 'Reza Moafi, Ph. D.'
-    en: 'Reza Moafi, PhD'
+    fr: 'Dr Reza Moafi'
+    en: 'Dr. Reza Moafi'
     fa: 'دکتر رضا معافی'
   position:
     fr: 'Fondateur et président | Institut interculturel Matin'
     en: 'Founder & President | Matin Intercultural Institute'
-    fa: 'بنیان‌گذار و رئیس | مؤسسه بین‌فرهنگی متین'
+    fa: 'بنیان‌گذار و رئیس مؤسسه بین‌فرهنگی متین'
   bio:
     en: |
-      Reza Moafi is a cultural planning and management professional with more than 20 years of experience in cultural policy, strategic planning, research, and community development in Iran and Canada.
+      For Reza Moafi, culture is, above all, about people — their lived experiences, their identities, and the connections they build within and across communities.
 
-      He holds a PhD in Cultural Management and Planning and has held significant leadership and professional positions, including Cultural Planning Specialist with Tehran City Council, Founder and CEO of MFH Institute, and Chairperson of the Board of Tehran Conservatory of Music.
+      He holds a PhD in Cultural Management and Planning from the Science and Research Branch of Islamic Azad University in Tehran and brings more than two decades of professional experience in cultural policy, strategic planning, cultural management, research, and community development in Iran and Canada.
 
-      His professional experience in Montréal has further shaped his approach to community engagement, cultural diversity, and collaboration among communities, cultural organizations, and public institutions.
+      His professional background includes university teaching, cultural and social research focused on Tehran, and projects assessing the social and cultural impacts of urban development initiatives. He has also served as a Cultural Planning Advisor to Tehran City Council, Founder and CEO of Modiran Institute, and Chair of the Board of Directors of the Tehran Music Conservatory.
 
-      As Founder and President of Matin Intercultural Institute, he draws on his academic background and international professional experience to promote intercultural dialogue, research-informed cultural planning, and inclusive cultural initiatives that connect people, institutions, and communities.
+      For nearly twelve years, he served as Secretary of a neighbourhood council in Tehran. This experience deepened his understanding of local communities, citizen participation, and the importance of involving people in cultural and social decision-making.
+
+      Living and working in Montréal has provided further opportunities to engage with cultural diversity, intercultural dialogue, and connections among different communities.
+
+      Through the establishment of Matin Intercultural Institute, he seeks to bring together his academic knowledge and professional experience to support dialogue, research, community participation, and cultural collaboration in Canada's multicultural society.
     fr: |
-      Reza Moafi est un professionnel de la planification et de la gestion culturelles qui possède plus de vingt ans d’expérience en politiques culturelles, en planification stratégique, en recherche et en développement communautaire, en Iran et au Canada.
+      Pour Reza Moafi, la culture est avant tout une affaire de personnes, d'expériences vécues, d'identités et de liens qui se tissent au sein des communautés et entre elles.
 
-      Titulaire d’un doctorat en gestion et planification culturelles, il a notamment exercé les fonctions de spécialiste en planification culturelle auprès du Conseil municipal de Téhéran, de fondateur et directeur général de MFH Institute, ainsi que de président du conseil d’administration du Conservatoire de musique de Téhéran.
+      Titulaire d'un doctorat en gestion et planification culturelles de l'Université islamique Azad, unité des sciences et de la recherche de Téhéran, il possède plus de vingt ans d'expérience professionnelle en politiques culturelles, en planification stratégique, en gestion culturelle, en recherche et en développement communautaire, en Iran et au Canada.
 
-      Son parcours professionnel à Montréal a renforcé son engagement envers la participation citoyenne, la diversité culturelle et la collaboration entre les communautés, les organismes culturels et les institutions publiques.
+      Son parcours comprend l'enseignement universitaire, la réalisation de recherches culturelles et sociales portant notamment sur la ville de Téhéran, ainsi que la conduite de projets d'évaluation des impacts sociaux et culturels de projets urbains. Il a également occupé les fonctions de conseiller en planification culturelle auprès du conseil municipal de Téhéran, de fondateur et directeur général de l'Institut Modiran, ainsi que de président du conseil d'administration du Conservatoire de musique de Téhéran.
 
-      Fondateur et président de l’Institut interculturel Matin, il s’appuie sur son parcours universitaire et son expérience professionnelle internationale pour favoriser le dialogue interculturel, la planification culturelle fondée sur la recherche et le développement d’initiatives culturelles inclusives qui rapprochent les personnes, les institutions et les communautés.
+      Pendant près de douze ans, il a aussi été secrétaire d'un conseil de quartier à Téhéran. Cette expérience a enrichi sa compréhension des réalités locales, de la participation citoyenne et de l'importance de donner une place aux citoyens dans les décisions culturelles et sociales.
+
+      Son parcours de vie et son expérience professionnelle à Montréal lui ont également permis d'approfondir son engagement envers la diversité culturelle, le dialogue interculturel et les rapprochements entre les communautés.
+
+      En fondant l'Institut interculturel Matin, il souhaite mettre son expérience professionnelle et ses connaissances universitaires au service du dialogue, de la recherche, de la participation communautaire et des collaborations culturelles au sein de la société multiculturelle canadienne.
     fa: |
-      رضا معافی کارشناس برنامه‌ریزی و مدیریت فرهنگی است و بیش از ۲۰ سال تجربه در سیاست‌گذاری فرهنگی، برنامه‌ریزی راهبردی، پژوهش و توسعه اجتماعی در ایران و کانادا دارد.
+      برای رضا معافی، فرهنگ پیش از هر چیز با انسان‌ها، تجربه‌های زیسته، هویت‌ها و پیوندهایی معنا پیدا می‌کند که میان افراد و جوامع شکل می‌گیرد.
 
-      او دارای دکترای مدیریت و برنامه‌ریزی فرهنگی است و مسئولیت‌های مدیریتی و حرفه‌ای مهمی بر عهده داشته است؛ از جمله کارشناس برنامه‌ریزی فرهنگی در شورای شهر تهران، بنیان‌گذار و مدیرعامل MFH Institute و رئیس هیئت‌مدیره هنرستان موسیقی تهران.
+      او دارای دکترای مدیریت و برنامه‌ریزی فرهنگی از دانشگاه علوم و تحقیقات تهران است و بیش از دو دهه تجربه حرفه‌ای در حوزه‌های سیاست‌گذاری فرهنگی، برنامه‌ریزی راهبردی، مدیریت فرهنگی، پژوهش و توسعه اجتماعی در ایران و کانادا دارد.
 
-      تجربه حرفه‌ای او در مونترال نگاهش را به مشارکت اجتماعی، تنوع فرهنگی و همکاری میان جوامع، سازمان‌های فرهنگی و نهادهای عمومی عمیق‌تر کرده است.
+      در کارنامه حرفه‌ای او می‌توان به تدریس در دانشگاه، انجام پژوهش‌های فرهنگی و اجتماعی با تمرکز بر شهر تهران و اجرای پروژه‌های ارزیابی تأثیرات اجتماعی و فرهنگی طرح‌های شهری اشاره کرد. همچنین مسئولیت‌هایی همچون مشاور برنامه‌ریزی فرهنگی در شورای شهر تهران، بنیان‌گذار و مدیرعامل مؤسسه مدیران و رئیس هیئت‌مدیره کنسرواتوار موسیقی تهران را بر عهده داشته است.
 
-      او به‌عنوان بنیان‌گذار و رئیس مؤسسه بین‌فرهنگی متین، با تکیه بر پیشینه دانشگاهی و تجربه حرفه‌ای بین‌المللی خود، در پی ترویج گفت‌وگوی بین‌فرهنگی، برنامه‌ریزی فرهنگیِ مبتنی بر پژوهش و ابتکارهای فرهنگی فراگیری است که مردم، نهادها و جوامع را به هم پیوند می‌دهد.
+      او نزدیک به دوازده سال نیز به‌عنوان دبیر شورایاری محله در تهران فعالیت کرده است؛ تجربه‌ای که شناخت او را از ظرفیت‌های جوامع محلی، مشارکت شهروندان و نقش مردم در تصمیم‌گیری‌های فرهنگی و اجتماعی عمیق‌تر کرده است.
+
+      زندگی و فعالیت حرفه‌ای در مونترال نیز فرصتی برای گسترش تجربه‌های او در زمینه تنوع فرهنگی، گفت‌وگوی بین‌فرهنگی و ارتباط میان جوامع مختلف فراهم کرده است.
+
+      او با تأسیس مؤسسه بین‌فرهنگی متین می‌کوشد تجربه‌های علمی و حرفه‌ای خود را در مسیر گسترش گفت‌وگو، پژوهش، مشارکت اجتماعی و شکل‌گیری همکاری‌های فرهنگی در جامعه چندفرهنگی کانادا به کار گیرد.
   # Personal LinkedIn (confirmed by Matin). The Institute's page is in settings/site.yaml.
   linkedin: https://www.linkedin.com/in/rezamoafi/
   # The profile page stays unpublished until the verified biography below is filled in

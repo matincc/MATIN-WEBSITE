@@ -291,8 +291,8 @@ const en: Dictionary = {
     download: 'Download',
     comingSoon: 'Coming soon',
     onLinkedin: '{name} on LinkedIn',
-    ourPresident: 'Our President',
-    discoverPresident: 'Discover More About Our President',
+    ourPresident: 'Meet Reza Moafi',
+    discoverPresident: 'Connect with Reza on LinkedIn',
   },
   gallery: {
     title: 'Gallery',
