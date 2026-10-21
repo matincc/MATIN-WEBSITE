@@ -64,6 +64,20 @@ const fr = {
       'La recherche fonctionne une fois le site construit (npm run build, puis npm run preview).',
   },
   home: {
+    actionTitle: 'Matin en action',
+    actionLede: 'Ce que Matin fait en ce moment : nos initiatives, nos activités et nos nouvelles.',
+    latestTitle: 'Les nouvelles de Matin',
+    latestEmpty:
+      "Les premières activités de Matin seront annoncées ici. Abonnez-vous à l'infolettre pour être parmi les premiers informés.",
+    ctaEvent: "Voir l'événement",
+    ctaPoster: "Voir l'affiche",
+    ctaVideo: 'Regarder la vidéo',
+    ctaRead: 'Lire la suite',
+    actionsTitle: 'Des façons de participer',
+    actAttend: 'Participer à une activité',
+    actCollaborate: 'Collaborer avec nous',
+    actVolunteer: 'Faire du bénévolat',
+    actContact: 'Nous écrire',
     heroEyebrow: 'Institut interculturel Matin',
     heroTitle: 'Cultures en dialogue',
     heroText:
@@ -102,6 +116,15 @@ const fr = {
     involvedSecondary: 'Rester en contact',
     involvedPhotoAlt:
       'Un petit groupe assis en cercle, en pleine conversation, avec des idées notées sur des papillons au sol.',
+  },
+  matinTypes: {
+    initiative: 'Initiative',
+    event: 'Événement',
+    news: 'Nouvelle',
+    announcement: 'Annonce',
+    report: 'Compte rendu',
+    video: 'Vidéo',
+    poster: 'Affiche',
   },
   newsletter: {
     eyebrow: 'Cultures en dialogue',

@@ -1,26 +1,41 @@
 ---
 /**
- * Homepage (French, English and Persian). Shows only real content: events and news
- * sections fall back to short, welcoming empty states until entries exist.
+ * Homepage (French, English and Persian), in this order: what Matin is doing now
+ * (Matin in Action, Latest From Matin), how to take part, then who Matin is and its
+ * areas of work. Only Matin's own content (src/lib/matin.ts); external selected events
+ * are on the Events page. With no Matin item yet, a short message invites visitors
+ * to subscribe.
  * The photographs are openly licensed views of Montréal (see src/lib/photos.ts), shown
  * with their credits; they illustrate the themes, they do not document Matin activities.
  */
-import { ArrowRight, Eye, HeartHandshake, LockKeyhole, Target } from '@lucide/astro';
+import {
+  ArrowRight,
+  CalendarDays,
+  ExternalLink,
+  Eye,
+  HandHeart,
+  Handshake,
+  HeartHandshake,
+  LockKeyhole,
+  Mail,
+  MapPin,
+  MessageCircle,
+  Target,
+} from '@lucide/astro';
 import { Picture } from 'astro:assets';
 import BaseLayout from '@/layouts/BaseLayout.astro';
 import HomeHero from '@/components/brand/HomeHero.astro';
 import CulturesRibbon from '@/components/brand/CulturesRibbon.astro';
-import SpotlightBanner from '@/components/content/SpotlightBanner.astro';
 import SectionHeader from '@/components/ui/SectionHeader.astro';
-import EventCard from '@/components/content/EventCard.astro';
-import ExpireEvents from '@/components/content/ExpireEvents.astro';
-import PostCard from '@/components/content/PostCard.astro';
 import NewsletterForm from '@/components/forms/NewsletterForm.astro';
 import PhotoCredit from '@/components/media/PhotoCredit.astro';
 import AreasGrid from '@/components/content/AreasGrid.astro';
 import { href, siteAlternates, type UiLang } from '@/i18n/routes';
 import { useTranslations } from '@/i18n/ui';
-import { forLang, getNews, getUpcomingEvents, isMatinEvent } from '@/lib/content';
+import { getMatinFeed } from '@/lib/matin';
+import { ctaFor } from '@/lib/matinLabels';
+import MatinMedia from '@/components/content/MatinMedia.astro';
+import MatinCard from '@/components/content/MatinCard.astro';
 import { photos } from '@/lib/photos';
 
 interface Props {
@@ -29,18 +44,22 @@ interface Props {
 const { lang } = Astro.props;
 const t = useTranslations(lang);
 
-const [upcomingAll, postsAll] = await Promise.all([getUpcomingEvents(), getNews()]);
-// Persian pages only list entries whose Persian translation has been reviewed.
-// Up to 3 upcoming events, Matin's own first (the sort is stable, so dates stay in order).
-const visible = forLang(upcomingAll, lang).filter((e) => e.data.status !== 'cancelled');
-// One highlighted event gets the large banner; it is not repeated in the cards below.
-const spotlight = visible.find((e) => e.data.spotlight);
-const upcoming = visible
-  .filter((e) => e !== spotlight)
-  .sort((a, b) => Number(!isMatinEvent(a)) - Number(!isMatinEvent(b)))
-  .slice(0, 3);
-// Up to 3 recent articles; a single article is shown as one wide, featured card.
-const posts = forLang(postsAll, lang).slice(0, 3);
+// Matin's own content only: highlights, Matin's events and published news.
+const { featured, items: latest } = await getMatinFeed(lang, 3);
+
+// The next step after seeing what Matin does. Persian Get Involved has no volunteer form.
+const involvedHref = href('getInvolved', lang);
+const ways = [
+  { label: t('home.actAttend'), href: href('events', lang), icon: CalendarDays },
+  { label: t('home.actCollaborate'), href: `${involvedHref}#interest`, icon: Handshake },
+  {
+    label: t('home.actVolunteer'),
+    href: `${involvedHref}#${lang === 'fr' ? 'benevolat' : lang === 'en' ? 'volunteer' : 'interest'}`,
+    icon: HandHeart,
+  },
+  { label: t('home.involvedSecondary'), href: '#newsletter', icon: Mail },
+  { label: t('home.actContact'), href: href('contact', lang), icon: MessageCircle },
+];
 
 const aboutHref = href('about', lang);
 const whoCards = [
@@ -66,6 +85,153 @@ const whoCards = [
 
   <HomeHero lang={lang} />
   <CulturesRibbon lang={lang} />
+
+  <!-- Matin in Action: what Matin is doing now. The featured item (a highlight marked
+       featured, else Matin's next event, else the latest article), then the latest items.
+       Only Matin's own content; see src/content/highlights/README.md. -->
+  <section id="action" class="section-pad scroll-mt-24 bg-paper" aria-labelledby="action-title">
+    <div class="container-site">
+      <SectionHeader
+        id="action-title"
+        title={t('home.actionTitle')}
+        lede={t('home.actionLede')}
+        align="start"
+        class="mb-10"
+      />
+      {featured ? (
+        <article class="feature" data-reveal>
+          <MatinMedia
+            item={featured}
+            sizes="(min-width: 64rem) 46rem, 92vw"
+            class:list={['feature__media', featured.type === 'poster' && 'is-poster']}
+          />
+          <div class="feature__body">
+            <p class="feature__type">{t(`matinTypes.${featured.type}`)}</p>
+            <h3 class="feature__title">{featured.title}</h3>
+            <ul class="feature__meta">
+              <li>
+                <CalendarDays size={20} aria-hidden="true" />
+                <time datetime={featured.datetime}>{featured.when}</time>
+              </li>
+              {featured.location && (
+                <li>
+                  <MapPin size={20} aria-hidden="true" />
+                  <span>{featured.location}</span>
+                </li>
+              )}
+            </ul>
+            <p class="feature__summary">{featured.summary}</p>
+            <a
+              href={featured.url}
+              class="btn btn-primary self-start"
+              target={featured.external ? '_blank' : undefined}
+              rel={featured.external ? 'noopener noreferrer' : undefined}
+            >
+              {featured.ctaLabel ?? ctaFor(featured.type, t)}
+              {featured.external ? (
+                <ExternalLink size={18} aria-hidden="true" />
+              ) : (
+                <ArrowRight size={18} class="flip-rtl" aria-hidden="true" />
+              )}
+              {featured.external && <span class="sr-only">{t('a11y.externalLink')}</span>}
+            </a>
+          </div>
+        </article>
+      ) : (
+        <div class="empty-state">
+          <p>{t('home.latestEmpty')}</p>
+          <a href="#newsletter" class="btn btn-primary">
+            {t('home.involvedSecondary')}
+            <ArrowRight size={18} class="flip-rtl" aria-hidden="true" />
+          </a>
+        </div>
+      )}
+    </div>
+  </section>
+
+  <!-- Latest From Matin: the next items of the same feed -->
+  {latest.length > 0 && (
+    <section class="section-pad bg-tint" aria-labelledby="latest-title">
+      <div class="container-site">
+        <SectionHeader
+          id="latest-title"
+          title={t('home.latestTitle')}
+          link={{ href: href('news', lang), label: t('home.newsAll') }}
+          align="start"
+          class="mb-10"
+        />
+        <ul class="latest-grid">
+          {latest.map((item, i) => (
+            <li data-reveal style={`--reveal-delay:${i * 110}ms`}>
+              <MatinCard item={item} lang={lang} />
+            </li>
+          ))}
+        </ul>
+      </div>
+    </section>
+  )}
+
+  <!-- Get involved: warm terracotta band, a people-centred photo beside the invitation -->
+  <section class="involved on-terracotta" aria-labelledby="involved-title">
+    <div class="container-site involved__grid">
+      <figure class="involved__figure" data-reveal>
+        <div class="involved__photo">
+          <Picture
+            src={photos.dialogueCircle.src}
+            alt={t('home.involvedPhotoAlt')}
+            formats={['avif', 'webp']}
+            widths={[640, 960, 1280]}
+            sizes="(min-width: 64rem) 40rem, 92vw"
+            style={`object-position:${photos.dialogueCircle.focus}`}
+          />
+        </div>
+        <span class="involved__block" aria-hidden="true"></span>
+        <figcaption>
+          <PhotoCredit credit={photos.dialogueCircle.credit} class="involved__credit" />
+        </figcaption>
+      </figure>
+      <div class="involved__text">
+        <SectionHeader
+          id="involved-title"
+          eyebrow={t('home.involvedEyebrow')}
+          title={t('home.involvedTitle')}
+          align="start"
+          class="mb-7"
+        />
+        <p class="involved__paragraph" data-reveal>
+          {t('home.involvedText')}
+        </p>
+        <div class="mt-9 flex flex-col gap-3 sm:flex-row sm:flex-wrap" data-reveal>
+          <a href={href('getInvolved', lang)} class="btn btn-primary">
+            {t('home.involvedPrimary')}
+            <ArrowRight size={18} class="flip-rtl" aria-hidden="true" />
+          </a>
+          <a href="#newsletter" class="btn btn-outline">
+            {t('home.involvedSecondary')}
+            <ArrowRight size={18} class="flip-rtl" aria-hidden="true" />
+          </a>
+        </div>
+      </div>
+    </div>
+    <div class="container-site">
+      <nav class="ways" aria-labelledby="ways-title">
+        <h3 id="ways-title" class="ways__title">
+          {t('home.actionsTitle')}
+        </h3>
+        <ul class="ways__list">
+          {ways.map((w) => (
+            <li>
+              <a href={w.href} class="ways__link">
+                <w.icon size={24} stroke-width={1.75} aria-hidden="true" />
+                <span>{w.label}</span>
+                <ArrowRight size={18} class="flip-rtl ways__arrow" aria-hidden="true" />
+              </a>
+            </li>
+          ))}
+        </ul>
+      </nav>
+    </div>
+  </section>
 
   <!-- Who we are: photo and text side by side, then the three About links -->
   <section id="who-we-are" class="section-pad scroll-mt-24 bg-paper" aria-labelledby="who-title">
@@ -123,122 +289,6 @@ const whoCards = [
         class="mb-12 lg:mb-16"
       />
       <AreasGrid lang={lang} />
-    </div>
-  </section>
-
-  <!-- Selected upcoming events: a compact preview of the agenda -->
-  <section class="section-pad bg-paper" aria-labelledby="events-title">
-    <div class="container-site">
-      <SectionHeader
-        id="events-title"
-        title={t('home.eventsTitle')}
-        link={{ href: href('events', lang), label: t('home.eventsAll') }}
-        align="start"
-        class="mb-10"
-      />
-      {/* The key is only useful (and only true) when Matin's own events are listed. */}
-      {[...upcoming, ...(spotlight ? [spotlight] : [])].some(isMatinEvent) && (
-        <ul class="agenda-legend" aria-hidden="true">
-          <li>
-            <span class="agenda-legend__swatch is-matin" />
-            {t('agendaKinds.matin')}
-          </li>
-          <li>
-            <span class="agenda-legend__swatch is-selected" />
-            {t('agendaKinds.selected')}
-          </li>
-        </ul>
-      )}
-      {spotlight && (
-        <div class="mb-10">
-          <SpotlightBanner event={spotlight} lang={lang} />
-        </div>
-      )}
-      <div>
-        {upcoming.length > 0 && (
-          <ul class="events-grid" data-upcoming-list>
-            {upcoming.map((event, i) => (
-              <li data-reveal style={`--reveal-delay:${i * 120}ms`}>
-                <EventCard event={event} lang={lang} />
-              </li>
-            ))}
-          </ul>
-        )}
-        <p class="empty-state" data-upcoming-empty hidden={upcoming.length > 0 || !!spotlight}>
-          {t('home.eventsEmpty')}
-        </p>
-      </div>
-    </div>
-  </section>
-  <ExpireEvents />
-
-  <!-- News & Insights: shown once there is at least one published article -->
-  {posts.length > 0 && (
-    <section class="section-pad bg-tint" aria-labelledby="news-title">
-      <div class="container-site">
-        <SectionHeader
-          id="news-title"
-          title={t('home.newsTitle')}
-          link={{ href: href('news', lang), label: t('home.newsAll') }}
-          align="start"
-          class="mb-10"
-        />
-        {posts.length === 1 ? (
-          <PostCard post={posts[0]} lang={lang} featured />
-        ) : (
-          <ul class="grid gap-10 md:grid-cols-2 lg:grid-cols-3">
-            {posts.map((post) => (
-              <li>
-                <PostCard post={post} lang={lang} />
-              </li>
-            ))}
-          </ul>
-        )}
-      </div>
-    </section>
-  )}
-
-  <!-- Get involved: warm terracotta band, a people-centred photo beside the invitation -->
-  <section class="involved on-terracotta" aria-labelledby="involved-title">
-    <div class="container-site involved__grid">
-      <figure class="involved__figure" data-reveal>
-        <div class="involved__photo">
-          <Picture
-            src={photos.dialogueCircle.src}
-            alt={t('home.involvedPhotoAlt')}
-            formats={['avif', 'webp']}
-            widths={[640, 960, 1280]}
-            sizes="(min-width: 64rem) 40rem, 92vw"
-            style={`object-position:${photos.dialogueCircle.focus}`}
-          />
-        </div>
-        <span class="involved__block" aria-hidden="true"></span>
-        <figcaption>
-          <PhotoCredit credit={photos.dialogueCircle.credit} class="involved__credit" />
-        </figcaption>
-      </figure>
-      <div class="involved__text">
-        <SectionHeader
-          id="involved-title"
-          eyebrow={t('home.involvedEyebrow')}
-          title={t('home.involvedTitle')}
-          align="start"
-          class="mb-7"
-        />
-        <p class="involved__paragraph" data-reveal>
-          {t('home.involvedText')}
-        </p>
-        <div class="mt-9 flex flex-col gap-3 sm:flex-row sm:flex-wrap" data-reveal>
-          <a href={href('getInvolved', lang)} class="btn btn-primary">
-            {t('home.involvedPrimary')}
-            <ArrowRight size={18} class="flip-rtl" aria-hidden="true" />
-          </a>
-          <a href="#newsletter" class="btn btn-outline">
-            {t('home.involvedSecondary')}
-            <ArrowRight size={18} class="flip-rtl" aria-hidden="true" />
-          </a>
-        </div>
-      </div>
     </div>
   </section>
 
@@ -390,37 +440,146 @@ const whoCards = [
     color: var(--accent-ink);
   }
 
-  /* ---------- Events ---------- */
-  .agenda-legend {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 0.75rem 1.75rem;
-    margin-block-end: 1.75rem;
-    font-size: 0.975rem;
-    font-weight: 700;
-    color: var(--color-ink);
-  }
-  .agenda-legend li {
-    display: flex;
-    align-items: center;
-    gap: 0.6rem;
-  }
-  .agenda-legend__swatch {
-    width: 1.75rem;
-    height: 0.75rem;
-    border-radius: 999px;
-  }
-  .agenda-legend__swatch.is-matin {
-    background: var(--color-primary);
-  }
-  .agenda-legend__swatch.is-selected {
-    border: 2px solid var(--color-primary);
+  /* ---------- Matin in Action ---------- */
+  /* The featured item: the visual on one side, the details on the other. */
+  .feature {
+    display: grid;
+    overflow: hidden;
+    border: 1px solid var(--color-line);
+    border-radius: calc(var(--radius-card) * 1.4);
     background: var(--color-white);
   }
-  .events-grid {
+  .feature :global(.feature__media) {
+    aspect-ratio: 4 / 3;
+  }
+  .feature :global(.feature__media.is-poster) {
+    aspect-ratio: 4 / 5;
+  }
+  .feature__body {
+    display: flex;
+    flex-direction: column;
+    gap: 1.1rem;
+    padding: clamp(1.75rem, 1.2rem + 2.5vw, 3.5rem);
+    border-block-start: 6px solid var(--color-coral);
+  }
+  @media (min-width: 64rem) {
+    .feature {
+      grid-template-columns: minmax(0, 1.15fr) minmax(0, 1fr);
+      align-items: stretch;
+    }
+    .feature :global(.feature__media) {
+      aspect-ratio: auto;
+      min-height: 26rem;
+    }
+    .feature :global(.feature__media.is-poster) {
+      min-height: 34rem;
+    }
+    .feature__body {
+      justify-content: center;
+      border-block-start: none;
+      border-inline-start: 6px solid var(--color-coral);
+    }
+  }
+  .feature__type {
+    align-self: flex-start;
+    padding: 0.3rem 0.9rem;
+    border-radius: 999px;
+    background: var(--color-primary);
+    color: var(--color-gold);
+    font-family: var(--font-display);
+    font-size: 0.9rem;
+    font-weight: 800;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+  }
+  .feature__title {
+    font-size: clamp(1.875rem, 1.4rem + 1.8vw, 3rem);
+    font-weight: 800;
+    line-height: 1.1;
+    text-wrap: balance;
+  }
+  .feature__meta {
+    display: grid;
+    gap: 0.45rem;
+    font-size: 1.125rem;
+    font-weight: 700;
+    color: var(--color-primary);
+  }
+  .feature__meta li {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.6rem;
+  }
+  .feature__meta :global(svg) {
+    flex-shrink: 0;
+    margin-top: 0.2rem;
+    color: var(--color-terracotta-deep);
+  }
+  .feature__summary {
+    max-width: 38rem;
+    font-size: clamp(1.125rem, 1.05rem + 0.35vw, 1.3125rem);
+    line-height: 1.65;
+  }
+  .feature :global(.btn) {
+    margin-top: 0.5rem;
+  }
+  .latest-grid {
     display: grid;
     gap: 1.75rem;
-    grid-template-columns: repeat(auto-fit, minmax(min(100%, 22rem), 1fr));
+    /* auto-fill: one or two cards keep a card's width instead of stretching. */
+    grid-template-columns: repeat(auto-fill, minmax(min(100%, 22rem), 1fr));
+  }
+
+  /* ---------- Ways to take part (inside the Get Involved band) ---------- */
+  .ways {
+    margin-block-start: clamp(3rem, 2rem + 3vw, 4.5rem);
+    padding-block-start: 2rem;
+    border-block-start: 1px solid color-mix(in srgb, var(--color-white) 35%, transparent);
+  }
+  .ways__title {
+    margin-block-end: 1.25rem;
+    font-size: 1.375rem;
+    font-weight: 800;
+    color: var(--color-white);
+  }
+  .ways__list {
+    display: grid;
+    gap: 0.85rem;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 13.5rem), 1fr));
+  }
+  /* White tiles on terracotta: navy text (11.9:1). */
+  .ways__link {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    height: 100%;
+    padding: 1rem 1.15rem;
+    border-radius: 1rem;
+    background: var(--color-white);
+    color: var(--color-primary);
+    font-family: var(--font-display);
+    font-size: 1.0625rem;
+    font-weight: 800;
+    line-height: 1.25;
+    text-decoration: none;
+    transition:
+      transform 0.2s,
+      background-color 0.2s;
+  }
+  .ways__link:hover {
+    background: var(--color-cream);
+    transform: translateY(-2px);
+  }
+  .ways__link :global(svg) {
+    flex-shrink: 0;
+    color: var(--color-terracotta-deep);
+  }
+  .ways__link > span {
+    flex: 1;
+  }
+  .ways__link :focus-visible,
+  .ways__link:focus-visible {
+    outline-color: var(--color-white);
   }
 
   /* ---------- Get involved ---------- */

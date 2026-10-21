@@ -62,6 +62,20 @@ const en: Dictionary = {
     devNotice: 'Search works once the site is built (npm run build, then npm run preview).',
   },
   home: {
+    actionTitle: 'Matin in Action',
+    actionLede: 'What Matin is doing now: our initiatives, activities and news.',
+    latestTitle: 'Latest From Matin',
+    latestEmpty:
+      "Matin's first activities will be announced here. Subscribe to our newsletter to be among the first to know.",
+    ctaEvent: 'View Event',
+    ctaPoster: 'See the Poster',
+    ctaVideo: 'Watch the Video',
+    ctaRead: 'Read More',
+    actionsTitle: 'Ways to take part',
+    actAttend: 'Attend an activity',
+    actCollaborate: 'Collaborate with us',
+    actVolunteer: 'Volunteer',
+    actContact: 'Write to us',
     heroEyebrow: 'Matin Intercultural Institute',
     heroTitle: 'Cultures in Dialogue',
     heroText:
@@ -100,6 +114,15 @@ const en: Dictionary = {
     involvedSecondary: 'Stay Connected',
     involvedPhotoAlt:
       'A small group seated in a circle, in conversation, with ideas written on notes on the floor.',
+  },
+  matinTypes: {
+    initiative: 'Initiative',
+    event: 'Event',
+    news: 'News',
+    announcement: 'Announcement',
+    report: 'Report',
+    video: 'Video',
+    poster: 'Poster',
   },
   newsletter: {
     eyebrow: 'Cultures in Dialogue',

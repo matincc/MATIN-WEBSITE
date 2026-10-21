@@ -63,6 +63,20 @@ const fa: DeepPartial<Dictionary> = {
     ourPresident: 'رئیس ما',
   },
   home: {
+    actionTitle: 'متین در عمل',
+    actionLede: 'آنچه متین این روزها انجام می‌دهد: ابتکارها، برنامه‌ها و خبرهای ما.',
+    latestTitle: 'تازه‌های متین',
+    latestEmpty:
+      'نخستین فعالیت‌های متین همین‌جا اعلام می‌شوند. در خبرنامه عضو شوید تا جزو نخستین کسانی باشید که باخبر می‌شوند.',
+    ctaEvent: 'دیدن رویداد',
+    ctaPoster: 'دیدن پوستر',
+    ctaVideo: 'تماشای ویدیو',
+    ctaRead: 'ادامه مطلب',
+    actionsTitle: 'راه‌های همراهی',
+    actAttend: 'شرکت در یک برنامه',
+    actCollaborate: 'همکاری با ما',
+    actVolunteer: 'داوطلب شدن',
+    actContact: 'نوشتن برای ما',
     heroEyebrow: 'مؤسسه بین‌فرهنگی متین',
     heroTitle: 'گفت‌وگوی فرهنگ‌ها',
     heroText:
@@ -101,6 +115,15 @@ const fa: DeepPartial<Dictionary> = {
     involvedSecondary: 'در ارتباط بمانید',
     involvedPhotoAlt:
       'گروهی کوچک که در دایره‌ای نشسته‌اند و گفت‌وگو می‌کنند؛ ایده‌ها روی یادداشت‌هایی روی زمین نوشته شده‌اند.',
+  },
+  matinTypes: {
+    initiative: 'ابتکار',
+    event: 'رویداد',
+    news: 'خبر',
+    announcement: 'اطلاعیه',
+    report: 'گزارش',
+    video: 'ویدیو',
+    poster: 'پوستر',
   },
   newsletter: {
     eyebrow: 'گفت‌وگوی فرهنگ‌ها',
