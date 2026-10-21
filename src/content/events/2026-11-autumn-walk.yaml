@@ -1,7 +1,7 @@
 # Matin's Autumn Walk: approved texts (Oct 21, 2026); practical details from the official
 # poster (free, open to all, conversations in French, part of the Semaine québécoise des
-# rencontres interculturelles 2026, inquiries by email). The poster: add it as `image`
-# with `imageIsPoster: true` once the file is in src/assets/uploads/events/autumn-walk-2026/.
+# rencontres interculturelles 2026, inquiries by email). The official poster is shown whole
+# (`imageIsPoster: true`).
 kind: matin
 organizer:
   name: Matin
@@ -56,4 +56,10 @@ location:
   address: 'LaSalle, Montréal (Québec)'
 price:
   type: free
+image: ../../assets/uploads/events/autumn-walk-2026/poster.jpg
+imageIsPoster: true
+imageAlt:
+  fr: "Affiche officielle : « Marchons ensemble, parlons de nos cultures ». Une promenade interculturelle au parc Angrignon, LaSalle, le samedi 7 novembre 2026 de 14 h à 14 h 45. Activité gratuite, ouverte à toutes et à tous, échanges en français. Des personnes marchent et discutent sous les arbres d'automne."
+  en: 'Official poster: "Marchons ensemble, parlons de nos cultures" (Let''s walk together, let''s talk about our cultures). An intercultural walk in Angrignon Park, LaSalle, Saturday, November 7, 2026, 2:00 to 2:45 PM. Free activity, open to everyone, conversations in French. People walk and chat under autumn trees.'
+  fa: 'پوستر رسمی: «با هم قدم بزنیم، از فرهنگ‌هایمان بگوییم». پیاده‌روی میان‌فرهنگی در پارک آنگرینیون لاسال، شنبه ۷ نوامبر ۲۰۲۶، ساعت ۱۴ تا ۱۴:۴۵. رایگان و آزاد برای همه، گفت‌وگوها به زبان فرانسوی. چند نفر زیر درختان پاییزی قدم می‌زنند و گپ می‌زنند.'
 faReviewed: true
