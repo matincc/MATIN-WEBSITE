@@ -1,0 +1,227 @@
+---
+/**
+ * "Matin Moments" on the homepage: one large item (Matin's introductory video once it is
+ * set, otherwise the first featured photo or video) and four smaller ones, chosen in the
+ * gallery admin with `featured`. Until real photos and videos are published, the places
+ * are shown as quiet "coming soon" tiles in the dialogue motif, never sample pictures.
+ */
+import { Picture } from 'astro:assets';
+import { ArrowRight, Play } from '@lucide/astro';
+import DialogueArt from '@/components/brand/DialogueArt.astro';
+import SectionHeader from '@/components/ui/SectionHeader.astro';
+import GalleryVideo from '@/components/ui/GalleryVideo.astro';
+import { href, type UiLang } from '@/i18n/routes';
+import { useTranslations } from '@/i18n/ui';
+import { getAlbums, getIntroVideo } from '@/lib/content';
+import { featuredMoments } from '@/lib/gallery';
+
+interface Props {
+  lang: UiLang;
+}
+const { lang } = Astro.props;
+const t = useTranslations(lang);
+const [albums, intro] = await Promise.all([getAlbums(), getIntroVideo()]);
+const [lead, ...rest] = featuredMoments(albums, lang, intro);
+const small = rest.slice(0, 4);
+const accents = ['coral', 'mustard', 'teal', 'terracotta'] as const;
+const galleryHref = href('gallery', lang);
+---
+
+<section class="section-pad bg-paper" aria-labelledby="moments-title">
+  <div class="container-site">
+    <SectionHeader
+      id="moments-title"
+      title={t('home.momentsTitle')}
+      subtitle={t('home.momentsLede')}
+      align="start"
+      class="mb-10"
+    />
+
+    <div class="moments">
+      <div class="moments__lead" data-reveal>
+        {lead ? (
+          lead.kind === 'video' ? (
+            <GalleryVideo
+              lang={lang}
+              title={lead.title}
+              youtubeId={lead.youtubeId}
+              file={lead.file}
+              thumbnail={lead.image}
+            />
+          ) : (
+            <a href={lead.href} class="moment-tile moment-tile--lead">
+              <Picture
+                src={lead.image!}
+                alt={lead.alt}
+                formats={['avif', 'webp']}
+                widths={[640, 960, 1280, 1600]}
+                sizes="(min-width: 64rem) 50vw, 92vw"
+              />
+            </a>
+          )
+        ) : (
+          <div class="moment-empty moment-empty--lead">
+            <DialogueArt accent="navy" seed="moments" class="moment-empty__art" />
+            <p class="moment-empty__text">
+              <span class="moment-empty__label">{t('gallery.comingSoon')}</span>
+              {t('gallery.empty')}
+            </p>
+          </div>
+        )}
+      </div>
+
+      <ul class="moments__grid">
+        {Array.from({ length: 4 }, (_, i) => small[i]).map((m, i) => (
+          <li data-reveal style={`--reveal-delay:${(i + 1) * 90}ms`}>
+            {m ? (
+              <a href={m.href} class="moment-tile">
+                {m.image ? (
+                  <Picture
+                    src={m.image}
+                    alt={m.kind === 'photo' ? m.alt : ''}
+                    formats={['avif', 'webp']}
+                    widths={[360, 540, 720]}
+                    sizes="(min-width: 64rem) 22vw, 46vw"
+                  />
+                ) : (
+                  <DialogueArt accent={accents[i]} seed={m.title} class="moment-tile__art" />
+                )}
+                {m.kind === 'video' && (
+                  <>
+                    <span class="moment-tile__play" aria-hidden="true">
+                      <Play size={22} fill="currentColor" />
+                    </span>
+                    <span class="sr-only">{t('gallery.play', { title: m.title })}</span>
+                  </>
+                )}
+              </a>
+            ) : (
+              <div class="moment-empty" aria-hidden="true">
+                <DialogueArt accent={accents[i]} seed={`moment-${i}`} class="moment-empty__art" />
+              </div>
+            )}
+          </li>
+        ))}
+      </ul>
+    </div>
+
+    <a href={galleryHref} class="btn btn-outline moments__cta">
+      {t('home.momentsCta')}
+      <ArrowRight size={18} class="flip-rtl" aria-hidden="true" />
+    </a>
+  </div>
+</section>
+
+<style>
+  /* Editorial layout: the large item on the reading side, four tiles beside it. */
+  .moments {
+    display: grid;
+    gap: 1rem;
+  }
+  @media (min-width: 64rem) {
+    .moments {
+      grid-template-columns: minmax(0, 1.25fr) minmax(0, 1fr);
+      gap: 1.25rem;
+      align-items: stretch;
+    }
+  }
+  .moments__lead {
+    min-width: 0;
+  }
+  .moments__grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 1rem;
+  }
+  @media (min-width: 64rem) {
+    .moments__grid {
+      gap: 1.25rem;
+    }
+  }
+  .moment-tile,
+  .moment-empty {
+    position: relative;
+    display: block;
+    width: 100%;
+    aspect-ratio: 4 / 3;
+    overflow: hidden;
+    border-radius: var(--radius-card);
+    background: var(--color-tint);
+  }
+  .moment-tile--lead,
+  .moment-empty--lead {
+    aspect-ratio: 16 / 10;
+  }
+  @media (min-width: 64rem) {
+    .moment-tile--lead,
+    .moment-empty--lead {
+      aspect-ratio: auto;
+      height: 100%;
+    }
+  }
+  .moment-tile :global(picture),
+  .moment-tile :global(img),
+  .moment-tile :global(.moment-tile__art),
+  .moment-empty :global(.moment-empty__art) {
+    display: block;
+    width: 100%;
+    height: 100%;
+  }
+  .moment-tile :global(img) {
+    object-fit: cover;
+    transition: transform 0.6s cubic-bezier(0.2, 0.7, 0.2, 1);
+  }
+  .moment-tile:hover :global(img) {
+    transform: scale(1.04);
+  }
+  .moment-tile:focus-visible {
+    outline-offset: 3px;
+  }
+  /* Round play badge, navy on white (11.9:1). */
+  .moment-tile__play {
+    position: absolute;
+    inset: 0;
+    margin: auto;
+    display: grid;
+    place-items: center;
+    width: 3.25rem;
+    height: 3.25rem;
+    border-radius: 50%;
+    background: var(--color-white);
+    color: var(--color-primary);
+  }
+  .moment-tile__play :global(svg) {
+    margin-inline-start: 0.15rem;
+  }
+  /* "Coming soon": the dialogue motif on cream, with a short note on the large tile. */
+  .moment-empty__text {
+    position: absolute;
+    inset-inline: 1.25rem;
+    inset-block-end: 1.25rem;
+    max-width: 30rem;
+    padding: 1rem 1.25rem;
+    border-radius: 1rem;
+    background: var(--color-white);
+    font-size: 1.0625rem;
+    line-height: 1.5;
+    color: var(--color-ink);
+  }
+  .moment-empty__label {
+    display: block;
+    margin-block-end: 0.25rem;
+    font-family: var(--font-display);
+    font-size: 0.875rem;
+    font-weight: 800;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--color-terracotta-deep);
+  }
+  .moments__cta {
+    margin-block-start: 2.25rem;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .moment-tile :global(img) {
+      transition: none;
+    }
+  }
+</style>

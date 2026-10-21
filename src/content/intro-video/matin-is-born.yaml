@@ -1,0 +1,7 @@
+# Matin's introductory video. It appears on the homepage ("Matin Moments") and at the top
+# of the Gallery page as soon as `youtube` (a YouTube link) or `file` (a video uploaded to
+# /media/, MP4 or WebM) is filled in. Easiest: the admin, /admin/ → "Intro video".
+title:
+  en: 'Matin is Born'
+  fr: 'La naissance de Matin'
+youtube: ''

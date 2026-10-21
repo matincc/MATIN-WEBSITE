@@ -16,6 +16,7 @@ import {
   Users,
 } from '@lucide/astro';
 import PageLayout from '@/layouts/PageLayout.astro';
+import DialogueArt from '@/components/brand/DialogueArt.astro';
 import SectionHeader from '@/components/ui/SectionHeader.astro';
 import { path, siteAlternates, type UiLang } from '@/i18n/routes';
 import { faAboutMore } from '@/i18n/fa';
@@ -80,7 +81,7 @@ const founderRole = pick(president.signature, lang) || pick(president.title, lan
 <PageLayout
   lang={lang}
   title={t('about.title')}
-  lede={t('about.lede')}
+  description={t('about.lede')}
   alternates={siteAlternates('about')}
 >
   {full && (
@@ -156,25 +157,35 @@ const founderRole = pick(president.signature, lang) || pick(president.title, lan
     </div>
   </section>
 
-  <!-- A personal note from our founder: navy band, a centred letter. -->
+  <!-- A personal note from our founder: a light letter on cream, framed by flat colour
+       blocks and the dialogue motif; paragraphs on the reading side (right in Persian). -->
   {message.length > 0 && (
-    <section id="president" class="founder on-dark scroll-mt-24" aria-labelledby="president-title">
+    <section id="president" class="founder scroll-mt-24" aria-labelledby="president-title">
+      <DialogueArt accent="teal" seed="founder" class="founder__art" />
       <div class="container-site">
-        <figure class="founder__note">
-          <h2 class="founder__title" id="president-title">
-            {t('about.founderTitle')}
-          </h2>
-          <Quote size={40} class="founder__mark" stroke-width={1.25} aria-hidden="true" />
-          <blockquote class="founder__quote">
-            {message.map((para) => (
-              <p>{para}</p>
-            ))}
-          </blockquote>
-          <figcaption class="founder__sign">
-            <span class="founder__name">{founderName}</span>
-            {founderRole && <span class="founder__role">{founderRole}</span>}
-          </figcaption>
-        </figure>
+        <div class="founder__frame">
+          <span class="founder__block founder__block--a" aria-hidden="true"></span>
+          <span class="founder__block founder__block--b" aria-hidden="true"></span>
+          <figure class="founder__note" data-reveal>
+            <header class="founder__head">
+              <span class="founder__mark" aria-hidden="true">
+                <Quote size={28} stroke-width={1.75} />
+              </span>
+              <h2 class="founder__title" id="president-title">
+                {t('about.founderTitle')}
+              </h2>
+            </header>
+            <blockquote class="founder__quote">
+              {message.map((para) => (
+                <p>{para}</p>
+              ))}
+            </blockquote>
+            <figcaption class="founder__sign">
+              <span class="founder__name">{founderName}</span>
+              {founderRole && <span class="founder__role">{founderRole}</span>}
+            </figcaption>
+          </figure>
+        </div>
       </div>
     </section>
   )}
@@ -325,10 +336,10 @@ const founderRole = pick(president.signature, lang) || pick(president.title, lan
   }
   .timeline__text {
     display: grid;
-    gap: 1.1rem;
+    gap: 1.35rem;
     max-width: 52rem;
-    font-size: clamp(1.125rem, 1.05rem + 0.35vw, 1.3125rem);
-    line-height: 1.75;
+    font-size: clamp(1.1875rem, 1.08rem + 0.45vw, 1.4375rem);
+    line-height: 1.8;
   }
   /* The invitation that closes the entry stands out a little. */
   .timeline__text > p:last-child:not(:first-child) {
@@ -355,56 +366,131 @@ const founderRole = pick(president.signature, lang) || pick(president.title, lan
     }
   }
 
-  /* A personal note from our founder: navy band, a centred letter of about 820px.
-     White text on navy 11.9:1, mustard on navy 5.3:1. */
+  /* A personal note from our founder: a white letter on cream, about 52rem wide, with
+     two flat colour blocks behind its corners and the dialogue motif in the background.
+     Text on white: ink 14:1, navy 11.9:1, terracotta-deep labels 6.8:1. */
   .founder {
+    position: relative;
+    overflow: hidden;
     padding-block: clamp(4rem, 2.5rem + 5vw, 7.5rem);
-    background: var(--color-primary);
-    color: var(--color-white);
+    background: var(--color-tint);
+  }
+  .founder :global(.founder__art) {
+    position: absolute;
+    inset-block-start: -4rem;
+    inset-inline-end: -6rem;
+    width: min(38rem, 70vw);
+    opacity: 0.45;
+  }
+  .founder__frame {
+    position: relative;
+    max-width: 56rem;
+    margin-inline: auto;
+  }
+  .founder__block {
+    position: absolute;
+    border-radius: var(--radius-card);
+  }
+  .founder__block--a {
+    inset-block-start: -1rem;
+    inset-inline-start: -1rem;
+    width: 9rem;
+    height: 9rem;
+    background: var(--color-gold);
+  }
+  .founder__block--b {
+    inset-block-end: -1rem;
+    inset-inline-end: -1rem;
+    width: 40%;
+    height: 7rem;
+    background: var(--color-terracotta);
   }
   .founder__note {
-    max-width: 52rem;
-    margin-inline: auto;
-    text-align: center;
+    position: relative;
+    padding: clamp(2rem, 1.2rem + 3.5vw, 4.5rem);
+    border: 1px solid var(--color-line);
+    border-radius: var(--radius-card);
+    background: var(--color-white);
   }
-  .founder__title {
-    font-size: clamp(1.75rem, 1.3rem + 1.6vw, 2.625rem);
-    font-weight: 800;
-    color: var(--color-white);
+  .founder__head {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin-block-end: clamp(1.75rem, 1.4rem + 1.2vw, 2.5rem);
+    padding-block-end: 1.5rem;
+    border-block-end: 1px solid color-mix(in srgb, var(--color-gold) 60%, transparent);
   }
-  .founder :global(.founder__mark) {
-    display: block;
-    margin: 1.75rem auto 1.5rem;
+  .founder__mark {
+    display: grid;
+    flex-shrink: 0;
+    place-items: center;
+    width: 3.5rem;
+    height: 3.5rem;
+    border-radius: 50%;
+    background: var(--color-primary);
     color: var(--color-gold);
   }
+  .founder__title {
+    font-size: clamp(1.625rem, 1.25rem + 1.4vw, 2.5rem);
+    font-weight: 800;
+    line-height: 1.15;
+    color: var(--color-primary);
+  }
+  /* Paragraphs on the reading side, a comfortable measure and generous spacing. */
   .founder__quote {
     display: grid;
-    gap: 1.25rem;
-    font-size: clamp(1.1875rem, 1.05rem + 0.6vw, 1.5rem);
-    line-height: 1.75;
-    color: var(--color-cream);
+    gap: 1.4rem;
+    max-width: 46rem;
+    font-size: clamp(1.1875rem, 1.08rem + 0.45vw, 1.4375rem);
+    line-height: 1.8;
+    color: var(--color-ink);
+    text-align: start;
   }
-  /* The last line, the invitation, a little warmer. */
-  .founder__quote > p:last-child {
+  /* The opening paragraph a little larger, the closing invitation a little warmer. */
+  .founder__quote > p:first-child {
+    font-size: 1.08em;
+    color: var(--color-primary);
+  }
+  .founder__quote > p:last-child:not(:first-child) {
     font-weight: 600;
-    color: var(--color-white);
+    color: var(--color-primary);
   }
   .founder__sign {
     display: grid;
-    gap: 0.35rem;
-    justify-items: center;
+    gap: 0.3rem;
+    justify-items: start;
     margin-block-start: 2.5rem;
-    padding-block-start: 1.75rem;
-    border-block-start: 1px solid color-mix(in srgb, var(--color-gold) 55%, transparent);
+  }
+  .founder__sign::before {
+    content: '';
+    width: 4rem;
+    height: 3px;
+    margin-block-end: 1rem;
+    border-radius: 2px;
+    background: var(--color-gold);
   }
   .founder__name {
     font-family: var(--font-display);
     font-size: clamp(1.25rem, 1.15rem + 0.4vw, 1.5rem);
     font-weight: 800;
-    color: var(--color-gold);
+    color: var(--color-primary);
   }
   .founder__role {
     font-size: 1.0625rem;
-    color: var(--color-cream);
+    color: var(--color-terracotta-deep);
+    font-weight: 600;
+  }
+  @media (max-width: 40rem) {
+    .founder__block--a {
+      width: 5rem;
+      height: 5rem;
+      inset-block-start: -0.6rem;
+      inset-inline-start: -0.6rem;
+    }
+    .founder__block--b {
+      inset-block-end: -0.6rem;
+      inset-inline-end: -0.6rem;
+      height: 4rem;
+    }
   }
 </style>

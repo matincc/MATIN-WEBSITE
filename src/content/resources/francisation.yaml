@@ -1,9 +1,11 @@
-category: newcomers
-order: 2
+# Directory entry: see README.md. A listing never implies a partnership.
+name: 'Apprendre le français – Québec.ca'
+nameEn: 'Learning French – Québec.ca'
+category: government
 url: https://www.quebec.ca/education/apprendre-le-francais
-title:
-  fr: 'Apprendre le français – Québec.ca'
-  en: 'Learning French – Québec.ca'
 description:
   fr: "Les services gratuits d'apprentissage du français offerts par Francisation Québec."
   en: 'Free French-language services offered by Francisation Québec.'
+location: Québec
+order: 20
+published: true

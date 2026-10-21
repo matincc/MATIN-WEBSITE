@@ -1,0 +1,47 @@
+---
+/**
+ * "Back to Top": a small static link centred just above the footer (never floating).
+ * The page scrolls up smoothly, or jumps under prefers-reduced-motion (global.css).
+ */
+import { ArrowUp } from '@lucide/astro';
+import type { UiLang } from '@/i18n/routes';
+import { useTranslations } from '@/i18n/ui';
+
+interface Props {
+  lang: UiLang;
+}
+const t = useTranslations(Astro.props.lang);
+---
+
+<nav class="back-to-top" aria-label={t('a11y.backToTop')} data-pagefind-ignore>
+  <a href="#top" class="back-to-top__link">
+    <ArrowUp size={18} aria-hidden="true" />
+    {t('a11y.backToTop')}
+  </a>
+</nav>
+
+<style>
+  .back-to-top {
+    display: flex;
+    justify-content: center;
+    padding-block: 2.25rem;
+  }
+  .back-to-top__link {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    min-height: 2.75rem;
+    padding-inline: 0.75rem;
+    font-family: var(--font-display);
+    font-size: 1rem;
+    font-weight: 700;
+    color: var(--color-primary);
+    text-decoration: none;
+    text-underline-offset: 0.3em;
+  }
+  .back-to-top__link:hover {
+    text-decoration: underline;
+    text-decoration-color: var(--color-gold);
+    text-decoration-thickness: 2px;
+  }
+</style>

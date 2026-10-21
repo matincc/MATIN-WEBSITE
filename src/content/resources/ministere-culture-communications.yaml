@@ -1,0 +1,8 @@
+# Name and website checked on 2026-10-21. Unpublished until its official logo is added
+# (logo: ../../assets/uploads/resources/<file>) and approved; then set published: true.
+name: 'Ministère de la Culture et des Communications'
+category: government
+url: https://www.quebec.ca/gouvernement/ministeres-organismes/culture-communications
+location: Québec
+order: 30
+published: false

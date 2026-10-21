@@ -1,10 +1,18 @@
 ---
-import { BookOpen, Compass, Download, ExternalLink, Handshake, Users } from '@lucide/astro';
+/**
+ * Cultural Resources & Organizations: a curated directory of public, cultural, community
+ * and research organizations, by category, with a category filter. Each entry opens the
+ * organization's official website in a new tab. A listing never implies a partnership,
+ * endorsement or affiliation. Entries: src/content/resources/ (or the admin, /admin/).
+ */
+import { Image } from 'astro:assets';
+import { Download, ExternalLink, Info, MapPin } from '@lucide/astro';
 import PageLayout from '@/layouts/PageLayout.astro';
 import { alternatesFor, type Lang } from '@/i18n/routes';
 import { useTranslations, pick } from '@/i18n/ui';
-import { getResources } from '@/lib/content';
+import { getResources, orgName } from '@/lib/content';
 import { resourceCategories } from '@/lib/taxonomy';
+import { resourceAccents, resourceIcons } from '@/lib/resourceIcons';
 
 interface Props {
   lang: Lang;
@@ -12,10 +20,10 @@ interface Props {
 const { lang } = Astro.props;
 const t = useTranslations(lang);
 const resources = await getResources();
-const icons = { guide: BookOpen, newcomers: Compass, community: Users, partners: Handshake };
 const groups = resourceCategories
   .map((c) => ({ category: c, items: resources.filter((r) => r.data.category === c) }))
   .filter((g) => g.items.length);
+const host = (url: string) => new URL(url).hostname.replace(/^www\./, '');
 ---
 
 <PageLayout
@@ -24,51 +32,293 @@ const groups = resourceCategories
   lede={t('resources.lede')}
   alternates={alternatesFor('resources')}
 >
-  <div class="container-site space-y-16 pt-4 pb-24">
-    {groups.map(({ category, items }) => {
-      const Icon = icons[category];
-      return (
-        <section aria-labelledby={`res-${category}`}>
-          <h2 id={`res-${category}`} class="mb-8 flex items-center gap-3 text-3xl font-bold">
-            <span class="grid size-12 place-items-center rounded-full border border-line bg-white text-gold-dark">
-              <Icon size={22} aria-hidden="true" />
-            </span>
+  <div class="container-site pt-2 pb-24">
+    <p class="directory-notice">
+      <Info size={20} aria-hidden="true" />
+      <span>{t('resources.notice')}</span>
+    </p>
+
+    {groups.length === 0 && <p class="empty-state">{t('resources.empty')}</p>}
+
+    {groups.length > 1 && (
+      <div
+        class="directory-filter invisible"
+        role="group"
+        aria-label={t('resources.filterLabel')}
+        data-directory-filter
+      >
+        <button type="button" class="chip" aria-pressed="true" data-cat="">
+          {t('resources.all')}
+        </button>
+        {groups.map(({ category }) => (
+          <button type="button" class="chip" aria-pressed="false" data-cat={category}>
             {t(`resources.${category}`)}
-          </h2>
-          <ul class="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-            {items.map((r) => {
-              const isFile = !!r.data.file;
-              const href = r.data.file ?? r.data.url!;
-              return (
-                <li class="card group relative flex flex-col p-7 transition-colors hover:border-gold">
-                  <h3 class="mb-2 text-xl font-bold">
-                    <a
-                      href={href}
-                      class="text-primary no-underline after:absolute after:inset-0"
-                      {...(isFile
-                        ? { download: '' }
-                        : { target: '_blank', rel: 'noopener noreferrer' })}
-                    >
-                      {pick(r.data.title, lang)}
-                      {!isFile && <span class="sr-only">{t('a11y.externalLink')}</span>}
-                    </a>
-                  </h3>
-                  <p class="mb-6 text-muted">{pick(r.data.description, lang)}</p>
-                  <span
-                    class="mt-auto inline-flex items-center gap-2 text-sm font-semibold text-ink"
-                    aria-hidden="true"
-                  >
-                    {isFile ? <Download size={16} /> : <ExternalLink size={16} />}
-                    {isFile
-                      ? t('resources.download')
-                      : new URL(href).hostname.replace(/^www\./, '')}
-                  </span>
-                </li>
-              );
-            })}
-          </ul>
-        </section>
-      );
-    })}
+          </button>
+        ))}
+      </div>
+    )}
+
+    <div class="space-y-16">
+      {groups.map(({ category, items }) => {
+        const Icon = resourceIcons[category];
+        return (
+          <section
+            id={`cat-${category}`}
+            class="scroll-mt-28"
+            aria-labelledby={`res-${category}`}
+            data-category={category}
+          >
+            <h2 id={`res-${category}`} class="directory-title">
+              <span class="directory-title__icon" data-accent={resourceAccents[category]}>
+                <Icon size={22} stroke-width={1.75} aria-hidden="true" />
+              </span>
+              {t(`resources.${category}`)}
+            </h2>
+            <ul class="org-grid">
+              {items.map((r) => {
+                const name = orgName(r, lang);
+                const description = pick(r.data.description, lang);
+                return (
+                  <li class="card org-card" data-accent={resourceAccents[category]}>
+                    <div class="org-card__logo">
+                      {r.data.logo ? (
+                        <Image
+                          src={r.data.logo}
+                          alt=""
+                          width={320}
+                          class="org-card__img"
+                          loading="lazy"
+                        />
+                      ) : (
+                        <span class="org-card__initials" aria-hidden="true">
+                          <Icon size={28} stroke-width={1.6} />
+                        </span>
+                      )}
+                    </div>
+                    <h3 class="org-card__name">
+                      <a
+                        href={r.data.url}
+                        class="org-card__link"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                      >
+                        {name}
+                        <span class="sr-only">{t('a11y.externalLink')}</span>
+                      </a>
+                    </h3>
+                    {r.data.location && (
+                      <p class="org-card__meta">
+                        <MapPin size={16} aria-hidden="true" />
+                        {r.data.location}
+                      </p>
+                    )}
+                    {description && <p class="org-card__text">{description}</p>}
+                    <span class="org-card__site" aria-hidden="true">
+                      <ExternalLink size={16} />
+                      {host(r.data.url)}
+                    </span>
+                    {r.data.file && (
+                      <a href={r.data.file} download class="org-card__file">
+                        <Download size={16} aria-hidden="true" />
+                        {t('resources.download')}
+                      </a>
+                    )}
+                  </li>
+                );
+              })}
+            </ul>
+          </section>
+        );
+      })}
+    </div>
   </div>
 </PageLayout>
+
+<script>
+  const bar = document.querySelector<HTMLElement>('[data-directory-filter]');
+  if (bar) {
+    bar.classList.remove('invisible');
+    const buttons = [...bar.querySelectorAll<HTMLButtonElement>('[data-cat]')];
+    const sections = [...document.querySelectorAll<HTMLElement>('[data-category]')];
+    const show = (cat: string) => {
+      buttons.forEach((b) => b.setAttribute('aria-pressed', String(b.dataset.cat === cat)));
+      sections.forEach((s) => (s.hidden = !!cat && s.dataset.category !== cat));
+    };
+    buttons.forEach((b) => b.addEventListener('click', () => show(b.dataset.cat ?? '')));
+    // Opened from a category link on the homepage (#cat-municipal…): show that category.
+    const fromHash = location.hash.replace(/^#cat-/, '');
+    if (fromHash && buttons.some((b) => b.dataset.cat === fromHash)) show(fromHash);
+  }
+</script>
+
+<style>
+  .directory-notice {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.6rem;
+    max-width: 52rem;
+    margin-block-end: 2.5rem;
+    font-size: 1rem;
+    color: var(--color-ink);
+  }
+  .directory-notice :global(svg) {
+    flex-shrink: 0;
+    margin-top: 0.15rem;
+    color: var(--color-teal-deep);
+  }
+  .directory-filter {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.6rem;
+    margin-block-end: 3rem;
+  }
+  .chip {
+    min-height: 2.75rem;
+    padding: 0.5rem 1.15rem;
+    border: 1.5px solid var(--color-line);
+    border-radius: 999px;
+    background: var(--color-white);
+    color: var(--color-primary);
+    font-family: var(--font-display);
+    font-size: 1rem;
+    font-weight: 700;
+    cursor: pointer;
+    transition:
+      background-color 0.2s,
+      border-color 0.2s;
+  }
+  .chip:hover {
+    border-color: var(--color-gold);
+  }
+  .chip[aria-pressed='true'] {
+    border-color: var(--color-primary);
+    background: var(--color-primary);
+    color: var(--color-white);
+  }
+  .directory-title {
+    display: flex;
+    align-items: center;
+    gap: 0.85rem;
+    margin-block-end: 1.75rem;
+    font-size: clamp(1.5rem, 1.25rem + 0.9vw, 2rem);
+    font-weight: 800;
+  }
+  .directory-title__icon {
+    display: grid;
+    flex-shrink: 0;
+    place-items: center;
+    width: 3rem;
+    height: 3rem;
+    border-radius: 0.9rem;
+    background: color-mix(in srgb, var(--accent) 22%, var(--color-white));
+    color: var(--color-primary);
+  }
+  /* Logo grid: same card size for everyone, logos kept in proportion. */
+  .org-grid {
+    display: grid;
+    gap: 1.25rem;
+    grid-template-columns: repeat(auto-fill, minmax(min(100%, 16rem), 1fr));
+  }
+  .org-card {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    padding: 1.25rem 1.25rem 1.4rem;
+    border-block-start: 5px solid var(--accent);
+    transition:
+      border-color 0.2s,
+      transform 0.25s,
+      box-shadow 0.25s;
+  }
+  .org-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 14px 28px -22px color-mix(in srgb, var(--color-primary) 60%, transparent);
+  }
+  .org-card__logo {
+    display: grid;
+    place-items: center;
+    height: 7.5rem;
+    margin-block-end: 0.75rem;
+    padding: 1rem;
+    border-radius: 0.8rem;
+    background: var(--color-paper);
+  }
+  .org-card :global(.org-card__img) {
+    max-width: 100%;
+    max-height: 100%;
+    width: auto;
+    height: auto;
+    object-fit: contain;
+  }
+  .org-card__initials {
+    display: grid;
+    place-items: center;
+    width: 4rem;
+    height: 4rem;
+    border-radius: 50%;
+    background: color-mix(in srgb, var(--accent) 22%, var(--color-white));
+    font-family: var(--font-display);
+    font-size: 1.375rem;
+    font-weight: 800;
+    color: var(--color-primary);
+  }
+  .org-card__name {
+    font-size: 1.1875rem;
+    font-weight: 800;
+    line-height: 1.3;
+  }
+  /* The whole card opens the website. */
+  .org-card__link {
+    color: var(--color-primary);
+    text-decoration: none;
+  }
+  .org-card__link::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+  }
+  .org-card__link:hover {
+    text-decoration: underline;
+    text-decoration-color: var(--color-gold);
+  }
+  .org-card__meta {
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: var(--color-ink);
+  }
+  .org-card__text {
+    font-size: 1rem;
+    line-height: 1.6;
+  }
+  .org-card__site {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    margin-top: auto;
+    padding-top: 0.5rem;
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: var(--color-ink);
+  }
+  .org-card__file {
+    position: relative;
+    z-index: 1;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    font-weight: 700;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .org-card,
+    .chip {
+      transition: none;
+    }
+    .org-card:hover {
+      transform: none;
+    }
+  }
+</style>

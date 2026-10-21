@@ -46,6 +46,20 @@ const localDateTime = z
   .string()
   .regex(/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}(:\d{2})?$/, 'Use the format YYYY-MM-DDTHH:MM');
 
+/** A YouTube link (any form: watch, youtu.be, shorts, embed) or the 11-character video ID. */
+const youtube = z
+  .string()
+  .regex(
+    /^(?:[\w-]{11}|https:\/\/(?:www\.|m\.)?(?:youtube\.com\/(?:watch\?v=|shorts\/|embed\/)|youtu\.be\/)[\w-]{11}\S*)$/,
+    'Paste a YouTube link (https://www.youtube.com/watch?v=…) or the video ID',
+  )
+  .or(z.literal(''));
+/** A video file uploaded to public/media/ (MP4 or WebM). */
+const videoFile = z
+  .string()
+  .regex(/^\/media\/(?!.*\.\.)[\w./-]+\.(mp4|webm)$/i, 'Upload an MP4 or WebM file to /media/')
+  .or(z.literal(''));
+
 const yaml = (dir: string) => glob({ pattern: '**/*.{yaml,yml}', base: `./src/content/${dir}` });
 
 const programs = defineCollection({
@@ -394,25 +408,72 @@ const documents = defineCollection({
   }),
 });
 
+/**
+ * Gallery ("Matin Moments"): one album per activity or theme. Only real Matin content,
+ * published with the consent of the photographer and of the people who can be recognized.
+ * Photos and videos marked `featured` appear on the homepage (the first five).
+ */
 const gallery = defineCollection({
   loader: yaml('gallery'),
   schema: ({ image }) =>
     z.object({
       title: bi,
       date: z.coerce.date(),
+      location: biOpt,
       description: biOpt,
+      /** An album of a Matin event: listed under the "Events" filter. */
+      isEvent: z.boolean().default(false),
+      /** Cover image; by default the first photo. */
+      cover: image().optional(),
+      coverAlt: biOpt,
       photos: z
-        .array(z.object({ image: image(), alt: bi, caption: biOpt }))
-        .min(1, 'An album needs at least one photo'),
-      videos: z
         .array(
           z.object({
-            youtubeId: z.string().regex(/^[\w-]{11}$/, 'Paste the 11-character YouTube video ID'),
-            title: bi,
+            image: image(),
+            alt: bi,
+            caption: biOpt,
+            featured: z.boolean().default(false),
           }),
         )
         .default([]),
-      placeholder: z.boolean().default(false),
+      videos: z
+        .array(
+          z.object({
+            title: bi,
+            youtube: youtube.optional(),
+            file: videoFile.optional(),
+            /** Still image shown before the video plays. */
+            thumbnail: image().optional(),
+            featured: z.boolean().default(false),
+          }),
+        )
+        .default([]),
+      /**
+       * Matin may publish these photos and videos (consent of the photographer and of the
+       * people who can be recognized). Albums without it stay off the site.
+       */
+      consent: z.boolean().default(false),
+      /** Lower numbers first; then the most recent albums. */
+      order: z.number().int().default(100),
+      /** Drafts appear only on the local preview (npm run dev). */
+      draft: z.boolean().default(false),
+    }),
+});
+
+/**
+ * Matin's introductory video ("Matin is Born"): the large item of "Matin Moments" on the
+ * homepage and the first item of the Gallery page, shown once a YouTube link or a video
+ * file is added (src/content/intro-video/matin-is-born.yaml, or the admin).
+ */
+const introVideo = defineCollection({
+  loader: yaml('intro-video'),
+  schema: ({ image }) =>
+    z.object({
+      title: bi,
+      youtube: youtube.optional(),
+      file: videoFile.optional(),
+      /** Still image shown before the video plays. */
+      thumbnail: image().optional(),
     }),
 });
 
@@ -427,19 +488,36 @@ const faq = defineCollection({
   }),
 });
 
+/**
+ * Cultural Resources & Organizations: a curated directory of public, cultural, community
+ * and research organizations. A listing never means a partnership, endorsement or
+ * affiliation. Publish an entry only once its name, website and logo have been checked.
+ */
 const resources = defineCollection({
   loader: yaml('resources'),
-  schema: z
-    .object({
-      title: bi,
-      description: bi,
+  schema: ({ image }) =>
+    z.object({
+      /** Official name (as the organization writes it). */
+      name: z.string().min(1),
+      /** English form of the name, only when the organization uses a different one. */
+      nameEn: z.string().optional(),
       category: z.enum(resourceCategories),
-      url: z.url().optional(),
-      file: z.string().optional(), // e.g. /documents/guide-nouveaux-arrivants.pdf
+      /** Official website (opens in a new tab). */
+      url: z.url().refine((u) => u.startsWith('https://'), 'Use the https:// address'),
+      /** Official logo (PNG, SVG, JPEG or WebP), used only where permitted. */
+      logo: image().optional(),
+      description: biOpt,
+      /** Jurisdiction or area, e.g. « Montréal », « Québec », « Canada ». */
+      location: z.string().optional(),
+      /** A downloadable guide in public/documents/ instead of (or besides) the website. */
+      file: z
+        .string()
+        .regex(/^\/documents\/.+\.pdf$/, 'Use a path like /documents/guide.pdf')
+        .optional(),
       order: z.number().default(100),
-      placeholder: z.boolean().default(false),
-    })
-    .refine((r) => r.url || r.file, { message: 'Provide either a link (url) or a file' }),
+      /** Shown on the site only when true (once name, website and logo are verified). */
+      published: z.boolean().default(false),
+    }),
 });
 
 /** Get Involved page content: volunteer roles and partnership text. */
@@ -474,6 +552,7 @@ export const collections = {
   about,
   documents,
   gallery,
+  introVideo,
   faq,
   resources,
   involvement,
