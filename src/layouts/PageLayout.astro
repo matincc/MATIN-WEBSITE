@@ -78,10 +78,10 @@ const trail = [
     ...jsonLd,
   ]}
 >
-  <section class="mb-10 border-b border-line bg-tint" aria-labelledby="page-title">
-    <div class="container-site pt-10 pb-14 sm:pt-12 sm:pb-20">
+  <section class="page-head mb-12" aria-labelledby="page-title">
+    <div class="container-site page-head__inner">
       <nav aria-label={t('a11y.breadcrumbs')} class="mb-8">
-        <ol class="flex flex-wrap items-center gap-x-1.5 gap-y-1 text-sm text-muted">
+        <ol class="flex flex-wrap items-center gap-x-1.5 gap-y-1 text-[0.95rem] text-muted">
           {trail.map((c, i) => {
             const last = i === trail.length - 1;
             return (
@@ -106,17 +106,68 @@ const trail = [
           })}
         </ol>
       </nav>
-      <div class="flex flex-col items-center text-center">
-        {eyebrow && <p class="eyebrow mb-3">{eyebrow}</p>}
-        <h1 id="page-title" class="max-w-4xl text-4xl font-bold sm:text-5xl lg:text-6xl">
-          {title}
-        </h1>
-        <LeafRule class="mt-6 w-48" />
-        {lede && <p class="lede mt-6 max-w-2xl sm:text-xl">{lede}</p>}
-        <slot name="hero" />
+      <div class:list={['page-head__grid', lede && 'page-head__grid--split']}>
+        <div>
+          {eyebrow && <p class="eyebrow eyebrow--terracotta mb-3">{eyebrow}</p>}
+          <h1 id="page-title" class="page-head__title">
+            {title}
+          </h1>
+          <LeafRule class="mt-6 w-44" />
+        </div>
+        {lede && <p class="lede page-head__lede">{lede}</p>}
       </div>
+      <slot name="hero" />
+    </div>
+    <div class="mosaic page-head__mosaic" aria-hidden="true">
+      <span></span>
+      <span></span>
+      <span></span>
+      <span></span>
     </div>
   </section>
 
   <slot />
 </BaseLayout>
+
+<style>
+  /* Inner page banner: warm cream, title on the reading side, lede beside it on wide
+     screens, and the four-colour mosaic along the bottom edge. */
+  .page-head {
+    position: relative;
+    background: var(--color-tint);
+  }
+  .page-head__inner {
+    padding-block: 2.5rem clamp(3rem, 2rem + 3vw, 4.75rem);
+  }
+  .page-head__title {
+    max-width: 52rem;
+    font-size: clamp(2.5rem, 1.6rem + 3.4vw, 4.5rem);
+    font-weight: 800;
+    line-height: 1.04;
+    letter-spacing: -0.015em;
+  }
+  .page-head__grid {
+    display: grid;
+    gap: 1.75rem;
+  }
+  .page-head__lede {
+    max-width: 40rem;
+  }
+  @media (min-width: 64rem) {
+    .page-head__grid--split {
+      grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr);
+      align-items: end;
+      gap: 4rem;
+    }
+    .page-head__lede {
+      padding-block-end: 0.5rem;
+    }
+  }
+  .page-head__mosaic {
+    gap: 0;
+    height: 0.4rem;
+  }
+  .page-head__mosaic > span {
+    border-radius: 0;
+  }
+</style>

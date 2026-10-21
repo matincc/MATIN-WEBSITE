@@ -36,7 +36,7 @@ const linkedinPath =
 {bio && (
   <section id="our-president" class="scroll-mt-24 py-20" aria-labelledby="our-president-title">
     <div class="container-site">
-      <SectionHeader id="our-president-title" title={t('about.ourPresident')} />
+      <SectionHeader align="start" id="our-president-title" title={t('about.ourPresident')} />
       <div class="president-bio">
         <div class="president-bio__media">
           {photo ? (
@@ -87,8 +87,7 @@ const linkedinPath =
   .president-bio {
     display: grid;
     gap: 2.5rem;
-    max-width: 64rem;
-    margin-inline: auto;
+    max-width: 76rem;
     padding: 2rem;
     border: 1px solid var(--color-line);
     border-radius: var(--radius-card);
@@ -122,19 +121,19 @@ const linkedinPath =
   .president-bio__position {
     margin-top: 0.5rem;
     padding-bottom: 1.25rem;
-    border-bottom: 2px solid var(--color-gold);
+    border-bottom: 3px solid var(--color-coral);
     font-weight: 700;
     letter-spacing: 0.02em;
     color: var(--color-primary);
   }
   .president-bio__text :global(.president-bio__prose) {
     margin-top: 1.5rem;
-    max-width: 38rem;
-    font-size: 1.08rem;
+    max-width: 46rem;
+    font-size: 1.125rem;
   }
   @media (min-width: 768px) {
     .president-bio {
-      grid-template-columns: minmax(14rem, 20rem) minmax(0, 1fr);
+      grid-template-columns: minmax(14rem, 22rem) minmax(0, 1fr);
       align-items: start;
       gap: 3rem;
       padding: 3rem;

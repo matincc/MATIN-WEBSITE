@@ -24,6 +24,11 @@ const { class: className = '' } = Astro.props;
   .leaf-rule span {
     flex: 1;
     height: 1.5px;
-    background: var(--color-gold);
+    background: currentColor;
+  }
+  /* On terracotta and teal bands the leaf and lines are cream (decorative). */
+  :global(.on-terracotta) .leaf-rule,
+  :global(.on-teal) .leaf-rule {
+    color: var(--color-cream);
   }
 </style>

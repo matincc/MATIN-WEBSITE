@@ -47,14 +47,20 @@ const mapsUrl =
 const hasContact = Boolean(a || s.phone || s.email);
 ---
 
-<footer class="on-dark border-t-4 border-gold bg-primary text-white">
-  <div class="container-site grid gap-12 pt-14 pb-12 md:grid-cols-2 lg:grid-cols-12">
+<footer class="on-dark bg-primary text-white">
+  <div class="mosaic footer-mosaic" aria-hidden="true">
+    <span></span>
+    <span></span>
+    <span></span>
+    <span></span>
+  </div>
+  <div class="container-site grid gap-12 pt-16 pb-12 md:grid-cols-2 lg:grid-cols-12">
     <div class:list={[hasContact || s.hours ? 'lg:col-span-4' : 'lg:col-span-5']}>
       <div class="mb-6">
         <Lockup lang={lang} variant="dark" />
       </div>
       <p class="mb-3 font-display text-2xl font-bold text-white">{t('brand.tagline')}</p>
-      <p class="max-w-md text-[0.95rem] leading-relaxed">{t('footer.about')}</p>
+      <p class="max-w-md text-[1.0625rem] leading-relaxed text-cream">{t('footer.about')}</p>
       <SocialLinks lang={lang} social={s.social} class="mt-6" />
     </div>
 
@@ -76,7 +82,7 @@ const hasContact = Boolean(a || s.phone || s.email);
         {hasContact && (
           <>
             <h2 class="footer-title">{t('footer.contactTitle')}</h2>
-            <address class="mb-8 space-y-3 text-[0.95rem] not-italic">
+            <address class="mb-8 space-y-3 text-[1.0625rem] not-italic">
               {a && (
                 <p class="flex gap-3">
                   <MapPin size={18} class="mt-1 shrink-0 text-gold" aria-hidden="true" />
@@ -110,7 +116,7 @@ const hasContact = Boolean(a || s.phone || s.email);
         {s.hours && (
           <>
             <h2 class="footer-title">{t('footer.hoursTitle')}</h2>
-            <p class="flex gap-3 text-[0.95rem] whitespace-pre-line">
+            <p class="flex gap-3 text-[1.0625rem] whitespace-pre-line">
               <Clock size={18} class="mt-1 shrink-0 text-gold" aria-hidden="true" />
               <span>{pick(s.hours, lang)}</span>
             </p>
@@ -128,7 +134,7 @@ const hasContact = Boolean(a || s.phone || s.email);
         ]}
       >
         <h2 class="footer-title">{t('footer.newsletterTitle')}</h2>
-        <p class="mb-4 text-[0.95rem]">{t('newsletter.text')}</p>
+        <p class="mb-4 text-[1.0625rem] text-cream">{t('newsletter.text')}</p>
         <NewsletterForm lang={lang} compact id="footer-newsletter" />
       </div>
     )}
@@ -137,7 +143,7 @@ const hasContact = Boolean(a || s.phone || s.email);
   <div class="container-site">
     <LeafRule class="mx-auto max-w-none" />
   </div>
-  <div class="container-site flex flex-col gap-4 py-7 text-sm md:flex-row md:items-center md:justify-between">
+  <div class="container-site flex flex-col gap-4 py-7 text-[0.9375rem] md:flex-row md:items-center md:justify-between">
     <p>
       © {year} {t('meta.siteName')}. {t('footer.rights')}
       {s.charityNumber && (
@@ -166,14 +172,22 @@ const hasContact = Boolean(a || s.phone || s.email);
 </footer>
 
 <style>
+  /* The four-colour mosaic as the footer's top edge. */
+  .footer-mosaic {
+    gap: 0;
+    height: 0.4rem;
+  }
+  .footer-mosaic > span {
+    border-radius: 0;
+  }
   .footer-title {
     font-family: var(--font-display);
-    font-size: 1.25rem;
-    font-weight: 700;
+    font-size: 1.3125rem;
+    font-weight: 800;
     color: var(--color-white);
     margin-bottom: 1rem;
   }
-  /* White on blue 11.6:1; gold underline on hover. */
+  /* White on navy 11.9:1; mustard underline on hover. */
   .footer-link {
     color: var(--color-white);
     text-decoration: none;
@@ -186,6 +200,7 @@ const hasContact = Boolean(a || s.phone || s.email);
     display: grid;
     grid-template-columns: repeat(2, minmax(0, max-content));
     column-gap: 2.5rem;
-    row-gap: 0.4rem;
+    row-gap: 0.55rem;
+    font-size: 1.0625rem;
   }
 </style>

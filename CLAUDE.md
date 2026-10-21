@@ -26,44 +26,55 @@ These rules apply to every page, now and in the future. Read them before changin
 
 ## 3. Colors: the Matin color system
 
-The variables below, defined once in `:root` in `src/styles/global.css`. They are the ONLY colors on the site. The Tailwind tokens (`text-primary`, `bg-cream`, `bg-tint`, `var(--color-gold)`…) all point at them; use those tokens or the variables, never raw hex, rgb or named colors.
+The variables below, defined once in `:root` in `src/styles/global.css`. They are the ONLY colors on the site. The Tailwind tokens (`text-primary`, `bg-paper`, `bg-tint`, `bg-coral`, `var(--color-gold)`…) all point at them; use those tokens or the variables, never raw hex, rgb or named colors.
+
+Navy and cream carry the identity. Coral, mustard, teal and terracotta are the "cultures in dialogue" accents (owner's palette, Oct 2026): use them selectively, for accents, card stripes, icon tiles, bands and simple shapes, never all at full strength in one small area.
 
 | Variable | Value | Use |
 | --- | --- | --- |
-| `--matin-blue` | `#103B59` | Deep petroleum blue, primary brand color: headings, footer, President band, main buttons, links, icons, small labels (token `primary`) |
-| `--matin-gold` | `#C69C46` | Warm gold: thin lines, dividers, maple leaves, secondary-button borders, hover and active underlines, the homepage tagline (token `gold`) |
-| `--matin-cream` | `#F7F3EA` | Soft warm cream: main page background (token `cream`) |
-| `--matin-sand` | `#EFE4D2` | Warm sand: alternate section backgrounds (token `tint`); card borders are a light gold mix (token `line`) |
-| `--matin-teal` | `#6BA8AC` | Secondary accent: illustrations only (token `turquoise`); no longer used for backgrounds |
+| `--matin-blue` | `#193A53` | Deep navy, primary brand color: headings, hero panel, footer, President band, main buttons, links, icons, small labels (tokens `primary`, `navy`) |
+| `--matin-cream` | `#F5EBDD` | Warm cream: alternate section backgrounds and page banners (tokens `tint`, `cream`) |
+| `--matin-paper` | `#FBF7F1` | Light warm paper: main page background (token `paper`) |
+| `--matin-gold` | `#D8A548` | Mustard gold: thin lines, maple leaves, the homepage tagline, the main button on navy (tokens `gold`, `mustard`) |
+| `--matin-coral` | `#D86C58` | Coral: shapes, stripes, icon tiles only, never text (token `coral`) |
+| `--matin-teal` | `#408C8D` | Teal: shapes, stripes, icon tiles; text only when large (token `teal`, alias `turquoise`) |
+| `--matin-terracotta` | `#A95542` | Terracotta: the homepage Get Involved band, with white text (token `terracotta`) |
+| `--matin-teal-deep` | `#2C6A6B` | Text-safe teal: labels on light backgrounds, the newsletter panel with white text (token `teal-deep`) |
+| `--matin-terracotta-deep` | `#9A4636` | Text-safe terracotta: labels on light backgrounds, including coral-accented ones (token `terracotta-deep`) |
 | `--matin-ink` | `#293442` | Body text, also secondary text (tokens `ink`, `muted`) |
-| `--matin-white` | `#FFFFFF` | Cards, inputs, text on blue (token `white`) |
+| `--matin-white` | `#FFFFFF` | Cards, inputs, text on navy, terracotta and teal-deep (token `white`) |
 | `--matin-red` | `#B33B42` | Maple red: use sparingly, only for the Canadian brand identity (token `maple`); not used yet |
 
-- Warm palette (owner's choice, Oct 2026): proportions about 60% cream/white, 15% sand, 20% blue, 5% gold.
-- Page background is cream; cards are white on cream; alternate sections use the warm sand `tint`. Long text is ink on cream or white.
-- The footer, the President band and the homepage Get Involved band are blue with white or cream text (class `on-dark`). On blue bands the small label is gold, the title white, and `.btn-primary` becomes a gold button with blue text (4.6:1); this is the only place gold fills a button.
-- **Gold is never a large background and never text on cream or white** (2.3:1, fails). Gold text is only allowed on blue (4.6:1), plus the homepage tagline "Cultures in Dialogue" (large bold italic on the photo, at the owner's request). Teal is never text on cream or white either (2.5:1).
-- The old `gold-dark` token now maps to blue: use it (or `primary`) for small labels, dates and icons.
+- Proportions: about 55% paper/white, 15% cream, 20% navy, 10% accents.
+- **Accent sets:** add `data-accent="coral|mustard|teal|terracotta|navy"` to a card or tile; it sets `--accent` (shapes, borders) and `--accent-ink` (text-safe label color). Homepage and About: Mission = coral, Vision = mustard, Values = teal; the three areas of work = coral, mustard, teal; event cards take the accent of their subject (`EventCard.astro`).
+- **Bands:** navy (`on-dark`: mustard labels, white titles, mustard main button with navy text), terracotta (`on-terracotta`) and teal-deep (`on-teal`): white text, cream labels, navy main button. Focus rings: mustard on navy, white on terracotta and teal-deep.
+- **Mosaic:** the four short color bars (`.mosaic`, coral · mustard · teal · terracotta) are the site's signature: hero panel, page banners, footer edge, newsletter panel. Decorative, `aria-hidden`.
+- **Mustard and coral are never text on paper, cream or white** (2.1 to 3.4:1, fails); teal only as large text. Use navy or the `-deep` variants for small labels, dates and icons.
+- The old `gold-dark` token maps to navy: use it (or `primary`) for small labels, dates and icons.
 - No green and no dark green anywhere.
-- Only exceptions to "variables only": `theme-color` in `BaseLayout.astro` and `site.webmanifest` (must be literal hex, `#103B59`), and the arrow color inside the select-box data URIs.
+- Only exceptions to "variables only": `theme-color` in `BaseLayout.astro` and `site.webmanifest` (must be literal hex, `#193A53`), and the arrow color inside the select-box data URIs.
 
 ## 4. Style
 
-- Clean, calm, lots of white space.
-- No gradients, no heavy shadows or effects, no decorative patterns (no waves, rays or glows).
-- **Cards:** one shared style for the whole site, the `.card` class: white, softly rounded corners, very light border, generous padding, no shadow at rest (`.card-lift` adds a soft one on hover).
-- **Motion and color (owner's request, Oct 2026):** the site should feel alive, not static. Allowed, always within the Matin palette above and never with gradients: a slow zoom on the hero photo and a staggered rise of its text; the blue "dialogue" ribbon under the hero (`CulturesRibbon.astro`); scroll fade-ins with `data-reveal` (optional `--reveal-delay`); a gentle lift with a soft blue shadow on hover for cards that are links (`.card-lift`); the slowly turning artwork in the homepage event banner (`SpotlightBanner.astro`). Every animation stops under `prefers-reduced-motion: reduce`.
-- **Width:** `.container-site` is up to 90rem wide so large screens are not left with empty sides.
-- **Highlighted event:** `spotlight: true` in an event's YAML file shows it as the large blue banner at the top of the homepage events section until it ends (one at a time).
-- **Section titles:** always use `src/components/ui/SectionHeader.astro`: title centered, and under it a thin gold line on each side of a small gold maple leaf (`LeafRule.astro`, inline SVG). Use this same component for every section title.
+- Warm, human, editorial: a contemporary cultural magazine, not a corporate template. Generous but intentional white space; no narrow columns floating in empty space.
+- No gradients, no heavy shadows or effects, no busy decorative patterns (no waves, rays or glows). Flat color blocks behind photos and the mosaic are the only graphic shapes.
+- **Cards:** one shared base, the `.card` class: white, softly rounded corners, very light border, generous padding, no shadow at rest (`.card-lift` adds a soft one on hover). Cards may add a 5 to 6px accent stripe on top.
+- **Motion and color (owner's request, Oct 2026):** the site should feel alive, not static. Allowed, always within the Matin palette above and never with gradients: a slow zoom on the hero photo and a staggered rise of its text; the navy "dialogue" ribbon under the hero (`CulturesRibbon.astro`); scroll fade-ins with `data-reveal` (optional `--reveal-delay`); a gentle lift with a soft navy shadow on hover for cards that are links (`.card-lift`); the slowly turning artwork in the homepage event banner (`SpotlightBanner.astro`). Every animation stops under `prefers-reduced-motion: reduce`.
+- **Width:** `.container-site` is up to 90rem wide (about 1344px of content). Sections use full-width backgrounds and `.section-pad` for vertical rhythm. Long paragraphs keep a readable measure (about 40 to 46rem) inside two-column compositions rather than stretching across the screen.
+- **Typography scale:** body 18px; section titles `clamp()` up to 56px, extra bold; page titles up to 72px; hero name about 88px.
+- **Hero:** navy text panel on the reading side, the Montréal skyline photo to the edge of the screen on the other (photo on top on phones), with the two main calls to action (Get Involved, Explore All Events).
+- **Highlighted event:** `spotlight: true` in an event's YAML file shows it as the large navy banner at the top of the homepage events section until it ends (one at a time).
+- **Section titles:** always use `src/components/ui/SectionHeader.astro`, with under the title a thin gold line on each side of a small gold maple leaf (`LeafRule.astro`, inline SVG). Page sections pass `align="start"`, which puts the title on the reading side with the lede or link beside it on wide screens; `align="center"` is kept for short, isolated headings.
+- **Inner page banners:** `PageLayout.astro`: cream band, breadcrumbs, large start-aligned title, lede beside it on wide screens, mosaic along the bottom edge.
+- **Photography:** authentic, documentary photos only; never artificial-looking corporate stock, and no food or party imagery. The homepage currently uses openly licensed Wikimedia Commons photos of Montréal (`src/lib/photos.ts`). They illustrate themes and are NOT presented as Matin activities: each is always shown with its credit (`PhotoCredit.astro`: author, licence and source links). Replace them with Matin's own photos as they become available. Decorative or illustrative photos use `alt=""`.
 
 ## 5. Accessibility and responsiveness
 
 - Real heading hierarchy: one `h1` per page, then `h2`/`h3` in order.
-- Contrast (WCAG AA, checked): ink on cream 11.4, blue on cream 10.6, blue on white 11.7, white on blue 11.7, gold on blue 4.6. Never gold or teal small text on cream or white.
-- Buttons (pill-shaped, gentle lift on hover): `.btn-primary` = petroleum blue with white text, darker blue on hover (gold with blue text inside `on-dark` bands); `.btn-outline` = secondary, light background with a thin gold border and blue text.
+- Contrast (WCAG AA, checked): ink on paper 11.8, navy on paper 11.1, navy on cream 10.1, navy on white 11.9, white on navy 11.9, mustard on navy 5.3, navy on mustard 5.3, white on terracotta 5.2, white on teal-deep 6.2, teal-deep on cream 5.3, terracotta-deep on cream 5.4. Never mustard, coral or teal small text on paper, cream or white.
+- Buttons (pill-shaped, gentle lift on hover): `.btn-primary` = navy with white text, darker navy on hover (mustard with navy text inside `on-dark` bands; navy inside terracotta and teal bands); `.btn-outline` = secondary, light background with a thin mustard border and navy text (transparent with a white border and white text on colored bands).
 - Links: blue, gold underline on hover. Header navigation: blue text, a thin gold underline grows in on hover and stays under the current page.
-- Everything works with the keyboard, with visible focus styles (blue outline; gold on blue sections).
+- Everything works with the keyboard, with visible focus styles (navy outline; mustard on navy sections; white on terracotta and teal-deep).
 - Decorative icons, lines and maple leaves get `aria-hidden="true"`. Meaningful images get proper alt text in both languages.
 - Set the `lang` attribute correctly on each language version (`BaseLayout.astro` does this: `fr-CA`, `en-CA`, `fa`).
 - Fully responsive: desktop, tablet, mobile, with no horizontal scroll.

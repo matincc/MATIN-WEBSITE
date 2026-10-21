@@ -99,6 +99,7 @@ const showFilters = upcoming.length >= FILTER_MIN_EVENTS && filters.length > 0;
   {picks.length > 0 && (
     <section class="container-site pt-4 pb-14" aria-labelledby="picks-title">
       <SectionHeader
+        align="start"
         id="picks-title"
         title={t('events.picksTitle')}
         lede={t('events.picksLede')}
@@ -115,7 +116,7 @@ const showFilters = upcoming.length >= FILTER_MIN_EVENTS && filters.length > 0;
   )}
 
   <section class="container-site pt-4 pb-20" aria-labelledby="upcoming-title">
-    <SectionHeader id="upcoming-title" title={t('events.upcoming')} class="mb-10" />
+    <SectionHeader align="start" id="upcoming-title" title={t('events.upcoming')} class="mb-10" />
 
     {showFilters && (
       <form
@@ -170,7 +171,12 @@ const showFilters = upcoming.length >= FILTER_MIN_EVENTS && filters.length > 0;
 
   <section class="bg-tint py-16 sm:py-20" aria-labelledby="matin-events-title">
     <div class="container-site">
-      <SectionHeader id="matin-events-title" title={t('events.matinTitle')} class="mb-10" />
+      <SectionHeader
+        align="start"
+        id="matin-events-title"
+        title={t('events.matinTitle')}
+        class="mb-10"
+      />
       {matinUpcoming.length > 0 ? (
         <ul class="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
           {matinUpcoming.map((event) => (

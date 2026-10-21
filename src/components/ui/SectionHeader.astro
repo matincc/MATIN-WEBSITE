@@ -1,7 +1,9 @@
 ---
 /**
- * The one section-title pattern used across the site: centred title, then a thin gold
- * line on each side of a small gold maple leaf. Optional eyebrow, lede and link.
+ * The one section-title pattern used across the site: title, then a thin gold line on
+ * each side of a small gold maple leaf. Optional eyebrow, lede and link.
+ * align="center" (default) stacks everything centred; align="start" is the editorial
+ * variant: title on the reading side, lede and link beside it on wide screens.
  */
 import { ArrowRight } from '@lucide/astro';
 import LeafRule from '@/components/brand/LeafRule.astro';
@@ -9,27 +11,99 @@ import LeafRule from '@/components/brand/LeafRule.astro';
 interface Props {
   id: string;
   eyebrow?: string;
+  /** Text-safe colour for the eyebrow on light backgrounds. */
+  eyebrowTone?: 'navy' | 'terracotta' | 'teal';
   title: string;
   lede?: string;
   link?: { href: string; label: string };
   /** Heading level; h2 by default. */
   as?: 'h2' | 'h3';
+  align?: 'center' | 'start';
   class?: string;
 }
-const { id, eyebrow, title, lede, link, as: Tag = 'h2', class: className = 'mb-12' } = Astro.props;
+const {
+  id,
+  eyebrow,
+  eyebrowTone = 'navy',
+  title,
+  lede,
+  link,
+  as: Tag = 'h2',
+  align = 'center',
+  class: className = 'mb-12',
+} = Astro.props;
+const eyebrowClass = ['eyebrow mb-3', eyebrowTone !== 'navy' && `eyebrow--${eyebrowTone}`];
+const hasSide = Boolean(lede || link);
 ---
 
-<div class:list={['flex flex-col items-center text-center', className]} data-reveal>
-  {eyebrow && <p class="eyebrow mb-3">{eyebrow}</p>}
-  <Tag id={id} class="section-title max-w-3xl">
-    {title}
-  </Tag>
-  <LeafRule class="mt-5 w-48" />
-  {lede && <p class="lede mt-5 max-w-2xl">{lede}</p>}
-  {link && (
-    <a href={link.href} class="link-arrow mt-5">
-      {link.label}
-      <ArrowRight size={18} class="flip-rtl" aria-hidden="true" />
-    </a>
-  )}
-</div>
+{align === 'center' ? (
+  <div class:list={['flex flex-col items-center text-center', className]} data-reveal>
+    {eyebrow && <p class:list={eyebrowClass}>{eyebrow}</p>}
+    <Tag id={id} class="section-title max-w-4xl">
+      {title}
+    </Tag>
+    <LeafRule class="mt-5 w-48" />
+    {lede && <p class="lede mt-5 max-w-3xl">{lede}</p>}
+    {link && (
+      <a href={link.href} class="link-arrow mt-5">
+        {link.label}
+        <ArrowRight size={18} class="flip-rtl" aria-hidden="true" />
+      </a>
+    )}
+  </div>
+) : (
+  <div class:list={['section-head', hasSide && 'section-head--split', className]} data-reveal>
+    <div class="section-head__main">
+      {eyebrow && <p class:list={eyebrowClass}>{eyebrow}</p>}
+      <Tag id={id} class="section-title">
+        {title}
+      </Tag>
+      <LeafRule class="leaf-start mt-5 w-48" />
+    </div>
+    {hasSide && (
+      <div class="section-head__side">
+        {lede && <p class="lede">{lede}</p>}
+        {link && (
+          <a href={link.href} class="link-arrow section-head__link">
+            {link.label}
+            <ArrowRight size={18} class="flip-rtl" aria-hidden="true" />
+          </a>
+        )}
+      </div>
+    )}
+  </div>
+)}
+
+<style>
+  .section-head {
+    display: grid;
+    gap: 1.25rem;
+  }
+  .section-head__main {
+    max-width: 46rem;
+  }
+  .section-head__side {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 1rem;
+    max-width: 40rem;
+  }
+  .section-head__link {
+    font-size: 1.125rem;
+  }
+  /* Start-aligned leaf rule: short line, leaf, longer line. */
+  .section-head :global(.leaf-start) {
+    max-width: 12rem;
+  }
+  @media (min-width: 64rem) {
+    .section-head--split {
+      grid-template-columns: minmax(0, 1.15fr) minmax(0, 1fr);
+      align-items: end;
+      gap: 4rem;
+    }
+    .section-head__side {
+      padding-block-end: 0.35rem;
+    }
+  }
+</style>

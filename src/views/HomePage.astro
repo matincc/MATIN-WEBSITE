@@ -2,16 +2,11 @@
 /**
  * Homepage (French, English and Persian). Shows only real content: events and news
  * sections fall back to short, welcoming empty states until entries exist.
+ * The photographs are openly licensed views of Montréal (see src/lib/photos.ts), shown
+ * with their credits; they illustrate the themes, they do not document Matin activities.
  */
-import {
-  ArrowRight,
-  BookOpen,
-  Eye,
-  HeartHandshake,
-  Landmark,
-  Target,
-  UsersRound,
-} from '@lucide/astro';
+import { ArrowRight, Eye, HeartHandshake, Target } from '@lucide/astro';
+import { Picture } from 'astro:assets';
 import BaseLayout from '@/layouts/BaseLayout.astro';
 import HomeHero from '@/components/brand/HomeHero.astro';
 import CulturesRibbon from '@/components/brand/CulturesRibbon.astro';
@@ -21,9 +16,11 @@ import EventCard from '@/components/content/EventCard.astro';
 import ExpireEvents from '@/components/content/ExpireEvents.astro';
 import PostCard from '@/components/content/PostCard.astro';
 import NewsletterForm from '@/components/forms/NewsletterForm.astro';
+import PhotoCredit from '@/components/media/PhotoCredit.astro';
 import { href, siteAlternates, type UiLang } from '@/i18n/routes';
 import { useTranslations } from '@/i18n/ui';
 import { forLang, getNews, getUpcomingEvents, isMatinEvent } from '@/lib/content';
+import { photos } from '@/lib/photos';
 
 interface Props {
   lang: UiLang;
@@ -46,16 +43,27 @@ const posts = forLang(postsAll, lang).slice(0, 3);
 
 const aboutHref = href('about', lang);
 const whoCards = [
-  { id: 'mission', label: t('nav.mission'), icon: Target },
-  { id: 'vision', label: t('nav.vision'), icon: Eye },
-  { id: 'values', label: t('nav.values'), icon: HeartHandshake },
+  { id: 'mission', label: t('nav.mission'), icon: Target, accent: 'coral' },
+  { id: 'vision', label: t('nav.vision'), icon: Eye, accent: 'mustard' },
+  { id: 'values', label: t('nav.values'), icon: HeartHandshake, accent: 'teal' },
   // The Persian About page has the values section only.
 ].filter((c) => lang !== 'fa' || c.id === 'values');
 const areas = [
-  { title: t('home.area1Title'), text: t('home.area1Text'), icon: UsersRound },
-  { title: t('home.area2Title'), text: t('home.area2Text'), icon: Landmark },
-  { title: t('home.area3Title'), text: t('home.area3Text'), icon: BookOpen },
+  {
+    title: t('home.area1Title'),
+    text: t('home.area1Text'),
+    photo: photos.tamtams,
+    accent: 'coral',
+  },
+  {
+    title: t('home.area2Title'),
+    text: t('home.area2Text'),
+    photo: photos.streetart,
+    accent: 'mustard',
+  },
+  { title: t('home.area3Title'), text: t('home.area3Text'), photo: photos.library, accent: 'teal' },
 ];
+const num = new Intl.NumberFormat(lang === 'fa' ? 'fa-IR' : 'en-CA', { minimumIntegerDigits: 2 });
 ---
 
 <BaseLayout
@@ -74,55 +82,92 @@ const areas = [
   <HomeHero lang={lang} />
   <CulturesRibbon lang={lang} />
 
-  <!-- Who we are -->
-  <section id="who-we-are" class="scroll-mt-24 bg-cream py-20 sm:py-24" aria-labelledby="who-title">
-    <div class="container-site">
-      <SectionHeader id="who-title" title={t('home.whoTitle')} class="mb-8" />
-      <p class="who-text mx-auto text-center" data-reveal>{t('home.whoText')}</p>
-      <nav aria-label={t('home.whoCardsLabel')} class="mt-12">
-        <ul class="grid gap-5 sm:grid-cols-3">
-          {whoCards.map((c, i) => (
-            <li data-reveal style={`--reveal-delay:${i * 120}ms`}>
-              <a href={`${aboutHref}#${c.id}`} class="card card-lift who-card on-dark">
-                <c.icon
-                  size={28}
-                  stroke-width={1.25}
-                  class="shrink-0 text-gold"
-                  aria-hidden="true"
-                />
-                <span class="flex-1 text-xl font-bold text-white">{c.label}</span>
-                <ArrowRight size={20} class="flip-rtl shrink-0 text-gold" aria-hidden="true" />
-              </a>
-            </li>
-          ))}
-        </ul>
-      </nav>
+  <!-- Who we are: photo and text side by side, then the three About links -->
+  <section id="who-we-are" class="section-pad scroll-mt-24 bg-paper" aria-labelledby="who-title">
+    <div class="container-site who-grid">
+      <figure class="who-figure" data-reveal>
+        <span class="who-figure__block" aria-hidden="true"></span>
+        <div class="who-figure__photo">
+          <Picture
+            src={photos.parade.src}
+            alt=""
+            formats={['avif', 'webp']}
+            widths={[480, 720, 960]}
+            sizes="(min-width: 64rem) 34rem, 92vw"
+            style={`object-position:${photos.parade.focus}`}
+          />
+        </div>
+        <figcaption>
+          <PhotoCredit credit={photos.parade.credit} />
+        </figcaption>
+      </figure>
+      <div class="who-body">
+        <SectionHeader id="who-title" title={t('home.whoTitle')} align="start" class="mb-7" />
+        <p class="who-text" data-reveal>
+          {t('home.whoText')}
+        </p>
+        <nav aria-label={t('home.whoCardsLabel')} class="mt-10">
+          <ul class="who-links">
+            {whoCards.map((c, i) => (
+              <li data-reveal style={`--reveal-delay:${i * 110}ms`}>
+                <a href={`${aboutHref}#${c.id}`} class="who-link" data-accent={c.accent}>
+                  <span class="who-link__icon" aria-hidden="true">
+                    <c.icon size={26} stroke-width={1.75} />
+                  </span>
+                  <span class="who-link__label">{c.label}</span>
+                  <ArrowRight size={22} class="who-link__arrow flip-rtl" aria-hidden="true" />
+                </a>
+              </li>
+            ))}
+          </ul>
+        </nav>
+      </div>
     </div>
   </section>
 
-  <!-- Areas of work -->
-  <section class="bg-tint py-20 sm:py-24" aria-labelledby="areas-title">
+  <!-- Areas of work: three large photo cards, each with its own accent -->
+  <section class="section-pad bg-tint" aria-labelledby="areas-title">
     <div class="container-site">
       <SectionHeader
         id="areas-title"
         eyebrow={t('home.areasEyebrow')}
+        eyebrowTone="terracotta"
         title={t('home.areasTitle')}
         lede={t('home.areasLede')}
+        align="start"
+        class="mb-12 lg:mb-16"
       />
-      <ul class="grid gap-6 lg:grid-cols-3">
+      <ul class="areas-grid">
         {areas.map((a, i) => (
-          <li data-reveal style={`--reveal-delay:${i * 140}ms`}>
-            <a href={href('programs', lang)} class="card card-lift area-card">
-              <span class="area-icon" aria-hidden="true">
-                <a.icon size={34} stroke-width={1.5} />
-              </span>
-              <h3 class="area-title font-bold">{a.title}</h3>
-              <p class="text-[1.07rem] leading-relaxed">{a.text}</p>
-              <span class="link-arrow mt-auto pt-2">
-                {t('common.learnMore')}
-                <ArrowRight size={18} class="flip-rtl" aria-hidden="true" />
-              </span>
-            </a>
+          <li data-reveal style={`--reveal-delay:${i * 130}ms`}>
+            <article class="area-card card-lift" data-accent={a.accent}>
+              <div class="area-card__media">
+                <Picture
+                  src={a.photo.src}
+                  alt=""
+                  formats={['avif', 'webp']}
+                  widths={[480, 720, 960]}
+                  sizes="(min-width: 64rem) 28rem, (min-width: 48rem) 45vw, 92vw"
+                  style={`object-position:${a.photo.focus}`}
+                />
+                <span class="area-card__num" aria-hidden="true">
+                  {num.format(i + 1)}
+                </span>
+                <PhotoCredit credit={a.photo.credit} variant="overlay" />
+              </div>
+              <div class="area-card__body">
+                <h3 class="area-card__title">
+                  <a href={href('programs', lang)} class="area-card__link">
+                    {a.title}
+                  </a>
+                </h3>
+                <p class="area-card__text">{a.text}</p>
+                <span class="area-card__cta" aria-hidden="true">
+                  {t('common.learnMore')}
+                  <ArrowRight size={18} class="flip-rtl" />
+                </span>
+              </div>
+            </article>
           </li>
         ))}
       </ul>
@@ -130,24 +175,35 @@ const areas = [
   </section>
 
   <!-- Selected upcoming events: a compact preview of the agenda -->
-  <section
-    class:list={['bg-cream', upcoming.length > 0 || spotlight ? 'py-20 sm:py-24' : 'py-16']}
-    aria-labelledby="events-title"
-  >
+  <section class="section-pad bg-paper" aria-labelledby="events-title">
     <div class="container-site">
       <SectionHeader
         id="events-title"
         title={t('home.eventsTitle')}
-        class={upcoming.length > 0 || spotlight ? 'mb-12' : 'mb-8'}
+        link={{ href: href('events', lang), label: t('home.eventsAll') }}
+        align="start"
+        class="mb-10"
       />
+      {(upcoming.length > 0 || spotlight) && (
+        <ul class="agenda-legend" aria-hidden="true">
+          <li>
+            <span class="agenda-legend__swatch is-matin" />
+            {t('agendaKinds.matin')}
+          </li>
+          <li>
+            <span class="agenda-legend__swatch is-selected" />
+            {t('agendaKinds.selected')}
+          </li>
+        </ul>
+      )}
       {spotlight && (
-        <div class="mb-12">
+        <div class="mb-10">
           <SpotlightBanner event={spotlight} lang={lang} />
         </div>
       )}
       <div>
         {upcoming.length > 0 && (
-          <ul class="grid gap-6 md:grid-cols-2 lg:grid-cols-3" data-upcoming-list>
+          <ul class="events-grid" data-upcoming-list>
             {upcoming.map((event, i) => (
               <li data-reveal style={`--reveal-delay:${i * 120}ms`}>
                 <EventCard event={event} lang={lang} />
@@ -159,21 +215,21 @@ const areas = [
           {t('home.eventsEmpty')}
         </p>
       </div>
-      <div class="mt-10 text-center">
-        <a href={href('events', lang)} class="btn btn-outline">
-          {t('home.eventsAll')}
-          <ArrowRight size={18} class="flip-rtl" aria-hidden="true" />
-        </a>
-      </div>
     </div>
   </section>
   <ExpireEvents />
 
   <!-- News & Insights: shown once there is at least one published article -->
   {posts.length > 0 && (
-    <section class="bg-tint py-20 sm:py-24" aria-labelledby="news-title">
+    <section class="section-pad bg-tint" aria-labelledby="news-title">
       <div class="container-site">
-        <SectionHeader id="news-title" title={t('home.newsTitle')} />
+        <SectionHeader
+          id="news-title"
+          title={t('home.newsTitle')}
+          link={{ href: href('news', lang), label: t('home.newsAll') }}
+          align="start"
+          class="mb-10"
+        />
         {posts.length === 1 ? (
           <PostCard post={posts[0]} lang={lang} featured />
         ) : (
@@ -185,56 +241,80 @@ const areas = [
             ))}
           </ul>
         )}
-        <div class="mt-12 text-center">
-          <a href={href('news', lang)} class="btn btn-outline">
-            {t('home.newsAll')}
-            <ArrowRight size={18} class="flip-rtl" aria-hidden="true" />
-          </a>
-        </div>
       </div>
     </section>
   )}
 
-  <!-- Get involved -->
-  <section class="on-dark bg-primary py-20 sm:py-24" aria-labelledby="involved-title">
-    <div class="container-site">
-      <SectionHeader
-        id="involved-title"
-        eyebrow={t('home.involvedEyebrow')}
-        title={t('home.involvedTitle')}
-        class="mb-8"
-      />
-      <p class="mx-auto max-w-3xl text-center text-lg leading-relaxed text-cream sm:text-xl">
-        {t('home.involvedText')}
-      </p>
-      <div class="mt-9 flex flex-col justify-center gap-3 sm:flex-row sm:flex-wrap">
-        <a href={href('getInvolved', lang)} class="btn btn-primary">
-          {t('home.involvedPrimary')}
-          <ArrowRight size={18} class="flip-rtl" aria-hidden="true" />
-        </a>
-        <a href="#newsletter" class="btn btn-outline">
-          {t('home.involvedSecondary')}
-        </a>
+  <!-- Get involved: warm terracotta band with a photo of Montréal's cultural life -->
+  <section class="involved on-terracotta" aria-labelledby="involved-title">
+    <div class="container-site involved__grid">
+      <figure class="involved__figure" data-reveal>
+        <div class="involved__photo">
+          <Picture
+            src={photos.nuitblanche.src}
+            alt=""
+            formats={['avif', 'webp']}
+            widths={[640, 960, 1280]}
+            sizes="(min-width: 64rem) 40rem, 92vw"
+            style={`object-position:${photos.nuitblanche.focus}`}
+          />
+        </div>
+        <span class="involved__block" aria-hidden="true"></span>
+        <figcaption>
+          <PhotoCredit credit={photos.nuitblanche.credit} class="involved__credit" />
+        </figcaption>
+      </figure>
+      <div class="involved__text">
+        <SectionHeader
+          id="involved-title"
+          eyebrow={t('home.involvedEyebrow')}
+          title={t('home.involvedTitle')}
+          align="start"
+          class="mb-7"
+        />
+        <p class="involved__paragraph" data-reveal>
+          {t('home.involvedText')}
+        </p>
+        <div class="mt-9 flex flex-col gap-3 sm:flex-row sm:flex-wrap" data-reveal>
+          <a href={href('getInvolved', lang)} class="btn btn-primary">
+            {t('home.involvedPrimary')}
+            <ArrowRight size={18} class="flip-rtl" aria-hidden="true" />
+          </a>
+          <a href="#newsletter" class="btn btn-outline">
+            {t('home.involvedSecondary')}
+          </a>
+        </div>
       </div>
     </div>
   </section>
 
-  <!-- Newsletter -->
+  <!-- Newsletter: one wide card, invitation on teal, form on white -->
   <section
     id="newsletter"
-    class="scroll-mt-24 bg-cream py-16 sm:py-20"
+    class="scroll-mt-24 bg-paper py-14 sm:py-20"
     aria-labelledby="newsletter-title"
   >
     <div class="container-site">
-      <div class="card newsletter-card">
-        <SectionHeader
-          id="newsletter-title"
-          eyebrow={t('newsletter.eyebrow')}
-          title={t('newsletter.title')}
-          lede={t('newsletter.text')}
-          class="mb-8"
-        />
-        <NewsletterForm lang={lang} id="home-newsletter" />
+      <div class="newsletter-card">
+        <div class="newsletter-card__intro on-teal">
+          <SectionHeader
+            id="newsletter-title"
+            eyebrow={t('newsletter.eyebrow')}
+            title={t('newsletter.title')}
+            align="start"
+            class="mb-5"
+          />
+          <p class="newsletter-card__text">{t('newsletter.text')}</p>
+          <div class="mosaic newsletter-card__mosaic" aria-hidden="true">
+            <span></span>
+            <span></span>
+            <span></span>
+            <span></span>
+          </div>
+        </div>
+        <div class="newsletter-card__form">
+          <NewsletterForm lang={lang} id="home-newsletter" />
+        </div>
       </div>
     </div>
   </section>
@@ -249,87 +329,370 @@ const areas = [
 
 <style>
   .empty-line {
-    max-width: 48rem;
-    margin-inline: auto;
-    text-align: center;
+    max-width: 52rem;
     padding: 1.25rem 1.5rem;
     border-radius: 1rem;
-    font-size: 1.1rem;
+    font-size: 1.125rem;
     background: var(--color-white);
     color: var(--color-ink);
     border: 1px solid var(--color-line);
     border-inline-start: 4px solid var(--color-gold);
   }
-  /* About 24px on desktop across the full width, so the short paragraph fits
-     in two or three lines (owner's request); about 18px on mobile. */
-  .who-text {
-    max-width: 1216px;
-    font-size: clamp(1.125rem, 0.98rem + 0.55vw, 1.5rem);
-    line-height: 1.6;
+
+  /* ---------- Who we are ---------- */
+  .who-grid {
+    display: grid;
+    gap: 3rem;
+    align-items: center;
   }
-  /* Deep blue fill with white text and gold icons (requested by the owner),
-     a little darker on hover. */
-  .who-card {
+  @media (min-width: 64rem) {
+    .who-grid {
+      grid-template-columns: minmax(0, 5fr) minmax(0, 7fr);
+      gap: clamp(3.5rem, 2rem + 4vw, 7rem);
+    }
+  }
+  .who-figure {
+    position: relative;
+    max-width: 34rem;
+    margin-inline: auto;
+    width: 100%;
+  }
+  /* Coral block offset behind the photo: a quiet graphic accent. */
+  .who-figure__block {
+    position: absolute;
+    inset-block-start: 1.5rem;
+    inset-inline-start: -1.25rem;
+    width: 70%;
+    height: 82%;
+    border-radius: var(--radius-card);
+    background: var(--color-coral);
+  }
+  .who-figure__photo {
+    position: relative;
+    aspect-ratio: 4 / 5;
+    overflow: hidden;
+    border-radius: var(--radius-card);
+    margin-inline-start: 0.75rem;
+  }
+  .who-figure__photo :global(img) {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+  .who-figure figcaption {
+    margin-inline-start: 0.75rem;
+  }
+  /* About 24px on desktop, comfortable line length. */
+  .who-text {
+    max-width: 40rem;
+    font-size: clamp(1.25rem, 1.1rem + 0.55vw, 1.5rem);
+    line-height: 1.6;
+    color: var(--color-ink);
+  }
+  .who-links {
+    display: grid;
+    gap: 0.85rem;
+    max-width: 40rem;
+  }
+  /* Large link rows: accent icon tile, navy label, arrow. */
+  .who-link {
     display: flex;
     align-items: center;
-    gap: 1rem;
-    height: 100%;
-    padding: 1.5rem 1.75rem;
+    gap: 1.25rem;
+    padding: 1rem 1.5rem 1rem 1rem;
+    border: 1px solid var(--color-line);
+    border-radius: var(--radius-card);
+    background: var(--color-white);
     text-decoration: none;
-    background: var(--color-primary);
-    border-color: var(--color-primary);
     transition:
-      background-color 0.2s,
-      border-color 0.2s;
+      border-color 0.2s,
+      transform 0.25s cubic-bezier(0.2, 0.7, 0.2, 1),
+      box-shadow 0.25s;
   }
-  .who-card:hover {
-    background: var(--color-primary-hover);
-    border-color: var(--color-gold);
+  .who-link:hover {
+    border-color: var(--accent);
+    transform: translateX(4px);
+    box-shadow: 0 12px 26px -20px color-mix(in srgb, var(--color-primary) 60%, transparent);
+  }
+  :global([dir='rtl']) .who-link:hover {
+    transform: translateX(-4px);
+  }
+  .who-link__icon {
+    display: grid;
+    flex-shrink: 0;
+    place-items: center;
+    width: 3.5rem;
+    height: 3.5rem;
+    border-radius: 0.9rem;
+    background: var(--accent);
+    color: var(--color-primary);
+  }
+  .who-link__label {
+    flex: 1;
+    font-size: clamp(1.25rem, 1.15rem + 0.35vw, 1.5rem);
+    font-weight: 800;
+    color: var(--color-primary);
+  }
+  .who-link :global(.who-link__arrow) {
+    flex-shrink: 0;
+    color: var(--accent-ink);
+  }
+
+  /* ---------- Areas of work ---------- */
+  .areas-grid {
+    display: grid;
+    gap: 2rem;
+  }
+  @media (min-width: 48rem) and (max-width: 63.99rem) {
+    .areas-grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+    .areas-grid > li:last-child {
+      grid-column: 1 / -1;
+    }
+  }
+  @media (min-width: 64rem) {
+    .areas-grid {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: clamp(1.5rem, 0.5rem + 1.5vw, 2.5rem);
+    }
+    /* Editorial stagger: the middle card sits a little lower. */
+    .areas-grid > li:nth-child(2) {
+      margin-block-start: 3rem;
+    }
   }
   .area-card {
+    position: relative;
     display: flex;
     flex-direction: column;
-    gap: 1rem;
     height: 100%;
-    padding: 2.25rem;
-    text-decoration: none;
-    transition: border-color 0.2s;
+    overflow: hidden;
+    border: 1px solid var(--color-line);
+    border-radius: var(--radius-card);
+    background: var(--color-white);
   }
-  .area-card {
-    border-block-start: 4px solid var(--color-gold);
+  .area-card__media {
+    position: relative;
+    aspect-ratio: 4 / 3;
+    overflow: hidden;
+    border-block-end: 6px solid var(--accent);
   }
-  .area-card:hover {
-    border-color: var(--color-gold);
+  .area-card__media :global(img) {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.7s cubic-bezier(0.2, 0.7, 0.2, 1);
   }
-  /* Round blue badge with a gold icon at the top of each card. */
-  .area-icon {
+  .area-card:hover .area-card__media :global(img) {
+    transform: scale(1.05);
+  }
+  /* Large number on an accent tile (navy on coral/mustard is large text: 3.5:1 and 5.3:1;
+     on teal the number is white, 3.9:1, also large text). */
+  .area-card__num {
+    position: absolute;
+    inset-block-start: 1rem;
+    inset-inline-start: 1rem;
     display: grid;
     place-items: center;
-    width: 4.25rem;
-    height: 4.25rem;
-    border-radius: 50%;
-    background: var(--color-primary);
-    color: var(--color-gold);
-    transition: transform 0.3s cubic-bezier(0.2, 0.7, 0.2, 1);
+    min-width: 3.5rem;
+    height: 3.5rem;
+    padding-inline: 0.5rem;
+    border-radius: 0.9rem;
+    background: var(--accent);
+    color: var(--color-primary);
+    font-size: 1.5rem;
+    font-weight: 800;
+    line-height: 1;
   }
-  .area-card:hover .area-icon {
-    transform: rotate(-8deg) scale(1.06);
+  [data-accent='teal'] .area-card__num {
+    color: var(--color-white);
   }
-  .area-title {
-    /* Long titles: keep them on balanced lines with the same height in all three cards */
-    min-height: 2.6em;
-    font-size: clamp(1.3rem, 1.1rem + 0.5vw, 1.5rem);
-    line-height: 1.3;
+  .area-card__body {
+    display: flex;
+    flex: 1;
+    flex-direction: column;
+    gap: 1rem;
+    padding: clamp(1.75rem, 1.4rem + 1vw, 2.5rem);
+  }
+  .area-card__title {
+    font-size: clamp(1.4rem, 1.2rem + 0.6vw, 1.75rem);
+    font-weight: 800;
+    line-height: 1.2;
     text-wrap: balance;
   }
-  .newsletter-card {
-    max-width: 48rem;
-    margin-inline: auto;
-    padding: 2.5rem;
+  .area-card__link {
+    color: var(--color-primary);
+    text-decoration: none;
   }
-  @media (min-width: 40rem) {
-    .newsletter-card {
-      padding: 3rem;
+  /* The whole card is clickable; the photo credit links stay above this layer. */
+  .area-card__link::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+  }
+  .area-card__link:focus-visible {
+    outline: none;
+  }
+  .area-card:has(.area-card__link:focus-visible) {
+    outline: 3px solid var(--color-primary);
+    outline-offset: 3px;
+  }
+  .area-card__text {
+    font-size: 1.125rem;
+    line-height: 1.65;
+  }
+  .area-card__cta {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin-block-start: auto;
+    padding-block-start: 0.75rem;
+    font-weight: 800;
+    font-size: 1.0625rem;
+    color: var(--accent-ink);
+  }
+  .area-card__cta :global(svg) {
+    transition: transform 0.2s;
+  }
+  .area-card:hover .area-card__cta :global(svg) {
+    transform: translateX(4px);
+  }
+  :global([dir='rtl']) .area-card:hover .area-card__cta :global(svg) {
+    transform: scaleX(-1) translateX(4px);
+  }
+
+  /* ---------- Events ---------- */
+  .agenda-legend {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem 1.75rem;
+    margin-block-end: 1.75rem;
+    font-size: 0.975rem;
+    font-weight: 700;
+    color: var(--color-ink);
+  }
+  .agenda-legend li {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+  }
+  .agenda-legend__swatch {
+    width: 1.75rem;
+    height: 0.75rem;
+    border-radius: 999px;
+  }
+  .agenda-legend__swatch.is-matin {
+    background: var(--color-primary);
+  }
+  .agenda-legend__swatch.is-selected {
+    border: 2px solid var(--color-primary);
+    background: var(--color-white);
+  }
+  .events-grid {
+    display: grid;
+    gap: 1.75rem;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 22rem), 1fr));
+  }
+
+  /* ---------- Get involved ---------- */
+  .involved {
+    position: relative;
+    overflow: hidden;
+    padding-block: clamp(4rem, 2.6rem + 4.5vw, 7rem);
+    background: var(--color-terracotta);
+  }
+  .involved__grid {
+    display: grid;
+    gap: 3rem;
+    align-items: center;
+  }
+  @media (min-width: 64rem) {
+    .involved__grid {
+      grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+      gap: clamp(3.5rem, 2rem + 4vw, 6.5rem);
     }
+  }
+  .involved__figure {
+    position: relative;
+  }
+  .involved__photo {
+    position: relative;
+    z-index: 1;
+    aspect-ratio: 4 / 3;
+    overflow: hidden;
+    border-radius: var(--radius-card);
+  }
+  .involved__photo :global(img) {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+  /* Mustard block peeking out from behind the photo. */
+  .involved__block {
+    position: absolute;
+    inset-block-end: 2.25rem;
+    inset-inline-end: -1.25rem;
+    width: 45%;
+    height: 55%;
+    border-radius: var(--radius-card);
+    background: var(--color-gold);
+  }
+  .involved__figure :global(.involved__credit) {
+    position: relative;
+    z-index: 1;
+    color: var(--color-white);
+  }
+  .involved__paragraph {
+    max-width: 38rem;
+    font-size: clamp(1.1875rem, 1.05rem + 0.45vw, 1.375rem);
+    line-height: 1.65;
+    color: var(--color-white);
+  }
+
+  /* ---------- Newsletter ---------- */
+  .newsletter-card {
+    display: grid;
+    max-width: 80rem;
+    margin-inline: auto;
+    overflow: hidden;
+    border: 1px solid var(--color-line);
+    border-radius: calc(var(--radius-card) * 1.4);
+    background: var(--color-white);
+  }
+  @media (min-width: 56rem) {
+    .newsletter-card {
+      grid-template-columns: minmax(0, 1fr) minmax(0, 1.1fr);
+    }
+  }
+  .newsletter-card__intro {
+    position: relative;
+    padding: clamp(2rem, 1.4rem + 2.5vw, 3.5rem);
+    padding-block-end: clamp(3.5rem, 2.8rem + 2.5vw, 5rem);
+    background: var(--color-teal-deep);
+  }
+  .newsletter-card__intro :global(.section-title) {
+    font-size: clamp(1.875rem, 1.4rem + 1.6vw, 2.75rem);
+  }
+  .newsletter-card__text {
+    max-width: 34rem;
+    font-size: 1.1875rem;
+    line-height: 1.65;
+  }
+  .newsletter-card__mosaic {
+    position: absolute;
+    inset-inline-start: clamp(2rem, 1.4rem + 2.5vw, 3.5rem);
+    inset-block-end: clamp(1.5rem, 1.2rem + 1vw, 2.25rem);
+    width: 12rem;
+  }
+  .newsletter-card__form {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding: clamp(2rem, 1.4rem + 2.5vw, 3.5rem);
+    font-size: 1.0625rem;
   }
 </style>
