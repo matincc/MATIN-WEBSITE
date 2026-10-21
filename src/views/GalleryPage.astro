@@ -1,22 +1,30 @@
 ---
+/**
+ * Gallery: Matin's introductory video (once set), then one section per album (title,
+ * date, place, description, photos that open in an enlarged viewer, videos). Filters:
+ * All, Photos, Videos, Events (albums of Matin events). Albums: src/content/gallery/ or
+ * the admin (/admin/). Only real Matin content, published with consent.
+ */
 import { Picture, getImage } from 'astro:assets';
-import { Expand } from '@lucide/astro';
+import { CalendarDays, Expand, MapPin } from '@lucide/astro';
 import PageLayout from '@/layouts/PageLayout.astro';
 import Lightbox from '@/components/ui/Lightbox.astro';
-import VideoFacade from '@/components/ui/VideoFacade.astro';
+import GalleryVideo from '@/components/ui/GalleryVideo.astro';
+import DialogueArt from '@/components/brand/DialogueArt.astro';
 import { alternatesFor, type Lang } from '@/i18n/routes';
 import { useTranslations, pick } from '@/i18n/ui';
-import { getAlbums } from '@/lib/content';
+import { getAlbums, getIntroVideo } from '@/lib/content';
 import { formatDate } from '@/lib/dates';
+import { albumAnchor, youtubeId } from '@/lib/gallery';
 
 interface Props {
   lang: Lang;
 }
 const { lang } = Astro.props;
 const t = useTranslations(lang);
-const albums = await getAlbums();
+const [albums, intro] = await Promise.all([getAlbums(), getIntroVideo()]);
 
-// Large version for the lightbox (max 1800 px wide, WebP).
+// Large version for the viewer (max 1800 px wide, WebP).
 const albumsWithLarge = await Promise.all(
   albums.map(async (album) => ({
     album,
@@ -30,7 +38,16 @@ const albumsWithLarge = await Promise.all(
     ),
   })),
 );
-const videos = albums.flatMap((a) => a.data.videos);
+const hasPhotos = albums.some((a) => a.data.photos.length > 0);
+const hasVideos = !!intro || albums.some((a) => a.data.videos.length > 0);
+const hasEvents = albums.some((a) => a.data.isEvent);
+const filters = [
+  { key: '', label: t('gallery.filterAll') },
+  hasPhotos && { key: 'photos', label: t('gallery.filterPhotos') },
+  hasVideos && { key: 'videos', label: t('gallery.filterVideos') },
+  hasEvents && { key: 'events', label: t('gallery.filterEvents') },
+].filter((f) => !!f) as { key: string; label: string }[];
+const empty = albums.length === 0 && !intro;
 ---
 
 <PageLayout
@@ -39,86 +56,326 @@ const videos = albums.flatMap((a) => a.data.videos);
   lede={t('gallery.lede')}
   alternates={alternatesFor('gallery')}
 >
-  <section class="container-site pt-4 pb-20" aria-labelledby="albums-title">
-    <h2 id="albums-title" class="sr-only">
-      {t('gallery.albums')}
-    </h2>
-    {albums.length === 0 && <p class="empty-state">{t('gallery.empty')}</p>}
-    <div class="space-y-20">
-      {albumsWithLarge.map(({ album, photos }) => (
-        <section aria-labelledby={`album-${album.id}`}>
-          <div class="mb-8 flex flex-col gap-2 sm:flex-row sm:items-end sm:justify-between">
-            <div>
-              <p class="eyebrow mb-2">
-                {formatDate(album.data.date, lang)} · {t('gallery.photos', { n: photos.length })}
-              </p>
-              <h3 id={`album-${album.id}`} class="text-3xl font-bold">
-                {pick(album.data.title, lang)}
-              </h3>
-              {album.data.description && (
-                <p class="mt-3 max-w-2xl">{pick(album.data.description, lang)}</p>
-              )}
-            </div>
-          </div>
-          <ul class="grid grid-cols-2 gap-3 sm:gap-4 md:grid-cols-3 lg:grid-cols-4">
-            {photos.map((photo, i) => {
-              const alt = pick(photo.alt, lang) ?? '';
-              return (
-                <li class:list={[i === 0 && 'col-span-2 row-span-2']}>
-                  <a
-                    href={photo.large}
-                    class="thumb group"
-                    data-lightbox={album.id}
-                    data-alt={alt}
-                    data-caption={pick(photo.caption, lang) ?? ''}
-                    aria-label={t('gallery.openPhoto', { alt })}
-                  >
-                    <Picture
-                      src={photo.image}
-                      alt=""
-                      formats={['avif', 'webp']}
-                      widths={i === 0 ? [480, 800, 1100] : [300, 480, 640]}
-                      sizes={
-                        i === 0
-                          ? '(min-width: 1024px) 50vw, 100vw'
-                          : '(min-width: 1024px) 25vw, 50vw'
-                      }
-                      class="size-full object-cover transition duration-500 group-hover:scale-105"
-                    />
-                    <span class="thumb__icon" aria-hidden="true">
-                      <Expand size={18} />
-                    </span>
-                  </a>
-                </li>
-              );
-            })}
-          </ul>
-        </section>
-      ))}
-    </div>
-  </section>
-
-  {videos.length > 0 && (
-    <section class="bg-tint py-20" aria-labelledby="videos-title">
-      <div class="container-site">
-        <h2 id="videos-title" class="section-title mb-12">
-          {t('gallery.videos')}
-        </h2>
-        <ul class="grid gap-10 md:grid-cols-2">
-          {videos.map((v) => (
-            <li>
-              <VideoFacade lang={lang} youtubeId={v.youtubeId} title={pick(v.title, lang)!} />
-            </li>
-          ))}
-        </ul>
+  <div class="container-site pt-2 pb-24">
+    {empty && (
+      <div class="gallery-empty">
+        <DialogueArt accent="navy" seed="gallery" class="gallery-empty__art" />
+        <p class="gallery-empty__text">
+          <span class="gallery-empty__label">{t('gallery.comingSoon')}</span>
+          {t('gallery.empty')}
+        </p>
       </div>
-    </section>
-  )}
+    )}
+
+    {filters.length > 2 && (
+      <div
+        class="gallery-filter invisible"
+        role="group"
+        aria-label={t('gallery.filterLabel')}
+        data-gallery-filter
+      >
+        {filters.map((f, i) => (
+          <button
+            type="button"
+            class="chip"
+            aria-pressed={i === 0 ? 'true' : 'false'}
+            data-show={f.key}
+          >
+            {f.label}
+          </button>
+        ))}
+      </div>
+    )}
+    <p class="empty-state" data-gallery-noresults hidden>
+      {t('gallery.noResults')}
+    </p>
+
+    {intro && (
+      <section class="intro-video" data-kind="videos" aria-labelledby="intro-video-title">
+        <h2 id="intro-video-title" class="album-title">
+          {pick(intro.title, lang)}
+        </h2>
+        <GalleryVideo
+          lang={lang}
+          title={pick(intro.title, lang)!}
+          youtubeId={youtubeId(intro.youtube)}
+          file={intro.file}
+          thumbnail={intro.thumbnail}
+          bare
+        />
+      </section>
+    )}
+
+    <div class="space-y-20">
+      {albumsWithLarge.map(({ album, photos }) => {
+        const d = album.data;
+        const where = pick(d.location, lang);
+        const description = pick(d.description, lang);
+        return (
+          <section
+            id={albumAnchor(album)}
+            class="album scroll-mt-28"
+            aria-labelledby={`${albumAnchor(album)}-title`}
+            data-album
+            data-event={d.isEvent ? '1' : '0'}
+          >
+            <header class="album__head">
+              <h2 id={`${albumAnchor(album)}-title`} class="album-title">
+                {pick(d.title, lang)}
+              </h2>
+              <ul class="album__meta">
+                <li>
+                  <CalendarDays size={18} aria-hidden="true" />
+                  <time datetime={d.date.toISOString().slice(0, 10)}>
+                    {formatDate(d.date, lang)}
+                  </time>
+                </li>
+                {where && (
+                  <li>
+                    <MapPin size={18} aria-hidden="true" />
+                    {where}
+                  </li>
+                )}
+                {photos.length > 0 && <li>{t('gallery.photos', { n: photos.length })}</li>}
+                {d.videos.length > 0 && <li>{t('gallery.videoCount', { n: d.videos.length })}</li>}
+              </ul>
+              {description && <p class="album__text">{description}</p>}
+            </header>
+            {d.cover && (
+              <Picture
+                src={d.cover}
+                alt=""
+                formats={['avif', 'webp']}
+                widths={[720, 1080, 1440, 1920]}
+                sizes="(min-width: 90rem) 84rem, 94vw"
+                class="album__cover"
+              />
+            )}
+
+            {photos.length > 0 && (
+              <ul class="photo-grid" data-kind="photos">
+                {photos.map((photo, i) => {
+                  const alt = pick(photo.alt, lang) ?? '';
+                  const first = i === 0 && photos.length > 2;
+                  return (
+                    <li class:list={[first && 'photo-grid__first']}>
+                      <a
+                        href={photo.large}
+                        class="thumb group"
+                        data-lightbox={album.id}
+                        data-alt={alt}
+                        data-caption={pick(photo.caption, lang) ?? ''}
+                        aria-label={t('gallery.openPhoto', { alt })}
+                      >
+                        <Picture
+                          src={photo.image}
+                          alt=""
+                          formats={['avif', 'webp']}
+                          widths={first ? [480, 800, 1100] : [300, 480, 640]}
+                          sizes={
+                            first
+                              ? '(min-width: 1024px) 50vw, 100vw'
+                              : '(min-width: 1024px) 25vw, 50vw'
+                          }
+                          class="thumb__img"
+                        />
+                        <span class="thumb__icon" aria-hidden="true">
+                          <Expand size={18} />
+                        </span>
+                      </a>
+                    </li>
+                  );
+                })}
+              </ul>
+            )}
+
+            {d.videos.length > 0 && (
+              <ul class="video-grid" data-kind="videos">
+                {d.videos.map((v) => (
+                  <li>
+                    <GalleryVideo
+                      lang={lang}
+                      title={pick(v.title, lang)!}
+                      youtubeId={youtubeId(v.youtube)}
+                      file={v.file}
+                      thumbnail={v.thumbnail}
+                    />
+                  </li>
+                ))}
+              </ul>
+            )}
+          </section>
+        );
+      })}
+    </div>
+  </div>
 
   <Lightbox lang={lang} />
 </PageLayout>
 
+<script>
+  const bar = document.querySelector<HTMLElement>('[data-gallery-filter]');
+  if (bar) {
+    bar.classList.remove('invisible');
+    const buttons = [...bar.querySelectorAll<HTMLButtonElement>('[data-show]')];
+    const albums = [...document.querySelectorAll<HTMLElement>('[data-album]')];
+    const intro = document.querySelector<HTMLElement>('.intro-video');
+    const noResults = document.querySelector<HTMLElement>('[data-gallery-noresults]');
+    const show = (what: string) => {
+      buttons.forEach((b) => b.setAttribute('aria-pressed', String(b.dataset.show === what)));
+      let visible = 0;
+      // Photos or Videos: only that kind of media; Events: albums of Matin events.
+      for (const album of albums) {
+        let any = false;
+        album.querySelectorAll<HTMLElement>('[data-kind]').forEach((list) => {
+          list.hidden = (what === 'photos' || what === 'videos') && list.dataset.kind !== what;
+          if (!list.hidden) any = true;
+        });
+        album.hidden = !any || (what === 'events' && album.dataset.event !== '1');
+        if (!album.hidden) visible++;
+      }
+      if (intro) {
+        intro.hidden = what === 'photos' || what === 'events';
+        if (!intro.hidden) visible++;
+      }
+      if (noResults) noResults.hidden = visible > 0;
+    };
+    buttons.forEach((b) => b.addEventListener('click', () => show(b.dataset.show ?? '')));
+  }
+</script>
+
 <style>
+  .gallery-filter {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.6rem;
+    margin-block-end: 3rem;
+  }
+  .chip {
+    min-height: 2.75rem;
+    padding: 0.5rem 1.15rem;
+    border: 1.5px solid var(--color-line);
+    border-radius: 999px;
+    background: var(--color-white);
+    color: var(--color-primary);
+    font-family: var(--font-display);
+    font-size: 1rem;
+    font-weight: 700;
+    cursor: pointer;
+  }
+  .chip:hover {
+    border-color: var(--color-gold);
+  }
+  .chip[aria-pressed='true'] {
+    border-color: var(--color-primary);
+    background: var(--color-primary);
+    color: var(--color-white);
+  }
+  /* Nothing published yet: the dialogue motif and a short note, no sample pictures. */
+  .gallery-empty {
+    position: relative;
+    overflow: hidden;
+    height: clamp(20rem, 12rem + 18vw, 30rem);
+    border-radius: var(--radius-card);
+    background: var(--color-tint);
+  }
+  .gallery-empty :global(.gallery-empty__art) {
+    width: 100%;
+    height: 100%;
+  }
+  .gallery-empty__text {
+    position: absolute;
+    inset-inline: 1.25rem;
+    inset-block-end: 1.25rem;
+    max-width: 32rem;
+    padding: 1rem 1.25rem;
+    border-radius: 1rem;
+    background: var(--color-white);
+    font-size: 1.0625rem;
+    line-height: 1.5;
+  }
+  .gallery-empty__label {
+    display: block;
+    margin-block-end: 0.25rem;
+    font-family: var(--font-display);
+    font-size: 0.875rem;
+    font-weight: 800;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--color-terracotta-deep);
+  }
+  .intro-video {
+    max-width: 60rem;
+    margin-block-end: 4.5rem;
+  }
+  .album-title {
+    margin-block-end: 0.75rem;
+    font-size: clamp(1.75rem, 1.4rem + 1.2vw, 2.5rem);
+    font-weight: 800;
+    line-height: 1.15;
+  }
+  .album__head {
+    max-width: 46rem;
+    margin-block-end: 1.75rem;
+  }
+  .album__meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.4rem 1.25rem;
+    font-weight: 700;
+    color: var(--color-primary);
+  }
+  .album__meta li {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+  }
+  .album__meta :global(svg) {
+    color: var(--color-terracotta-deep);
+  }
+  .album__text {
+    margin-block-start: 1rem;
+    font-size: 1.125rem;
+    line-height: 1.7;
+  }
+  .album :global(.album__cover) {
+    display: block;
+    width: 100%;
+    aspect-ratio: 21 / 9;
+    margin-block-end: 1rem;
+    border-radius: var(--radius-card);
+    object-fit: cover;
+  }
+  .photo-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 0.75rem;
+  }
+  @media (min-width: 48rem) {
+    .photo-grid {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 1rem;
+    }
+  }
+  @media (min-width: 64rem) {
+    .photo-grid {
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+    }
+  }
+  .photo-grid__first {
+    grid-column: span 2;
+    grid-row: span 2;
+  }
+  .video-grid {
+    display: grid;
+    gap: 2rem;
+    margin-block-start: 2rem;
+  }
+  @media (min-width: 48rem) {
+    .video-grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  }
   .thumb {
     position: relative;
     display: block;
@@ -126,26 +383,44 @@ const videos = albums.flatMap((a) => a.data.videos);
     aspect-ratio: 1;
     overflow: hidden;
     border-radius: 1rem;
-    box-shadow: var(--shadow-soft);
+    background: var(--color-tint);
+  }
+  .thumb :global(.thumb__img),
+  .thumb :global(img) {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.5s cubic-bezier(0.2, 0.7, 0.2, 1);
+  }
+  .thumb:hover :global(img) {
+    transform: scale(1.04);
   }
   .thumb__icon {
     position: absolute;
-    right: 0.75rem;
+    inset-inline-end: 0.75rem;
     bottom: 0.75rem;
     display: grid;
     place-items: center;
     width: 2.5rem;
     height: 2.5rem;
     border-radius: 999px;
-    color: var(--color-ink);
-    background: color-mix(in srgb, var(--color-white) 90%, transparent);
+    color: var(--color-primary);
+    background: var(--color-white);
     opacity: 0;
     transform: translateY(6px);
-    transition: all 0.25s;
+    transition:
+      opacity 0.25s,
+      transform 0.25s;
   }
   .thumb:hover .thumb__icon,
   .thumb:focus-visible .thumb__icon {
     opacity: 1;
     transform: none;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .thumb :global(img),
+    .thumb__icon {
+      transition: none;
+    }
   }
 </style>

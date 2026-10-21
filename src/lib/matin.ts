@@ -19,6 +19,7 @@ import {
   type EventEntry,
 } from '@/lib/content';
 import { formatDate, formatWhen } from '@/lib/dates';
+import { posterFile } from '@/lib/poster';
 
 export type MatinType = CollectionEntry<'highlights'>['data']['type'];
 
@@ -31,6 +32,8 @@ export interface MatinItem {
   imageAlt: string;
   /** The image is a poster: always shown whole, never cropped. */
   poster: boolean;
+  /** The original poster file, offered as a download beside the poster. */
+  posterDownload?: ReturnType<typeof posterFile>;
   /** Date line, already formatted for the language. */
   when: string;
   datetime: string;
@@ -71,6 +74,7 @@ function fromHighlight(h: CollectionEntry<'highlights'>, lang: UiLang, now: Date
     image: d.image,
     imageAlt: pick(d.imageAlt, lang) ?? '',
     poster: d.type === 'poster',
+    posterDownload: d.type === 'poster' && d.image ? posterFile(d.image, h.id) : undefined,
     when,
     datetime: d.date.toISOString().slice(0, 10),
     location: pick(d.location, lang) || undefined,
@@ -99,6 +103,7 @@ function fromEvent(e: EventEntry, lang: UiLang): MatinItem {
     image: d.image,
     imageAlt: pick(d.imageAlt, lang) ?? '',
     poster: d.imageIsPoster,
+    posterDownload: d.image && d.imageIsPoster ? posterFile(d.image, slugOf(e, 'en')) : undefined,
     when: formatWhen(e.startDate, d.end ? e.endDate : undefined, lang, {
       allDay: d.allDay,
       timeZone: d.timeZone,

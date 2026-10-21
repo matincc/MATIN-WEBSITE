@@ -1,0 +1,8 @@
+# Name and website checked on 2026-10-21. Unpublished until its official logo is added
+# (logo: ../../assets/uploads/resources/<file>) and approved; then set published: true.
+name: "Ministère de l'Immigration, de la Francisation et de l'Intégration (MIFI)"
+category: government
+url: https://www.quebec.ca/gouvernement/ministeres-organismes/immigration
+location: Québec
+order: 40
+published: false

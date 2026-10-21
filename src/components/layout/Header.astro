@@ -4,7 +4,6 @@ import Lockup from '@/components/brand/Lockup.astro';
 import LangToggle from './LangToggle.astro';
 import { href, type Alternates, type RouteKey, type UiLang } from '@/i18n/routes';
 import { useTranslations } from '@/i18n/ui';
-import { emptySections } from '@/lib/content';
 
 interface Props {
   lang: UiLang;
@@ -13,21 +12,10 @@ interface Props {
 const { lang, alternates } = Astro.props;
 const t = useTranslations(lang);
 
-const items: RouteKey[] = [
-  'about',
-  'team',
-  'programs',
-  'events',
-  'news',
-  'gallery',
-  'getInvolved',
-  'contact',
-];
-// The gallery appears in the menu once it has an album.
-const empty = await emptySections();
-const links = items
-  .filter((key) => key !== 'gallery' || !empty.has('gallery'))
-  .map((key) => ({ key, href: href(key, lang), label: t(`nav.${key}`) }));
+// Main menu, in this order (owner's request, Oct 2026). The Gallery and the Resources
+// directory are reached from the homepage and the footer, not from this menu.
+const items: RouteKey[] = ['about', 'team', 'events', 'news', 'programs', 'getInvolved', 'contact'];
+const links = items.map((key) => ({ key, href: href(key, lang), label: t(`nav.${key}`) }));
 const aboutHref = href('about', lang);
 // Sub-links of "About": anchors on the About page. The Persian About page has the
 // values, the story and the founder's note (the other texts are not translated yet).

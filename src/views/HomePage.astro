@@ -1,16 +1,16 @@
 ---
 /**
- * Homepage (French, English and Persian), in this order: what Matin is doing now
- * (Matin in Action, Latest From Matin), how to take part, then who Matin is and its
- * areas of work. Only Matin's own content (src/lib/matin.ts); external selected events
- * are on the Events page. With no Matin item yet, a short message invites visitors
- * to subscribe.
+ * Homepage (French, English and Persian), in this order: Matin in Action (Matin's own
+ * featured item, src/lib/matin.ts), Matin's Picks (the same section as on the Events
+ * page), Matin Moments (featured gallery items), Get Involved, Who We Are, Areas of
+ * Work, Cultural Resources & Organizations, newsletter.
  * The photographs are openly licensed views of Montréal (see src/lib/photos.ts), shown
  * with their credits; they illustrate the themes, they do not document Matin activities.
  */
 import {
   ArrowRight,
   CalendarDays,
+  Download,
   ExternalLink,
   Eye,
   HandHeart,
@@ -23,6 +23,11 @@ import {
   Target,
 } from '@lucide/astro';
 import { Picture } from 'astro:assets';
+import CommunityIllustration from '@/components/brand/CommunityIllustration.astro';
+import PicksSection from '@/components/content/PicksSection.astro';
+import MatinMoments from '@/components/content/MatinMoments.astro';
+import ResourcesTeaser from '@/components/content/ResourcesTeaser.astro';
+import ExpireEvents from '@/components/content/ExpireEvents.astro';
 import BaseLayout from '@/layouts/BaseLayout.astro';
 import HomeHero from '@/components/brand/HomeHero.astro';
 import CulturesRibbon from '@/components/brand/CulturesRibbon.astro';
@@ -35,7 +40,6 @@ import { useTranslations } from '@/i18n/ui';
 import { getMatinFeed } from '@/lib/matin';
 import { ctaFor } from '@/lib/matinLabels';
 import MatinMedia from '@/components/content/MatinMedia.astro';
-import MatinCard from '@/components/content/MatinCard.astro';
 import { photos } from '@/lib/photos';
 
 interface Props {
@@ -44,8 +48,8 @@ interface Props {
 const { lang } = Astro.props;
 const t = useTranslations(lang);
 
-// Matin's own content only: highlights, Matin's events and published news.
-const { featured, items: latest } = await getMatinFeed(lang, 3);
+// Matin in Action: Matin's own content only (highlights, Matin's events, published news).
+const { featured } = await getMatinFeed(lang, 0);
 
 // The next step after seeing what Matin does. Persian Get Involved has no volunteer form.
 const involvedHref = href('getInvolved', lang);
@@ -121,20 +125,32 @@ const whoCards = [
               )}
             </ul>
             <p class="feature__summary">{featured.summary}</p>
-            <a
-              href={featured.url}
-              class="btn btn-primary self-start"
-              target={featured.external ? '_blank' : undefined}
-              rel={featured.external ? 'noopener noreferrer' : undefined}
-            >
-              {featured.ctaLabel ?? ctaFor(featured.type, t)}
-              {featured.external ? (
-                <ExternalLink size={18} aria-hidden="true" />
-              ) : (
-                <ArrowRight size={18} class="flip-rtl" aria-hidden="true" />
+            <div class="feature__actions">
+              <a
+                href={featured.url}
+                class="btn btn-primary"
+                target={featured.external ? '_blank' : undefined}
+                rel={featured.external ? 'noopener noreferrer' : undefined}
+              >
+                {featured.ctaLabel ?? ctaFor(featured.type, t)}
+                {featured.external ? (
+                  <ExternalLink size={18} aria-hidden="true" />
+                ) : (
+                  <ArrowRight size={18} class="flip-rtl" aria-hidden="true" />
+                )}
+                {featured.external && <span class="sr-only">{t('a11y.externalLink')}</span>}
+              </a>
+              {featured.posterDownload && (
+                <a
+                  href={featured.posterDownload.href}
+                  download={featured.posterDownload.filename}
+                  class="btn btn-outline"
+                >
+                  <Download size={18} aria-hidden="true" />
+                  {t('events.posterDownload', { format: featured.posterDownload.format })}
+                </a>
               )}
-              {featured.external && <span class="sr-only">{t('a11y.externalLink')}</span>}
-            </a>
+            </div>
           </div>
         </article>
       ) : (
@@ -149,47 +165,24 @@ const whoCards = [
     </div>
   </section>
 
-  <!-- Latest From Matin: the next items of the same feed -->
-  {latest.length > 0 && (
-    <section class="section-pad bg-tint" aria-labelledby="latest-title">
-      <div class="container-site">
-        <SectionHeader
-          id="latest-title"
-          title={t('home.latestTitle')}
-          link={{ href: href('news', lang), label: t('home.newsAll') }}
-          align="start"
-          class="mb-10"
-        />
-        <ul class="latest-grid">
-          {latest.map((item, i) => (
-            <li data-reveal style={`--reveal-delay:${i * 110}ms`}>
-              <MatinCard item={item} lang={lang} />
-            </li>
-          ))}
-        </ul>
-      </div>
-    </section>
-  )}
+  <!-- Matin's Picks: the same section and data as on the Events page -->
+  <PicksSection
+    lang={lang}
+    class="section-pad bg-tint"
+    link={{ href: href('events', lang), label: t('home.eventsAll') }}
+  />
+  <ExpireEvents />
 
-  <!-- Get involved: warm terracotta band, a people-centred photo beside the invitation -->
+  <!-- Matin Moments: featured photos and videos from the gallery -->
+  <MatinMoments lang={lang} />
+
+  <!-- Get involved: warm terracotta band, a bright illustration beside the invitation -->
   <section class="involved on-terracotta" aria-labelledby="involved-title">
     <div class="container-site involved__grid">
-      <figure class="involved__figure" data-reveal>
-        <div class="involved__photo">
-          <Picture
-            src={photos.dialogueCircle.src}
-            alt={t('home.involvedPhotoAlt')}
-            formats={['avif', 'webp']}
-            widths={[640, 960, 1280]}
-            sizes="(min-width: 64rem) 40rem, 92vw"
-            style={`object-position:${photos.dialogueCircle.focus}`}
-          />
-        </div>
+      <div class="involved__figure" data-reveal>
+        <CommunityIllustration class="involved__art" />
         <span class="involved__block" aria-hidden="true"></span>
-        <figcaption>
-          <PhotoCredit credit={photos.dialogueCircle.credit} class="involved__credit" />
-        </figcaption>
-      </figure>
+      </div>
       <div class="involved__text">
         <SectionHeader
           id="involved-title"
@@ -291,6 +284,9 @@ const whoCards = [
       <AreasGrid lang={lang} />
     </div>
   </section>
+
+  <!-- Cultural Resources & Organizations: opens the directory -->
+  <ResourcesTeaser lang={lang} />
 
   <!-- Newsletter: one warm card, invitation on one side, the form on the other -->
   <section
@@ -520,14 +516,11 @@ const whoCards = [
     font-size: clamp(1.125rem, 1.05rem + 0.35vw, 1.3125rem);
     line-height: 1.65;
   }
-  .feature :global(.btn) {
+  .feature__actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem;
     margin-top: 0.5rem;
-  }
-  .latest-grid {
-    display: grid;
-    gap: 1.75rem;
-    /* auto-fill: one or two cards keep a card's width instead of stretching. */
-    grid-template-columns: repeat(auto-fill, minmax(min(100%, 22rem), 1fr));
   }
 
   /* ---------- Ways to take part (inside the Get Involved band) ---------- */
@@ -603,20 +596,11 @@ const whoCards = [
   .involved__figure {
     position: relative;
   }
-  .involved__photo {
+  .involved__figure :global(.involved__art) {
     position: relative;
     z-index: 1;
-    aspect-ratio: 3 / 2;
-    overflow: hidden;
-    border-radius: var(--radius-card);
   }
-  .involved__photo :global(img) {
-    display: block;
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-  }
-  /* Mustard block peeking out from behind the photo. */
+  /* Mustard block peeking out from behind the illustration. */
   .involved__block {
     position: absolute;
     inset-block-end: 2.25rem;
@@ -625,11 +609,6 @@ const whoCards = [
     height: 55%;
     border-radius: var(--radius-card);
     background: var(--color-gold);
-  }
-  .involved__figure :global(.involved__credit) {
-    position: relative;
-    z-index: 1;
-    color: var(--color-white);
   }
   .involved__paragraph {
     max-width: 38rem;

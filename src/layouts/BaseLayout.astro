@@ -6,6 +6,7 @@ import playfair800 from '@fontsource/playfair-display/files/playfair-display-lat
 import SEO from '@/components/layout/SEO.astro';
 import Header from '@/components/layout/Header.astro';
 import Footer from '@/components/layout/Footer.astro';
+import BackToTop from '@/components/layout/BackToTop.astro';
 import CookieBanner from '@/components/layout/CookieBanner.astro';
 import { isRtl, type Alternates, type UiLang } from '@/i18n/routes';
 import { faFallbackNotice } from '@/i18n/fa';
@@ -84,7 +85,7 @@ const rssLang = lang === 'fa' ? 'en' : lang;
       jsonLd={[organizationJsonLd(settings, lang, site, t('meta.defaultDescription')), ...jsonLd]}
     />
   </head>
-  <body class="flex min-h-dvh flex-col">
+  <body id="top" class="flex min-h-dvh flex-col">
     <a href="#main" class="sr-only-focusable btn btn-primary fixed start-3 top-3 z-50">
       {t('a11y.skipToContent')}
     </a>
@@ -114,6 +115,7 @@ const rssLang = lang === 'fa' ? 'en' : lang;
     </main>
     <!-- On short pages, keeps the footer at the bottom of the window. -->
     <div class="flex-1" aria-hidden="true"></div>
+    <BackToTop lang={lang} />
     <Footer lang={lang} showNewsletter={footerNewsletter} />
     <CookieBanner lang={lang} />
 

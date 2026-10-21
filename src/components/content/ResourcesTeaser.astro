@@ -1,0 +1,112 @@
+---
+/**
+ * "Cultural Resources & Organizations" on the homepage: a compact band that opens the
+ * directory, by category. A curated list of public and cultural resources, never a list
+ * of partners.
+ */
+import { ArrowRight } from '@lucide/astro';
+import SectionHeader from '@/components/ui/SectionHeader.astro';
+import { href, type UiLang } from '@/i18n/routes';
+import { useTranslations } from '@/i18n/ui';
+import { resourceCategories } from '@/lib/taxonomy';
+import { resourceAccents, resourceIcons } from '@/lib/resourceIcons';
+
+interface Props {
+  lang: UiLang;
+}
+const { lang } = Astro.props;
+const t = useTranslations(lang);
+const page = href('resources', lang);
+// Category links open the directory filtered on that category (#cat-…).
+const anchor = (c: string) => `${page}#cat-${c}`;
+---
+
+<section class="section-pad bg-paper" aria-labelledby="resources-title">
+  <div class="container-site resources-band">
+    <div>
+      <SectionHeader
+        id="resources-title"
+        title={t('home.resourcesTitle')}
+        subtitle={t('home.resourcesLede')}
+        align="start"
+        class="mb-8"
+      />
+      <a href={page} class="btn btn-primary">
+        {t('home.resourcesCta')}
+        <ArrowRight size={18} class="flip-rtl" aria-hidden="true" />
+      </a>
+    </div>
+    <ul class="resources-band__list" data-reveal>
+      {resourceCategories.map((c) => {
+        const Icon = resourceIcons[c];
+        return (
+          <li>
+            <a href={anchor(c)} class="resource-cat" data-accent={resourceAccents[c]}>
+              <span class="resource-cat__icon" aria-hidden="true">
+                <Icon size={22} stroke-width={1.75} />
+              </span>
+              <span>{t(`resources.${c}`)}</span>
+            </a>
+          </li>
+        );
+      })}
+    </ul>
+  </div>
+</section>
+
+<style>
+  .resources-band {
+    display: grid;
+    gap: 2.5rem;
+    align-items: center;
+  }
+  @media (min-width: 64rem) {
+    .resources-band {
+      grid-template-columns: minmax(0, 1fr) minmax(0, 1.2fr);
+      gap: clamp(3rem, 1rem + 4vw, 6rem);
+    }
+  }
+  .resources-band__list {
+    display: grid;
+    gap: 0.75rem;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 17rem), 1fr));
+  }
+  .resource-cat {
+    display: flex;
+    align-items: center;
+    gap: 0.9rem;
+    height: 100%;
+    padding: 0.85rem 1rem;
+    border: 1px solid var(--color-line);
+    border-radius: 1rem;
+    background: var(--color-white);
+    color: var(--color-primary);
+    font-family: var(--font-display);
+    font-size: 1.0625rem;
+    font-weight: 800;
+    line-height: 1.25;
+    text-decoration: none;
+    transition:
+      border-color 0.2s,
+      transform 0.2s;
+  }
+  .resource-cat:hover {
+    border-color: var(--accent);
+    transform: translateY(-2px);
+  }
+  .resource-cat__icon {
+    display: grid;
+    flex-shrink: 0;
+    place-items: center;
+    width: 2.75rem;
+    height: 2.75rem;
+    border-radius: 0.8rem;
+    background: color-mix(in srgb, var(--accent) 22%, var(--color-white));
+    color: var(--color-primary);
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .resource-cat {
+      transition: none;
+    }
+  }
+</style>

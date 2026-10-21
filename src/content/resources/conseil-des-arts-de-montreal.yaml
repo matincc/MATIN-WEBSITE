@@ -1,0 +1,8 @@
+# Name and website checked on 2026-10-21. Unpublished until its official logo is added
+# (logo: ../../assets/uploads/resources/<file>) and approved; then set published: true.
+name: 'Conseil des arts de Montréal'
+category: arts
+url: https://www.artsmontreal.org/
+location: Montréal
+order: 10
+published: false

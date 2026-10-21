@@ -1,0 +1,216 @@
+# Matin admin (Sveltia CMS, https://github.com/sveltia/sveltia-cms). Each "Save" creates a
+# commit on the main branch; Netlify then rebuilds and publishes the site (a few minutes).
+# Sign in with a GitHub account that has write access to the repository (see GUIDE_ADMIN.md).
+backend:
+  name: github
+  repo: matincc/MATIN-WEBSITE
+  branch: main
+  commit_messages:
+    create: 'Admin: add {{collection}} “{{slug}}”'
+    update: 'Admin: update {{collection}} “{{slug}}”'
+    delete: 'Admin: delete {{collection}} “{{slug}}”'
+    uploadMedia: 'Admin: upload “{{path}}”'
+    deleteMedia: 'Admin: delete “{{path}}”'
+
+site_url: https://matincc.ca
+display_url: https://matincc.ca
+logo:
+  src: /icons/logo-512.png
+
+# Default media folder (videos); images go next to each collection, see below.
+media_folder: public/media
+public_folder: /media
+
+slug:
+  encoding: ascii
+  clean_accents: true
+
+collections:
+  # ---------------------------------------------------------------- Gallery
+  - name: gallery
+    label: Gallery · Galerie
+    label_singular: Album
+    description: >-
+      One album per activity. Only real Matin photos and videos, published with the consent
+      of the photographer and of the people who can be recognized. Tick "Featured" on up to
+      five photos or videos to show them in "Matin Moments" on the homepage.
+    folder: src/content/gallery
+    extension: yaml
+    format: yaml
+    create: true
+    delete: true
+    slug: '{{year}}-{{month}}-{{day}}-{{hour}}{{minute}}'
+    media_folder: /src/assets/uploads/gallery
+    public_folder: ../../assets/uploads/gallery
+    summary: '{{date}} · {{title.en}}'
+    sortable_fields: [date, order]
+    fields:
+      - name: title
+        label: Title
+        widget: object
+        fields:
+          - { name: fr, label: Français, widget: string }
+          - { name: en, label: English, widget: string }
+      - { name: date, label: Date, widget: datetime, time_format: false, format: YYYY-MM-DD }
+      - name: location
+        label: Place (optional)
+        widget: object
+        required: false
+        fields:
+          - { name: fr, label: Français, widget: string, required: false }
+          - { name: en, label: English, widget: string, required: false }
+      - name: description
+        label: Short description (optional)
+        widget: object
+        required: false
+        fields:
+          - { name: fr, label: Français, widget: text, required: false }
+          - { name: en, label: English, widget: text, required: false }
+      - name: isEvent
+        label: Album of a Matin event (listed under "Events")
+        widget: boolean
+        default: false
+      - name: cover
+        label: Cover image (optional; otherwise the first photo)
+        widget: image
+        required: false
+        accept: image/jpeg,image/png,image/webp
+      - name: photos
+        label: Photos
+        label_singular: Photo
+        widget: list
+        required: false
+        summary: '{{fields.alt.en}}'
+        fields:
+          - { name: image, label: 'Photo (JPEG, PNG or WebP)', widget: image, accept: 'image/jpeg,image/png,image/webp' }
+          - name: alt
+            label: Description for people who cannot see the photo
+            widget: object
+            fields:
+              - { name: fr, label: Français, widget: string }
+              - { name: en, label: English, widget: string }
+          - name: caption
+            label: Caption (optional)
+            widget: object
+            required: false
+            fields:
+              - { name: fr, label: Français, widget: string, required: false }
+              - { name: en, label: English, widget: string, required: false }
+          - { name: featured, label: Featured on the homepage, widget: boolean, default: false }
+      - name: videos
+        label: Videos
+        label_singular: Video
+        widget: list
+        required: false
+        summary: '{{fields.title.en}}'
+        fields:
+          - name: title
+            label: Title
+            widget: object
+            fields:
+              - { name: fr, label: Français, widget: string }
+              - { name: en, label: English, widget: string }
+          - name: youtube
+            label: YouTube link (recommended)
+            widget: string
+            required: false
+            pattern:
+              - '^(|[\w-]{11}|https://(www\.|m\.)?(youtube\.com/(watch\?v=|shorts/|embed/)|youtu\.be/)[\w-]{11}\S*)$'
+              - 'Paste a YouTube link, e.g. https://www.youtube.com/watch?v=…'
+          - name: file
+            label: Or a short video file (MP4 or WebM, under 50 MB)
+            widget: file
+            required: false
+            accept: video/mp4,video/webm
+            media_folder: /public/media
+            public_folder: /media
+          - { name: thumbnail, label: Still image before playing (optional), widget: image, required: false, accept: 'image/jpeg,image/png,image/webp' }
+          - { name: featured, label: Featured on the homepage, widget: boolean, default: false }
+      - name: consent
+        label: I confirm Matin may publish these photos and videos (people's consent obtained)
+        widget: boolean
+        default: false
+      - { name: order, label: Order (lower first), widget: number, value_type: int, default: 100 }
+      - { name: draft, label: Unpublished (hidden from the site), widget: boolean, default: false }
+
+  # ---------------------------------------------------------------- Intro video
+  - name: intro
+    label: Intro video · Vidéo de présentation
+    description: >-
+      Matin's introductory video ("Matin is Born"). It appears large on the homepage and at
+      the top of the Gallery as soon as a YouTube link or a video file is added.
+    files:
+      - name: matin-is-born
+        label: Matin is Born
+        file: src/content/intro-video/matin-is-born.yaml
+        media_folder: /src/assets/uploads/gallery
+        public_folder: ../../assets/uploads/gallery
+        fields:
+          - name: title
+            label: Title
+            widget: object
+            fields:
+              - { name: fr, label: Français, widget: string }
+              - { name: en, label: English, widget: string }
+          - name: youtube
+            label: YouTube link (recommended)
+            widget: string
+            required: false
+            pattern:
+              - '^(|[\w-]{11}|https://(www\.|m\.)?(youtube\.com/(watch\?v=|shorts/|embed/)|youtu\.be/)[\w-]{11}\S*)$'
+              - 'Paste a YouTube link, e.g. https://www.youtube.com/watch?v=…'
+          - name: file
+            label: Or a video file (MP4 or WebM, under 50 MB)
+            widget: file
+            required: false
+            accept: video/mp4,video/webm
+            media_folder: /public/media
+            public_folder: /media
+          - { name: thumbnail, label: Still image before playing (optional), widget: image, required: false, accept: 'image/jpeg,image/png,image/webp' }
+
+  # ---------------------------------------------------------------- Directory
+  - name: resources
+    label: Cultural Resources & Organizations
+    label_singular: Organization
+    description: >-
+      A curated directory, never a list of partners. Publish an organization only once its
+      official name, website and logo have been checked.
+    folder: src/content/resources
+    extension: yaml
+    format: yaml
+    create: true
+    delete: true
+    slug: '{{name}}'
+    identifier_field: name
+    media_folder: /src/assets/uploads/resources
+    public_folder: ../../assets/uploads/resources
+    summary: '{{name}} · {{category}}'
+    sortable_fields: [name, category, order]
+    fields:
+      - { name: name, label: Official name, widget: string }
+      - { name: nameEn, label: English name (only if the organization uses one), widget: string, required: false }
+      - name: category
+        label: Category
+        widget: select
+        options:
+          - { label: Municipalities & Local Government, value: municipal }
+          - { label: Québec & Canadian Government Institutions, value: government }
+          - { label: Arts & Cultural Organizations, value: arts }
+          - { label: Community & Intercultural Organizations, value: community }
+          - { label: Educational & Research Institutions, value: research }
+          - { label: Other Useful Resources, value: other }
+      - name: url
+        label: Official website (https://…)
+        widget: string
+        pattern: ['^https://[^\s]+$', 'Enter the full address, starting with https://']
+      - { name: logo, label: 'Official logo (PNG, SVG, JPEG or WebP)', widget: image, required: false, accept: 'image/png,image/svg+xml,image/jpeg,image/webp' }
+      - name: description
+        label: Short description (optional)
+        widget: object
+        required: false
+        fields:
+          - { name: fr, label: Français, widget: text, required: false }
+          - { name: en, label: English, widget: text, required: false }
+      - { name: location, label: Area or jurisdiction (optional), widget: string, required: false }
+      - { name: order, label: Order within the category (lower first), widget: number, value_type: int, default: 100 }
+      - { name: published, label: Published on the site, widget: boolean, default: false }

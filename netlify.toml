@@ -21,7 +21,8 @@
     X-Content-Type-Options = "nosniff"
     Referrer-Policy = "strict-origin-when-cross-origin"
     Permissions-Policy = "camera=(), microphone=(), geolocation=(), payment=(), usb=(), interest-cohort=()"
-    Cross-Origin-Opener-Policy = "same-origin"
+    # "allow-popups": the admin (/admin/) signs in to GitHub through a pop-up window.
+    Cross-Origin-Opener-Policy = "same-origin-allow-popups"
 
 # Fingerprinted build assets never change: cache them for a year.
 [[headers]]

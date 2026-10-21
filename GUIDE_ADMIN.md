@@ -153,45 +153,54 @@ photos:
       en: "Caption (optional)"
 ```
 
-### 3. Ajouter des photos à la galerie
+### 3. La galerie « Moments de Matin », la vidéo de présentation et le répertoire des ressources
 
-1. Allez dans **`src/assets/uploads/gallery`** et créez un dossier pour l'album. Astuce : dans **Add file → Upload files**, vous pouvez glisser plusieurs photos d'un coup.
-2. Vous pouvez envoyer les photos **directement depuis votre téléphone**. Le site les réduit à 2000 pixels, les compresse et **efface la localisation GPS** automatiquement.
-3. Dans **`src/content/gallery`**, créez le fichier de l'album :
+Ces trois contenus se gèrent **sans toucher au code**, depuis l'espace d'administration :
+**https://matincc.ca/admin/**
 
-```yaml
-date: 2026-11-21
-title:
-  fr: "Atelier cuisines du monde"
-  en: "World Cuisines Workshop"
-description:
-  fr: "Une phrase sur l'album."
-  en: "One sentence about the album."
-photos:
-  - image: ../../assets/uploads/gallery/atelier-cuisine/photo-1.jpg
-    alt:
-      fr: "Deux participantes préparent des dumplings"
-      en: "Two participants making dumplings"
-  - image: ../../assets/uploads/gallery/atelier-cuisine/photo-2.jpg
-    alt:
-      fr: "…"
-      en: "…"
-videos: []
-```
+**Se connecter (une seule fois par appareil)**
 
-**Ajouter une vidéo YouTube** : copiez l'identifiant de la vidéo, soit les 11 caractères après `v=` dans l'adresse YouTube.
+1. Il faut un compte GitHub qui a le droit de modifier le dépôt `matincc/MATIN-WEBSITE`
+   (le compte `matincc`, ou une personne invitée comme collaboratrice).
+2. Sur GitHub : **Settings → Developer settings → Personal access tokens → Fine-grained
+   tokens → Generate new token**. Dépôt : seulement `MATIN-WEBSITE`. Permission :
+   **Contents : Read and write**. Copiez le jeton.
+3. Sur https://matincc.ca/admin/, choisissez **« Sign In Using Access Token »** et collez
+   le jeton. Ne le partagez jamais.
 
-```yaml
-videos:
-  - youtubeId: "AbCdEfGhIjK" # exemple : remplacez par le vrai identifiant
-    title:
-      fr: "Titre de la vidéo"
-      en: "Video title"
-```
+(Option : pour un bouton « Sign In with GitHub » sans jeton, ajoutez GitHub comme
+fournisseur OAuth dans Netlify → Site configuration → Access & security → OAuth.)
 
-**Le texte « alt »** décrit la photo pour les personnes qui ne la voient pas. Soyez bref et concret.
+**Chaque « Save » publie** : l'administration enregistre la modification sur GitHub
+(branche `main`) et Netlify met le site à jour en quelques minutes. Chaque enregistrement
+utilise des crédits de construction Netlify : regroupez vos modifications quand c'est
+possible.
 
-**Consentement :** publiez seulement des photos de personnes qui ont accepté d'apparaître en ligne.
+**Galerie (Gallery · Galerie)** : un album par activité : titre, date, lieu, courte
+description, photos (JPEG, PNG ou WebP, avec une description « alt » pour chacune),
+vidéos (lien YouTube recommandé, ou court fichier MP4/WebM de moins de 50 Mo), image de
+couverture. Cochez **« Featured on the homepage »** sur les photos ou vidéos à montrer dans
+« Moments de Matin » (les cinq premières sont affichées). Cochez **« Album of a Matin
+event »** pour le filtre « Événements ». **Le consentement est obligatoire** : un album
+n'apparaît sur le site que si la case de consentement est cochée (accord du ou de la
+photographe et des personnes reconnaissables). « Unpublished » retire l'album du site.
+
+**Vidéo de présentation (Intro video)** : collez le lien YouTube de « Matin is Born » (ou
+téléversez le fichier). Elle s'affiche alors en grand sur la page d'accueil et en tête de
+la Galerie.
+
+**Ressources et organismes culturels** : un organisme par fiche : nom officiel, catégorie,
+site officiel (https://…), logo officiel, courte description, territoire, ordre. Il
+n'apparaît que lorsque **« Published on the site »** est coché, après vérification du nom,
+du site et du logo. **Ce répertoire n'est pas une liste de partenaires** : n'écrivez jamais
+« partenaire » pour un organisme qui n'a pas d'entente avec Matin. Cinq organismes sont
+déjà préparés (Ville de Montréal, Arrondissement de LaSalle, ministère de la Culture et
+des Communications, MIFI, Conseil des arts de Montréal) : ajoutez leur logo officiel puis
+cochez « Published ».
+
+Sans l'administration, les mêmes fichiers YAML se modifient à la main dans
+`src/content/gallery/`, `src/content/intro-video/` et `src/content/resources/`
+(voir le README de chaque dossier).
 
 ### 4. Modifier l'équipe
 
@@ -341,13 +350,32 @@ To add a picture, upload it to `src/assets/uploads/news` (**Add file → Upload 
 
 Open the event's file and add the `report`, `highlights` and `photos` blocks (template in the French section, “2 bis”). Each part only appears when filled in. The event moves to “Past Matin events” automatically once it's over.
 
-### 3. Add photos to the gallery
+### 3. Gallery ("Matin Moments"), intro video and Resources directory
 
-1. Upload the photos to a new folder in **`src/assets/uploads/gallery`**. You can drag in several at once.
-2. Photos can come **straight from a phone**. The site shrinks them to 2000 pixels, compresses them and **removes GPS location** automatically.
-3. Create the album file in **`src/content/gallery`** with the **gallery template** above. Give every photo an `alt` text: a short, concrete description for people who can't see it.
-4. For a YouTube video, copy its 11-character ID (after `v=` in the YouTube address).
-5. Only publish photos of people who agreed to appear online.
+These are managed **without touching code**, in the admin: **https://matincc.ca/admin/**
+
+- **Sign in** (once per device): a GitHub account with write access to
+  `matincc/MATIN-WEBSITE`; create a fine-grained personal access token (repository
+  `MATIN-WEBSITE` only, permission **Contents: Read and write**) and choose **"Sign In Using
+  Access Token"**. Never share the token. Optional: add GitHub as an OAuth provider in
+  Netlify (Site configuration → Access & security → OAuth) for a one-click sign-in.
+- **Every "Save" publishes**: the change is committed to `main` and Netlify rebuilds the
+  site in a few minutes (each save uses Netlify build credits; group changes).
+- **Gallery**: one album per activity: title, date, place, description, photos (JPEG,
+  PNG, WebP, each with alt text), videos (YouTube link recommended, or a short MP4/WebM
+  under 50 MB), cover image. Tick **"Featured on the homepage"** for "Matin Moments" (the
+  first five show). Tick **"Album of a Matin event"** for the Events filter. **Consent is
+  required**: an album only appears once the consent box is ticked. "Unpublished" hides it.
+- **Intro video**: paste the YouTube link of "Matin is Born" (or upload the file); it then
+  appears large on the homepage and at the top of the Gallery.
+- **Cultural Resources & Organizations**: one entry per organization (official name,
+  category, https website, official logo, description, area, order). It appears only when
+  **"Published on the site"** is ticked, once name, website and logo are verified. **Not a
+  list of partners.** Five organizations are prepared and unpublished, waiting for their
+  official logos.
+
+Without the admin, edit the YAML files in `src/content/gallery/`,
+`src/content/intro-video/` and `src/content/resources/` (see each folder's README).
 
 ### 4. Edit the team
 

@@ -8,10 +8,11 @@ import { ArrowRight } from '@lucide/astro';
 import PageLayout from '@/layouts/PageLayout.astro';
 import SectionHeader from '@/components/ui/SectionHeader.astro';
 import EventCard from '@/components/content/EventCard.astro';
+import PicksSection from '@/components/content/PicksSection.astro';
 import ExpireEvents from '@/components/content/ExpireEvents.astro';
 import { alternatesFor, path, type Lang } from '@/i18n/routes';
 import { useTranslations, pick } from '@/i18n/ui';
-import { getUpcomingEvents, getPastEvents, isMatinEvent, picksOf, slugOf } from '@/lib/content';
+import { getUpcomingEvents, getPastEvents, isMatinEvent, slugOf } from '@/lib/content';
 import { formatDate } from '@/lib/dates';
 import { eventFormats, eventLanguages, eventRegions, eventSubjects } from '@/lib/taxonomy';
 
@@ -21,7 +22,6 @@ interface Props {
 const { lang } = Astro.props;
 const t = useTranslations(lang);
 const [upcoming, past] = await Promise.all([getUpcomingEvents(), getPastEvents()]);
-const picks = picksOf(upcoming);
 const matinUpcoming = upcoming.filter(isMatinEvent);
 
 /** Filters only list values that occur, and only show when there is something to filter. */
@@ -93,27 +93,11 @@ const showFilters = upcoming.length >= FILTER_MIN_EVENTS && filters.length > 0;
   lang={lang}
   title={t('events.title')}
   lede={t('events.lede')}
+  ledeStrong
   alternates={alternatesFor('events')}
   searchable={false}
 >
-  {picks.length > 0 && (
-    <section class="container-site pt-4 pb-14" aria-labelledby="picks-title">
-      <SectionHeader
-        align="start"
-        id="picks-title"
-        title={t('events.picksTitle')}
-        lede={t('events.picksLede')}
-        class="mb-10"
-      />
-      <ul class="grid gap-6 md:grid-cols-2 lg:grid-cols-3" data-upcoming-list>
-        {picks.map((event) => (
-          <li>
-            <EventCard event={event} lang={lang} />
-          </li>
-        ))}
-      </ul>
-    </section>
-  )}
+  <PicksSection lang={lang} class="pt-4 pb-14" />
 
   <section class="container-site pt-4 pb-20" aria-labelledby="upcoming-title">
     <SectionHeader align="start" id="upcoming-title" title={t('events.upcoming')} class="mb-10" />

@@ -18,6 +18,7 @@ import { baseLang, href, path, type Alternates, type UiLang } from '@/i18n/route
 import { useTranslations, pick } from '@/i18n/ui';
 import { cityOf, placeName, renderMarkdown, slugOf, type EventEntry } from '@/lib/content';
 import { formatWhen } from '@/lib/dates';
+import { posterFile } from '@/lib/poster';
 import { subjectCover } from '@/lib/taxonomy';
 import { googleCalendarUrl, mapUrl } from '@/lib/calendar';
 
@@ -38,6 +39,8 @@ const alternates: Alternates = {
 };
 // Calendar files and links use French or English (the fallback language for Persian).
 const calLang = baseLang(lang);
+// The official poster can be downloaded as the original file (separate from the calendar).
+const poster = d.image && d.imageIsPoster ? posterFile(d.image, slugOf(event, 'en')) : undefined;
 const place = placeName(event, lang);
 const site = Astro.site ?? new URL(Astro.url.origin);
 const url = new URL(alternates[lang] ?? alternates.en, site).href;
@@ -123,7 +126,8 @@ const jsonLd = {
     <article>
       <div
         class:list={[
-          'relative mb-10 overflow-hidden rounded-[var(--radius-card)] shadow-soft',
+          'relative overflow-hidden rounded-[var(--radius-card)] shadow-soft',
+          poster ? 'mb-5' : 'mb-10',
           d.image && d.imageIsPoster ? 'event-poster' : 'aspect-[16/9]',
         ]}
       >
@@ -156,6 +160,12 @@ const jsonLd = {
           </span>
         )}
       </div>
+      {poster && (
+        <a href={poster.href} download={poster.filename} class="btn btn-outline mb-10">
+          <Download size={18} aria-hidden="true" />
+          {t('events.posterDownload', { format: poster.format })}
+        </a>
+      )}
       <Prose html={renderMarkdown(pick(d.body, lang) ?? '', lang)} class="text-lg" />
       {report && (
         <section class="mt-14" aria-labelledby="report-title">

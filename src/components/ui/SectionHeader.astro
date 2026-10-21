@@ -4,6 +4,7 @@
  * each side of a small gold maple leaf. Optional eyebrow, lede and link.
  * align="center" (default) stacks everything centred; align="start" is the editorial
  * variant: title on the reading side, lede and link beside it on wide screens.
+ * `subtitle` is a short line set directly under the title, a little larger than a lede.
  */
 import { ArrowRight } from '@lucide/astro';
 import LeafRule from '@/components/brand/LeafRule.astro';
@@ -14,6 +15,8 @@ interface Props {
   /** Text-safe colour for the eyebrow on light backgrounds. */
   eyebrowTone?: 'navy' | 'terracotta' | 'teal';
   title: string;
+  /** Short line directly under the title (e.g. "A few upcoming events we especially recommend."). */
+  subtitle?: string;
   lede?: string;
   link?: { href: string; label: string };
   /** Heading level; h2 by default. */
@@ -26,6 +29,7 @@ const {
   eyebrow,
   eyebrowTone = 'navy',
   title,
+  subtitle,
   lede,
   link,
   as: Tag = 'h2',
@@ -42,6 +46,7 @@ const hasSide = Boolean(lede || link);
     <Tag id={id} class="section-title max-w-4xl">
       {title}
     </Tag>
+    {subtitle && <p class="section-subtitle max-w-3xl">{subtitle}</p>}
     <LeafRule class="mt-5 w-48" />
     {lede && <p class="lede mt-5 max-w-3xl">{lede}</p>}
     {link && (
@@ -58,6 +63,7 @@ const hasSide = Boolean(lede || link);
       <Tag id={id} class="section-title">
         {title}
       </Tag>
+      {subtitle && <p class="section-subtitle">{subtitle}</p>}
       <LeafRule class="leaf-start mt-5 w-48" />
     </div>
     {hasSide && (
@@ -75,6 +81,14 @@ const hasSide = Boolean(lede || link);
 )}
 
 <style>
+  /* Subtitle: a balanced gap under the title, slightly larger than body text. */
+  .section-subtitle {
+    margin-block-start: 0.85rem;
+    font-size: clamp(1.1875rem, 1.08rem + 0.45vw, 1.4375rem);
+    font-weight: 500;
+    line-height: 1.5;
+    color: var(--color-ink);
+  }
   .section-head {
     display: grid;
     gap: 1.25rem;

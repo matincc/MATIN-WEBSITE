@@ -155,18 +155,43 @@ export async function getDocuments() {
   );
 }
 
+/**
+ * Published gallery albums: consent confirmed, not a draft (drafts only on the local
+ * preview), with at least one photo or playable video; by `order`, then the most recent.
+ */
 export async function getAlbums() {
-  return (await getCollection('gallery')).sort(
-    (a, b) => b.data.date.getTime() - a.data.date.getTime(),
+  const albums = await getCollection(
+    'gallery',
+    (a) => import.meta.env.DEV || (a.data.consent && !a.data.draft),
   );
+  return albums
+    .map((a) => {
+      a.data.videos = a.data.videos.filter((v) => v.youtube || v.file);
+      return a;
+    })
+    .filter((a) => a.data.photos.length + a.data.videos.length > 0)
+    .sort((a, b) => a.data.order - b.data.order || b.data.date.getTime() - a.data.date.getTime());
 }
 
 export async function getFaq() {
   return (await getCollection('faq')).sort((a, b) => a.data.order - b.data.order);
 }
 
+/** Published directory entries (unpublished ones only on the local preview), by `order`. */
 export async function getResources() {
-  return (await getCollection('resources')).sort((a, b) => a.data.order - b.data.order);
+  return (await getCollection('resources', (r) => import.meta.env.DEV || r.data.published)).sort(
+    (a, b) => a.data.order - b.data.order,
+  );
+}
+
+/** Name of a directory entry: its English form on English pages when there is one. */
+export const orgName = (r: CollectionEntry<'resources'>, lang: UiLang) =>
+  (baseLang(lang) === 'en' && r.data.nameEn) || r.data.name;
+
+/** Matin's introductory video, once its YouTube link or file has been added. */
+export async function getIntroVideo() {
+  const entry = await getEntry('introVideo', 'matin-is-born');
+  return entry && (entry.data.youtube || entry.data.file) ? entry.data : undefined;
 }
 
 export async function getLegal(id: 'privacy' | 'terms' | 'accessibility') {
@@ -185,16 +210,8 @@ export const initials = (name: string) =>
     .map((w) => w[0]?.toUpperCase() ?? '')
     .join('') || 'M';
 
-/** Pages that are shown in the navigation only once they have content. */
-export async function emptySections(): Promise<Set<'gallery' | 'faq' | 'resources'>> {
-  const [gallery, faq, resources] = await Promise.all([
-    getCollection('gallery'),
-    getCollection('faq'),
-    getCollection('resources'),
-  ]);
-  const empty = new Set<'gallery' | 'faq' | 'resources'>();
-  if (gallery.length === 0) empty.add('gallery');
-  if (faq.length === 0) empty.add('faq');
-  if (resources.length === 0) empty.add('resources');
-  return empty;
+/** Pages that are linked only once they have content (the FAQ). */
+export async function emptySections(): Promise<Set<'faq'>> {
+  const faq = await getCollection('faq');
+  return new Set(faq.length === 0 ? (['faq'] as const) : []);
 }

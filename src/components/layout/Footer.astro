@@ -16,7 +16,8 @@ const { lang, showNewsletter = true } = Astro.props;
 const t = useTranslations(lang);
 const s = await getSettings();
 
-// Pages without content yet (empty gallery, FAQ…) are left out rather than linked.
+// The FAQ is left out until it has questions. The Gallery and the Resources directory
+// are always listed here (they are not in the header menu).
 const empty = await emptySections();
 const explore = (
   [
@@ -31,7 +32,7 @@ const explore = (
     'faq',
     'contact',
   ] as RouteKey[]
-).filter((k) => !empty.has(k as 'gallery' | 'faq' | 'resources'));
+).filter((k) => k !== 'faq' || !empty.has('faq'));
 const links = explore.map((key) => ({ href: href(key, lang), label: t(`nav.${key}`) }));
 const legal: RouteKey[] = ['privacy', 'terms', 'accessibility'];
 const year = new Intl.NumberFormat(lang === 'fa' ? 'fa-IR' : 'en-CA', {

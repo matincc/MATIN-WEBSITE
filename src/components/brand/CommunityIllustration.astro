@@ -1,0 +1,116 @@
+---
+/**
+ * Get Involved illustration: a few people side by side, with speech bubbles
+ * rising between them, on a light cream panel with the soft overlapping circles of the
+ * dialogue motif. Flat Matin colours only, no photo, no gradient. The bubbles drift
+ * gently; everything is still under prefers-reduced-motion. Decorative (aria-hidden).
+ */
+interface Props {
+  class?: string;
+}
+const { class: className = '' } = Astro.props;
+
+// Each person: centre x, top of the body, body and head colours.
+const people = [
+  { x: 108, top: 236, body: 'var(--color-teal)', head: 'var(--color-terracotta-deep)' },
+  { x: 214, top: 204, body: 'var(--color-coral)', head: 'var(--color-gold)' },
+  { x: 312, top: 262, body: 'var(--color-gold)', head: 'var(--color-terracotta)', child: true },
+  { x: 404, top: 214, body: 'var(--color-primary)', head: 'var(--color-coral)' },
+  { x: 504, top: 230, body: 'var(--color-terracotta)', head: 'var(--color-teal-deep)' },
+];
+const ground = 392;
+const body = (p: (typeof people)[number]) => {
+  const w = p.child ? 30 : 40;
+  return `M${p.x - w} ${ground} V${p.top + w} a${w} ${w} 0 0 1 ${2 * w} 0 V${ground} Z`;
+};
+const headR = (p: (typeof people)[number]) => (p.child ? 19 : 25);
+---
+
+<div class:list={['community-art', className]} aria-hidden="true">
+  <svg viewBox="0 0 612 420" focusable="false" preserveAspectRatio="xMidYMid meet">
+    <rect width="612" height="420" rx="28" style="fill:var(--color-cream)"></rect>
+    <!-- The dialogue motif, very light, behind the people. -->
+    <g class="community-art__circles">
+      <circle cx="210" cy="190" r="128" style="fill:var(--color-coral);opacity:.16"></circle>
+      <circle cx="390" cy="170" r="140" style="fill:var(--color-teal);opacity:.16"></circle>
+      <circle cx="300" cy="250" r="118" style="fill:var(--color-gold);opacity:.2"></circle>
+    </g>
+    <!-- Ground line -->
+    <rect x="40" y={ground} width="532" height="4" rx="2" style="fill:var(--color-gold)"></rect>
+
+    <!-- Speech bubbles -->
+    <g class="bubble bubble--1">
+      <rect x="120" y="58" width="132" height="68" rx="22" style="fill:var(--color-white)"></rect>
+      <path d="M160 124 l-8 24 l26 -24 Z" style="fill:var(--color-white)"></path>
+      <circle cx="160" cy="92" r="8" style="fill:var(--color-coral)"></circle>
+      <circle cx="186" cy="92" r="8" style="fill:var(--color-gold)"></circle>
+      <circle cx="212" cy="92" r="8" style="fill:var(--color-teal)"></circle>
+    </g>
+    <g class="bubble bubble--2">
+      <rect x="352" y="40" width="150" height="74" rx="24" style="fill:var(--color-primary)"></rect>
+      <path d="M430 112 l18 26 l2 -26 Z" style="fill:var(--color-primary)"></path>
+      <rect x="374" y="62" width="104" height="9" rx="4.5" style="fill:var(--color-gold)"></rect>
+      <rect x="374" y="82" width="70" height="9" rx="4.5" style="fill:var(--color-white)"></rect>
+    </g>
+    <g class="bubble bubble--3">
+      <circle cx="306" cy="150" r="28" style="fill:var(--color-white)"></circle>
+      <path
+        d="M306 164c-7-5-14-10-14-17a7.5 7.5 0 0 1 14-3.5a7.5 7.5 0 0 1 14 3.5c0 7-7 12-14 17Z"
+        style="fill:var(--color-terracotta)"
+      ></path>
+    </g>
+
+    <!-- People -->
+    {people.map((p) => (
+      <g>
+        <path d={body(p)} style={`fill:${p.body}`} />
+        <circle cx={p.x} cy={p.top - headR(p) - 8} r={headR(p)} style={`fill:${p.head}`} />
+      </g>
+    ))}
+  </svg>
+</div>
+
+<style>
+  .community-art svg {
+    display: block;
+    width: 100%;
+    height: auto;
+    border-radius: var(--radius-card);
+  }
+  @media (prefers-reduced-motion: no-preference) {
+    .bubble {
+      animation: bubble-drift 7s ease-in-out infinite;
+      transform-box: fill-box;
+    }
+    .bubble--2 {
+      animation-delay: -2.3s;
+    }
+    .bubble--3 {
+      animation-delay: -4.6s;
+      animation-duration: 6s;
+    }
+    .community-art__circles {
+      animation: circles-breathe 12s ease-in-out infinite;
+      transform-box: fill-box;
+      transform-origin: center;
+    }
+  }
+  @keyframes bubble-drift {
+    0%,
+    100% {
+      transform: translateY(0);
+    }
+    50% {
+      transform: translateY(-8px);
+    }
+  }
+  @keyframes circles-breathe {
+    0%,
+    100% {
+      transform: scale(1);
+    }
+    50% {
+      transform: scale(1.03);
+    }
+  }
+</style>

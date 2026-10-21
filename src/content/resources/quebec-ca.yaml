@@ -1,9 +1,11 @@
-category: newcomers
-order: 1
+# Directory entry: see README.md. A listing never implies a partnership.
+name: 'Immigration au Québec – Québec.ca'
+nameEn: 'Immigration in Québec – Québec.ca'
+category: government
 url: https://www.quebec.ca/immigration
-title:
-  fr: 'Immigration au Québec – Québec.ca'
-  en: 'Immigration in Québec – Québec.ca'
 description:
   fr: "Le portail officiel du gouvernement du Québec sur l'immigration et l'intégration."
   en: "The Québec government's official portal on immigration and integration."
+location: Québec
+order: 10
+published: true

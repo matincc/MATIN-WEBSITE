@@ -13,7 +13,16 @@ export type Category = (typeof categories)[number];
 
 export const faqTopics = ['general', 'programs', 'events', 'volunteering', 'donations'] as const;
 
-export const resourceCategories = ['guide', 'newcomers', 'community', 'partners'] as const;
+/** Cultural Resources & Organizations, in the order of the page. */
+export const resourceCategories = [
+  'municipal',
+  'government',
+  'arts',
+  'community',
+  'research',
+  'other',
+] as const;
+export type ResourceCategory = (typeof resourceCategories)[number];
 
 /**
  * News & Insights categories. A category appears on the site only once it has a

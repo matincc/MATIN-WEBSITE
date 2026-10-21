@@ -1,0 +1,48 @@
+---
+/**
+ * One gallery video: a YouTube video behind a click-to-play facade (nothing loads from
+ * YouTube before the click), or a video file from /media/ played by the browser.
+ */
+import type { ImageMetadata } from 'astro';
+import { getImage } from 'astro:assets';
+import VideoFacade from '@/components/ui/VideoFacade.astro';
+import type { UiLang } from '@/i18n/routes';
+
+interface Props {
+  lang: UiLang;
+  title: string;
+  youtubeId?: string;
+  file?: string;
+  thumbnail?: ImageMetadata;
+  /** Hide the caption (when the title is shown elsewhere). */
+  bare?: boolean;
+}
+const { lang, title, youtubeId, file, thumbnail, bare = false } = Astro.props;
+const poster = thumbnail
+  ? (await getImage({ src: thumbnail, width: 1280, format: 'webp' })).src
+  : undefined;
+const type = file?.toLowerCase().endsWith('.webm') ? 'video/webm' : 'video/mp4';
+---
+
+{youtubeId ? (
+  <VideoFacade lang={lang} youtubeId={youtubeId} title={title} thumbnail={thumbnail} bare={bare} />
+) : (
+  file && (
+    <figure class="gallery-video">
+      <video controls preload="none" playsinline poster={poster} aria-label={title}>
+        <source src={file} type={type} />
+      </video>
+      {!bare && <figcaption class="mt-3 font-bold text-ink">{title}</figcaption>}
+    </figure>
+  )
+)}
+
+<style>
+  .gallery-video video {
+    display: block;
+    width: 100%;
+    aspect-ratio: 16 / 9;
+    border-radius: var(--radius-card);
+    background: var(--color-primary);
+  }
+</style>
