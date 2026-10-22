@@ -296,6 +296,28 @@ const settings = defineCollection({
       youtube: z.url().optional(),
       linkedin: z.url().optional(),
     }),
+    /** Legal identity (Legal Information page and structured data). */
+    legal: z
+      .object({
+        names: z.object({ fr: z.string(), en: z.string(), fa: z.string() }),
+        neq: z.string().regex(/^\d{10}$/),
+        incorporated: z.coerce.date(),
+        representative: z.string(),
+        website: z.url(),
+        /** Official email, shown on the Legal Information page and in structured data. */
+        email: z.string(),
+        /** Registered head office: shown only on the Legal Information page. */
+        registeredAddress: z.object({
+          street: z.string(),
+          city: z.string(),
+          province: z.string(),
+          region: z.string(),
+          postalCode: z.string(),
+          country: z.string(),
+        }),
+        statement: z.object({ fr: z.string(), en: z.string(), fa: z.string() }),
+      })
+      .optional(),
     charityNumber: z.string().optional(),
     donateUrl: z.url(),
     /** Law 25: person in charge of the protection of personal information. */

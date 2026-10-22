@@ -3,7 +3,7 @@ import type { getSettings } from './content';
 
 type Settings = Awaited<ReturnType<typeof getSettings>>;
 
-/** schema.org NGO for the whole site (name, logo, address, social profiles). */
+/** schema.org NGO for the whole site (names, legal identity, logo, address, social profiles). */
 export function organizationJsonLd(
   settings: Settings,
   lang: UiLang,
@@ -11,33 +11,50 @@ export function organizationJsonLd(
   description: string,
 ) {
   const sameAs = Object.values(settings.social).filter(Boolean);
+  const legal = settings.legal;
+  const names = legal?.names ?? {
+    fr: 'Institut interculturel Matin',
+    en: 'Matin Intercultural Institute',
+    fa: 'مؤسسه میان‌فرهنگی متین',
+  };
+  const a = legal?.registeredAddress;
+  const email = legal?.email ?? settings.email;
   return {
     '@context': 'https://schema.org',
     '@type': 'NGO',
     '@id': new URL('/#organization', site).href,
-    name: lang === 'fr' ? 'Institut interculturel Matin' : 'Matin Intercultural Institute',
-    alternateName: [
-      lang === 'fr' ? 'Matin Intercultural Institute' : 'Institut interculturel Matin',
-      'مؤسسه میان‌فرهنگی متین',
-    ],
+    name: names[lang],
+    alternateName: (['fr', 'en', 'fa'] as const).filter((l) => l !== lang).map((l) => names[l]),
+    ...(legal
+      ? {
+          legalName: names.fr,
+          foundingDate: legal.incorporated.toISOString().slice(0, 10),
+          founder: { '@type': 'Person', name: legal.representative },
+          identifier: {
+            '@type': 'PropertyValue',
+            propertyID: "Numéro d'entreprise du Québec (NEQ)",
+            value: legal.neq,
+          },
+        }
+      : {}),
     slogan: lang === 'fr' ? 'Cultures en dialogue' : 'Cultures in Dialogue',
-    url: new URL(`/${lang}/`, site).href,
+    url: new URL('/', site).href,
     logo: new URL('/icons/logo-512.png', site).href,
     image: new URL('/og-default.jpg', site).href,
     description,
-    ...(settings.email ? { email: settings.email } : {}),
+    ...(email ? { email } : {}),
     ...(settings.phone ? { telephone: settings.phone } : {}),
     address: {
       '@type': 'PostalAddress',
-      ...(settings.address
+      ...(a
         ? {
-            streetAddress: settings.address.street,
-            postalCode: settings.address.postalCode,
+            streetAddress: a.street,
+            addressLocality: a.city,
+            addressRegion: a.region,
+            postalCode: a.postalCode,
           }
-        : {}),
-      addressLocality: settings.address?.city ?? 'Montréal',
-      addressRegion: settings.address?.region ?? 'QC',
-      addressCountry: settings.address?.country ?? 'CA',
+        : { addressLocality: 'Montréal', addressRegion: 'QC' }),
+      addressCountry: 'CA',
     },
     ...(sameAs.length ? { sameAs } : {}),
   };
