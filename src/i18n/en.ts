@@ -530,6 +530,7 @@ const en: Dictionary = {
     website: 'Official website',
     email: 'Official email',
     address: 'Registered address',
+    addressValue: 'Montréal, Québec, Canada',
   },
   footer: {
     contactTitle: 'Contact us',

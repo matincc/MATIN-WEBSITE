@@ -532,6 +532,7 @@ const fr = {
     website: 'Site officiel',
     email: 'Courriel officiel',
     address: 'Adresse du siège',
+    addressValue: 'Montréal, Québec, Canada',
   },
   footer: {
     contactTitle: 'Nous joindre',
