@@ -410,6 +410,7 @@ const fa: DeepPartial<Dictionary> = {
     website: 'وب‌سایت رسمی',
     email: 'ایمیل رسمی',
     address: 'نشانی ثبت‌شده',
+    addressValue: 'مونترال، کبک، کانادا',
   },
   footer: {
     contactTitle: 'تماس با ما',

@@ -306,15 +306,17 @@ const settings = defineCollection({
         website: z.url(),
         /** Official email, shown on the Legal Information page and in structured data. */
         email: z.string(),
-        /** Registered head office: shown only on the Legal Information page. */
-        registeredAddress: z.object({
-          street: z.string(),
-          city: z.string(),
-          province: z.string(),
-          region: z.string(),
-          postalCode: z.string(),
-          country: z.string(),
-        }),
+        /** Street address of the head office. Not set: the site shows only the city (Matin's decision). */
+        registeredAddress: z
+          .object({
+            street: z.string(),
+            city: z.string(),
+            province: z.string(),
+            region: z.string(),
+            postalCode: z.string(),
+            country: z.string(),
+          })
+          .optional(),
         statement: z.object({ fr: z.string(), en: z.string(), fa: z.string() }),
       })
       .optional(),

@@ -9,11 +9,11 @@ mission:
 phone: '+1 263 378-9340'
 email: info@matincc.ca
 # Identité légale : affichée sur la page « Informations légales » (lien dans le pied de page)
-# et dans les données structurées pour Google. L'adresse du siège n'apparaît que sur cette page,
-# sans numéro d'appartement (décision de Matin, 22 octobre 2026).
+# et dans les données structurées pour Google. Adresse publiée : « Montréal, Québec, Canada »
+# seulement, sans rue ni code postal (décision de Matin, 22 octobre 2026).
 # Legal identity: shown on the Legal Information page (linked from the footer) and in the
-# structured data for Google. The registered address appears only on that page, without the
-# apartment number (Matin's decision, Oct 22 2026).
+# structured data for Google. Published address: "Montréal, Québec, Canada" only, with no
+# street or postal code (Matin's decision, Oct 22 2026).
 legal:
   names:
     fr: 'Institut interculturel Matin'
@@ -24,13 +24,6 @@ legal:
   representative: 'Reza Moafi'
   website: https://matincc.ca
   email: admin@matincc.ca
-  registeredAddress:
-    street: '7051 rue Allard'
-    city: 'LaSalle'
-    province: 'Québec'
-    region: 'QC'
-    postalCode: 'H8N 0E2'
-    country: 'Canada'
   statement:
     fr: "L'Institut interculturel Matin est un organisme sans but lucratif (OSBL) légalement constitué au Québec le 14 octobre 2026, en vertu de la partie III de la Loi sur les compagnies. Il est immatriculé au Registraire des entreprises du Québec sous le numéro d'entreprise du Québec (NEQ) 1182667569."
     en: 'Matin Intercultural Institute is a nonprofit corporation legally incorporated in Québec, Canada, on October 14, 2026, under Part III of the Québec Companies Act. The organization is registered with the Registraire des entreprises du Québec under Québec Enterprise Number (NEQ) 1182667569.'

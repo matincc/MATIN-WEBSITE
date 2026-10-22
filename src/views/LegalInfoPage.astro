@@ -1,8 +1,8 @@
 ---
 /**
  * Legal Information: the institute's legal identity (names, nonprofit status, NEQ,
- * incorporation, official domain and email, registered address). The registered
- * address is shown here only, not in the footer or on other pages.
+ * incorporation, official domain and email, address). The address is the city only
+ * (Montréal, Québec, Canada) unless a street address is set in site.yaml.
  */
 import PageLayout from '@/layouts/PageLayout.astro';
 import { siteAlternates, type UiLang } from '@/i18n/routes';
@@ -99,17 +99,23 @@ const rows: { label: string; value: string; href?: string; ltr?: boolean }[] = [
         ))}
         <div>
           <dt>{t('legalInfo.address')}</dt>
-          <dd dir="ltr" class={lang === 'fa' ? 'text-right' : ''}>
-            <address class="not-italic">
-              {a.street}
-              <br />
-              {a.city}, {a.province}
-              <br />
-              {a.postalCode}
-              <br />
-              {a.country}
-            </address>
-          </dd>
+          {a ? (
+            <dd dir="ltr" class={lang === 'fa' ? 'text-right' : ''}>
+              <address class="not-italic">
+                {a.street}
+                <br />
+                {a.city}, {a.province}
+                <br />
+                {a.postalCode}
+                <br />
+                {a.country}
+              </address>
+            </dd>
+          ) : (
+            <dd>
+              <address class="not-italic">{t('legalInfo.addressValue')}</address>
+            </dd>
+          )}
         </div>
       </dl>
     </section>
