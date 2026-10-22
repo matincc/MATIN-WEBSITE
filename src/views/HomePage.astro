@@ -38,6 +38,7 @@ import AreasGrid from '@/components/content/AreasGrid.astro';
 import { href, siteAlternates, type UiLang } from '@/i18n/routes';
 import { useTranslations } from '@/i18n/ui';
 import { getMatinFeed } from '@/lib/matin';
+import { getSettings } from '@/lib/content';
 import { ctaFor } from '@/lib/matinLabels';
 import MatinMedia from '@/components/content/MatinMedia.astro';
 import { photos } from '@/lib/photos';
@@ -50,6 +51,7 @@ const t = useTranslations(lang);
 
 // Matin in Action: Matin's own content only (highlights, Matin's events, published news).
 const { featured } = await getMatinFeed(lang, 0);
+const settings = await getSettings();
 
 // The next step after seeing what Matin does. Persian Get Involved has no volunteer form.
 const involvedHref = href('getInvolved', lang);
@@ -250,6 +252,14 @@ const whoCards = [
         <p class="who-text" data-reveal>
           {t('home.whoText')}
         </p>
+        {settings.legal && (
+          <p class="who-legal" data-reveal>
+            {t('home.legalLine', { neq: settings.legal.neq })} ·{' '}
+            <a href={href('legalInfo', lang)} class="font-semibold underline">
+              {t('home.legalLink')}
+            </a>
+          </p>
+        )}
         <nav aria-label={t('home.whoCardsLabel')} class="mt-10">
           <ul class="who-links">
             {whoCards.map((c, i) => (
@@ -385,6 +395,12 @@ const whoCards = [
     max-width: 40rem;
     font-size: clamp(1.25rem, 1.1rem + 0.55vw, 1.5rem);
     line-height: 1.6;
+    color: var(--color-ink);
+  }
+  .who-legal {
+    max-width: 40rem;
+    margin-block-start: 1rem;
+    font-size: 1.0625rem;
     color: var(--color-ink);
   }
   .who-links {

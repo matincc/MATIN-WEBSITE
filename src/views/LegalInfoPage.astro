@@ -1,0 +1,139 @@
+---
+/**
+ * Legal Information: the institute's legal identity (names, nonprofit status, NEQ,
+ * incorporation, official domain and email, registered address). The registered
+ * address is shown here only, not in the footer or on other pages.
+ */
+import PageLayout from '@/layouts/PageLayout.astro';
+import { siteAlternates, type UiLang } from '@/i18n/routes';
+import { useTranslations } from '@/i18n/ui';
+import { getSettings } from '@/lib/content';
+
+interface Props {
+  lang: UiLang;
+}
+const { lang } = Astro.props;
+const t = useTranslations(lang);
+const s = await getSettings();
+const legal = s.legal!;
+const a = legal.registeredAddress;
+const locale = { fr: 'fr-CA', en: 'en-CA', fa: 'fa-IR-u-ca-gregory' }[lang];
+const incorporated = new Intl.DateTimeFormat(locale, {
+  day: 'numeric',
+  month: 'long',
+  year: 'numeric',
+  timeZone: 'UTC',
+}).format(legal.incorporated);
+const domain = new URL(legal.website).host;
+const email = legal.email;
+
+const rows: { label: string; value: string; href?: string; ltr?: boolean }[] = [
+  { label: t('legalInfo.status'), value: t('legalInfo.statusValue') },
+  { label: t('legalInfo.jurisdiction'), value: t('legalInfo.jurisdictionValue') },
+  { label: t('legalInfo.incorporated'), value: incorporated },
+  { label: t('legalInfo.basis'), value: t('legalInfo.basisValue') },
+  { label: t('legalInfo.registry'), value: t('legalInfo.registryValue') },
+  { label: t('legalInfo.neq'), value: legal.neq, ltr: true },
+  { label: t('legalInfo.representative'), value: legal.representative, ltr: true },
+  { label: t('legalInfo.website'), value: domain, href: legal.website, ltr: true },
+  ...(email
+    ? [{ label: t('legalInfo.email'), value: email, href: `mailto:${email}`, ltr: true }]
+    : []),
+];
+---
+
+<PageLayout
+  lang={lang}
+  title={t('legalInfo.title')}
+  lede={t('legalInfo.lede')}
+  alternates={siteAlternates('legalInfo')}
+>
+  <div class="container-site grid max-w-4xl gap-8 pt-4 pb-24">
+    <section class="card p-6 sm:p-12" aria-labelledby="statement-title">
+      <h2 id="statement-title" class="mb-5 text-3xl font-bold sm:text-4xl">
+        {t('legalInfo.status')}
+      </h2>
+      <p class="text-lg leading-relaxed">{legal.statement[lang]}</p>
+      <p class="mt-4 text-lg leading-relaxed">{t('legalInfo.operator')}</p>
+    </section>
+
+    <section class="card p-6 sm:p-12" aria-labelledby="details-title">
+      <h2 id="details-title" class="mb-6 text-3xl font-bold sm:text-4xl">
+        {t('legalInfo.detailsTitle')}
+      </h2>
+      <dl class="legal-list">
+        <div>
+          <dt>{t('legalInfo.names')}</dt>
+          <dd>
+            <ul class="space-y-1">
+              <li>
+                <span lang="fr">{legal.names.fr}</span>{' '}
+                <span class="text-muted">({t('legalInfo.nameFr')})</span>
+              </li>
+              <li>
+                <span lang="en">{legal.names.en}</span>{' '}
+                <span class="text-muted">({t('legalInfo.nameEn')})</span>
+              </li>
+              <li>
+                <span lang="fa" dir="rtl">
+                  {legal.names.fa}
+                </span>{' '}
+                <span class="text-muted">({t('legalInfo.nameFa')})</span>
+              </li>
+            </ul>
+          </dd>
+        </div>
+        {rows.map((r) => (
+          <div>
+            <dt>{r.label}</dt>
+            <dd dir={r.ltr ? 'ltr' : undefined} class={r.ltr && lang === 'fa' ? 'text-right' : ''}>
+              {r.href ? (
+                <a href={r.href} class="break-all">
+                  {r.value}
+                </a>
+              ) : (
+                r.value
+              )}
+            </dd>
+          </div>
+        ))}
+        <div>
+          <dt>{t('legalInfo.address')}</dt>
+          <dd dir="ltr" class={lang === 'fa' ? 'text-right' : ''}>
+            <address class="not-italic">
+              {a.street}
+              <br />
+              {a.city}, {a.province}
+              <br />
+              {a.postalCode}
+              <br />
+              {a.country}
+            </address>
+          </dd>
+        </div>
+      </dl>
+    </section>
+  </div>
+</PageLayout>
+
+<style>
+  .legal-list > div {
+    display: grid;
+    gap: 0.25rem 2rem;
+    padding-block: 1rem;
+    border-top: 1px solid var(--color-line);
+  }
+  .legal-list > div:first-child {
+    border-top: 0;
+    padding-top: 0;
+  }
+  .legal-list dt {
+    font-weight: 700;
+    color: var(--color-primary);
+  }
+  @media (min-width: 640px) {
+    .legal-list > div {
+      grid-template-columns: 16rem 1fr;
+    }
+  }
+</style>

@@ -4,7 +4,7 @@ import PageLayout from '@/layouts/PageLayout.astro';
 import ContactForm from '@/components/forms/ContactForm.astro';
 import MapFacade from '@/components/ui/MapFacade.astro';
 import SocialLinks from '@/components/ui/SocialLinks.astro';
-import { siteAlternates, type UiLang } from '@/i18n/routes';
+import { href, siteAlternates, type UiLang } from '@/i18n/routes';
 import { useTranslations, pick } from '@/i18n/ui';
 import { getSettings } from '@/lib/content';
 
@@ -31,7 +31,22 @@ const details = [
   },
   s.email && { icon: Mail, label: t('contact.email'), value: s.email, href: `mailto:${s.email}` },
   s.hours && { icon: Clock, label: t('contact.hours'), value: pick(s.hours, lang) },
-].filter((d) => !!d) as { icon: typeof MapPin; label: string; value?: string; href?: string }[];
+  // The registered address is shown only on the Legal Information page.
+  !a &&
+    s.legal && {
+      icon: MapPin,
+      label: t('contact.registeredAddress'),
+      value: t('contact.registeredAddressLink'),
+      href: href('legalInfo', lang),
+      local: true,
+    },
+].filter((d) => !!d) as {
+  icon: typeof MapPin;
+  label: string;
+  value?: string;
+  href?: string;
+  local?: boolean;
+}[];
 ---
 
 <PageLayout
@@ -62,7 +77,11 @@ const details = [
                 <div>
                   <p class="text-sm font-bold tracking-wider text-muted uppercase">{d.label}</p>
                   {d.href ? (
-                    <a href={d.href} class="break-all text-ink" dir="ltr">
+                    <a
+                      href={d.href}
+                      class:list={['text-ink', d.local ? 'underline' : 'break-all']}
+                      dir={d.local ? undefined : 'ltr'}
+                    >
                       {d.value}
                     </a>
                   ) : (

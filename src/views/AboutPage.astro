@@ -18,7 +18,7 @@ import {
 import PageLayout from '@/layouts/PageLayout.astro';
 import DialogueArt from '@/components/brand/DialogueArt.astro';
 import SectionHeader from '@/components/ui/SectionHeader.astro';
-import { path, siteAlternates, type UiLang } from '@/i18n/routes';
+import { href, path, siteAlternates, type UiLang } from '@/i18n/routes';
 import { faAboutMore } from '@/i18n/fa';
 import { useTranslations, pick } from '@/i18n/ui';
 import { getSettings, getSingleton } from '@/lib/content';
@@ -32,15 +32,42 @@ const full = lang !== 'fa';
 const [settings, about] = await Promise.all([getSettings(), getSingleton('about')]);
 
 // Same accents as the Mission / Vision / Values links on the homepage.
-const blocks = [
-  { id: 'who-we-are', title: t('about.whoWeAre'), text: t('home.whoText'), accent: 'navy' },
-  {
-    id: 'mission',
-    title: t('about.mission'),
-    text: pick(settings.mission, lang),
-    accent: 'coral',
-  },
-  { id: 'vision', title: t('about.vision'), text: pick(about.vision, lang), accent: 'mustard' },
+// Persian has only the legal status block (the others have no Persian translation yet).
+const blocks: {
+  id: string;
+  title: string;
+  text?: string;
+  accent: string;
+  link?: { href: string; label: string };
+}[] = [
+  ...(full
+    ? [
+        { id: 'who-we-are', title: t('about.whoWeAre'), text: t('home.whoText'), accent: 'navy' },
+        {
+          id: 'mission',
+          title: t('about.mission'),
+          text: pick(settings.mission, lang),
+          accent: 'coral',
+        },
+        {
+          id: 'vision',
+          title: t('about.vision'),
+          text: pick(about.vision, lang),
+          accent: 'mustard',
+        },
+      ]
+    : []),
+  ...(settings.legal
+    ? [
+        {
+          id: 'legal-status',
+          title: t('about.legalStatus'),
+          text: settings.legal.statement[lang],
+          accent: 'teal',
+          link: { href: href('legalInfo', lang), label: t('about.legalMore') },
+        },
+      ]
+    : []),
 ];
 const valueAccents = ['coral', 'mustard', 'teal', 'terracotta'];
 
@@ -84,12 +111,16 @@ const founderRole = pick(president.signature, lang) || pick(president.title, lan
   description={t('about.lede')}
   alternates={siteAlternates('about')}
 >
-  {full && (
+  {blocks.length > 0 && (
     <div class="container-site about-blocks pb-20">
-      {blocks.map((b, i) => (
+      {blocks.map((b) => (
         <section
           id={b.id}
-          class:list={['about-block scroll-mt-24', i === 0 && 'about-block--lead']}
+          class:list={[
+            'about-block scroll-mt-24',
+            b.id === 'who-we-are' && 'about-block--lead',
+            b.id === 'legal-status' && 'about-block--wide',
+          ]}
           data-accent={b.accent}
           data-reveal
           aria-labelledby={`${b.id}-title`}
@@ -98,6 +129,13 @@ const founderRole = pick(president.signature, lang) || pick(president.title, lan
             {b.title}
           </h2>
           <p class="about-block__text">{b.text}</p>
+          {b.link && (
+            <p class="mt-4">
+              <a href={b.link.href} class="font-semibold underline">
+                {b.link.label}
+              </a>
+            </p>
+          )}
         </section>
       ))}
     </div>
@@ -201,7 +239,8 @@ const founderRole = pick(president.signature, lang) || pick(president.title, lan
     .about-blocks {
       grid-template-columns: repeat(2, minmax(0, 1fr));
     }
-    .about-block--lead {
+    .about-block--lead,
+    .about-block--wide {
       grid-column: 1 / -1;
     }
   }
