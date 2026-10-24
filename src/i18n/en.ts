@@ -56,7 +56,7 @@ const en: Dictionary = {
     team: 'Our Team',
     teamPresident: 'President',
     teamMembers: 'Team',
-    president: 'A Personal Note from Our President',
+    president: 'A Personal Note from Our President, Reza Moafi',
     ourPresident: 'Our President',
   },
   search: {
@@ -316,7 +316,7 @@ const en: Dictionary = {
     vision: 'Our Vision',
     values: 'Our values',
     history: 'Our story',
-    founderTitle: 'A Personal Note from Our President',
+    founderTitle: 'A Personal Note from Our President, Reza Moafi',
     presidentPhotoAlt: 'Portrait of {name}',
     team: 'Our Team',
     board: 'Board of directors',
