@@ -99,7 +99,11 @@ const showFilters = upcoming.length >= FILTER_MIN_EVENTS && filters.length > 0;
 >
   <PicksSection lang={lang} class="pt-4 pb-14" />
 
-  <section class="container-site pt-4 pb-20" aria-labelledby="upcoming-title">
+  <section
+    id="upcoming"
+    class="container-site scroll-mt-24 pt-4 pb-20"
+    aria-labelledby="upcoming-title"
+  >
     <SectionHeader align="start" id="upcoming-title" title={t('events.upcoming')} class="mb-10" />
 
     {showFilters && (
@@ -153,7 +157,11 @@ const showFilters = upcoming.length >= FILTER_MIN_EVENTS && filters.length > 0;
   </section>
   <ExpireEvents />
 
-  <section class="bg-tint py-16 sm:py-20" aria-labelledby="matin-events-title">
+  <section
+    id="matin-events"
+    class="scroll-mt-24 bg-tint py-16 sm:py-20"
+    aria-labelledby="matin-events-title"
+  >
     <div class="container-site">
       <SectionHeader
         align="start"

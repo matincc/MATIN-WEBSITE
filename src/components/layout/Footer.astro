@@ -59,9 +59,9 @@ const hasContact = Boolean(a || s.phone || s.email);
       <div class="mb-6">
         <Lockup lang={lang} variant="dark" />
       </div>
-      <p class="mb-3 font-display text-[1.75rem] font-extrabold text-white">{t('brand.tagline')}</p>
-      <p class="max-w-md text-[1.1875rem] leading-relaxed text-cream">{t('footer.about')}</p>
-      <SocialLinks lang={lang} social={s.social} class="mt-6" />
+      <p class="mb-4 font-display text-[1.75rem] font-extrabold text-white">{t('brand.tagline')}</p>
+      <p class="footer-about">{t('footer.about')}</p>
+      {!hasContact && <SocialLinks lang={lang} social={s.social} class="mt-6" />}
     </div>
 
     <nav aria-label={t('a11y.footerNav')} class="lg:col-span-3">
@@ -111,6 +111,8 @@ const hasContact = Boolean(a || s.phone || s.email);
                 </p>
               )}
             </address>
+            {/* Social links under the contact details (owner's brief, Oct 24 2026). */}
+            <SocialLinks lang={lang} social={s.social} class="-mt-2 mb-8" />
           </>
         )}
         {s.hours && (
@@ -193,6 +195,15 @@ const hasContact = Boolean(a || s.phone || s.email);
   /* Darker warm brown under the skyline; white text 9:1 or more. */
   .footer-base {
     background: color-mix(in srgb, var(--color-terracotta-deep) 62%, black);
+  }
+  /* The introduction under "Cultures in Dialogue": more room and air (owner's brief,
+     Oct 24 2026). */
+  .footer-about {
+    max-width: 34rem;
+    font-size: 1.125rem;
+    line-height: 1.8;
+    color: var(--color-cream);
+    text-wrap: pretty;
   }
   .footer-title {
     font-family: var(--font-display);

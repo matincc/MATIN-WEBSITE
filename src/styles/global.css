@@ -68,6 +68,8 @@
   --color-tint: var(--matin-cream);
   /* Card borders and dividers: light mustard. */
   --color-line: color-mix(in srgb, var(--matin-gold) 30%, var(--matin-white));
+  /* Card edges: a little stronger than dividers, so white cards read on paper and cream. */
+  --color-card-edge: color-mix(in srgb, var(--matin-gold) 45%, var(--matin-white));
   /* Primary button hover: slightly darker navy. */
   --color-primary-hover: color-mix(in srgb, var(--matin-blue) 82%, black);
 
@@ -77,8 +79,12 @@
   /* The "Matin" wordmark keeps the logo's serif. */
   --font-brand: 'Playfair Display', 'Georgia', 'Times New Roman', serif;
 
-  /* No shadows on cards; only floating menus and dialogs get a faint one. */
+  /* Cards (owner's brief, Oct 24 2026): a very light warm shadow at rest so they stand
+     out from the warm-white page; floating menus and dialogs get the stronger one. */
   --shadow-soft: none;
+  --shadow-card:
+    0 1px 2px color-mix(in srgb, var(--matin-ink) 6%, transparent),
+    0 6px 18px -10px color-mix(in srgb, var(--matin-blue) 22%, transparent);
   --shadow-lift: 0 8px 24px -12px color-mix(in srgb, var(--matin-ink) 18%, transparent);
 
   --radius-card: 1.25rem;
@@ -343,9 +349,11 @@
   .on-dark .btn-primary {
     @apply bg-gold text-primary hover:bg-cream;
   }
-  /* Shared card style: white, softly rounded, very light border, no shadow. */
+  /* Shared card style: white, softly rounded, a clear warm edge and a very light shadow. */
   .card {
-    @apply rounded-[var(--radius-card)] border border-line bg-white;
+    @apply rounded-[var(--radius-card)] border bg-white;
+    border-color: var(--color-card-edge);
+    box-shadow: var(--shadow-card);
   }
   /* Cards that are links or hold a call to action lift gently on hover. */
   .card-lift {
@@ -403,7 +411,7 @@
     @apply flex flex-col gap-1.5;
   }
   .field-label {
-    @apply text-sm font-semibold text-ink;
+    @apply text-base font-semibold text-ink;
   }
   .field-label .req {
     @apply font-normal text-muted;

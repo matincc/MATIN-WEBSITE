@@ -39,6 +39,8 @@ const blocks: {
   text?: string;
   accent: string;
   link?: { href: string; label: string };
+  /** Short facts shown as a badge above the text (Legal status: the NEQ). */
+  badge?: string;
 }[] = [
   ...(full
     ? [
@@ -65,6 +67,7 @@ const blocks: {
           text: settings.legal.statement[lang],
           accent: 'teal',
           link: { href: href('legalInfo', lang), label: t('about.legalMore') },
+          badge: t('footer.neq', { neq: settings.legal.neq }),
         },
       ]
     : []),
@@ -119,7 +122,7 @@ const founderRole = pick(president.signature, lang) || pick(president.title, lan
           class:list={[
             'about-block scroll-mt-24',
             b.id === 'who-we-are' && 'about-block--lead',
-            b.id === 'legal-status' && 'about-block--wide',
+            b.id === 'legal-status' && 'about-block--legal',
           ]}
           data-accent={b.accent}
           data-reveal
@@ -128,6 +131,11 @@ const founderRole = pick(president.signature, lang) || pick(president.title, lan
           <h2 id={`${b.id}-title`} class="about-block__title">
             {b.title}
           </h2>
+          {b.badge && (
+            <p class="about-block__badge" dir="ltr">
+              {b.badge}
+            </p>
+          )}
           <p class="about-block__text">{b.text}</p>
           {b.link && (
             <p class="mt-4">
@@ -235,18 +243,45 @@ const founderRole = pick(president.signature, lang) || pick(president.title, lan
     display: grid;
     gap: 1.75rem;
   }
+  /* Mission and Vision side by side; the compact Legal status card joins them as a third
+     column on wide screens (owner's brief, Oct 24 2026: it was too wide for its text). */
   @media (min-width: 56rem) {
     .about-blocks {
       grid-template-columns: repeat(2, minmax(0, 1fr));
     }
     .about-block--lead,
-    .about-block--wide {
+    .about-block--legal {
       grid-column: 1 / -1;
     }
   }
+  @media (min-width: 72rem) {
+    .about-blocks {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+    .about-block--legal {
+      grid-column: auto;
+    }
+  }
+  /* Persian shows only the Legal status card: keep it compact. */
+  .about-block--legal:only-child {
+    max-width: 44rem;
+  }
+  .about-block__badge {
+    display: inline-block;
+    margin-block-end: 1rem;
+    padding: 0.3rem 0.85rem;
+    border-radius: 999px;
+    background: var(--color-tint);
+    color: var(--color-primary);
+    font-family: var(--font-display);
+    font-weight: 800;
+    font-size: 1rem;
+    letter-spacing: 0.02em;
+  }
   .about-block {
     padding: clamp(1.75rem, 1.2rem + 2.2vw, 3.25rem);
-    border: 1px solid var(--color-line);
+    border: 1px solid var(--color-card-edge);
+    box-shadow: var(--shadow-card);
     border-block-start: 6px solid var(--accent);
     border-radius: var(--radius-card);
     background: var(--color-white);
@@ -362,7 +397,8 @@ const founderRole = pick(president.signature, lang) || pick(president.title, lan
   }
   .timeline__card {
     padding: clamp(1.75rem, 1.2rem + 2.5vw, 3.5rem);
-    border: 1px solid var(--color-line);
+    border: 1px solid var(--color-card-edge);
+    box-shadow: var(--shadow-card);
     border-block-start: 6px solid var(--color-terracotta);
     border-radius: var(--radius-card);
     background: var(--color-white);
