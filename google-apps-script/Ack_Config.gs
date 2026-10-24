@@ -8,6 +8,7 @@
  *   ACK_SENDER            forms | info               (default forms, see Ack_Mailer.gs)
  *   ACK_SIMULATE_FAILURE  on | off                   (testing only)
  *   ACK_LOG_SHEET_ID      the private log spreadsheet, created by ackSetup()
+ *   ACK_WEBAPP_URL        the published web app address (only for ackEndToEndTest)
  */
 const ACK = {
   FORMS: ['contact', 'benevolat'], // never the newsletter
@@ -15,11 +16,7 @@ const ACK = {
   DEFAULT_LANG: 'fr',
   REPLY_TO: 'info@matincc.ca',
   INFO_ADDRESS: 'info@matincc.ca',
-  SENDER_NAME: {
-    fr: 'Institut interculturel Matin',
-    en: 'Matin Intercultural Institute',
-    fa: 'مؤسسه میان‌فرهنگی متین',
-  },
+  SENDER_NAME: 'Matin Intercultural Institute', // approved by Matin, Oct 24 2026
   MAX_BODY_CHARS: 4000,
   MAX_REQUEST_AGE_MS: 5 * 60 * 1000, // signed requests expire after 5 minutes
   MAX_SUBMISSION_AGE_MS: 48 * 3600 * 1000, // never acknowledge old submissions
@@ -27,8 +24,10 @@ const ACK = {
   PER_ADDRESS_PER_DAY: 3,
   DAILY_CAP: 100, // conservative, far below Google's quota
   QUOTA_RESERVE: 100, // stop when Google's remaining quota falls below this
-  DEDUPE_DAYS: 30,
-  LOG_RETENTION_DAYS: 365, // to be confirmed by Matin (retention decision)
+  // Duplicate records are only needed while Netlify could still deliver the same event:
+  // requests expire after 5 minutes and submissions older than 48 h are refused.
+  DEDUPE_DAYS: 3,
+  LOG_RETENTION_DAYS: 90, // Matin's decision, Oct 24 2026: minimal technical logs only
   TIME_ZONE: 'America/Montreal',
 };
 

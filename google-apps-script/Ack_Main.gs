@@ -33,7 +33,7 @@ function ackHandle_(body, now) {
     if (previous) return { ok: true, status: 'duplicate', reference: previous.r };
 
     const ref = ackUniqueReference_(s.id, s.createdAt);
-    const row = { reference: ref, id: s.id, form: s.form, lang: s.lang, recipient: ackMask_(s.email) };
+    const row = { reference: ref, id: s.id, form: s.form, lang: s.lang };
 
     let reason = mode === 'off' ? 'mode-off' : '';
     if (!reason && mode === 'test') {
@@ -58,13 +58,13 @@ function ackHandle_(body, now) {
     ackSetRecord_(s.id, 'sent', ref);
     ackCountSend_(s.email, secret, now);
     ackLog_(Object.assign(row, { status: 'sent', detail: mode }));
+    return { ok: true, status: 'sent', reference: ref };
+  } finally {
     try {
       ackPrune_(now);
     } catch (err) {
       console.error('[ack] prune: ' + err.message);
     }
-    return { ok: true, status: 'sent', reference: ref };
-  } finally {
     lock.releaseLock();
   }
 }

@@ -1,6 +1,6 @@
 /**
  * EMAIL SENDING.
- * ACK_SENDER = forms (default): From "Institut interculturel Matin" <forms@matincc.ca>,
+ * ACK_SENDER = forms (default): From "Matin Intercultural Institute" <forms@matincc.ca>,
  *   Reply-To info@matincc.ca. Needs only the "send email as you" permission.
  * ACK_SENDER = info: From info@matincc.ca. Only possible once Gmail lists info@matincc.ca
  *   as a verified "Send mail as" address of forms@, AND after adding the scope
@@ -11,7 +11,7 @@ let ACK_FAKE_SENDS_ = null; // the self-test replaces sending with a list
 function ackSend_(to, lang, ref) {
   if (ackProp_('ACK_SIMULATE_FAILURE', 'off') === 'on') throw new Error('simulated-failure');
   const m = ackBuildMessage_(lang, ref);
-  const options = { name: ACK.SENDER_NAME[lang], replyTo: ACK.REPLY_TO, htmlBody: m.html };
+  const options = { name: ACK.SENDER_NAME, replyTo: ACK.REPLY_TO, htmlBody: m.html };
   if (ACK_FAKE_SENDS_) {
     ACK_FAKE_SENDS_.push({ to: to, lang: lang, ref: ref, subject: m.subject });
     return;

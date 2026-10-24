@@ -17,7 +17,7 @@ function ackSetup() {
   if (!props.getProperty('ACK_LOG_SHEET_ID')) {
     const ss = SpreadsheetApp.create('Matin — acknowledgements log (private)');
     const sh = ss.getSheets()[0];
-    sh.appendRow(['Logged at (Montréal)', 'Reference', 'Netlify submission id', 'Form', 'Language', 'Recipient (masked)', 'Status', 'Detail']);
+    sh.appendRow(['Logged at (Montréal)', 'Reference', 'Netlify submission id', 'Form', 'Language', 'Status', 'Detail']);
     sh.setFrozenRows(1);
     props.setProperty('ACK_LOG_SHEET_ID', ss.getId());
   }
@@ -119,5 +119,71 @@ function ackSelfTest() {
     ACK_LOG_DISABLED_ = false;
   }
   console.log(results.join('\n'));
+  return results;
+}
+
+/**
+ * AT ACTIVATION ONLY (Matin's approval): a daily clean-up, so logs older than 90 days and
+ * expired duplicate records are deleted even on days without any submission.
+ * Needs the "script.scriptapp" permission (added to appsscript.json at that moment).
+ */
+function ackInstallDailyCleanup() {
+  ScriptApp.getProjectTriggers()
+    .filter((t) => t.getHandlerFunction() === 'ackDailyCleanup')
+    .forEach((t) => ScriptApp.deleteTrigger(t));
+  ScriptApp.newTrigger('ackDailyCleanup').timeBased().everyDays(1).atHour(3).create();
+  console.log('Daily clean-up installed (03:00 Montréal).');
+}
+
+function ackDailyCleanup() {
+  PropertiesService.getScriptProperties().deleteProperty('ACK_LAST_PRUNE');
+  ackPrune_(Date.now());
+}
+
+/**
+ * CONTROLLED END-TO-END TEST of the published web app, over the internet, exactly as
+ * Netlify calls it. Sends real emails ONLY to the first four ACK_TEST_ALLOWLIST
+ * addresses (the fifth is used for the simulated failure, no email), and only in test mode. Needs ACK_WEBAPP_URL and the
+ * "script.external_request" permission (see the test instructions).
+ */
+function ackEndToEndTest() {
+  const props = PropertiesService.getScriptProperties();
+  const url = ackProp_('ACK_WEBAPP_URL', '');
+  const secret = ackProp_('ACK_SECRET', '');
+  const allow = ackProp_('ACK_TEST_ALLOWLIST', '').split(',').map((x) => x.trim()).filter(String);
+  if (!url || !secret) throw new Error('Set ACK_WEBAPP_URL and run ackSetup first.');
+  if (ackProp_('ACK_MODE', 'off') !== 'test') throw new Error('Set ACK_MODE to test first.');
+  if (allow.length < 5) throw new Error('ACK_TEST_ALLOWLIST needs 5 of your own addresses.');
+  const run = Utilities.getUuid().replace(/-/g, '').slice(0, 12);
+  const now = Date.now();
+  const post = (body) => JSON.parse(UrlFetchApp.fetch(url, { method: 'post', contentType: 'application/json', payload: body, muteHttpExceptions: true, followRedirects: true }).getContentText() || '{}');
+  const payloadOf = (n, extra) => JSON.stringify(Object.assign({ id: 'e2e' + run + n, form: 'contact', lang: 'fr', email: allow[0], created_at: new Date(now).toISOString() }, extra || {}));
+  const sign = (payload, ts) => {
+    const t = String(ts || Date.now());
+    return JSON.stringify({ ts: t, payload: payload, sig: ackHmacHex_(t + '.' + payload, secret) });
+  };
+  const results = [];
+  const expect = (name, r, wanted) => results.push((String(r.status).indexOf(wanted) === 0 ? 'PASS ' : 'FAIL ') + name + ' → ' + r.status + (r.reference ? ' ' + r.reference : ''));
+
+  const first = sign(payloadOf('a1'));
+  expect('1. French individual (contact) to ' + allow[0], post(first), 'sent');
+  expect('2. English organization (contact) to ' + allow[1], post(sign(payloadOf('a2', { lang: 'en', email: allow[1] }))), 'sent');
+  expect('3. Persian (contact, RTL) to ' + allow[2], post(sign(payloadOf('a3', { lang: 'fa', email: allow[2] }))), 'sent');
+  expect('4. Volunteer form to ' + allow[3], post(sign(payloadOf('a4', { form: 'benevolat', lang: 'en', email: allow[3] }))), 'sent');
+  expect('5. Same request replayed (duplicate)', post(first), 'duplicate');
+  expect('6. Forged request (wrong signature)', post(JSON.stringify({ ts: String(Date.now()), payload: payloadOf('f1'), sig: 'f'.repeat(64) })), 'bad-signature');
+  expect('7. Old request replayed after 10 minutes', post(sign(payloadOf('f2'), Date.now() - 10 * 60000)), 'expired');
+  expect('8. Invalid recipient email', post(sign(payloadOf('f3', { email: 'not-an-address' }))), 'invalid-email');
+  expect('9. Newsletter is not acknowledged', post(sign(payloadOf('f4', { form: 'newsletter' }))), 'form-not-acknowledged');
+  expect('10. Address outside the allowlist', post(sign(payloadOf('f5', { email: 'outside-test@example.org' }))), 'skipped:test-mode-not-allowlisted');
+  expect('11. Same address again within 10 minutes', post(sign(payloadOf('f6'))), 'skipped:rate-limited-10min');
+  props.setProperty('ACK_SIMULATE_FAILURE', 'on');
+  try {
+    expect('12. Simulated sending failure (no email) for ' + allow[4], post(sign(payloadOf('f7', { email: allow[4], lang: 'en' }))), 'send-failed');
+  } finally {
+    props.setProperty('ACK_SIMULATE_FAILURE', 'off');
+  }
+  console.log(results.join('\n'));
+  console.log('Expected: 4 emails in total. Check them, reply to one (the reply must reach info@), and look at the log sheet.');
   return results;
 }

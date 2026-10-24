@@ -1,11 +1,12 @@
 /**
  * DUPLICATE PREVENTION and LOGGING.
- * Script properties remember each Netlify submission id for 30 days:
+ * Script properties remember each Netlify submission id for DEDUPE_DAYS (3 days):
  *   ack:<id>  {"s": status, "r": reference, "t": time}   status: sending | sent | failed | skipped
  *   ref:<reference>  <id>                                  (reference uniqueness)
  * "sending" is written BEFORE the email goes out, so even a crash can never cause a second
  * email for the same submission (at most once). The private log spreadsheet keeps one row
- * per decision, without names or messages, for LOG_RETENTION_DAYS.
+ * per decision for LOG_RETENTION_DAYS (90 days): time, reference, Netlify id, form,
+ * language, status. Never a name, an email address or a message.
  */
 
 function ackGetRecord_(id) {
@@ -45,7 +46,6 @@ function ackLog_(row) {
       row.id || '',
       row.form || '',
       row.lang || '',
-      row.recipient || '',
       row.status,
       row.detail || '',
     ]);
@@ -54,7 +54,7 @@ function ackLog_(row) {
   }
 }
 
-/** Once a day: forgets old ids, old counters and old log rows. */
+/** Once a day (on any request, and by the daily cleanup): forgets old ids, counters and log rows. */
 function ackPrune_(now) {
   const props = PropertiesService.getScriptProperties();
   const today = Utilities.formatDate(new Date(now), ACK.TIME_ZONE, 'yyyyMMdd');

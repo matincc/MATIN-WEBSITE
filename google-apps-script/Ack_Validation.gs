@@ -26,9 +26,3 @@ function ackValidate_(payloadText, now) {
   }
   return { submission: { id: id, form: form, email: email, lang: ackLanguage_(p.lang), createdAt: created } };
 }
-
-/** "m***@example.org": enough for staff to recognise a row, not the full address. */
-function ackMask_(email) {
-  const at = email.indexOf('@');
-  return email.charAt(0) + '***' + email.slice(at);
-}

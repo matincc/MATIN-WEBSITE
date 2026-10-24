@@ -29,12 +29,12 @@ The visitor's name and message never leave Netlify.
 | `Ack_Templates.gs` | The three approved texts (Oct 24 2026), word for word |
 | `Ack_Security.gs` | Signature check, expiry, reference numbers |
 | `Ack_Validation.gs` | Submission validation and language selection |
-| `Ack_Store.gs` | Duplicate prevention, private log sheet, retention |
+| `Ack_Store.gs` | Duplicate prevention (3 days), private log sheet (90 days: time, reference, Netlify id, form, language, status; no names, addresses or messages) |
 | `Ack_RateLimit.gs` | Per-address limits, daily cap and quota reserve |
 | `Ack_Mailer.gs` | Sending (forms@ with Reply-To info@, or info@ once verified) |
 | `Ack_Main.gs` | `doPost`, the web app entry point |
-| `Ack_Setup.gs` | Manual tools: `ackSetup`, `ackShowSecretForNetlify`, `ackRotateSecret`, `ackReportQuota`, `ackSendPreviewToMe`, `ackSelfTest` |
-| `appsscript.json` | Time zone, and the **only** permissions allowed: send email, spreadsheets |
+| `Ack_Setup.gs` | Manual tools: `ackSetup`, `ackShowSecretForNetlify`, `ackRotateSecret`, `ackReportQuota`, `ackSendPreviewToMe`, `ackSelfTest`, `ackEndToEndTest`, and, at activation only, `ackInstallDailyCleanup` |
+| `appsscript.json` | Time zone, and the **only** permissions allowed: send email (MailApp), spreadsheets (the log), external requests (only `ackEndToEndTest` calls the web app), triggers (only the daily clean-up) |
 
 ## Script properties (Project settings → Script properties)
 
@@ -46,6 +46,7 @@ The visitor's name and message never leave Netlify.
 | `ACK_SENDER` | `forms` (default) or `info` (see below) |
 | `ACK_SIMULATE_FAILURE` | `off`; `on` only during the failure test |
 | `ACK_LOG_SHEET_ID` | created by `ackSetup` |
+| `ACK_WEBAPP_URL` | the web app address, only for `ackEndToEndTest` |
 
 ## Netlify environment variables (names only)
 
@@ -53,7 +54,7 @@ The visitor's name and message never leave Netlify.
 
 ## Sender
 
-- **`forms` (default):** From "Institut interculturel Matin" / "Matin Intercultural Institute" / «مؤسسه میان‌فرهنگی متین» <forms@matincc.ca>, with Reply-To info@matincc.ca. Only the "send email" permission is needed.
+- **`forms` (default, approved by Matin on Oct 24 2026):** From "Matin Intercultural Institute" <forms@matincc.ca>, with Reply-To info@matincc.ca.
 - **`info`:** From info@matincc.ca. Possible only if:
   1. Gmail of forms@ lists info@matincc.ca under Settings → Accounts → "Send mail as", verified;
   2. `"https://mail.google.com/"` is added to `oauthScopes` in `appsscript.json`. GmailApp requires full access to the forms@ mailbox, so this is a separate decision.
