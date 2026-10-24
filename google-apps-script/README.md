@@ -34,7 +34,7 @@ The visitor's name and message never leave Netlify.
 | `Ack_Mailer.gs` | Sending (forms@ with Reply-To info@, or info@ once verified) |
 | `Ack_Main.gs` | `doPost`, the web app entry point |
 | `Ack_Setup.gs` | Manual tools: `ackSetup`, `ackShowSecretForNetlify`, `ackRotateSecret`, `ackReportQuota`, `ackSendPreviewToMe`, `ackSelfTest`, `ackEndToEndTest`, and, at activation only, `ackInstallDailyCleanup` |
-| `appsscript.json` | Time zone, and the **only** permissions allowed: send email (MailApp), spreadsheets (the log), external requests (only `ackEndToEndTest` calls the web app), triggers (only the daily clean-up) |
+| `appsscript.json` | Time zone and the **only** permissions allowed in Part 1: send email (MailApp) and spreadsheets (the log). Part 2 adds `script.external_request` (only `ackEndToEndTest` calls the web app); activation adds `script.scriptapp` (only the daily clean-up). The web app settings are chosen in Deploy, never here. |
 
 ## Script properties (Project settings → Script properties)
 
