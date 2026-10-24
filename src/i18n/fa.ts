@@ -62,7 +62,7 @@ const fa: DeepPartial<Dictionary> = {
     team: 'تیم ما',
     teamPresident: 'رئیس',
     teamMembers: 'تیم',
-    president: 'چند کلمه از رئیس متین',
+    president: 'سخنی از رئیس مؤسسه',
     ourPresident: 'رئیس ما',
   },
   home: {
@@ -280,7 +280,7 @@ const fa: DeepPartial<Dictionary> = {
     vision: 'چشم‌انداز ما',
     values: 'ارزش‌های ما',
     history: 'داستان ما',
-    founderTitle: 'چند کلمه از رئیس متین',
+    founderTitle: 'سخنی از رئیس مؤسسه',
     team: 'تیم ما',
     onLinkedin: '{name} در لینکدین',
     presidentPhotoAlt: 'تصویر {name}',
