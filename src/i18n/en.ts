@@ -84,6 +84,7 @@ const en: Dictionary = {
     heroText:
       'A Montréal non-profit organization (NGO) where cultures meet, listen, and create together — rooted in Québec, open to the world.',
     whoTitle: 'Who We Are',
+    positioning: 'Locally Rooted, Globally Connected',
     legalLine: 'Nonprofit corporation incorporated in Québec · NEQ {neq}',
     legalLink: 'Legal Information',
     whoText:

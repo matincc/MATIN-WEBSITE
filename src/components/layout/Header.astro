@@ -46,14 +46,14 @@ const teamLinks = [
   { id: 'our-president', label: t('nav.teamPresident') },
   { id: 'team', label: t('nav.teamMembers') },
 ].map((l) => ({ ...l, href: `${teamHref}#${l.id}` }));
-// Sub-links of "Events": the sections of the Events page and the Past Events page.
-// Matin's Picks is listed only while there are picks (the section is hidden otherwise).
+// Sub-links of "Events", in the owner's order: Matin Events, Matin's Picks (only while
+// there are picks, the section is hidden otherwise), Upcoming Events, then Past Events.
 const eventsHref = href('events', lang);
 const hasPicks = picksOf(await getUpcomingEvents()).length > 0;
 const eventsLinks = [
+  { id: 'matin-events', label: t('events.matinTitle') },
   ...(hasPicks ? [{ id: 'picks', label: t('events.picksTitle') }] : []),
   { id: 'upcoming', label: t('events.upcoming') },
-  { id: 'matin-events', label: t('events.matinTitle') },
 ].map((l) => ({ ...l, href: `${eventsHref}#${l.id}` }));
 eventsLinks.push({ id: 'past', label: t('nav.eventsArchive'), href: href('eventsArchive', lang) });
 // Menu items that open a dropdown.
@@ -326,14 +326,14 @@ const isActive = (url: string) => !url.includes('?') && current.startsWith(url);
     }
   }
 
-  /* 17px, 18px on wide screens (owner's brief: navigation about 15 to 16px or more). */
+  /* 16px (owner's brief: navigation about 15 to 16px). */
   .nav-link {
     position: relative;
     display: block;
     padding: 0.5rem 0.7rem;
     font-family: var(--font-display);
     font-weight: 700;
-    font-size: 1.0625rem;
+    font-size: 1rem;
     white-space: nowrap;
     color: var(--color-primary);
     text-decoration: none;
@@ -342,7 +342,6 @@ const isActive = (url: string) => !url.includes('?') && current.startsWith(url);
   @media (min-width: 90rem) {
     .nav-link {
       padding-inline: 0.9rem;
-      font-size: 1.125rem;
     }
   }
   /* Thin gold underline: grows in on hover, stays on the current page. */
@@ -406,7 +405,7 @@ const isActive = (url: string) => !url.includes('?') && current.startsWith(url);
     border-radius: 0.6rem;
     font-family: var(--font-display);
     font-weight: 700;
-    font-size: 1.0625rem;
+    font-size: 1rem;
     white-space: nowrap;
     color: var(--color-ink);
     text-decoration: none;

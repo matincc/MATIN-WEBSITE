@@ -16,18 +16,19 @@ const { lang, showNewsletter = true } = Astro.props;
 const t = useTranslations(lang);
 const s = await getSettings();
 
-// The FAQ is left out until it has questions.
+// Same order as the header menu; the FAQ (left out until it has questions) sits before
+// Contact.
 const empty = await emptySections();
 const explore = (
   [
     'about',
     'team',
+    'programs',
     'events',
     'news',
-    'programs',
-    'getInvolved',
     'gallery',
     'resources',
+    'getInvolved',
     'faq',
     'contact',
   ] as RouteKey[]

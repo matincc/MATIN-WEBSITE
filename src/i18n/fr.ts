@@ -86,6 +86,9 @@ const fr = {
     heroText:
       "Un organisme à but non lucratif montréalais (ONG) où les cultures se rencontrent, s'écoutent et créent ensemble — enraciné au Québec, ouvert sur le monde.",
     whoTitle: 'Qui sommes-nous ?',
+    // Secondary positioning line (owner's decision, Oct 24 2026); never replaces the
+    // slogan « Cultures en dialogue ».
+    positioning: 'Ancré localement, relié au monde',
     legalLine: 'Organisme sans but lucratif (OSBL) constitué au Québec · NEQ {neq}',
     legalLink: 'Informations légales',
     whoText:

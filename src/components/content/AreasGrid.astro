@@ -24,7 +24,7 @@ const areas = [
     title: t('home.area1Title'),
     text: t('home.area1Text'),
     photo: photos.placejc,
-    accent: 'coral',
+    accent: 'navy',
   },
   {
     title: t('home.area2Title'),
@@ -129,7 +129,7 @@ const num = new Intl.NumberFormat(lang === 'fa' ? 'fa-IR' : 'en-CA', { minimumIn
   .area-card:hover .area-card__media :global(img) {
     transform: scale(1.05);
   }
-  /* Large number on an accent tile (navy on coral/mustard is large text: 3.5:1 and 5.3:1;
+  /* Large number on an accent tile (navy on mustard is large text: 5.3:1; mustard on navy 5.3:1;
      on teal the number is white, 3.9:1, also large text). */
   .area-card__num {
     position: absolute;
@@ -149,6 +149,10 @@ const num = new Intl.NumberFormat(lang === 'fa' ? 'fa-IR' : 'en-CA', { minimumIn
   }
   [data-accent='teal'] .area-card__num {
     color: var(--color-white);
+  }
+  /* On navy the number is mustard (5.3:1). */
+  [data-accent='navy'] .area-card__num {
+    color: var(--color-gold);
   }
   .area-card__body {
     display: flex;
