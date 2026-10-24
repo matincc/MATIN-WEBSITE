@@ -4,6 +4,7 @@ import Lockup from '@/components/brand/Lockup.astro';
 import LangToggle from './LangToggle.astro';
 import { href, type Alternates, type RouteKey, type UiLang } from '@/i18n/routes';
 import { useTranslations } from '@/i18n/ui';
+import { getUpcomingEvents, picksOf } from '@/lib/content';
 
 interface Props {
   lang: UiLang;
@@ -12,9 +13,19 @@ interface Props {
 const { lang, alternates } = Astro.props;
 const t = useTranslations(lang);
 
-// Main menu, in this order (owner's request, Oct 2026). The Gallery and the Resources
-// directory are reached from the homepage and the footer, not from this menu.
-const items: RouteKey[] = ['about', 'team', 'events', 'news', 'programs', 'getInvolved', 'contact'];
+// Main menu, in this order (owner's brief, Oct 24 2026): Gallery and Resources join the
+// menu; Get Involved and Contact stay separate items.
+const items: RouteKey[] = [
+  'about',
+  'team',
+  'programs',
+  'events',
+  'news',
+  'gallery',
+  'resources',
+  'getInvolved',
+  'contact',
+];
 const links = items.map((key) => ({ key, href: href(key, lang), label: t(`nav.${key}`) }));
 const aboutHref = href('about', lang);
 // Sub-links of "About": anchors on the About page. The Persian About page has the
@@ -35,11 +46,22 @@ const teamLinks = [
   { id: 'our-president', label: t('nav.teamPresident') },
   { id: 'team', label: t('nav.teamMembers') },
 ].map((l) => ({ ...l, href: `${teamHref}#${l.id}` }));
+// Sub-links of "Events": the sections of the Events page and the Past Events page.
+// Matin's Picks is listed only while there are picks (the section is hidden otherwise).
+const eventsHref = href('events', lang);
+const hasPicks = picksOf(await getUpcomingEvents()).length > 0;
+const eventsLinks = [
+  ...(hasPicks ? [{ id: 'picks', label: t('events.picksTitle') }] : []),
+  { id: 'upcoming', label: t('events.upcoming') },
+  { id: 'matin-events', label: t('events.matinTitle') },
+].map((l) => ({ ...l, href: `${eventsHref}#${l.id}` }));
+eventsLinks.push({ id: 'past', label: t('nav.eventsArchive'), href: href('eventsArchive', lang) });
 // Menu items that open a dropdown.
 const subMenus: Partial<Record<RouteKey, { id: string; label: string; links: typeof aboutLinks }>> =
   {
     about: { id: 'about-submenu', label: t('a11y.aboutSubmenu'), links: aboutLinks },
     team: { id: 'team-submenu', label: t('a11y.teamSubmenu'), links: teamLinks },
+    events: { id: 'events-submenu', label: t('a11y.eventsSubmenu'), links: eventsLinks },
   };
 
 const current = Astro.url.pathname;
@@ -47,9 +69,28 @@ const isActive = (url: string) => !url.includes('?') && current.startsWith(url);
 ---
 
 <header class="site-header" data-header>
-  <div class="header-row flex items-center justify-between gap-4">
+  <div class="header-row">
     <Lockup lang={lang} size="large" />
 
+    <div class="header-tools gap-1 sm:gap-2">
+      <a href={href('search', lang)} class="menu-btn">
+        <Search size={24} aria-hidden="true" />
+        <span class="sr-only">{t('nav.search')}</span>
+      </a>
+      <div class="hidden sm:block">
+        <LangToggle lang={lang} alternates={alternates} />
+      </div>
+      <button
+        type="button"
+        class="menu-btn mobile-only"
+        aria-haspopup="dialog"
+        aria-controls="mobile-menu"
+        data-menu-open
+      >
+        <Menu size={26} aria-hidden="true" />
+        <span class="sr-only">{t('a11y.openMenu')}</span>
+      </button>
+    </div>
     <nav aria-label={t('a11y.mainNav')} class="desktop-nav">
       <ul class="flex items-center gap-1">
         {links.map((l) =>
@@ -98,26 +139,6 @@ const isActive = (url: string) => !url.includes('?') && current.startsWith(url);
         )}
       </ul>
     </nav>
-
-    <div class="flex items-center gap-1 sm:gap-2">
-      <a href={href('search', lang)} class="menu-btn">
-        <Search size={24} aria-hidden="true" />
-        <span class="sr-only">{t('nav.search')}</span>
-      </a>
-      <div class="hidden sm:block">
-        <LangToggle lang={lang} alternates={alternates} />
-      </div>
-      <button
-        type="button"
-        class="menu-btn mobile-only"
-        aria-haspopup="dialog"
-        aria-controls="mobile-menu"
-        data-menu-open
-      >
-        <Menu size={26} aria-hidden="true" />
-        <span class="sr-only">{t('a11y.openMenu')}</span>
-      </button>
-    </div>
   </div>
 
   <dialog id="mobile-menu" class="mobile-menu" aria-label={t('a11y.mainNav')}>
@@ -254,11 +275,21 @@ const isActive = (url: string) => !url.includes('?') && current.startsWith(url);
   /* Wider than the page content so the logo sits further left and the search
      and language links further right. */
   .header-row {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    column-gap: 1rem;
     width: 100%;
     max-width: 110rem;
-    height: 5.5rem;
     margin-inline: auto;
     padding-inline: 1.25rem;
+  }
+  /* The search and language links set the height of the top row. */
+  .header-tools {
+    display: flex;
+    align-items: center;
+    height: 5.5rem;
   }
   @media (min-width: 40rem) {
     .header-row {
@@ -271,64 +302,54 @@ const isActive = (url: string) => !url.includes('?') && current.startsWith(url);
     }
   }
 
-  /* The full menu is shown only where it fits on one row (measured, with "Our Team"):
-     English and Persian from 90rem; French, the longest, from 100rem. Below that,
-     the menu button opens the full-screen menu. */
+  /* Nine menu items (owner's brief, Oct 24 2026) do not fit beside the logo, so on
+     desktop the menu has its own row under the logo, the same in every language. When
+     the page scrolls, the top row slides away and only the menu row stays in view. */
   .desktop-nav {
     display: none;
   }
-  @media (min-width: 90rem) {
-    :global(html:not([lang='fr-CA'])) .desktop-nav {
-      display: block;
+  @media (min-width: 78rem) {
+    .site-header {
+      top: -5.5rem;
     }
-    :global(html:not([lang='fr-CA'])) .menu-btn.mobile-only {
-      display: none;
-    }
-  }
-  @media (min-width: 100rem) {
     .desktop-nav {
       display: block;
+      flex-basis: 100%;
+      border-block-start: 1px solid var(--color-line);
+    }
+    .desktop-nav > ul {
+      justify-content: center;
+      height: 3.5rem;
     }
     .menu-btn.mobile-only {
       display: none;
     }
   }
 
+  /* 17px, 18px on wide screens (owner's brief: navigation about 15 to 16px or more). */
   .nav-link {
     position: relative;
     display: block;
-    padding: 0.55rem 0.75rem;
+    padding: 0.5rem 0.7rem;
     font-family: var(--font-display);
     font-weight: 700;
-    font-size: 1.25rem; /* 20px */
+    font-size: 1.0625rem;
     white-space: nowrap;
     color: var(--color-primary);
     text-decoration: none;
     border-radius: 999px;
   }
-  /* Thin gold underline: grows in on hover, stays on the current page. */
-  /* Larger menu (owner's request, Oct 2026): 22px wherever it still fits on one row:
-     English and Persian from 90rem; French at 20px from 100rem and 22px from 108rem. */
   @media (min-width: 90rem) {
-    :global(html:not([lang='fr-CA'])) .nav-link {
-      padding-inline: 0.6rem;
-      font-size: 1.375rem; /* 22px */
-    }
-  }
-  @media (min-width: 100rem) {
     .nav-link {
-      padding-inline: 0.6rem;
+      padding-inline: 0.9rem;
+      font-size: 1.125rem;
     }
   }
-  @media (min-width: 108rem) {
-    .nav-link {
-      font-size: 1.375rem;
-    }
-  }
+  /* Thin gold underline: grows in on hover, stays on the current page. */
   .nav-link::after {
     content: '';
     position: absolute;
-    inset-inline: 0.75rem;
+    inset-inline: 0.7rem;
     inset-block-end: 0.2rem;
     height: 2px;
     border-radius: 2px;
@@ -385,7 +406,8 @@ const isActive = (url: string) => !url.includes('?') && current.startsWith(url);
     border-radius: 0.6rem;
     font-family: var(--font-display);
     font-weight: 700;
-    font-size: 1.125rem;
+    font-size: 1.0625rem;
+    white-space: nowrap;
     color: var(--color-ink);
     text-decoration: none;
   }
