@@ -69,7 +69,7 @@ const ways = [
 
 const aboutHref = href('about', lang);
 const whoCards = [
-  { id: 'mission', label: t('nav.mission'), icon: Target, accent: 'coral' },
+  { id: 'mission', label: t('nav.mission'), icon: Target, accent: 'navy' },
   { id: 'vision', label: t('nav.vision'), icon: Eye, accent: 'mustard' },
   { id: 'values', label: t('nav.values'), icon: HeartHandshake, accent: 'teal' },
   // The Persian About page has the values section only.
@@ -178,8 +178,8 @@ const whoCards = [
   <!-- Matin Moments: featured photos and videos from the gallery -->
   <MatinMoments lang={lang} />
 
-  <!-- Get involved: warm terracotta band, a bright illustration beside the invitation -->
-  <section class="involved on-terracotta" aria-labelledby="involved-title">
+  <!-- Get involved: deep teal band, a bright illustration beside the invitation -->
+  <section class="involved on-teal" aria-labelledby="involved-title">
     <div class="container-site involved__grid">
       <div class="involved__figure" data-reveal>
         <CommunityIllustration class="involved__art" />
@@ -249,6 +249,7 @@ const whoCards = [
       </figure>
       <div class="who-body">
         <SectionHeader id="who-title" title={t('home.whoTitle')} align="start" class="mb-7" />
+        <p class="who-positioning" data-reveal>{t('home.positioning')}</p>
         <p class="who-text" data-reveal>
           {t('home.whoText')}
         </p>
@@ -285,7 +286,7 @@ const whoCards = [
       <SectionHeader
         id="areas-title"
         eyebrow={t('home.areasEyebrow')}
-        eyebrowTone="terracotta"
+        eyebrowTone="teal"
         title={t('home.areasTitle')}
         lede={t('home.areasLede')}
         align="start"
@@ -310,7 +311,7 @@ const whoCards = [
           <SectionHeader
             id="newsletter-title"
             eyebrow={t('newsletter.eyebrow')}
-            eyebrowTone="terracotta"
+            eyebrowTone="teal"
             title={t('newsletter.title')}
             align="start"
             class="mb-5"
@@ -361,7 +362,7 @@ const whoCards = [
     margin-inline: auto;
     width: 100%;
   }
-  /* Coral block offset behind the photo: a quiet graphic accent. */
+  /* Teal block offset behind the photo: a quiet graphic accent. */
   .who-figure__block {
     position: absolute;
     inset-block-start: 1.5rem;
@@ -369,7 +370,7 @@ const whoCards = [
     width: 70%;
     height: 82%;
     border-radius: var(--radius-card);
-    background: var(--color-coral);
+    background: var(--color-teal);
   }
   .who-figure__photo {
     position: relative;
@@ -402,6 +403,14 @@ const whoCards = [
     margin-block-start: 1rem;
     font-size: 1.0625rem;
     color: var(--color-ink);
+  }
+  /* Secondary positioning line: below the title, never in place of the slogan. */
+  .who-positioning {
+    margin-block-end: 1.25rem;
+    font-family: var(--font-display);
+    font-size: clamp(1.25rem, 1.1rem + 0.5vw, 1.5rem);
+    font-weight: 800;
+    color: var(--color-teal-deep);
   }
   .who-links {
     display: grid;
@@ -441,6 +450,10 @@ const whoCards = [
     background: var(--accent);
     color: var(--color-primary);
   }
+  /* Navy tile (Mission): mustard icon (5.3:1). */
+  .who-link[data-accent='navy'] .who-link__icon {
+    color: var(--color-gold);
+  }
   .who-link__label {
     flex: 1;
     font-size: clamp(1.25rem, 1.15rem + 0.35vw, 1.5rem);
@@ -472,7 +485,7 @@ const whoCards = [
     flex-direction: column;
     gap: 1.1rem;
     padding: clamp(1.75rem, 1.2rem + 2.5vw, 3.5rem);
-    border-block-start: 6px solid var(--color-coral);
+    border-block-start: 6px solid var(--color-teal);
   }
   @media (min-width: 64rem) {
     .feature {
@@ -489,7 +502,7 @@ const whoCards = [
     .feature__body {
       justify-content: center;
       border-block-start: none;
-      border-inline-start: 6px solid var(--color-coral);
+      border-inline-start: 6px solid var(--color-teal);
     }
   }
   .feature__type {
@@ -525,7 +538,7 @@ const whoCards = [
   .feature__meta :global(svg) {
     flex-shrink: 0;
     margin-top: 0.2rem;
-    color: var(--color-terracotta-deep);
+    color: var(--color-teal-deep);
   }
   .feature__summary {
     max-width: 38rem;
@@ -556,7 +569,7 @@ const whoCards = [
     gap: 0.85rem;
     grid-template-columns: repeat(auto-fit, minmax(min(100%, 13.5rem), 1fr));
   }
-  /* White tiles on terracotta: navy text (11.9:1). */
+  /* White tiles on deep teal: navy text (11.9:1). */
   .ways__link {
     display: flex;
     align-items: center;
@@ -581,7 +594,7 @@ const whoCards = [
   }
   .ways__link :global(svg) {
     flex-shrink: 0;
-    color: var(--color-terracotta-deep);
+    color: var(--color-teal-deep);
   }
   .ways__link > span {
     flex: 1;
@@ -596,7 +609,7 @@ const whoCards = [
     position: relative;
     overflow: hidden;
     padding-block: clamp(4rem, 2.6rem + 4.5vw, 7rem);
-    background: var(--color-terracotta);
+    background: var(--color-teal-deep);
   }
   .involved__grid {
     display: grid;
@@ -635,14 +648,14 @@ const whoCards = [
 
   /* ---------- Newsletter ---------- */
   /* One warm cream card: the invitation and the form share the same surface, with a
-     terracotta edge; the button is deep teal (white text 6.2:1). */
+     gold edge; the button is deep teal (white text 6.2:1). */
   .newsletter-card {
     display: grid;
     gap: 2.25rem;
     align-items: center;
     padding: clamp(2rem, 1.2rem + 3vw, 4rem);
     border-radius: calc(var(--radius-card) * 1.4);
-    border-inline-start: 8px solid var(--color-terracotta);
+    border-inline-start: 8px solid var(--color-gold);
     background: var(--color-tint);
   }
   @media (min-width: 56rem) {

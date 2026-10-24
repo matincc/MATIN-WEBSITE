@@ -56,7 +56,7 @@ const en: Dictionary = {
     team: 'Our Team',
     teamPresident: 'President',
     teamMembers: 'Team',
-    president: 'A Personal Note from Our President',
+    president: 'A Personal Note from Our President, Reza Moafi',
     ourPresident: 'Our President',
   },
   search: {
@@ -84,6 +84,7 @@ const en: Dictionary = {
     heroText:
       'A Montréal non-profit organization (NGO) where cultures meet, listen, and create together — rooted in Québec, open to the world.',
     whoTitle: 'Who We Are',
+    positioning: 'Locally Rooted, Globally Connected',
     legalLine: 'Nonprofit corporation incorporated in Québec · NEQ {neq}',
     legalLink: 'Legal Information',
     whoText:
@@ -316,7 +317,7 @@ const en: Dictionary = {
     vision: 'Our Vision',
     values: 'Our values',
     history: 'Our story',
-    founderTitle: 'A Personal Note from Our President',
+    founderTitle: 'A Personal Note from Our President, Reza Moafi',
     presidentPhotoAlt: 'Portrait of {name}',
     team: 'Our Team',
     board: 'Board of directors',
