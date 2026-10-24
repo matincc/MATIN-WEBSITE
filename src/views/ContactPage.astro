@@ -1,12 +1,23 @@
 ---
-import { Clock, Mail, MapPin, Phone } from '@lucide/astro';
+/**
+ * Contact & Collaboration (owner's brief, Oct 24 2026: Get Involved merged here).
+ * 1. Ways to work with Matin: the three pathways (texts from the former Get Involved
+ *    page, unchanged). 2. Write to us: the smart contact form (individual or
+ *    organization) beside the contact details. 3. Volunteer (French and English): the
+ *    roles and the separate volunteer form. The newsletter stays in the footer
+ *    (#stay-connected). Old Get Involved addresses redirect here (netlify.toml); the
+ *    anchors #interest, #benevolat and #volunteer still work.
+ */
+import { ArrowRight, Clock, Landmark, Mail, MapPin, Phone, UsersRound } from '@lucide/astro';
 import PageLayout from '@/layouts/PageLayout.astro';
+import SectionHeader from '@/components/ui/SectionHeader.astro';
 import ContactForm from '@/components/forms/ContactForm.astro';
+import VolunteerForm from '@/components/forms/VolunteerForm.astro';
 import MapFacade from '@/components/ui/MapFacade.astro';
 import SocialLinks from '@/components/ui/SocialLinks.astro';
 import { href, siteAlternates, type UiLang } from '@/i18n/routes';
 import { useTranslations, pick } from '@/i18n/ui';
-import { getSettings } from '@/lib/content';
+import { getSettings, getSingleton } from '@/lib/content';
 
 interface Props {
   lang: UiLang;
@@ -14,6 +25,36 @@ interface Props {
 const { lang } = Astro.props;
 const t = useTranslations(lang);
 const s = await getSettings();
+const inv = await getSingleton('involvement');
+// The volunteer roles and form exist in French and English only.
+const hasVolunteer = lang !== 'fa';
+const volunteerId = lang === 'fr' ? 'benevolat' : 'volunteer';
+const pathways = [
+  {
+    icon: UsersRound,
+    title: t('involved.pathIndividualTitle'),
+    text: t('involved.pathIndividualText'),
+    cta: t('involved.pathIndividualCta'),
+    href: '#write',
+    accent: 'teal',
+  },
+  {
+    icon: Landmark,
+    title: t('involved.pathInstitutionalTitle'),
+    text: t('involved.pathInstitutionalText'),
+    cta: t('involved.pathInstitutionalCta'),
+    href: '#write',
+    accent: 'navy',
+  },
+  {
+    icon: Mail,
+    title: t('involved.pathConnectedTitle'),
+    text: t('involved.pathConnectedText'),
+    cta: t('involved.pathConnectedCta'),
+    href: '#stay-connected',
+    accent: 'mustard',
+  },
+];
 // Each detail appears only once it is set in the site settings.
 const a = s.address;
 const address = a && `${a.street}, ${a.city} (${a.region}) ${a.postalCode}`;
@@ -56,56 +97,188 @@ const details = [
   ledeStrong
   alternates={siteAlternates('contact')}
 >
-  <div class="container-site grid gap-10 pt-4 pb-24 lg:grid-cols-[1.25fr_1fr]">
-    <section class="card p-6 sm:p-10" aria-labelledby="form-title">
-      <h2 id="form-title" class="mb-6 text-3xl font-bold">
-        {t('contact.formTitle')}
-      </h2>
-      <ContactForm lang={lang} />
-    </section>
+  <!-- Ways to work with Matin -->
+  <section class="container-site pt-4 pb-14" aria-labelledby="paths-title">
+    <SectionHeader id="paths-title" title={t('involved.pathsTitle')} align="start" class="mb-10" />
+    <ul class="grid gap-6 md:grid-cols-3">
+      {pathways.map((p, i) => (
+        <li
+          class="card path-card"
+          data-accent={p.accent}
+          data-reveal
+          style={`--reveal-delay:${i * 110}ms`}
+        >
+          <span class="path-card__icon" aria-hidden="true">
+            <p.icon size={30} stroke-width={1.6} />
+          </span>
+          <h3 class="path-card__title">{p.title}</h3>
+          <p class="text-[1.0625rem] leading-relaxed">{p.text}</p>
+          <a href={p.href} class="path-card__btn mt-auto">
+            {p.cta}
+            <ArrowRight size={22} class="flip-rtl" aria-hidden="true" />
+          </a>
+        </li>
+      ))}
+    </ul>
+    <p class="mt-8 max-w-3xl text-[0.95rem] text-muted">{t('involved.pathsNote')}</p>
+  </section>
 
-    <div class="space-y-8">
-      <section class="card p-8" aria-labelledby="info-title">
-        <h2 id="info-title" class="mb-6 text-2xl font-bold">
-          {t('contact.infoTitle')}
+  <!-- Write to us (#interest kept for older links to the expression-of-interest form) -->
+  <div id="write" class="scroll-mt-24 bg-tint py-16">
+    <span id="interest" class="block scroll-mt-24" aria-hidden="true"></span>
+    <div class="container-site grid gap-10 lg:grid-cols-[1.25fr_1fr]">
+      <section class="card p-6 sm:p-10" aria-labelledby="form-title">
+        <h2 id="form-title" class="mb-6 text-3xl font-bold">
+          {t('contact.formTitle')}
         </h2>
-        {details.length > 0 && (
-          <ul class="mb-8 space-y-5">
-            {details.map((d) => (
-              <li class="flex gap-4">
-                <d.icon size={22} class="mt-0.5 shrink-0 text-gold-dark" aria-hidden="true" />
-                <div>
-                  <p class="text-sm font-bold tracking-wider text-muted uppercase">{d.label}</p>
-                  {d.href ? (
-                    <a
-                      href={d.href}
-                      class:list={['text-ink', d.local ? 'underline' : 'break-all']}
-                      dir={d.local ? undefined : 'ltr'}
-                    >
-                      {d.value}
-                    </a>
-                  ) : (
-                    <div class="whitespace-pre-line">{d.value}</div>
-                  )}
-                </div>
+        <ContactForm lang={lang} volunteerHref={hasVolunteer ? `#${volunteerId}` : undefined} />
+      </section>
+
+      <div class="space-y-8">
+        <section class="card p-8" aria-labelledby="info-title">
+          <h2 id="info-title" class="mb-6 text-2xl font-bold">
+            {t('contact.infoTitle')}
+          </h2>
+          {details.length > 0 && (
+            <ul class="mb-8 space-y-5">
+              {details.map((d) => (
+                <li class="flex gap-4">
+                  <d.icon size={22} class="mt-0.5 shrink-0 text-gold-dark" aria-hidden="true" />
+                  <div>
+                    <p class="text-sm font-bold tracking-wider text-muted uppercase">{d.label}</p>
+                    {d.href ? (
+                      <a
+                        href={d.href}
+                        class:list={['text-ink', d.local ? 'underline' : 'break-all']}
+                        dir={d.local ? undefined : 'ltr'}
+                      >
+                        {d.value}
+                      </a>
+                    ) : (
+                      <div class="whitespace-pre-line">{d.value}</div>
+                    )}
+                  </div>
+                </li>
+              ))}
+            </ul>
+          )}
+          <h3 class="mb-3 font-sans text-sm font-bold tracking-wider text-muted uppercase">
+            {t('contact.follow')}
+          </h3>
+          <SocialLinks lang={lang} social={s.social} />
+        </section>
+
+        {address && (
+          <section aria-labelledby="map-title">
+            <h2 id="map-title" class="sr-only">
+              {t('contact.mapTitle')}
+            </h2>
+            <MapFacade lang={lang} address={address} />
+          </section>
+        )}
+      </div>
+    </div>
+  </div>
+
+  {hasVolunteer && (
+    <section id={volunteerId} class="scroll-mt-24 py-16 sm:py-20" aria-labelledby="volunteer-title">
+      <div class="container-site grid gap-12 lg:grid-cols-[1fr_1.15fr]">
+        <div>
+          <SectionHeader
+            align="start"
+            id="volunteer-title"
+            title={t('involved.volunteer')}
+            lede={inv.volunteerIntro && pick(inv.volunteerIntro, lang)}
+          />
+          <ul class="space-y-4">
+            {inv.roles.map((r) => (
+              <li class="card p-6">
+                <h3 class="mb-1 text-xl font-bold">{pick(r.title, lang)}</h3>
+                <p class="text-muted">{pick(r.text, lang)}</p>
               </li>
             ))}
           </ul>
-        )}
-        <h3 class="mb-3 font-sans text-sm font-bold tracking-wider text-muted uppercase">
-          {t('contact.follow')}
-        </h3>
-        <SocialLinks lang={lang} social={s.social} />
-      </section>
-
-      {address && (
-        <section aria-labelledby="map-title">
-          <h2 id="map-title" class="sr-only">
-            {t('contact.mapTitle')}
-          </h2>
-          <MapFacade lang={lang} address={address} />
-        </section>
-      )}
-    </div>
-  </div>
+        </div>
+        <div class="card self-start p-6 sm:p-10">
+          <h3 class="mb-6 text-2xl font-bold">{t('involved.volunteerForm')}</h3>
+          <VolunteerForm lang={lang} roles={inv.roles.map((r) => pick(r.title, lang)!)} />
+        </div>
+      </div>
+    </section>
+  )}
 </PageLayout>
+
+<style>
+  .path-card {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    height: 100%;
+    padding: clamp(1.75rem, 1.4rem + 1vw, 2.5rem);
+    border-block-start: 6px solid var(--accent);
+  }
+  .path-card__icon {
+    display: grid;
+    place-items: center;
+    width: 3.75rem;
+    height: 3.75rem;
+    border-radius: 1rem;
+    background: var(--accent);
+    color: var(--color-primary);
+  }
+  [data-accent='teal'] .path-card__icon {
+    color: var(--color-white);
+  }
+  .path-card__title {
+    font-size: clamp(1.35rem, 1.2rem + 0.5vw, 1.6rem);
+    font-weight: 800;
+    line-height: 1.25;
+  }
+  /* Large button in the card's own colour and shape, like the icon tile above it
+     (owner's request). Text is large and extra bold, so navy on mustard (5.3:1),
+     white on teal (3.9:1) and white on navy (11.9:1) meet the contrast rule for large text. */
+  .path-card__btn {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.75rem;
+    min-height: 3.75rem;
+    margin-block-start: 0.5rem;
+    padding: 0.85rem 1.35rem;
+    border-radius: 1rem;
+    background: var(--accent);
+    color: var(--color-primary);
+    font-family: var(--font-display);
+    font-size: 1.25rem;
+    font-weight: 800;
+    line-height: 1.25;
+    text-decoration: none;
+    transition:
+      transform 0.2s,
+      box-shadow 0.2s;
+  }
+  [data-accent='teal'] .path-card__btn {
+    color: var(--color-white);
+  }
+  .path-card__btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 22px -12px color-mix(in srgb, var(--accent) 80%, black);
+  }
+  .path-card__btn:active {
+    transform: none;
+  }
+  .path-card__btn :global(svg) {
+    flex-shrink: 0;
+    transition: transform 0.2s;
+  }
+  .path-card__btn:hover :global(svg) {
+    transform: translateX(3px);
+  }
+  :global([dir='rtl']) .path-card__btn:hover :global(svg) {
+    transform: scaleX(-1) translateX(3px);
+  }
+  [data-accent='navy'] .path-card__icon,
+  [data-accent='navy'] .path-card__btn {
+    color: var(--color-white);
+  }
+</style>

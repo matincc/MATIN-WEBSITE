@@ -1,4 +1,13 @@
 ---
+/**
+ * Contact & Collaboration form (owner's brief, Oct 24 2026): one form for individuals
+ * and organization representatives. It keeps the form name "contact" (and the field
+ * name "subject" for the reason), so Netlify Forms and /api/submit keep working.
+ * The first, required question is the sender type; the organization fields appear
+ * only for an organization (data-show-when, handled in src/scripts/forms.ts). Without
+ * JavaScript every field is visible and the form still works.
+ * The newsletter is a separate form (footer).
+ */
 import FormShell from './FormShell.astro';
 import Field from './Field.astro';
 import type { UiLang } from '@/i18n/routes';
@@ -6,12 +15,59 @@ import { useTranslations } from '@/i18n/ui';
 
 interface Props {
   lang: UiLang;
+  /** Anchor of the volunteer section on the same page, when it exists. */
+  volunteerHref?: string;
 }
-const { lang } = Astro.props;
+const { lang, volunteerHref } = Astro.props;
 const t = useTranslations(lang);
+const reasons = t('form.reasons').split(',');
+const volunteering = reasons[3];
 ---
 
 <FormShell lang={lang} name="contact" id="contact">
+  <fieldset class="field type-choice">
+    <legend class="field-label">
+      {t('form.requesterType')}
+      <span class="req"> ({t('form.required')})</span>
+    </legend>
+    <div class="type-choice__options">
+      <label class="type-choice__option">
+        <input
+          id="contact-type"
+          type="radio"
+          name="requester_type"
+          value="individual"
+          required
+          aria-describedby="contact-type-error"
+        />
+        <span>{t('form.typeIndividual')}</span>
+      </label>
+      <label class="type-choice__option">
+        <input id="contact-type-org" type="radio" name="requester_type" value="organization" />
+        <span>{t('form.typeOrganization')}</span>
+      </label>
+    </div>
+    <p id="contact-type-error" class="field-error" hidden></p>
+  </fieldset>
+
+  <div class="grid gap-5 sm:grid-cols-2" data-show-when="requester_type=organization">
+    <Field
+      lang={lang}
+      id="contact-organization"
+      name="organization"
+      label={t('form.organizationName')}
+      autocomplete="organization"
+      requiredWhen="requester_type=organization"
+    />
+    <Field
+      lang={lang}
+      id="contact-position"
+      name="position"
+      label={t('form.position')}
+      autocomplete="organization-title"
+    />
+  </div>
+
   <div class="grid gap-5 sm:grid-cols-2">
     <Field
       lang={lang}
@@ -20,6 +76,7 @@ const t = useTranslations(lang);
       label={t('form.name')}
       required
       autocomplete="name"
+      labelWhen={{ when: 'requester_type=organization', label: t('form.representativeName') }}
     />
     <Field
       lang={lang}
@@ -36,11 +93,16 @@ const t = useTranslations(lang);
     id="contact-subject"
     name="subject"
     as="select"
-    label={t('form.subject')}
+    label={t('form.reason')}
     required
     placeholderOption="—"
-    options={t('form.subjects').split(',')}
+    options={reasons}
   />
+  {volunteerHref && (
+    <p class="volunteer-note" data-show-when={`subject=${volunteering}`}>
+      {t('form.volunteerNote')} <a href={volunteerHref}>{t('form.volunteerLink')}</a>.
+    </p>
+  )}
   <Field
     lang={lang}
     id="contact-message"
@@ -50,3 +112,53 @@ const t = useTranslations(lang);
     required
   />
 </FormShell>
+
+<style>
+  .type-choice {
+    margin: 0;
+    padding: 0;
+    border: 0;
+  }
+  .type-choice__options {
+    display: grid;
+    gap: 0.75rem;
+    margin-top: 0.6rem;
+  }
+  @media (min-width: 40rem) {
+    .type-choice__options {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  }
+  /* Large, card-like choices: navy edge when selected. */
+  .type-choice__option {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    min-height: 3.25rem;
+    padding: 0.75rem 1rem;
+    border: 1.5px solid color-mix(in srgb, var(--color-primary) 22%, transparent);
+    border-radius: 0.85rem;
+    background: var(--color-white);
+    font-family: var(--font-display);
+    font-weight: 700;
+    color: var(--color-primary);
+    cursor: pointer;
+  }
+  .type-choice__option:has(input:checked) {
+    border-color: var(--color-primary);
+    background: var(--color-cream);
+  }
+  .type-choice__option input {
+    width: 1.2rem;
+    height: 1.2rem;
+    flex-shrink: 0;
+    accent-color: var(--color-primary);
+  }
+  .volunteer-note {
+    padding: 0.85rem 1rem;
+    border-inline-start: 3px solid var(--color-teal);
+    border-radius: 0.6rem;
+    background: var(--color-cream);
+    color: var(--color-ink);
+  }
+</style>

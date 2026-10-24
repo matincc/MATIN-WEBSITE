@@ -1,5 +1,8 @@
 /**
  * Progressive enhancement for every <form data-enhanced-form>:
+ *  - conditional parts (data-show-when="field=value"): hidden and disabled while the
+ *    condition is false; fields with data-required-when become required with it, and
+ *    labels with data-label-when show their alternative text;
  *  - accessible inline validation with messages in the page's language
  *    (read from data-msg-* attributes, which come from the translation files);
  *  - an error summary that receives focus;
@@ -21,6 +24,10 @@ type Messages = {
 const EMAIL = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
 
 function fieldLabel(form: HTMLFormElement, field: HTMLElement): string {
+  if (field instanceof HTMLInputElement && field.type === 'radio') {
+    const legend = field.closest('fieldset')?.querySelector('legend');
+    return (legend?.textContent ?? '').replace(/\(.*?\)/g, '').trim();
+  }
   const label = form.querySelector<HTMLLabelElement>(`label[for="${field.id}"]`);
   return (label?.dataset.short ?? label?.textContent ?? field.getAttribute('name') ?? '')
     .replace(/\*|\(.*?\)/g, '')
@@ -28,6 +35,11 @@ function fieldLabel(form: HTMLFormElement, field: HTMLElement): string {
 }
 
 function validate(field: HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement, m: Messages) {
+  if (field.disabled) return '';
+  if (field instanceof HTMLInputElement && field.type === 'radio') {
+    const checked = field.form?.querySelector(`input[name="${field.name}"]:checked`);
+    return field.required && !checked ? m.required : '';
+  }
   if (field instanceof HTMLInputElement && field.type === 'checkbox') {
     return field.required && !field.checked ? m.consent : '';
   }
@@ -85,6 +97,53 @@ function setupTurnstile() {
     .forEach((f) => f.addEventListener('focusin', load, { once: true }));
 }
 
+/** Is "name=value" true in this form (radio, select or text field)? */
+function conditionMet(form: HTMLFormElement, condition: string) {
+  const [name, value] = condition.split(/=(.*)/s);
+  const data = new FormData(form);
+  return data.getAll(name).some((v) => v === value);
+}
+
+/** Shows, hides, requires and relabels the conditional parts of a form. */
+function setupConditions(form: HTMLFormElement) {
+  const parts = form.querySelectorAll<HTMLElement>('[data-show-when]');
+  const requiredWhen = form.querySelectorAll<HTMLInputElement>('[data-required-when]');
+  const labels = form.querySelectorAll<HTMLLabelElement>('[data-label-when]');
+  if (!parts.length && !requiredWhen.length && !labels.length) return;
+  const original = new Map<HTMLLabelElement, string>();
+  const update = () => {
+    parts.forEach((part) => {
+      const on = conditionMet(form, part.dataset.showWhen!);
+      part.hidden = !on;
+      part
+        .querySelectorAll<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>(
+          'input, select, textarea',
+        )
+        .forEach((f) => {
+          f.disabled = !on;
+          if (!on) setError(f, '');
+        });
+    });
+    requiredWhen.forEach((f) => {
+      const on = conditionMet(form, f.dataset.requiredWhen!);
+      f.required = on;
+      const mark = form.querySelector<HTMLElement>(`label[for="${f.id}"] [data-req-mark]`);
+      if (mark) mark.hidden = !on;
+    });
+    labels.forEach((label) => {
+      const text = label.querySelector<HTMLElement>('[data-label-text]');
+      if (!text) return;
+      if (!original.has(label)) original.set(label, text.textContent ?? '');
+      const alt = conditionMet(form, label.dataset.labelWhen!);
+      text.textContent = alt ? label.dataset.labelAlt! : original.get(label)!;
+      label.dataset.short = text.textContent ?? '';
+    });
+  };
+  form.addEventListener('change', update);
+  form.addEventListener('reset', () => setTimeout(update));
+  update();
+}
+
 export function enhanceForms() {
   setupTurnstile();
   document.querySelectorAll<HTMLFormElement>('form[data-enhanced-form]').forEach((form) => {
@@ -99,6 +158,7 @@ export function enhanceForms() {
       sending: d.msgSending!,
     };
     form.noValidate = true; // we show our own, bilingual messages
+    setupConditions(form);
     const summary = form.querySelector<HTMLElement>('[data-error-summary]')!;
     const status = form.querySelector<HTMLElement>('[data-form-status]')!;
     const submit = form.querySelector<HTMLButtonElement>('button[type="submit"]')!;
@@ -106,7 +166,14 @@ export function enhanceForms() {
       ...form.querySelectorAll<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>(
         'input[id]:not([type=hidden]), textarea[id], select[id]',
       ),
-    ].filter((f) => !f.closest('[data-honeypot]'));
+    ]
+      .filter((f) => !f.closest('[data-honeypot]'))
+      // A radio group is checked once, through its first button.
+      .filter(
+        (f) =>
+          !(f instanceof HTMLInputElement && f.type === 'radio') ||
+          form.querySelector(`input[name="${f.name}"]`) === f,
+      );
 
     // Re-validate a field once the visitor leaves it (after a first attempt).
     fields.forEach((f) =>

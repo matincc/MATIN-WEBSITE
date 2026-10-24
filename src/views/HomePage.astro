@@ -53,14 +53,15 @@ const t = useTranslations(lang);
 const { featured } = await getMatinFeed(lang, 0);
 const settings = await getSettings();
 
-// The next step after seeing what Matin does. Persian Get Involved has no volunteer form.
-const involvedHref = href('getInvolved', lang);
+// The next step after seeing what Matin does: Get Involved is now part of Contact &
+// Collaboration (Oct 24 2026). The Persian page has no volunteer section.
+const involvedHref = href('contact', lang);
 const ways = [
   { label: t('home.actAttend'), href: href('events', lang), icon: CalendarDays },
-  { label: t('home.actCollaborate'), href: `${involvedHref}#interest`, icon: Handshake },
+  { label: t('home.actCollaborate'), href: `${involvedHref}#write`, icon: Handshake },
   {
     label: t('home.actVolunteer'),
-    href: `${involvedHref}#${lang === 'fr' ? 'benevolat' : lang === 'en' ? 'volunteer' : 'interest'}`,
+    href: `${involvedHref}#${lang === 'fr' ? 'benevolat' : lang === 'en' ? 'volunteer' : 'write'}`,
     icon: HandHeart,
   },
   { label: t('home.involvedSecondary'), href: '#newsletter', icon: Mail },
@@ -197,7 +198,7 @@ const whoCards = [
           {t('home.involvedText')}
         </p>
         <div class="mt-9 flex flex-col gap-3 sm:flex-row sm:flex-wrap" data-reveal>
-          <a href={href('getInvolved', lang)} class="btn btn-primary">
+          <a href={involvedHref} class="btn btn-primary">
             {t('home.involvedPrimary')}
             <ArrowRight size={18} class="flip-rtl" aria-hidden="true" />
           </a>
@@ -249,7 +250,9 @@ const whoCards = [
       </figure>
       <div class="who-body">
         <SectionHeader id="who-title" title={t('home.whoTitle')} align="start" class="mb-7" />
-        <p class="who-positioning" data-reveal>{t('home.positioning')}</p>
+        <p class="who-positioning" data-reveal>
+          {t('home.positioning')}
+        </p>
         <p class="who-text" data-reveal>
           {t('home.whoText')}
         </p>

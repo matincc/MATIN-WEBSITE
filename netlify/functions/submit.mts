@@ -28,6 +28,8 @@ type Field = {
   label: string;
   long?: boolean;
   required?: boolean;
+  /** Required only when another field has this value, e.g. "requester_type=organization". */
+  requiredWhen?: string;
   checkbox?: boolean;
 };
 type FormDef = {
@@ -45,10 +47,21 @@ const consentField: Field = {
 };
 
 const FORMS: Record<string, FormDef> = {
+  // Contact & Collaboration (Oct 2026): an individual or an organization's representative.
   contact: {
-    subject: `${PREFIX} New Contact Message`,
+    subject: (d) =>
+      d.requester_type === 'organization'
+        ? `${PREFIX} New Contact Message (organization): ${d.subject}`
+        : `${PREFIX} New Contact Message: ${d.subject}`,
     confirm: true,
     fields: [
+      { name: 'requester_type', label: 'Je suis / I am', required: true },
+      {
+        name: 'organization',
+        label: 'Organisme (déclaré par l’expéditeur) / Organization (as declared by the sender)',
+        requiredWhen: 'requester_type=organization',
+      },
+      { name: 'position', label: 'Fonction / Position' },
       { name: 'name', label: 'Nom / Name', required: true },
       { name: 'email', label: 'Courriel / Email', required: true },
       { name: 'subject', label: 'Objet / Subject', required: true },
@@ -152,7 +165,9 @@ export default async (req: Request, context: Context) => {
       : f.long
         ? multiLine(raw)
         : singleLine(raw);
-    if (f.required && !value) missing.push(f.name);
+    const [whenName, whenValue] = f.requiredWhen?.split('=') ?? [];
+    const needed = f.required || (!!whenName && singleLine(data[whenName]) === whenValue);
+    if (needed && !value) missing.push(f.name);
     if (value) clean[f.name] = value;
   }
   if (missing.length) return json(400, { ok: false, error: 'required', fields: missing });

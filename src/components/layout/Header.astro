@@ -14,7 +14,7 @@ const { lang, alternates } = Astro.props;
 const t = useTranslations(lang);
 
 // Main menu, in this order (owner's brief, Oct 24 2026): Gallery and Resources join the
-// menu; Get Involved and Contact stay separate items.
+// menu. Get Involved is merged into Contact & Collaboration (Phase 3).
 const items: RouteKey[] = [
   'about',
   'team',
@@ -23,7 +23,6 @@ const items: RouteKey[] = [
   'news',
   'gallery',
   'resources',
-  'getInvolved',
   'contact',
 ];
 const links = items.map((key) => ({ key, href: href(key, lang), label: t(`nav.${key}`) }));
