@@ -56,6 +56,8 @@ const en: Dictionary = {
     team: 'Our Team',
     teamPresident: 'President',
     teamMembers: 'Team',
+    teamExecutive: 'Executive Team',
+    teamAdvisors: 'Advisors & Friends of Matin',
     president: 'A Personal Note from Our President, Reza Moafi',
     ourPresident: 'Our President',
   },
@@ -292,6 +294,18 @@ const en: Dictionary = {
     email: 'Share by email',
     copy: 'Copy link',
     copied: 'Link copied!',
+  },
+  team: {
+    executiveLede: "The people who coordinate and manage the institute's day-to-day work.",
+    executiveEmpty:
+      'Our executive team is being formed. Profiles will be published here as members join, with their consent.',
+    advisorsLede:
+      'People who voluntarily share their knowledge, advice and support, without being employees or officers of Matin.',
+    advisorsEmpty:
+      'Matin gratefully welcomes those who share their knowledge and support its work. Their profiles will appear here, with their consent.',
+    readMore: 'Read the full biography',
+    photoAlt: 'Portrait of {name}',
+    linkedin: 'LinkedIn profile',
   },
   president: {
     profile: 'Professional Profile',

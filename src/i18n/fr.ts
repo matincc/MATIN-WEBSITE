@@ -57,6 +57,8 @@ const fr = {
     team: 'Notre équipe',
     teamPresident: 'Président',
     teamMembers: 'Équipe',
+    teamExecutive: 'Équipe de direction',
+    teamAdvisors: 'Conseillers et amis de Matin',
     president: 'Quelques mots de notre président',
     ourPresident: 'Notre président',
   },
@@ -297,6 +299,19 @@ const fr = {
     email: 'Partager par courriel',
     copy: 'Copier le lien',
     copied: 'Lien copié!',
+  },
+  team: {
+    executiveLede:
+      "Les personnes qui coordonnent et gèrent les activités courantes de l'Institut.",
+    executiveEmpty:
+      "Notre équipe de direction est en cours de constitution. Les profils seront publiés ici au fur et à mesure, avec l'accord des personnes concernées.",
+    advisorsLede:
+      'Des personnes qui partagent bénévolement leurs connaissances, leurs conseils et leur soutien, sans être employées ni dirigeantes de Matin.',
+    advisorsEmpty:
+      'Matin accueille avec reconnaissance celles et ceux qui partagent leur savoir et soutiennent son travail. Leurs profils paraîtront ici, avec leur accord.',
+    readMore: 'Lire la biographie complète',
+    photoAlt: 'Portrait de {name}',
+    linkedin: 'Profil LinkedIn',
   },
   president: {
     profile: 'Profil professionnel',

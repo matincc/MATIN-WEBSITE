@@ -347,12 +347,21 @@ const team = defineCollection({
       name: z.string().min(1),
       /** Official position or role. */
       role: bi,
-      /** Short professional biography (two or three sentences). */
+      /** Short professional biography (two or three sentences), shown on the card. */
       bio: biOpt,
+      /** Optional longer biography (Markdown), shown under « Read the full biography ». */
+      fullBio: biOpt,
       /** Square portrait, supplied and approved by the person. */
       photo: image().optional(),
       linkedin: z.url().optional(),
-      group: z.enum(['staff', 'board']).default('board'),
+      /**
+       * Where the person appears on the Our Team page (owner's brief, Oct 24 2026):
+       * executive = coordinates and manages day-to-day operations; advisor = Advisors &
+       * Friends of Matin (voluntary, not staff or officers); board = governance, kept apart
+       * and not shown yet; president = shown by the President section only.
+       * « staff » is the former name of « executive » and is read the same way.
+       */
+      group: z.enum(['president', 'executive', 'advisor', 'board', 'staff']).default('executive'),
       order: z.number().default(100),
       /** Until a profile is complete and approved: visible only on the local preview. */
       draft: z.boolean().default(false),

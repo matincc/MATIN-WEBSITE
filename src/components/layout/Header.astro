@@ -40,11 +40,13 @@ const aboutLinks = [
   },
   { id: 'president', label: t('nav.president'), href: `${aboutHref}#president` },
 ];
-// Sub-links of "Our Team": the President and the team, on the Our Team page.
+// Sub-links of "Our Team" (owner's brief, Oct 24 2026): exactly three, the President,
+// the Executive Team and the Advisors & Friends of Matin, on the Our Team page.
 const teamHref = href('team', lang);
 const teamLinks = [
   { id: 'our-president', label: t('nav.teamPresident') },
-  { id: 'team', label: t('nav.teamMembers') },
+  { id: 'executive-team', label: t('nav.teamExecutive') },
+  { id: 'advisors', label: t('nav.teamAdvisors') },
 ].map((l) => ({ ...l, href: `${teamHref}#${l.id}` }));
 // Sub-links of "Events", in the owner's order: Matin Events, Matin's Picks (only while
 // there are picks, the section is hidden otherwise), Upcoming Events, then Past Events.
