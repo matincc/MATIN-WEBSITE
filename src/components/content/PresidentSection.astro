@@ -37,11 +37,16 @@ const linkedinPath =
 {bio && (
   <section
     id="our-president"
-    class="president-band on-terracotta scroll-mt-24 py-20"
+    class="president-band on-dark scroll-mt-24 py-14 sm:py-16"
     aria-labelledby="our-president-title"
   >
     <div class="container-site">
-      <SectionHeader align="start" id="our-president-title" title={t('about.ourPresident')} />
+      <SectionHeader
+        align="start"
+        id="our-president-title"
+        title={t('about.ourPresident')}
+        class="mb-8"
+      />
       <div class="president-bio">
         <div class="president-bio__media">
           <span class="president-bio__block" aria-hidden="true"></span>
@@ -91,10 +96,18 @@ const linkedinPath =
 )}
 
 <style>
-  /* Warm terracotta band (owner's request, Oct 2026); the white card keeps the
-     biography in ink and navy on white. */
+  /* Deep navy band (owner's choice, Oct 24 2026: navy, teal, cream and matte gold on the
+     Our Team page); the warm-white card keeps the biography in ink and navy. */
   .president-band {
-    background: var(--color-terracotta);
+    background: var(--color-primary);
+  }
+  /* Inside the warm-white card the LinkedIn button is navy with white text again. */
+  .president-bio :global(.btn-primary) {
+    background: var(--color-primary);
+    color: var(--color-white);
+  }
+  .president-bio :global(.btn-primary:hover) {
+    background: var(--color-teal-deep);
   }
   /* Inside the white card the focus ring is navy again (white would vanish). */
   .president-bio :global(:focus-visible) {
@@ -108,8 +121,9 @@ const linkedinPath =
     display: grid;
     gap: 2.5rem;
     max-width: 84rem;
-    padding: clamp(1.75rem, 1rem + 3vw, 4rem);
+    padding: clamp(1.5rem, 1rem + 2.5vw, 3.25rem);
     border: 1px solid var(--color-card-edge);
+    border-block-start: 5px solid var(--color-gold);
     border-radius: var(--radius-card);
     background: var(--color-paper);
     box-shadow: var(--shadow-card);
@@ -120,7 +134,7 @@ const linkedinPath =
     width: min(100%, 24rem);
     margin-block-end: 1rem;
   }
-  /* Mustard block behind one corner of the portrait, as on the President's note. */
+  /* Teal block behind one corner of the portrait. */
   .president-bio__block {
     position: absolute;
     inset-block-end: -1rem;
@@ -128,7 +142,7 @@ const linkedinPath =
     width: 55%;
     height: 45%;
     border-radius: var(--radius-card);
-    background: var(--color-gold);
+    background: var(--color-teal);
   }
   .president-bio__photo {
     position: relative;

@@ -32,8 +32,8 @@ const groups = [
     lede: t('team.executiveLede'),
     empty: t('team.executiveEmpty'),
     members: team.filter((m) => m.data.group === 'executive' || m.data.group === 'staff'),
+    accent: 'teal',
     accents: ['navy', 'teal', 'mustard'],
-    tint: false,
   },
   {
     id: 'advisors',
@@ -41,8 +41,8 @@ const groups = [
     lede: t('team.advisorsLede'),
     empty: t('team.advisorsEmpty'),
     members: team.filter((m) => m.data.group === 'advisor'),
+    accent: 'mustard',
     accents: ['teal', 'mustard', 'navy'],
-    tint: true,
   },
 ];
 ---
@@ -50,21 +50,26 @@ const groups = [
 <PageLayout lang={lang} title={t('nav.team')} alternates={siteAlternates('team')}>
   <PresidentSection lang={lang} />
 
-  <!-- "#team" is kept for older links to the team section. -->
-  <div id="team" class="scroll-mt-24">
-    {groups.map((g) => (
-      <section
-        id={g.id}
-        class:list={['section-pad scroll-mt-24', g.tint && 'bg-tint']}
-        aria-labelledby={`${g.id}-title`}
-      >
-        <div class="container-site">
+  <!-- "#team" is kept for older links to the team section. The two groups sit side by
+       side as compact panels; a group with members spans the full width. -->
+  <section id="team" class="team-groups scroll-mt-24" aria-label={t('nav.team')}>
+    <div class="container-site team-groups__grid">
+      {groups.map((g) => (
+        <section
+          id={g.id}
+          class:list={[
+            'team-group card scroll-mt-24',
+            g.members.length > 0 && 'team-group--full',
+          ]}
+          data-accent={g.accent}
+          aria-labelledby={`${g.id}-title`}
+        >
           <SectionHeader
             id={`${g.id}-title`}
             title={g.title}
-            lede={g.lede}
+            subtitle={g.lede}
             align="start"
-            class="mb-10"
+            class="mb-5"
           />
           {g.members.length > 0 ? (
             <ul class="team-grid">
@@ -122,10 +127,10 @@ const groups = [
           ) : (
             <p class="team-empty">{g.empty}</p>
           )}
-        </div>
-      </section>
-    ))}
-  </div>
+        </section>
+      ))}
+    </div>
+  </section>
 </PageLayout>
 
 <style>
@@ -216,14 +221,41 @@ const groups = [
     font-family: var(--font-display);
     font-weight: 700;
   }
-  /* A section without members: one short, honest line in a quiet panel. */
+  /* The two groups on a cream band: compact panels side by side on wide screens. */
+  .team-groups {
+    padding-block: clamp(3rem, 2rem + 3vw, 4.5rem);
+    background: var(--color-cream);
+  }
+  .team-groups__grid {
+    display: grid;
+    gap: 1.5rem;
+  }
+  @media (min-width: 56rem) {
+    .team-groups__grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  }
+  .team-group {
+    padding: clamp(1.5rem, 1.1rem + 1.5vw, 2.5rem);
+    border-block-start: 5px solid var(--accent);
+  }
+  .team-group--full {
+    grid-column: 1 / -1;
+  }
+  .team-group :global(.section-title) {
+    font-size: clamp(1.75rem, 1.45rem + 1.1vw, 2.375rem);
+  }
+  .team-group :global(.section-subtitle) {
+    max-width: 40rem;
+    font-size: 1.0625rem;
+    line-height: 1.65;
+  }
+  /* A group without members: one short, honest line. */
   .team-empty {
-    max-width: 46rem;
-    padding: 1.5rem 1.75rem;
-    border-inline-start: 4px solid var(--color-gold);
-    border-radius: 0.75rem;
-    background: var(--color-white);
-    font-size: clamp(1.0625rem, 1rem + 0.3vw, 1.1875rem);
+    max-width: 40rem;
+    padding-inline-start: 1rem;
+    border-inline-start: 3px solid var(--color-gold);
+    font-size: 1.0625rem;
     line-height: 1.7;
     color: var(--color-ink);
   }
