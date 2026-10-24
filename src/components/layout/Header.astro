@@ -28,18 +28,18 @@ const items: RouteKey[] = [
 ];
 const links = items.map((key) => ({ key, href: href(key, lang), label: t(`nav.${key}`) }));
 const aboutHref = href('about', lang);
-// Sub-links of "About": anchors on the About page. The Persian About page has the
-// values, the story and the founder's note (the other texts are not translated yet).
+// Sub-links of "About": only Who We Are and the President's note. Mission, Vision,
+// Values, Our Story and Legal status stay on the About page with their anchors
+// (#mission, #vision, #values, #story, #legal-status), so old links keep working.
+// The Persian About page has no Who We Are block, so that link opens the page itself.
 const aboutLinks = [
-  { id: 'who-we-are', label: t('nav.whoWeAre') },
-  { id: 'mission', label: t('nav.mission') },
-  { id: 'vision', label: t('nav.vision') },
-  { id: 'values', label: t('nav.values') },
-  { id: 'story', label: t('nav.story') },
-  { id: 'president', label: t('nav.president') },
-]
-  .filter((l) => lang !== 'fa' || ['values', 'story', 'president'].includes(l.id))
-  .map((l) => ({ ...l, href: `${aboutHref}#${l.id}` }));
+  {
+    id: 'who-we-are',
+    label: t('nav.whoWeAre'),
+    href: lang === 'fa' ? aboutHref : `${aboutHref}#who-we-are`,
+  },
+  { id: 'president', label: t('nav.president'), href: `${aboutHref}#president` },
+];
 // Sub-links of "Our Team": the President and the team, on the Our Team page.
 const teamHref = href('team', lang);
 const teamLinks = [

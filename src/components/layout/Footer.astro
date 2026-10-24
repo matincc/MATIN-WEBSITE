@@ -16,8 +16,7 @@ const { lang, showNewsletter = true } = Astro.props;
 const t = useTranslations(lang);
 const s = await getSettings();
 
-// The FAQ is left out until it has questions. The Gallery and the Resources directory
-// are always listed here (they are not in the header menu).
+// The FAQ is left out until it has questions.
 const empty = await emptySections();
 const explore = (
   [
