@@ -23,7 +23,7 @@ const t = useTranslations(lang);
   noindex
   searchable={false}
 >
-  <section class="container-site max-w-4xl pt-4 pb-24">
+  <section class="container-site max-w-[68rem] pt-4 pb-24">
     <link rel="stylesheet" href="/pagefind/pagefind-ui.css" />
     <div id="search" class="search-ui" data-search></div>
     <p class="card p-6 text-muted" data-search-unavailable hidden>
@@ -76,9 +76,61 @@ const t = useTranslations(lang);
     --pagefind-ui-border-radius: 14px;
     --pagefind-ui-font: var(--font-sans);
   }
-  .search-ui :global(.pagefind-ui__result-link) {
+  /* Larger, airier results (owner's brief, Oct 24 2026): 20px titles, 18px excerpts,
+     each result on its own white card. Classes are repeated to outweigh Pagefind's own
+     stylesheet, which loads after this one. */
+  .search-ui
+    :global(.pagefind-ui__search-input.pagefind-ui__search-input.pagefind-ui__search-input) {
+    font-family: var(--font-sans);
+    font-size: 1.25rem;
+    font-weight: 500;
+  }
+  .search-ui :global(.pagefind-ui__message.pagefind-ui__message.pagefind-ui__message) {
+    margin-block: 1.5rem 0.5rem;
     font-family: var(--font-display);
+    font-size: 1.25rem;
+    font-weight: 800;
     color: var(--color-primary);
+  }
+  .search-ui :global(.pagefind-ui__results.pagefind-ui__results.pagefind-ui__results) {
+    display: grid;
+    gap: 1rem;
+  }
+  .search-ui :global(.pagefind-ui__result.pagefind-ui__result.pagefind-ui__result) {
+    padding: 1.5rem 1.75rem;
+    border: 1px solid var(--color-card-edge);
+    border-inline-start: 5px solid var(--color-teal);
+    border-radius: var(--radius-card);
+    background: var(--color-white);
+    box-shadow: var(--shadow-card);
+  }
+  .search-ui
+    :global(.pagefind-ui__result-inner.pagefind-ui__result-inner.pagefind-ui__result-inner) {
+    margin-block-start: 0;
+  }
+  .search-ui
+    :global(.pagefind-ui__result-title.pagefind-ui__result-title.pagefind-ui__result-title) {
+    font-size: 1.25rem;
+    line-height: 1.35;
+  }
+  .search-ui :global(.pagefind-ui__result-link.pagefind-ui__result-link.pagefind-ui__result-link) {
+    font-family: var(--font-display);
+    font-weight: 800;
+    color: var(--color-primary);
+  }
+  .search-ui
+    :global(.pagefind-ui__result-excerpt.pagefind-ui__result-excerpt.pagefind-ui__result-excerpt) {
+    margin-block-start: 0.5rem;
+    font-size: 1.125rem;
+    line-height: 1.7;
+    color: var(--color-ink);
+  }
+  .search-ui :global(.pagefind-ui__button.pagefind-ui__button.pagefind-ui__button) {
+    margin-block-start: 1.5rem;
+    font-family: var(--font-display);
+    font-size: 1.0625rem;
+    font-weight: 800;
+    border-radius: 999px;
   }
   .search-ui :global(mark) {
     background: var(--color-gold);
