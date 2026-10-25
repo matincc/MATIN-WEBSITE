@@ -284,7 +284,7 @@ const fr = {
     region: 'Région',
     culturalTitle: 'Actualité culturelle',
     culturalLede:
-      'Des nouvelles culturelles de Montréal, du Canada et du monde, choisies par Matin, vérifiées et reliées à leur source.',
+      'Des nouvelles culturelles de Montréal, du Québec, du Canada et du monde, choisies par Matin, vérifiées et reliées à leur source.',
     regionEmpty:
       "Aucune nouvelle n'a encore été retenue pour cette région. Matin publie uniquement des nouvelles vérifiées, toujours reliées à leur source d'origine.",
     allCultural: "Toute l'actualité culturelle",
@@ -311,6 +311,7 @@ const fr = {
   },
   newsRegions: {
     montreal: 'Montréal',
+    quebec: 'Québec',
     canada: 'Canada',
     international: 'Ailleurs dans le monde',
   },

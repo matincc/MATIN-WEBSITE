@@ -43,6 +43,12 @@ export type NewsCategory = (typeof newsCategories)[number];
 export const newsRegions = ['montreal', 'canada', 'international'] as const;
 export type NewsRegion = (typeof newsRegions)[number];
 
+/** The four region tabs of Cultural News (owner's brief, Oct 25 2026, news assistant):
+ * Montréal, Québec (outside Montréal), Canada (outside Québec) and around the world.
+ * Matin's Picks keep their three tabs above. */
+export const culturalNewsRegions = ['montreal', 'quebec', 'canada', 'international'] as const;
+export type CulturalNewsRegion = (typeof culturalNewsRegions)[number];
+
 /* Events & Cultural Agenda */
 
 /** Who runs the event. Only `matin` and `co-organized` events get a page on this site. */

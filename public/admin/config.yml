@@ -59,7 +59,8 @@ collections:
         required: false
         options:
           - { label: Montréal, value: montreal }
-          - { label: 'Canada (rest of Québec included)', value: canada }
+          - { label: 'Québec (outside Montréal)', value: quebec }
+          - { label: 'Canada (outside Québec)', value: canada }
           - { label: Around the World, value: international }
       - { name: date, label: 'Publication date (for Cultural News, the source''s date)', widget: datetime, time_format: false, format: YYYY-MM-DD }
       - { name: updated, label: Updated on (optional), widget: datetime, time_format: false, format: YYYY-MM-DD, required: false }

@@ -279,7 +279,7 @@ const en: Dictionary = {
     region: 'Region',
     culturalTitle: 'Cultural News',
     culturalLede:
-      'Cultural news from Montréal, Canada and around the world, selected by Matin, verified and linked to its source.',
+      'Cultural news from Montréal, Québec, Canada and around the world, selected by Matin, verified and linked to its source.',
     regionEmpty:
       'No story has been selected for this region yet. Matin publishes only verified news, always linked to its original source.',
     allCultural: 'All cultural news',
@@ -306,6 +306,7 @@ const en: Dictionary = {
   },
   newsRegions: {
     montreal: 'Montréal',
+    quebec: 'Québec',
     canada: 'Canada',
     international: 'Around the World',
   },

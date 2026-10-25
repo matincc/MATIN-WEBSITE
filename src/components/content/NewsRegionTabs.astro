@@ -1,6 +1,6 @@
 ---
 /**
- * Cultural News in three region tabs: Montréal (default), Canada,
+ * Cultural News in four region tabs: Montréal (default), Québec, Canada,
  * Around the World (owner's brief, Oct 25 2026). Only published entries reach this list;
  * proposed or rejected stories are never in the repository (see
  * src/content/news/README.md). Each card names its source and links to it.
@@ -10,7 +10,7 @@ import { Newspaper } from '@lucide/astro';
 import PostCard from '@/components/content/PostCard.astro';
 import type { UiLang } from '@/i18n/routes';
 import { useTranslations } from '@/i18n/ui';
-import { newsRegions } from '@/lib/taxonomy';
+import { culturalNewsRegions } from '@/lib/taxonomy';
 
 interface Props {
   lang: UiLang;
@@ -25,7 +25,7 @@ const { lang, posts, perTab, id, level = 3 } = Astro.props;
 const RegionHeading = `h${level}` as 'h3' | 'h4';
 const cardLevel = `h${level + 1}` as 'h4' | 'h5';
 const t = useTranslations(lang);
-const tabs = newsRegions.map((region) => {
+const tabs = culturalNewsRegions.map((region) => {
   const items = posts.filter((p) => (p.data.region ?? 'international') === region);
   return { region, items: perTab ? items.slice(0, perTab) : items };
 });

@@ -16,7 +16,7 @@ import {
   eventSubjects,
   faqTopics,
   newsCategories,
-  newsRegions,
+  culturalNewsRegions,
   priceTypes,
   resourceCategories,
 } from './lib/taxonomy';
@@ -209,8 +209,8 @@ const news = defineCollection({
         author: z.union([z.string(), bi]),
         /** recommends (Cultural News, external, with source and region) or matin-news (Matin News) */
         category: z.enum(newsCategories),
-        /** Cultural News only: its tab, montreal, canada (the rest of Québec included) or international. */
-        region: z.enum(newsRegions).optional(),
+        /** Cultural News only: its tab, montreal, quebec, canada or international. */
+        region: z.enum(culturalNewsRegions).optional(),
         tags: z.array(z.string()).default([]),
         image: image().optional(),
         imageAlt: biOpt,
