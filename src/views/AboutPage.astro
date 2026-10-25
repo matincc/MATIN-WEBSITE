@@ -1,24 +1,22 @@
 ---
 /**
- * About page, in this order: Who We Are (photo, text, NEQ and links to Mission, Vision and
- * Values; moved here from the homepage, owner's brief Oct 25 2026), Our Mission, Our
- * Vision and Legal status on a pale teal band, two photos of Montréal's cultural life,
- * Our values, Our story, A personal note from our founder. The Persian page shows the values, the story and the
+ * About page, in this order: Who We Are (photo, text and NEQ; moved here from the homepage,
+ * owner's brief Oct 25 2026), Our Mission (navy), Our Vision (deep teal) and Legal status
+ * (aqua) as coloured cards on an ivory band, Our values (six coloured cards), Our story
+ * (aqua band), A personal note from our President (owner's About brief, Oct 25 2026: no
+ * shortcut buttons, no photo pair). The Persian page shows the values, the story and the
  * founder's note (Who We Are, Mission and Vision have no Persian translation yet) and
  * links to the English page. The President's biography and the team are on the Our Team
  * page (TeamPage.astro).
  */
 import { Picture } from 'astro:assets';
 import {
-  ArrowRight,
   DoorOpen,
-  Eye,
   HeartHandshake,
   LayoutGrid,
   MessagesSquare,
   Palette,
   Quote,
-  Target,
   Users,
 } from '@lucide/astro';
 import PhotoCredit from '@/components/media/PhotoCredit.astro';
@@ -46,6 +44,8 @@ const blocks: {
   title: string;
   text?: string;
   accent: string;
+  /** Card surface: navy and teal are dark cards with white text, aqua a light one. */
+  tone: string;
   link?: { href: string; label: string };
   /** Short facts shown as a badge above the text (Legal status: the NEQ). */
   badge?: string;
@@ -57,12 +57,14 @@ const blocks: {
           title: t('about.mission'),
           text: pick(settings.mission, lang),
           accent: 'navy',
+          tone: 'navy',
         },
         {
           id: 'vision',
           title: t('about.vision'),
           text: pick(about.vision, lang),
-          accent: 'mustard',
+          accent: 'teal',
+          tone: 'teal',
         },
       ]
     : []),
@@ -72,22 +74,17 @@ const blocks: {
           id: 'legal-status',
           title: t('about.legalStatus'),
           text: settings.legal.statement[lang],
-          accent: 'teal',
+          accent: 'mustard',
+          tone: 'aqua',
           link: { href: href('legalInfo', lang), label: t('about.legalMore') },
           badge: t('footer.neq', { neq: settings.legal.neq }),
         },
       ]
     : []),
 ];
-const valueAccents = ['teal', 'mustard', 'navy', 'coral'];
-// Links from Who We Are to the sections below (formerly on the homepage).
-const whoLinks = [
-  { id: 'mission', label: t('nav.mission'), icon: Target, accent: 'navy' },
-  { id: 'vision', label: t('nav.vision'), icon: Eye, accent: 'mustard' },
-  { id: 'values', label: t('nav.values'), icon: HeartHandshake, accent: 'teal' },
-];
-// Two illustrative photos of Montréal's cultural life (never presented as Matin activities).
-const band = [photos.dialogueCircle, photos.placejc];
+// Six coordinated surfaces for the values (owner's brief, Oct 25 2026): dark navy and deep
+// teal cards alternate with aqua and champagne ones.
+const valueTones = ['navy', 'aqua', 'champagne', 'teal', 'champagne', 'aqua'];
 
 // Thin-line icons, all drawn at the same size and stroke width.
 // Equity is four equal squares: never a scale, gavel or other legal symbol.
@@ -129,7 +126,7 @@ const founderRole = pick(president.signature, lang) || pick(president.title, lan
   description={t('about.lede')}
   alternates={siteAlternates('about')}
 >
-  <!-- Who we are: photo and text side by side, then links to Mission, Vision, Values -->
+  <!-- Who we are: photo and text side by side -->
   {full && (
     <section id="who-we-are" class="scroll-mt-24 pt-4 pb-20" aria-labelledby="who-we-are-title">
       <div class="container-site who-grid">
@@ -163,27 +160,12 @@ const founderRole = pick(president.signature, lang) || pick(president.title, lan
               </a>
             </p>
           )}
-          <nav aria-label={t('home.whoCardsLabel')} class="mt-9">
-            <ul class="who-links">
-              {whoLinks.map((c) => (
-                <li>
-                  <a href={`#${c.id}`} class="who-link" data-accent={c.accent}>
-                    <span class="who-link__icon" aria-hidden="true">
-                      <c.icon size={24} stroke-width={1.75} />
-                    </span>
-                    <span class="who-link__label">{c.label}</span>
-                    <ArrowRight size={20} class="who-link__arrow flip-rtl" aria-hidden="true" />
-                  </a>
-                </li>
-              ))}
-            </ul>
-          </nav>
         </div>
       </div>
     </section>
   )}
 
-  <!-- Mission, Vision and Legal status: white cards on a pale teal band -->
+  <!-- Mission, Vision and Legal status: navy, deep teal and aqua cards on an ivory band -->
   {blocks.length > 0 && (
     <div class="about-band">
       <div class="container-site about-blocks">
@@ -195,6 +177,7 @@ const founderRole = pick(president.signature, lang) || pick(president.title, lan
               b.id === 'legal-status' && 'about-block--legal',
             ]}
             data-accent={b.accent}
+            data-tone={b.tone}
             data-reveal
             aria-labelledby={`${b.id}-title`}
           >
@@ -220,41 +203,20 @@ const founderRole = pick(president.signature, lang) || pick(president.title, lan
     </div>
   )}
 
-  <!-- Montréal's cultural life: two illustrative photos with their credits -->
-  <div class="container-site photo-pair py-16 sm:py-20">
-    {band.map((p, i) => (
-      <figure class="photo-pair__item" data-reveal style={`--reveal-delay:${i * 120}ms`}>
-        <div class="photo-pair__photo">
-          <Picture
-            src={p.src}
-            alt=""
-            formats={['avif', 'webp']}
-            widths={[640, 960, 1280]}
-            sizes="(min-width: 48rem) 45vw, 92vw"
-            style={`object-position:${p.focus}`}
-          />
-        </div>
-        <figcaption>
-          <PhotoCredit credit={p.credit} />
-        </figcaption>
-      </figure>
-    ))}
-  </div>
-
   <!-- Our values -->
-  <section id="values" class="scroll-mt-24 bg-tint py-20" aria-labelledby="values-title">
+  <section id="values" class="values scroll-mt-24 py-20" aria-labelledby="values-title">
     <div class="container-site">
       <SectionHeader align="start" id="values-title" title={t('about.values')} />
       <ul class="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
         {about.values.map((v, i) => {
           const Icon = icons[v.icon];
           return (
-            <li class="card value-card p-8" data-accent={valueAccents[i % valueAccents.length]}>
+            <li class="value-card" data-tone={valueTones[i % valueTones.length]} data-reveal>
               <span class="value-card__icon" aria-hidden="true">
                 <Icon size={30} stroke-width={1.6} />
               </span>
-              <h3 class="mb-2 text-2xl font-bold">{pick(v.title, lang)}</h3>
-              <p>{pick(v.text, lang)}</p>
+              <h3 class="value-card__title">{pick(v.title, lang)}</h3>
+              <p class="value-card__text">{pick(v.text, lang)}</p>
             </li>
           );
         })}
@@ -263,7 +225,7 @@ const founderRole = pick(president.signature, lang) || pick(president.title, lan
   </section>
 
   {!full && (
-    <section class="bg-tint pb-20">
+    <section class="values pb-20">
       <p class="container-site text-center">
         {faAboutMore.text}{' '}
         <a href={`${path('about', 'en')}?from=fa`} lang="fa" class="font-semibold underline">
@@ -274,8 +236,9 @@ const founderRole = pick(president.signature, lang) || pick(president.title, lan
   )}
 
   <!-- Our story: one entry per milestone in about.yaml (history), oldest first. -->
-  <section id="story" class="section-pad scroll-mt-24" aria-labelledby="history-title">
-    <div class="container-site">
+  <section id="story" class="story section-pad scroll-mt-24" aria-labelledby="history-title">
+    <DialogueArt accent="teal" seed="story" class="story__art" />
+    <div class="container-site relative">
       <SectionHeader align="start" id="history-title" title={t('about.history')} />
       <ol class="timeline">
         {history.map((h) => (
@@ -295,8 +258,9 @@ const founderRole = pick(president.signature, lang) || pick(president.title, lan
     </div>
   </section>
 
-  <!-- A personal note from our founder: a light letter on cream, framed by flat colour
-       blocks and the dialogue motif; paragraphs on the reading side (right in Persian). -->
+  <!-- A personal note from our President: a tall letter on cream, a navy head with the
+       quotation badge above the title, the message on ivory, then the signature; framed by
+       teal and gold blocks and the dialogue motif; paragraphs on the reading side. -->
   {message.length > 0 && (
     <section id="president" class="founder scroll-mt-24" aria-labelledby="president-title">
       <DialogueArt accent="teal" seed="founder" class="founder__art" />
@@ -313,15 +277,17 @@ const founderRole = pick(president.signature, lang) || pick(president.title, lan
                 {t('about.founderTitle')}
               </h2>
             </header>
-            <blockquote class="founder__quote">
-              {message.map((para) => (
-                <p>{para}</p>
-              ))}
-            </blockquote>
-            <figcaption class="founder__sign">
-              <span class="founder__name">{founderName}</span>
-              {founderRole && <span class="founder__role">{founderRole}</span>}
-            </figcaption>
+            <div class="founder__body">
+              <blockquote class="founder__quote">
+                {message.map((para) => (
+                  <p>{para}</p>
+                ))}
+              </blockquote>
+              <figcaption class="founder__sign">
+                <span class="founder__name">{founderName}</span>
+                {founderRole && <span class="founder__role">{founderRole}</span>}
+              </figcaption>
+            </div>
           </figure>
         </div>
       </div>
@@ -413,106 +379,19 @@ const founderRole = pick(president.signature, lang) || pick(president.title, lan
     background: var(--color-ivory);
     font-size: 1.0625rem;
   }
-  .who-links {
-    display: grid;
-    gap: 0.75rem;
-    max-width: 42rem;
-  }
-  @media (min-width: 40rem) {
-    .who-links {
-      grid-template-columns: repeat(3, minmax(0, 1fr));
-    }
-  }
-  /* Link tiles: accent icon tile, navy label, arrow. */
-  .who-link {
-    display: flex;
-    align-items: center;
-    gap: 0.85rem;
-    height: 100%;
-    padding: 0.85rem 1rem;
-    border: 1px solid var(--color-card-edge);
-    border-radius: var(--radius-card);
-    background: var(--color-white);
-    box-shadow: var(--shadow-card);
-    text-decoration: none;
-    transition:
-      border-color 0.2s,
-      transform 0.25s cubic-bezier(0.2, 0.7, 0.2, 1);
-  }
-  .who-link:hover {
-    border-color: var(--accent);
-    transform: translateY(-2px);
-  }
-  .who-link__icon {
-    display: grid;
-    flex-shrink: 0;
-    place-items: center;
-    width: 2.75rem;
-    height: 2.75rem;
-    border-radius: 0.75rem;
-    background: var(--accent);
-    color: var(--color-primary);
-  }
-  /* Navy tile (Mission): mustard icon (5.3:1). */
-  .who-link[data-accent='navy'] .who-link__icon {
-    color: var(--color-gold);
-  }
-  .who-link__label {
-    flex: 1;
-    font-family: var(--font-display);
-    font-size: 1.125rem;
-    font-weight: 800;
-    color: var(--color-primary);
-  }
-  .who-link :global(.who-link__arrow) {
-    flex-shrink: 0;
-    color: var(--accent-ink);
-  }
-  @media (prefers-reduced-motion: reduce) {
-    .who-link:hover {
-      transform: none;
-    }
-  }
 
-  /* Mission, Vision and Legal status on a pale teal band (owner's brief, Oct 25 2026). */
+  /* Mission, Vision and Legal status on an ivory band (owner's About brief, Oct 25 2026:
+     coordinated navy, deep teal, turquoise and matte-gold cards). */
   .about-band {
     padding-block: clamp(3.5rem, 2.5rem + 3vw, 5.5rem);
-    background: var(--color-teal-pale);
-    border-block: 1px solid var(--color-teal-edge);
+    background: var(--color-ivory);
+    border-block: 1px solid var(--color-card-edge);
   }
   .about-blocks {
     display: grid;
     gap: 1.75rem;
   }
 
-  /* Two photos side by side, each with its credit. */
-  .photo-pair {
-    display: grid;
-    gap: 2rem;
-  }
-  @media (min-width: 48rem) {
-    .photo-pair {
-      grid-template-columns: repeat(2, minmax(0, 1fr));
-    }
-    .photo-pair__item:nth-child(2) {
-      margin-block-start: 3rem;
-    }
-  }
-  .photo-pair__photo {
-    aspect-ratio: 3 / 2;
-    overflow: hidden;
-    border-radius: var(--radius-card);
-    border-block-end: 6px solid var(--color-gold);
-  }
-  .photo-pair__item:nth-child(2) .photo-pair__photo {
-    border-block-end-color: var(--color-teal);
-  }
-  .photo-pair__photo :global(img) {
-    display: block;
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-  }
   /* Mission and Vision side by side; the compact Legal status card joins them as a third
      column on wide screens (owner's brief, Oct 24 2026: it was too wide for its text). */
   @media (min-width: 56rem) {
@@ -540,7 +419,8 @@ const founderRole = pick(president.signature, lang) || pick(president.title, lan
     margin-block-end: 1rem;
     padding: 0.3rem 0.85rem;
     border-radius: 999px;
-    background: var(--color-tint);
+    background: var(--color-white);
+    border: 1px solid var(--color-gold);
     color: var(--color-primary);
     font-family: var(--font-display);
     font-weight: 800;
@@ -548,25 +428,103 @@ const founderRole = pick(president.signature, lang) || pick(president.title, lan
     letter-spacing: 0.02em;
   }
   .about-block {
+    position: relative;
+    overflow: hidden;
     padding: clamp(1.75rem, 1.2rem + 2.2vw, 3.25rem);
     border: 1px solid var(--color-card-edge);
     box-shadow: var(--shadow-card);
-    border-block-start: 6px solid var(--accent);
+    border-block-start: 6px solid var(--color-gold);
     border-radius: var(--radius-card);
     background: var(--color-white);
+  }
+  /* A quiet flat circle in the corner of each card (no gradient). */
+  .about-block::after {
+    content: '';
+    position: absolute;
+    inset-block-end: -4.5rem;
+    inset-inline-end: -4.5rem;
+    width: 11rem;
+    height: 11rem;
+    border-radius: 50%;
+    pointer-events: none;
+  }
+  .about-block > * {
+    position: relative;
+    z-index: 1;
+  }
+  @media (max-width: 40rem) {
+    .about-block::after {
+      width: 7rem;
+      height: 7rem;
+      inset-block-end: -3.5rem;
+      inset-inline-end: -3.5rem;
+    }
   }
   .about-block__title {
     margin-block-end: 1.1rem;
     font-size: clamp(1.75rem, 1.4rem + 1.2vw, 2.5rem);
     font-weight: 800;
   }
+  .about-block__title::after {
+    content: '';
+    display: block;
+    width: 3rem;
+    height: 3px;
+    margin-block-start: 0.75rem;
+    border-radius: 2px;
+    background: var(--color-gold);
+  }
+  /* Navy (Mission) and deep teal (Vision): white text 11.9:1 and 6.2:1, cream titles. */
+  .about-block[data-tone='navy'],
+  .about-block[data-tone='teal'] {
+    border-color: transparent;
+    border-block-start-color: var(--color-gold);
+    color: var(--color-white);
+  }
+  .about-block[data-tone='navy'] {
+    background: var(--color-primary);
+  }
+  .about-block[data-tone='teal'] {
+    background: var(--color-teal-deep);
+  }
+  .about-block[data-tone='navy'] .about-block__title,
+  .about-block[data-tone='teal'] .about-block__title {
+    color: var(--color-cream);
+  }
+  .about-block[data-tone='navy']::after {
+    background: color-mix(in srgb, var(--color-teal) 30%, transparent);
+  }
+  .about-block[data-tone='teal']::after {
+    background: color-mix(in srgb, var(--color-white) 12%, transparent);
+  }
+  /* Aqua (Legal status): navy text, gold badge edge. */
+  .about-block[data-tone='aqua'] {
+    background: var(--color-aqua);
+    border-color: var(--color-aqua-edge);
+    border-block-start-color: var(--color-gold);
+  }
+  .about-block[data-tone='aqua']::after {
+    background: color-mix(in srgb, var(--color-white) 45%, transparent);
+  }
   .about-block__text {
     max-width: 44rem;
     font-size: clamp(1.125rem, 1.05rem + 0.3vw, 1.25rem);
     line-height: 1.7;
   }
+  /* Our values: six coloured cards on warm white (owner's About brief, Oct 25 2026).
+     Navy and deep teal take white text; aqua and champagne take navy and ink. */
+  .values {
+    background: var(--color-paper);
+  }
   .value-card {
-    border-block-start: 5px solid var(--accent);
+    height: 100%;
+    padding: 2rem;
+    border: 1px solid var(--color-card-edge);
+    border-block-start: 5px solid var(--color-gold);
+    border-radius: var(--radius-card);
+    box-shadow: var(--shadow-card);
+    font-size: 1.125rem;
+    line-height: 1.65;
   }
   .value-card__icon {
     display: grid;
@@ -575,8 +533,46 @@ const founderRole = pick(president.signature, lang) || pick(president.title, lan
     height: 3.75rem;
     margin-block-end: 1.25rem;
     border-radius: 1rem;
-    background: color-mix(in srgb, var(--accent) 22%, var(--color-white));
+    background: var(--color-white);
     color: var(--color-primary);
+  }
+  .value-card__title {
+    margin-block-end: 0.5rem;
+    font-size: 1.5rem;
+    font-weight: 800;
+  }
+  .value-card[data-tone='navy'],
+  .value-card[data-tone='teal'] {
+    border-color: transparent;
+    border-block-start-color: var(--color-gold);
+    color: var(--color-white);
+  }
+  .value-card[data-tone='navy'] {
+    background: var(--color-primary);
+  }
+  .value-card[data-tone='teal'] {
+    background: var(--color-teal-deep);
+  }
+  .value-card[data-tone='navy'] .value-card__title,
+  .value-card[data-tone='teal'] .value-card__title {
+    color: var(--color-cream);
+  }
+  .value-card[data-tone='navy'] .value-card__icon {
+    background: color-mix(in srgb, var(--color-white) 12%, var(--color-primary));
+    color: var(--color-gold);
+  }
+  .value-card[data-tone='teal'] .value-card__icon {
+    background: var(--color-cream);
+    color: var(--color-teal-deep);
+  }
+  .value-card[data-tone='aqua'] {
+    background: var(--color-aqua);
+    border-color: var(--color-aqua-edge);
+    border-block-start-color: var(--color-primary);
+  }
+  .value-card[data-tone='champagne'] {
+    background: var(--color-champagne);
+    border-block-start-color: var(--color-teal);
   }
   /* Round badge: cream circle with a thin gold border. */
   .badge {
@@ -593,7 +589,22 @@ const founderRole = pick(president.signature, lang) || pick(president.title, lan
     background: var(--color-cream);
   }
 
-  /* Timeline: year on the left, gold dot on the vertical line, card on the right. */
+  /* Our story on an aqua band with the dialogue motif (owner's About brief, Oct 25 2026):
+     navy years, a navy line with gold-ringed markers, ivory cards with a gold top edge. */
+  .story {
+    position: relative;
+    overflow: hidden;
+    background: var(--color-aqua);
+    border-block: 1px solid var(--color-aqua-edge);
+  }
+  .story :global(.story__art) {
+    position: absolute;
+    inset-block-end: -5rem;
+    inset-inline-start: -6rem;
+    width: min(34rem, 70vw);
+    opacity: 0.35;
+  }
+  /* Timeline: year on the left, marker on the vertical line, card on the right. */
   /* Our story: the year in large type on the reading side, a teal marker on the
      line, then a wide card whose paragraphs keep a comfortable measure. */
   .timeline {
@@ -608,8 +619,9 @@ const founderRole = pick(president.signature, lang) || pick(president.title, lan
     inset-inline-start: 0.5rem;
     top: 0.75rem;
     bottom: 0.75rem;
-    width: 2px;
-    background: color-mix(in srgb, var(--color-teal) 45%, var(--color-white));
+    width: 3px;
+    border-radius: 2px;
+    background: color-mix(in srgb, var(--color-primary) 55%, var(--color-aqua));
   }
   .timeline__item {
     position: relative;
@@ -624,23 +636,26 @@ const founderRole = pick(president.signature, lang) || pick(president.title, lan
     width: 1.1rem;
     height: 1.1rem;
     border-radius: 999px;
-    background: var(--color-teal);
-    box-shadow: 0 0 0 5px var(--color-paper);
+    background: var(--color-primary);
+    box-shadow:
+      0 0 0 4px var(--color-gold),
+      0 0 0 8px var(--color-aqua);
   }
   .timeline__year {
     font-family: var(--font-display);
     font-size: clamp(2.75rem, 2rem + 3vw, 4.5rem);
     font-weight: 800;
     line-height: 1;
-    color: var(--color-teal-deep);
+    color: var(--color-primary);
   }
   .timeline__card {
     padding: clamp(1.75rem, 1.2rem + 2.5vw, 3.5rem);
     border: 1px solid var(--color-card-edge);
     box-shadow: var(--shadow-card);
-    border-block-start: 6px solid var(--color-teal);
+    border-block-start: 6px solid var(--color-gold);
+    border-inline-start: 6px solid var(--color-teal-deep);
     border-radius: var(--radius-card);
-    background: var(--color-white);
+    background: var(--color-ivory);
   }
   .timeline__title {
     margin-block-end: 1.25rem;
@@ -680,9 +695,10 @@ const founderRole = pick(president.signature, lang) || pick(president.title, lan
     }
   }
 
-  /* A personal note from our founder: a white letter on cream, about 52rem wide, with
-     two flat colour blocks behind its corners and the dialogue motif in the background.
-     Text on white: ink 14:1, navy 11.9:1, terracotta-deep labels 6.8:1. */
+  /* A personal note from our President (owner's About brief, Oct 25 2026: warmer colour,
+     a taller letter). On cream: a letter about 50rem wide, a navy head (white title 11.9:1,
+     gold badge 5.3:1), the message on ivory (ink 13:1), teal and gold blocks behind two
+     corners and the dialogue motif in the background. */
   .founder {
     position: relative;
     overflow: hidden;
@@ -698,7 +714,7 @@ const founderRole = pick(president.signature, lang) || pick(president.title, lan
   }
   .founder__frame {
     position: relative;
-    max-width: 56rem;
+    max-width: 50rem;
     margin-inline: auto;
   }
   .founder__block {
@@ -716,47 +732,54 @@ const founderRole = pick(president.signature, lang) || pick(president.title, lan
     inset-block-end: -1rem;
     inset-inline-end: -1rem;
     width: 40%;
-    height: 7rem;
-    background: var(--color-terracotta);
+    height: 9rem;
+    background: var(--color-teal);
   }
   .founder__note {
     position: relative;
-    padding: clamp(2rem, 1.2rem + 3.5vw, 4.5rem);
-    border: 1px solid var(--color-line);
+    overflow: hidden;
+    border: 1px solid var(--color-card-edge);
     border-radius: var(--radius-card);
-    background: var(--color-white);
+    background: var(--color-ivory);
+    box-shadow: var(--shadow-card);
   }
+  /* Navy head: the badge sits above the title, both on the reading side. */
   .founder__head {
     display: flex;
-    align-items: center;
-    gap: 1rem;
-    margin-block-end: clamp(1.75rem, 1.4rem + 1.2vw, 2.5rem);
-    padding-block-end: 1.5rem;
-    border-block-end: 1px solid color-mix(in srgb, var(--color-gold) 60%, transparent);
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 1.1rem;
+    padding: clamp(2rem, 1.2rem + 3vw, 3.5rem) clamp(2rem, 1.2rem + 3.5vw, 4.5rem);
+    border-block-end: 5px solid var(--color-gold);
+    background: var(--color-primary);
   }
   .founder__mark {
     display: grid;
     flex-shrink: 0;
     place-items: center;
-    width: 3.5rem;
-    height: 3.5rem;
+    width: 3.75rem;
+    height: 3.75rem;
     border-radius: 50%;
-    background: var(--color-primary);
-    color: var(--color-gold);
+    background: var(--color-gold);
+    color: var(--color-primary);
   }
   .founder__title {
-    font-size: clamp(1.625rem, 1.25rem + 1.4vw, 2.5rem);
+    font-size: clamp(1.75rem, 1.3rem + 1.6vw, 2.75rem);
     font-weight: 800;
     line-height: 1.15;
-    color: var(--color-primary);
+    color: var(--color-white);
+  }
+  .founder__body {
+    padding: clamp(2rem, 1.2rem + 3.5vw, 4.5rem);
+    padding-block-start: clamp(2.25rem, 1.5rem + 3vw, 4rem);
   }
   /* Paragraphs on the reading side, a comfortable measure and generous spacing. */
   .founder__quote {
     display: grid;
-    gap: 1.4rem;
-    max-width: 46rem;
+    gap: 1.5rem;
+    max-width: 42rem;
     font-size: clamp(1.1875rem, 1.08rem + 0.45vw, 1.4375rem);
-    line-height: 1.8;
+    line-height: 1.85;
     color: var(--color-ink);
     text-align: start;
   }
@@ -773,7 +796,9 @@ const founderRole = pick(president.signature, lang) || pick(president.title, lan
     display: grid;
     gap: 0.3rem;
     justify-items: start;
-    margin-block-start: 2.5rem;
+    margin-block-start: 2.75rem;
+    padding-block-start: 1.75rem;
+    border-block-start: 1px solid var(--color-card-edge);
   }
   .founder__sign::before {
     content: '';
@@ -781,7 +806,7 @@ const founderRole = pick(president.signature, lang) || pick(president.title, lan
     height: 3px;
     margin-block-end: 1rem;
     border-radius: 2px;
-    background: var(--color-gold);
+    background: var(--color-teal);
   }
   .founder__name {
     font-family: var(--font-display);
@@ -791,7 +816,7 @@ const founderRole = pick(president.signature, lang) || pick(president.title, lan
   }
   .founder__role {
     font-size: 1.0625rem;
-    color: var(--color-terracotta-deep);
+    color: var(--color-teal-deep);
     font-weight: 600;
   }
   @media (max-width: 40rem) {
@@ -804,7 +829,7 @@ const founderRole = pick(president.signature, lang) || pick(president.title, lan
     .founder__block--b {
       inset-block-end: -0.6rem;
       inset-inline-end: -0.6rem;
-      height: 4rem;
+      height: 5rem;
     }
   }
 </style>

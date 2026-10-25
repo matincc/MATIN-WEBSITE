@@ -360,7 +360,7 @@ const en: Dictionary = {
     vision: 'Our Vision',
     values: 'Our values',
     history: 'Our story',
-    founderTitle: 'A Personal Note from Our President, Reza Moafi',
+    founderTitle: 'A Personal Note from Our President',
     presidentPhotoAlt: 'Portrait of {name}',
     team: 'Our Team',
     board: 'Board of directors',
