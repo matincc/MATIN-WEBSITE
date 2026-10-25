@@ -1,125 +1,189 @@
 ---
 /**
- * News & Insights card, magazine style: image (or the dialogue motif), coloured category
- * label, date, large headline, excerpt. `featured` makes it the lead story: one wide card
- * with the image beside the text on wider screens. A cultural news story (Matin
- * Recommends with a source) names its source and links straight to it.
+ * News card (owner's brief, Oct 25 2026: a small, credible cultural publication).
+ * - Cultural News (`recommends`): image or the dialogue motif, region label, the source's
+ *   publication date and name, headline, Matin's short summary and a "Read more at the
+ *   source" action; the whole card opens the original article in a new tab.
+ * - Matin News (`matin-news`): warm institutional card with a gold top edge, the date,
+ *   headline, excerpt and a "Read article" action to the page on this site.
+ * Warm ivory surfaces (never plain white), a gentle lift and image zoom on hover (none
+ * with reduced motion). `featured` makes a wide card, image beside the text.
  */
 import { Picture } from 'astro:assets';
 import type { CollectionEntry } from 'astro:content';
-import { ArrowRight, CalendarDays, ExternalLink } from '@lucide/astro';
+import { ArrowRight, CalendarDays, ExternalLink, MapPin } from '@lucide/astro';
 import CoverArt from './CoverArt.astro';
 import { articleHref } from '@/lib/content';
 import { type UiLang } from '@/i18n/routes';
 import { useTranslations, pick } from '@/i18n/ui';
 import { formatDate } from '@/lib/dates';
-import type { Category, NewsCategory } from '@/lib/taxonomy';
 
 interface Props {
   post: CollectionEntry<'news'>;
   lang: UiLang;
-  headingLevel?: 'h2' | 'h3' | 'h4';
+  headingLevel?: 'h2' | 'h3' | 'h4' | 'h5';
   featured?: boolean;
 }
 const { post, lang, headingLevel = 'h3', featured = false } = Astro.props;
 const t = useTranslations(lang);
 const d = post.data;
-const external = d.category === 'recommends' && d.source ? d.source : undefined;
+const cultural = d.category === 'recommends';
+const external = cultural && d.source ? d.source : undefined;
 const href = external ? external.url : articleHref(post, lang);
 const Heading = headingLevel;
-// Illustration used when the article has no photo.
-const covers: Record<NewsCategory, Category> = {
-  'matin-news': 'community',
-  perspectives: 'lectures',
-  'culture-cities': 'community',
-  research: 'lectures',
-  partnerships: 'community',
-  recommends: 'arts',
-};
-// Each category keeps one accent across the site.
-const accents: Record<NewsCategory, string> = {
-  'matin-news': 'navy',
-  perspectives: 'coral',
-  'culture-cities': 'teal',
-  research: 'mustard',
-  partnerships: 'terracotta',
-  recommends: 'teal',
-};
 ---
 
 <article
-  class:list={['post group relative flex flex-col', featured && 'post--featured card card-lift']}
-  data-accent={accents[d.category]}
+  class:list={[
+    'post group',
+    cultural ? 'post--cultural' : 'post--matin',
+    featured && 'post--featured',
+  ]}
 >
-  <div class="post__media relative aspect-[3/2] overflow-hidden">
+  <div class="post__media">
     {d.image ? (
       <Picture
         src={d.image}
         alt={pick(d.imageAlt, lang) ?? ''}
         formats={['avif', 'webp']}
-        widths={[400, 640, 800]}
+        widths={[400, 640, 800, 1200]}
         sizes={
           featured
-            ? '(min-width: 768px) 45vw, 100vw'
-            : '(min-width: 1024px) 33vw, (min-width: 640px) 50vw, 100vw'
+            ? '(min-width: 768px) 50vw, 100vw'
+            : '(min-width: 1024px) 28rem, (min-width: 640px) 50vw, 100vw'
         }
-        class="size-full object-cover transition duration-500 group-hover:scale-[1.03]"
+        class="post__img"
       />
     ) : (
-      <CoverArt
-        category={covers[d.category]}
-        seed={post.id}
-        class="size-full transition duration-500 group-hover:scale-[1.03]"
-      />
+      <CoverArt category={cultural ? 'arts' : 'community'} seed={post.id} class="post__img" />
+    )}
+    {cultural && d.region && (
+      <span class="post__region">
+        <MapPin size={15} aria-hidden="true" />
+        {t(`newsRegions.${d.region}`)}
+      </span>
     )}
   </div>
-  <div class="post__body flex flex-col">
+  <div class="post__body">
     <p class="post__meta">
-      <span class="post__cat">{t(`newsCategories.${d.category}`)}</span>
+      {!cultural && <span class="post__cat">{t('newsCategories.matin-news')}</span>}
       <span class="post__date">
         <CalendarDays size={16} aria-hidden="true" />
         <time datetime={d.date.toISOString().slice(0, 10)}>{formatDate(d.date, lang)}</time>
       </span>
+      {external && <span class="post__source">{external.name}</span>}
     </p>
     <Heading class="post__title">
       <a
         href={href}
         target={external ? '_blank' : undefined}
         rel={external ? 'noopener noreferrer' : undefined}
-        class="text-primary no-underline after:absolute after:inset-0 after:content-[''] group-hover:underline group-hover:decoration-[var(--accent)] group-hover:decoration-2"
+        class="post__link"
       >
         {pick(d.title, lang)}
-        {external && <span class="sr-only">{t('a11y.externalLink')}</span>}
+        {external && (
+          <span class="sr-only">
+            {' '}
+            {t('news.sourceNamed', { name: external.name })} {t('a11y.externalLink')}
+          </span>
+        )}
       </a>
     </Heading>
     <p class="post__excerpt">{pick(d.excerpt, lang)}</p>
-    {external && <p class="post__source">{t('news.sourceNamed', { name: external.name })}</p>}
-    <span class="link-arrow mt-4" aria-hidden="true">
+    <span class="post__action" aria-hidden="true">
       {external ? t('news.readSource') : t('news.readMore')}
       {external ? <ExternalLink size={17} /> : <ArrowRight size={18} class="flip-rtl" />}
     </span>
+    {d.imageCredit && <p class="post__credit">{d.imageCredit}</p>}
   </div>
 </article>
 
 <style>
-  .post__media {
-    margin-block-end: 1.25rem;
+  .post {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    overflow: hidden;
+    border: 1px solid var(--color-card-edge);
     border-radius: var(--radius-card);
-    border-block-end: 5px solid var(--accent);
+    background: var(--color-ivory);
+    box-shadow: var(--shadow-card);
+    transition:
+      transform 0.3s cubic-bezier(0.2, 0.7, 0.2, 1),
+      box-shadow 0.3s;
+  }
+  .post--matin {
+    border-block-start: 5px solid var(--color-gold);
+  }
+  .post:hover,
+  .post:focus-within {
+    transform: translateY(-4px);
+    box-shadow: 0 22px 40px -24px color-mix(in srgb, var(--color-primary) 55%, transparent);
+  }
+  .post__media {
+    position: relative;
+    aspect-ratio: 16 / 10;
+    overflow: hidden;
+    border-block-end: 4px solid var(--color-teal);
+  }
+  .post--matin .post__media {
+    border-block-end-color: var(--color-gold);
+  }
+  .post__media :global(.post__img) {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.6s cubic-bezier(0.2, 0.7, 0.2, 1);
+  }
+  .post:hover .post__media :global(.post__img) {
+    transform: scale(1.05);
+  }
+  /* Region label over the image: navy with white text (11.9:1). */
+  .post__region {
+    position: absolute;
+    inset-block-start: 0.85rem;
+    inset-inline-start: 0.85rem;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    padding: 0.3rem 0.8rem;
+    border-radius: 999px;
+    background: var(--color-primary);
+    color: var(--color-white);
+    font-family: var(--font-display);
+    font-size: 0.875rem;
+    font-weight: 800;
+  }
+  .post__region :global(svg) {
+    color: var(--color-gold);
+  }
+  .post__credit {
+    margin-block-start: 0.85rem;
+    font-size: 0.8125rem;
+    color: var(--color-ink);
+  }
+  .post__body {
+    display: flex;
+    flex: 1;
+    flex-direction: column;
+    padding: 1.35rem 1.5rem 1.6rem;
   }
   .post__meta {
     display: flex;
     flex-wrap: wrap;
     align-items: center;
-    gap: 0.5rem 1rem;
+    gap: 0.4rem 0.9rem;
     margin-block-end: 0.75rem;
+    font-size: 0.9375rem;
+    color: var(--color-ink);
   }
-  /* Category label: light wash of the accent with text-safe ink (5:1 or more). */
   .post__cat {
     padding: 0.2rem 0.75rem;
     border-radius: 999px;
-    background: color-mix(in srgb, var(--accent) 18%, var(--color-white));
-    color: var(--accent-ink);
+    background: var(--color-champagne);
+    color: var(--color-primary);
     font-family: var(--font-display);
     font-size: 0.875rem;
     font-weight: 800;
@@ -128,17 +192,14 @@ const accents: Record<NewsCategory, string> = {
     display: inline-flex;
     align-items: center;
     gap: 0.4rem;
-    font-size: 0.9375rem;
     font-weight: 500;
-    color: var(--color-ink);
   }
   .post__date :global(svg) {
     color: var(--color-primary);
   }
   .post__source {
-    margin-block-start: 0.75rem;
-    font-size: 0.9375rem;
-    font-weight: 600;
+    font-family: var(--font-display);
+    font-weight: 800;
     color: var(--color-teal-deep);
   }
   .post__title {
@@ -148,41 +209,89 @@ const accents: Record<NewsCategory, string> = {
     line-height: 1.25;
     text-wrap: balance;
   }
+  /* The whole card is one link (the title's), so the action below is not a second stop. */
+  .post__link {
+    color: var(--color-primary);
+    text-decoration: none;
+  }
+  .post__link::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+  }
+  .post:hover .post__link {
+    text-decoration: underline;
+    text-decoration-color: var(--color-gold);
+    text-decoration-thickness: 2px;
+    text-underline-offset: 4px;
+  }
   .post__excerpt {
     font-size: 1.0625rem;
-    line-height: 1.6;
-    color: var(--color-muted);
+    line-height: 1.7;
+    color: var(--color-ink);
   }
+  .post__action {
+    display: inline-flex;
+    align-items: center;
+    align-self: flex-start;
+    gap: 0.45rem;
+    margin-block-start: auto;
+    padding: 0.6rem 1.25rem;
+    border-radius: 999px;
+    background: var(--color-primary);
+    color: var(--color-white);
+    font-family: var(--font-display);
+    font-size: 1rem;
+    font-weight: 800;
+    transition: background-color 0.2s;
+  }
+  .post__body > .post__excerpt {
+    margin-block-end: 1.25rem;
+  }
+  .post__action :global(svg) {
+    color: var(--color-gold);
+  }
+  .post:hover .post__action {
+    background: var(--color-primary-hover);
+  }
+
   /* Lead story: one wide card, image beside the text. */
-  .post--featured {
-    overflow: hidden;
-  }
-  .post--featured .post__media {
-    margin: 0;
-    border-radius: 0;
-  }
   .post--featured .post__body {
+    justify-content: center;
     padding: clamp(1.75rem, 1.2rem + 2vw, 3.25rem);
   }
   .post--featured .post__title {
-    font-size: clamp(1.75rem, 1.3rem + 1.6vw, 2.75rem);
-    line-height: 1.12;
+    font-size: clamp(1.75rem, 1.3rem + 1.6vw, 2.625rem);
+    line-height: 1.15;
   }
   .post--featured .post__excerpt {
     font-size: clamp(1.125rem, 1.05rem + 0.3vw, 1.3rem);
   }
+  .post--featured .post__action {
+    margin-block-start: 0;
+  }
   @media (min-width: 768px) {
     .post--featured {
       display: grid;
-      grid-template-columns: minmax(0, 1.15fr) minmax(0, 1fr);
-      align-items: center;
+      grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr);
     }
     .post--featured .post__media {
       height: 100%;
       min-height: 22rem;
       aspect-ratio: auto;
       border-block-end: none;
-      border-inline-end: 6px solid var(--accent);
+      border-inline-end: 6px solid var(--color-teal);
+    }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .post,
+    .post__media :global(.post__img) {
+      transition: none;
+    }
+    .post:hover,
+    .post:focus-within,
+    .post:hover .post__media :global(.post__img) {
+      transform: none;
     }
   }
 </style>

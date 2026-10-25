@@ -8,3 +8,14 @@
 /en/get-involved/    /en/contact/   301
 /fa/get-involved     /fa/contact/   301
 /fa/get-involved/    /fa/contact/   301
+
+# News has two sections on one page since Oct 25 2026: the former category and page
+# addresses land on it.
+/fr/actualites/categorie/nouvelles-matin    /fr/actualites/#matin-news       301
+/fr/actualites/categorie/nouvelles-matin/   /fr/actualites/#matin-news       301
+/fr/actualites/categorie/*                  /fr/actualites/#cultural-news    301
+/fr/actualites/page/*                       /fr/actualites/                  301
+/en/news/category/matin-news                /en/news/#matin-news             301
+/en/news/category/matin-news/               /en/news/#matin-news             301
+/en/news/category/*                         /en/news/#cultural-news          301
+/en/news/page/*                             /en/news/                        301

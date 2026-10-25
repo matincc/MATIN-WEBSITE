@@ -30,18 +30,8 @@ export const routes = {
 
 export type RouteKey = keyof typeof routes;
 
-/** Translated URL segments for news categories, e.g. /fr/actualites/categorie/nouvelles-matin/ */
-export const categorySegment = { fr: 'categorie', en: 'category' } as const;
-export const categorySlugs = {
-  'matin-news': { fr: 'nouvelles-matin', en: 'matin-news' },
-  perspectives: { fr: 'perspectives', en: 'perspectives' },
-  'culture-cities': { fr: 'culture-et-villes', en: 'culture-cities' },
-  research: { fr: 'recherche-et-publications', en: 'research-publications' },
-  partnerships: { fr: 'partenariats-et-initiatives', en: 'partnerships-initiatives' },
-  recommends: { fr: 'matin-recommande', en: 'matin-recommends' },
-  /** Heading "Articles & Insights" (perspectives, culture-cities, research, partnerships). */
-  insights: { fr: 'articles-et-perspectives', en: 'articles-insights' },
-} as const satisfies Record<string, Record<Lang, string>>;
+/** Anchors of the two News sections on the News page (the former category pages redirect there). */
+export const newsAnchors = { recommends: 'cultural-news', 'matin-news': 'matin-news' } as const;
 
 /** Build a localized path, e.g. path('events', 'en', 'summer-fest') → /en/events/summer-fest/ */
 export function path(key: RouteKey, lang: Lang, ...rest: (string | number)[]): string {
@@ -78,6 +68,7 @@ export const faRoutes: Partial<Record<RouteKey, string>> = {
   team: 'team',
   contact: 'contact',
   legalInfo: 'legal-information',
+  news: 'news',
 };
 
 export const isRtl = (lang: UiLang) => lang === 'fa';

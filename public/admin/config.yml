@@ -26,6 +26,101 @@ slug:
   clean_accents: true
 
 collections:
+  # ---------------------------------------------------------------- News
+  - name: news
+    label: News · Actualités
+    label_singular: News item
+    description: >-
+      Only APPROVED news goes here: anything saved is published on matincc.ca within a few
+      minutes (one Netlify build). Proposed or rejected stories never go here, because the
+      repository is public. Cultural News needs its source and region; write a short summary
+      in Matin's own words, never a copied article. To take an item off the site, tick
+      "Archived". Persian appears only once "Persian text reviewed" is ticked.
+    folder: src/content/news
+    extension: yaml
+    format: yaml
+    create: true
+    delete: true
+    slug: '{{year}}-{{month}}-{{urlSlug.en}}'
+    media_folder: /src/assets/uploads/news
+    public_folder: ../../assets/uploads/news
+    summary: '{{date}} · {{category}} · {{title.en}}'
+    sortable_fields: [date, category]
+    fields:
+      - name: category
+        label: Section
+        widget: select
+        options:
+          - { label: 'Cultural News (external, with source)', value: recommends }
+          - { label: 'Matin News (the institute)', value: matin-news }
+      - name: region
+        label: Region (Cultural News only)
+        widget: select
+        required: false
+        options:
+          - { label: Montréal, value: montreal }
+          - { label: 'Canada (rest of Québec included)', value: canada }
+          - { label: Around the World, value: international }
+      - { name: date, label: 'Publication date (for Cultural News, the source''s date)', widget: datetime, time_format: false, format: YYYY-MM-DD }
+      - { name: updated, label: Updated on (optional), widget: datetime, time_format: false, format: YYYY-MM-DD, required: false }
+      - name: source
+        label: Original source (Cultural News)
+        widget: object
+        required: false
+        fields:
+          - { name: name, label: Publisher, widget: string }
+          - name: url
+            label: Link to the original article (https://…)
+            widget: string
+            pattern: ['^https://[^\s]+$', 'Must start with https://']
+      - name: title
+        label: Headline
+        widget: object
+        fields:
+          - { name: fr, label: Français, widget: string }
+          - { name: en, label: English, widget: string }
+          - { name: fa, label: فارسی (optional), widget: string, required: false }
+      - name: urlSlug
+        label: Web address (lowercase words joined by hyphens)
+        widget: object
+        fields:
+          - { name: fr, label: Français, widget: string, pattern: ['^[a-z0-9]+(-[a-z0-9]+)*$', 'Lowercase letters, digits and hyphens only'] }
+          - { name: en, label: English, widget: string, pattern: ['^[a-z0-9]+(-[a-z0-9]+)*$', 'Lowercase letters, digits and hyphens only'] }
+      - name: excerpt
+        label: Short summary (Matin's own words, 1 to 3 sentences)
+        widget: object
+        fields:
+          - { name: fr, label: Français, widget: text }
+          - { name: en, label: English, widget: text }
+          - { name: fa, label: فارسی (optional), widget: text, required: false }
+      - name: body
+        label: Text
+        widget: object
+        fields:
+          - { name: fr, label: Français, widget: markdown }
+          - { name: en, label: English, widget: markdown }
+          - { name: fa, label: فارسی (optional), widget: markdown, required: false }
+      - name: author
+        label: Signature
+        widget: object
+        fields:
+          - { name: fr, label: Français, widget: string, default: 'Institut interculturel Matin' }
+          - { name: en, label: English, widget: string, default: 'Matin Intercultural Institute' }
+          - { name: fa, label: فارسی, widget: string, default: 'مؤسسه میان‌فرهنگی متین' }
+      - { name: image, label: Image (only with the right to use it), widget: image, required: false }
+      - name: imageAlt
+        label: Image description (for screen readers)
+        widget: object
+        required: false
+        fields:
+          - { name: fr, label: Français, widget: string, required: false }
+          - { name: en, label: English, widget: string, required: false }
+          - { name: fa, label: فارسی, widget: string, required: false }
+      - { name: imageCredit, label: 'Image credit and licence (e.g. Photo: Jane Doe, CC BY 4.0)', widget: string, required: false }
+      - { name: imagePermission, label: Matin may use this image (owner or written permission), widget: boolean, required: false }
+      - { name: faReviewed, label: Persian text reviewed (shows the Persian page), widget: boolean, default: false, required: false }
+      - { name: archived, label: Archived (taken off the site), widget: boolean, default: false, required: false }
+
   # ---------------------------------------------------------------- Gallery
   - name: gallery
     label: Gallery · Galerie

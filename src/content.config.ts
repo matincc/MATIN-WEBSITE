@@ -207,9 +207,9 @@ const news = defineCollection({
         updated: z.coerce.date().optional(),
         /** A name, or { fr, en, fa } for an institutional signature. */
         author: z.union([z.string(), bi]),
-        /** matin-news, perspectives, culture-cities, research, partnerships, recommends */
+        /** recommends (Cultural News, external, with source and region) or matin-news (Matin News) */
         category: z.enum(newsCategories),
-        /** Matin Recommends only: its tab, montreal, canada (the rest of Québec included) or international. */
+        /** Cultural News only: its tab, montreal, canada (the rest of Québec included) or international. */
         region: z.enum(newsRegions).optional(),
         tags: z.array(z.string()).default([]),
         image: image().optional(),
@@ -219,16 +219,24 @@ const news = defineCollection({
          * to publish it (photographer's consent, and consent of recognizable people).
          */
         imagePermission: z.boolean().optional(),
+        /** Credit and licence shown with the image, e.g. "Photo: Jane Doe, CC BY 4.0". */
+        imageCredit: z.string().optional(),
         /** When the article discusses an external event or issue: link and attribution. */
         source: z.object({ url: z.url(), name: z.string().min(1) }).optional(),
         /** Drafts appear only on the local preview (npm run dev): never listed, built or indexed. */
         draft: z.boolean().default(false),
+        /** An outdated item taken off the site (kept in the history). */
+        archived: z.boolean().default(false),
         faReviewed,
         placeholder: z.boolean().default(false),
       })
       .refine((n) => !n.image || n.imagePermission === true, {
         message: 'Set imagePermission: true to confirm Matin may use this image',
         path: ['imagePermission'],
+      })
+      .refine((n) => n.category !== 'recommends' || (n.source && n.region), {
+        message: 'Cultural News needs its source (name and url) and its region',
+        path: ['source'],
       }),
 });
 

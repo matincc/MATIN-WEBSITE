@@ -572,7 +572,7 @@
 }
 /* Cultural News panel (owner's brief, Oct 25 2026: a richer teal identity, never pale
    green): flat deep teal with soft turquoise circles, white title, light tabs with a gold
-   active tab (navy on mustard 5.3:1), and warm ivory surfaces for the stories. */
+   active tab (navy on mustard 5.3:1); the stories keep their own ivory cards. */
 .news-teal {
   position: relative;
   isolation: isolate;
@@ -629,31 +629,8 @@
 }
 .news-teal .region-panel .region-empty {
   border: 0;
-  border-inline-start: 5px solid var(--color-gold);
   background: var(--color-ivory);
   color: var(--color-primary);
-  font-weight: 500;
-}
-.news-teal .post {
-  height: 100%;
-  overflow: hidden;
-  border-radius: var(--radius-card);
-  background: var(--color-ivory);
-  color: var(--color-ink);
-}
-.news-teal .post :is(h3, h4, .post__title) {
-  color: var(--color-primary);
-}
-.news-teal .post .link-arrow,
-.news-teal .post .link-arrow svg {
-  color: var(--color-primary);
-}
-.news-teal .post .post__media {
-  margin: 0;
-  border-radius: 0;
-}
-.news-teal .post .post__body {
-  padding: 1.25rem 1.5rem 1.6rem;
 }
 
 .region-panel__title {

@@ -3,13 +3,7 @@ import { marked } from 'marked';
 import type { Lang } from '@/i18n/routes';
 import { typo } from './frenchTypo';
 import { montrealTime } from './dates';
-import {
-  newsCategories as newsCategoryList,
-  newsSections,
-  type NewsCategory,
-  type NewsListKey,
-  type NewsRegion,
-} from '@/lib/taxonomy';
+import type { NewsRegion } from '@/lib/taxonomy';
 import { baseLang, href, type UiLang } from '@/i18n/routes';
 import { pick } from '@/i18n/ui';
 
@@ -114,13 +108,11 @@ export async function getPrograms() {
 
 /** Published articles, newest first (drafts only on the local preview). */
 export async function getNews(limit?: number) {
-  const list = (await getCollection('news', (p) => import.meta.env.DEV || !p.data.draft)).sort(
-    (a, b) => b.data.date.getTime() - a.data.date.getTime(),
-  );
+  const list = (
+    await getCollection('news', (p) => !p.data.archived && (import.meta.env.DEV || !p.data.draft))
+  ).sort((a, b) => b.data.date.getTime() - a.data.date.getTime());
   return limit ? list.slice(0, limit) : list;
 }
-
-export const NEWS_PAGE_SIZE = 6;
 
 /** An article has a Persian page once its Persian text is written and reviewed. */
 export const hasPersian = (post: CollectionEntry<'news'>) =>
@@ -130,26 +122,6 @@ export const hasPersian = (post: CollectionEntry<'news'>) =>
 export function articleHref(post: CollectionEntry<'news'>, lang: UiLang): string {
   if (lang === 'fa' && hasPersian(post)) return `/fa/news/${slugOf(post, 'en')}/`;
   return href('news', lang, slugOf(post, baseLang(lang)));
-}
-
-/** News categories that have at least one post, in the canonical order. */
-export function newsCategories(posts: CollectionEntry<'news'>[]): NewsCategory[] {
-  const used = new Set(posts.map((p) => p.data.category));
-  return newsCategoryList.filter((c) => used.has(c));
-}
-
-/** The categories a list page covers: a heading covers its categories. */
-export const categoriesOf = (key: NewsListKey): readonly NewsCategory[] =>
-  key in newsSections ? newsSections[key as keyof typeof newsSections] : [key as NewsCategory];
-
-/**
- * Every news list page to build: the three headings (always, so the News menu never
- * leads nowhere) and each category that has a post.
- */
-export function newsListKeys(posts: CollectionEntry<'news'>[]): NewsListKey[] {
-  const keys: NewsListKey[] = Object.keys(newsSections) as NewsListKey[];
-  for (const c of newsCategories(posts)) if (!keys.includes(c)) keys.push(c);
-  return keys;
 }
 
 /**

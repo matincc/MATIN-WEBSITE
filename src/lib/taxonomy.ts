@@ -25,36 +25,14 @@ export const resourceCategories = [
 export type ResourceCategory = (typeof resourceCategories)[number];
 
 /**
- * News & Insights categories. A category appears on the site only once it has a
- * published article. `recommends` = Matin Recommends: selected external news, each with
- * a `source` and a `region` (Québec, Canada or International).
+ * The two News categories (owner's brief, Oct 25 2026: "News", exactly two, never mixed):
+ * `recommends` = Cultural News, external stories the President approved, each with a
+ * `source` and a `region`; `matin-news` = Matin News, the institute's official news.
  */
-export const newsCategories = [
-  'matin-news',
-  'perspectives',
-  'culture-cities',
-  'research',
-  'partnerships',
-  'recommends',
-] as const;
+export const newsCategories = ['recommends', 'matin-news'] as const;
 export type NewsCategory = (typeof newsCategories)[number];
 
-/**
- * The three headings of News & Insights (owner's choice, Oct 25 2026, option A): the five
- * original categories are kept and grouped, so no link changes. Each heading always has
- * a page, linked from the News menu.
- */
-export const newsSections = {
-  'matin-news': ['matin-news'],
-  insights: ['perspectives', 'culture-cities', 'research', 'partnerships'],
-  recommends: ['recommends'],
-} as const satisfies Record<string, readonly NewsCategory[]>;
-export type NewsSection = keyof typeof newsSections;
-/** A category page or a heading page. */
-export type NewsListKey = NewsCategory | NewsSection;
-
-/** Regions of Matin Recommends. */
-/** The three region tabs of Matin's Picks and News & Insights (owner's brief, Oct 25 2026):
+/** The three region tabs of Matin's Picks and Cultural News (owner's brief, Oct 25 2026):
  * Montréal, the rest of Canada (other Québec municipalities included), around the world. */
 export const newsRegions = ['montreal', 'canada', 'international'] as const;
 export type NewsRegion = (typeof newsRegions)[number];
