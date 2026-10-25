@@ -63,7 +63,7 @@ const en: Dictionary = {
     teamExecutive: 'Executive Team',
     teamAdvisors: 'Advisors & Friends of Matin',
     resourcesDirectory: 'Directory of Organizations',
-    president: 'A Personal Note from Our President, Reza Moafi',
+    president: 'A Personal Note from Our President',
     ourPresident: 'Our President',
   },
   search: {
@@ -333,6 +333,7 @@ const en: Dictionary = {
     advisorsEmpty:
       'Matin gratefully welcomes those who share their knowledge and support its work. Their profiles will appear here, with their consent.',
     readMore: 'Read the full biography',
+    comingSoon: 'Profile coming soon',
     photoAlt: 'Portrait of {name}',
     linkedin: 'LinkedIn profile',
   },
@@ -397,6 +398,7 @@ const en: Dictionary = {
     noResults: 'Nothing in this category yet.',
     comingSoon: 'Coming soon',
     zoom: 'View at full size',
+    openImage: 'Enlarge the image: {title}',
     filterPosters: 'Posters',
     postersTitle: 'Posters',
     postersLede: "The official posters of Matin's events. Click a poster to see it full screen.",

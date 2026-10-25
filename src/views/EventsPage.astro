@@ -12,6 +12,7 @@ import SectionHeader from '@/components/ui/SectionHeader.astro';
 import EventCard from '@/components/content/EventCard.astro';
 import PicksSection from '@/components/content/PicksSection.astro';
 import ExpireEvents from '@/components/content/ExpireEvents.astro';
+import Lightbox from '@/components/ui/Lightbox.astro';
 import { alternatesFor, path, type Lang } from '@/i18n/routes';
 import { useTranslations, pick } from '@/i18n/ui';
 import { getUpcomingEvents, getPastEvents, isMatinEvent, picksOf, slugOf } from '@/lib/content';
@@ -242,6 +243,8 @@ const showFilters = upcoming.length >= FILTER_MIN_EVENTS && filters.length > 0;
       </div>
     </section>
   )}
+  <!-- Fullscreen viewer for the images of Matin's Picks. -->
+  <Lightbox lang={lang} />
 </PageLayout>
 
 <script>

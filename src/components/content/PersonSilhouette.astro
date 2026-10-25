@@ -1,10 +1,11 @@
 ---
 /**
  * A simple, friendly silhouette (head and shoulders) for a team slot that has no
- * member yet. `figure` gives a woman's (longer hair) or a man's outline. Decorative.
+ * member yet. `figure` gives a woman's (longer hair), a man's or a neutral outline (head and
+ * shoulders only, used on Our Team). Decorative.
  */
 interface Props {
-  figure?: 'woman' | 'man';
+  figure?: 'woman' | 'man' | 'neutral';
   class?: string;
 }
 const { figure = 'woman', class: className = '' } = Astro.props;

@@ -74,7 +74,12 @@ const uid = `picks-${exclude.length ? 'events' : 'home'}`;
               <ul class="grid gap-6 md:grid-cols-2 lg:grid-cols-3" data-upcoming-list>
                 {tab.events.map((event) => (
                   <li>
-                    <EventCard event={event} lang={lang} picked />
+                    <EventCard
+                      event={event}
+                      lang={lang}
+                      picked
+                      lightboxGroup={`${uid}-${tab.region}`}
+                    />
                   </li>
                 ))}
               </ul>

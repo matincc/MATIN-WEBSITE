@@ -5,8 +5,11 @@
  * organizer's page (Matin never hosts registration for them).
  * Colour: the top stripe, date block and subject label take the subject's accent; Matin's
  * own events also get a navy outline and a solid navy label, selected events an outlined one.
+ * In Matin's Picks (`picked`, owner's brief Oct 25 2026): a warm sand card with a deep teal
+ * top edge, larger text, a gentle enlargement on hover and a round (+) button over the
+ * image that opens it in the page's fullscreen viewer (Lightbox.astro, `lightboxGroup`).
  */
-import { Picture } from 'astro:assets';
+import { Picture, getImage } from 'astro:assets';
 import {
   BookOpen,
   Building,
@@ -19,6 +22,7 @@ import {
   MessagesSquare,
   MonitorPlay,
   Palette,
+  Plus,
   Star,
   Ticket,
   Users,
@@ -36,8 +40,10 @@ interface Props {
   headingLevel?: 'h2' | 'h3';
   /** Shown in Matin's Picks: adds the "Selected by Matin" label. */
   picked?: boolean;
+  /** Group name for the fullscreen viewer: the image becomes a link that opens it. */
+  lightboxGroup?: string;
 }
-const { event, lang, headingLevel = 'h3', picked = false } = Astro.props;
+const { event, lang, headingLevel = 'h3', picked = false, lightboxGroup } = Astro.props;
 const t = useTranslations(lang);
 const d = event.data;
 const tz = d.timeZone;
@@ -79,12 +85,18 @@ const subjectIcons = {
   research: BookOpen,
 } as const;
 const SubjectIcon = subjectIcons[d.subject] ?? MessagesSquare;
+const title = pick(d.title, lang) ?? '';
+// Large version for the viewer (never wider than the original).
+const large =
+  lightboxGroup && d.image
+    ? (await getImage({ src: d.image, format: 'webp', width: Math.min(d.image.width, 1800) })).src
+    : undefined;
 ---
 
 <article
   class:list={[
     'card card-lift agenda-card',
-    { 'is-cancelled': d.status === 'cancelled', 'is-matin': ours },
+    { 'is-cancelled': d.status === 'cancelled', 'is-matin': ours, 'agenda-card--pick': picked },
   ]}
   data-accent={accent}
   data-event-end={event.endDate.toISOString()}
@@ -96,7 +108,7 @@ const SubjectIcon = subjectIcons[d.subject] ?? MessagesSquare;
       </span>
     </DialogueArt>
   )}
-  {d.image && (
+  {d.image && !large && (
     <div class="agenda-image">
       <Picture
         src={d.image}
@@ -106,6 +118,27 @@ const SubjectIcon = subjectIcons[d.subject] ?? MessagesSquare;
         sizes="(min-width: 1024px) 28rem, (min-width: 768px) 45vw, 100vw"
       />
     </div>
+  )}
+  {d.image && large && (
+    <a
+      href={large}
+      class="agenda-image agenda-zoom"
+      data-lightbox={lightboxGroup}
+      data-alt={pick(d.imageAlt, lang) ?? ''}
+      data-caption={title}
+      aria-label={t('gallery.openImage', { title })}
+    >
+      <Picture
+        src={d.image}
+        alt=""
+        formats={['avif', 'webp']}
+        widths={[400, 640, 800]}
+        sizes="(min-width: 1024px) 28rem, (min-width: 768px) 45vw, 100vw"
+      />
+      <span class="agenda-zoom__icon" aria-hidden="true">
+        <Plus size={24} stroke-width={2.5} />
+      </span>
+    </a>
   )}
   <div class="flex items-start gap-4">
     <div class="date-badge" aria-hidden="true">
@@ -129,7 +162,7 @@ const SubjectIcon = subjectIcons[d.subject] ?? MessagesSquare;
   </div>
 
   <p class="agenda-subject">{t(`agendaSubjects.${d.subject}`)}</p>
-  <Heading class="agenda-title">{pick(d.title, lang)}</Heading>
+  <Heading class="agenda-title">{title}</Heading>
 
   <ul class="agenda-meta">
     <li>
@@ -185,7 +218,7 @@ const SubjectIcon = subjectIcons[d.subject] ?? MessagesSquare;
     {href && (
       <a
         href={href}
-        class="btn btn-outline agenda-cta"
+        class:list={['btn agenda-cta', picked ? 'btn-primary' : 'btn-outline']}
         target={ours ? undefined : '_blank'}
         rel={ours ? undefined : 'noopener noreferrer'}
       >
@@ -365,5 +398,133 @@ const SubjectIcon = subjectIcons[d.subject] ?? MessagesSquare;
   .agenda-checked {
     font-size: 0.85rem;
     color: var(--color-muted);
+  }
+
+  /* The (+) over a zoomable image (Matin's Picks), as on the Gallery posters. */
+  .agenda-zoom {
+    position: relative;
+    display: block;
+    cursor: zoom-in;
+  }
+  .agenda-zoom__icon {
+    position: absolute;
+    inset-block-end: 0.85rem;
+    inset-inline-end: 0.85rem;
+    display: grid;
+    place-items: center;
+    width: 3rem;
+    height: 3rem;
+    border-radius: 50%;
+    background: var(--color-primary);
+    color: var(--color-white);
+    box-shadow: 0 6px 18px -6px color-mix(in srgb, var(--color-primary) 70%, transparent);
+    transition:
+      opacity 0.3s,
+      transform 0.3s cubic-bezier(0.2, 0.7, 0.2, 1);
+  }
+  /* With a mouse it appears on hover or keyboard focus; on touch screens it stays visible. */
+  @media (hover: hover) and (pointer: fine) {
+    .agenda-zoom__icon {
+      opacity: 0;
+      transform: scale(0.8);
+    }
+    .agenda-card:hover .agenda-zoom__icon,
+    .agenda-zoom:focus-visible .agenda-zoom__icon {
+      opacity: 1;
+      transform: scale(1);
+    }
+  }
+  .agenda-zoom:focus-visible {
+    outline: 3px solid var(--color-primary);
+    outline-offset: -3px;
+  }
+
+  /* Matin's Picks: warm ivory surface (lighter than the cream band around it), deep teal
+     top edge, navy date block, larger text. */
+  .agenda-card--pick {
+    gap: 1rem;
+    padding: 1.9rem;
+    background: var(--color-ivory);
+    border-color: var(--color-card-edge);
+    box-shadow: 0 10px 28px -20px color-mix(in srgb, var(--color-primary) 45%, transparent);
+    border-block-start: 6px solid var(--color-teal-deep);
+  }
+  .agenda-card--pick.is-matin {
+    border-block-start-color: var(--color-teal-deep);
+  }
+  .agenda-card--pick .agenda-image,
+  .agenda-card--pick :global(.agenda-image--art) {
+    margin: -1.9rem -1.9rem 0.35rem;
+    border-block-end: 4px solid var(--color-gold);
+  }
+  .agenda-card--pick .date-badge {
+    background: var(--color-primary);
+  }
+  .agenda-card--pick .date-badge__day {
+    color: var(--color-white);
+  }
+  .agenda-card--pick .date-badge__month {
+    color: var(--color-gold);
+  }
+  .agenda-card--pick .pill {
+    font-size: 0.9375rem;
+  }
+  .agenda-card--pick .pill--selected {
+    background: var(--color-paper);
+  }
+  .agenda-card--pick .agenda-subject {
+    font-size: 0.9375rem;
+    color: var(--color-teal-deep);
+  }
+  .agenda-card--pick .agenda-title {
+    font-size: clamp(1.5rem, 1.3rem + 0.6vw, 1.875rem);
+    line-height: 1.2;
+  }
+  .agenda-card--pick .agenda-meta {
+    gap: 0.6rem;
+    padding: 1rem 1.15rem;
+    border-radius: 1rem;
+    background: var(--color-white);
+    font-size: 1.0625rem;
+  }
+  .agenda-card--pick .agenda-meta :global(svg) {
+    color: var(--color-teal-deep);
+  }
+  .agenda-card--pick .agenda-summary {
+    font-size: 1.125rem;
+    line-height: 1.7;
+  }
+  .agenda-card--pick .agenda-why {
+    padding: 0.9rem 1.1rem;
+    border-inline-start: 4px solid var(--color-gold);
+    border-start-end-radius: 0.75rem;
+    border-end-end-radius: 0.75rem;
+    background: var(--color-champagne);
+    font-size: 1.0625rem;
+    line-height: 1.65;
+  }
+  .agenda-card--pick .agenda-cta {
+    min-height: 3rem;
+    font-size: 1.0625rem;
+  }
+  .agenda-card--pick .agenda-checked {
+    font-size: 0.9375rem;
+    color: var(--color-ink);
+  }
+  /* Gentle enlargement on hover (desktop pointer only, never with reduced motion). */
+  @media (hover: hover) and (pointer: fine) and (prefers-reduced-motion: no-preference) {
+    .agenda-card--pick.card-lift:hover {
+      transform: scale(1.03);
+      box-shadow: 0 22px 40px -22px color-mix(in srgb, var(--color-primary) 55%, transparent);
+    }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .agenda-zoom__icon,
+    .agenda-image :global(img) {
+      transition: none;
+    }
+    .agenda-card:hover .agenda-image :global(img) {
+      transform: none;
+    }
   }
 </style>

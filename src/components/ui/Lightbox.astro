@@ -104,8 +104,13 @@ const t = useTranslations(Astro.props.lang);
       if (e.key === 'ArrowLeft') show(index - 1);
       if (e.key === 'ArrowRight') show(index + 1);
     });
+    // A click anywhere outside the image, its caption and the buttons closes the viewer.
     dialog.addEventListener('click', (e) => {
-      if (e.target === dialog) dialog.close();
+      const el = e.target as HTMLElement;
+      const zoomed = dialog.classList.contains('is-zoomed');
+      if (el.closest('img, button, figcaption') || (zoomed && el.closest('[data-lb-frame]')))
+        return;
+      dialog.close();
     });
     dialog.addEventListener('close', () => {
       opener?.focus({ preventScroll: true });

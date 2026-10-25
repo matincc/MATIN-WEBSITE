@@ -128,7 +128,7 @@ const emptyText =
     ) : (
       <>
         {landing && (
-          <section class="cultural-band" aria-labelledby="cultural-title">
+          <section class="cultural-band news-teal" aria-labelledby="cultural-title">
             <SectionHeader
               align="start"
               id="cultural-title"
@@ -201,9 +201,6 @@ const emptyText =
   /* Cultural news: a pale teal band inside the page (owner's brief, Oct 25 2026). */
   .cultural-band {
     padding: clamp(1.75rem, 1rem + 3vw, 3.5rem);
-    border-radius: calc(var(--radius-card) * 1.4);
-    border: 1px solid var(--color-teal-edge);
-    background: var(--color-teal-pale);
   }
   .chip-link--sub {
     min-height: 2.4rem;

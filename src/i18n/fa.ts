@@ -69,7 +69,7 @@ const fa: DeepPartial<Dictionary> = {
     teamMembers: 'تیم',
     teamExecutive: 'تیم اجرایی',
     teamAdvisors: 'مشاوران و دوستان متین',
-    president: 'سخنی از رئیس مؤسسه',
+    president: 'یادداشتی شخصی از رئیس مؤسسه',
     ourPresident: 'رئیس ما',
   },
   home: {
@@ -153,6 +153,7 @@ const fa: DeepPartial<Dictionary> = {
     play: 'پخش ویدیو: {title}',
     comingSoon: 'به‌زودی',
     zoom: 'نمایش در اندازهٔ واقعی',
+    openImage: 'بزرگ‌نمایی تصویر: {title}',
     filterPhotos: 'عکس‌ها',
     filterVideos: 'ویدیوها',
     filterPosters: 'پوسترها',
@@ -297,6 +298,7 @@ const fa: DeepPartial<Dictionary> = {
     advisorsEmpty:
       'متین با قدردانی از همراهی کسانی که دانش خود را به اشتراک می‌گذارند و از کار مؤسسه پشتیبانی می‌کنند استقبال می‌کند. نمایهٔ آنان با رضایت خودشان در این بخش منتشر می‌شود.',
     readMore: 'خواندن زندگی‌نامهٔ کامل',
+    comingSoon: 'نمایه به‌زودی',
     photoAlt: 'تصویر {name}',
     linkedin: 'نمایهٔ لینکدین',
   },

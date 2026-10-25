@@ -64,7 +64,7 @@ const fr = {
     teamExecutive: 'Équipe de direction',
     teamAdvisors: 'Conseillers et amis de Matin',
     resourcesDirectory: 'Répertoire des organismes',
-    president: 'Quelques mots de notre président',
+    president: 'Un mot personnel de notre président',
     ourPresident: 'Notre président',
   },
   search: {
@@ -339,6 +339,7 @@ const fr = {
     advisorsEmpty:
       'Matin accueille avec reconnaissance celles et ceux qui partagent leur savoir et soutiennent son travail. Leurs profils paraîtront ici, avec leur accord.',
     readMore: 'Lire la biographie complète',
+    comingSoon: 'Profil à venir',
     photoAlt: 'Portrait de {name}',
     linkedin: 'Profil LinkedIn',
   },
@@ -402,6 +403,7 @@ const fr = {
     noResults: 'Rien dans cette catégorie pour le moment.',
     comingSoon: 'À venir',
     zoom: 'Voir en taille réelle',
+    openImage: "Agrandir l'image : {title}",
     filterPosters: 'Affiches',
     postersTitle: 'Affiches',
     postersLede:

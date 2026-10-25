@@ -188,12 +188,12 @@ const matinNews = news
         link={{ href: href('news', lang), label: t('home.newsAll') }}
         class="mb-10"
       />
-      <div class="news-panel">
+      <div class="news-panel news-teal">
         <h3 class="news-panel__title">{t('news.culturalTitle')}</h3>
         <NewsRegionTabs lang={lang} posts={culturalNews} perTab={3} id="home-cultural" />
       </div>
       {matinNews.length > 0 && (
-        <div class="mt-14">
+        <div class="matin-news mt-14">
           <h3 class="news-panel__title">{t('newsCategories.matin-news')}</h3>
           {/* A single article takes the wide card, so no empty columns are left beside it. */}
           <ul
@@ -244,7 +244,8 @@ const matinNews = news
   <!-- Cultural Resources & Organizations: opens the directory -->
   <ResourcesTeaser lang={lang} />
 
-  {posterLarge && <Lightbox lang={lang} />}
+  {/* One viewer for the page: the featured poster and the images of Matin's Picks. */}
+  <Lightbox lang={lang} />
 </BaseLayout>
 
 <script>
@@ -381,11 +382,87 @@ const matinNews = news
   }
 
   /* ---------- News & Insights ---------- */
+  /* Cultural News: the deep teal panel (.news-teal in global.css). */
   .news-panel {
     padding: clamp(1.5rem, 1rem + 2.5vw, 3rem);
-    border-radius: calc(var(--radius-card) * 1.4);
-    border: 1px solid var(--color-teal-edge);
-    background: var(--color-teal-pale);
+  }
+  /* Matin News: lighter than the teal panel, warm ivory with turquoise and gold accents
+     (owner's brief, Oct 25 2026), a soft lift and image zoom on hover. */
+  .matin-news :global(.post) {
+    height: 100%;
+    overflow: hidden;
+    border: 1px solid var(--color-card-edge);
+    border-block-start: 5px solid var(--color-gold);
+    border-radius: var(--radius-card);
+    background: var(--color-ivory);
+    box-shadow: var(--shadow-card);
+    transition:
+      transform 0.3s cubic-bezier(0.2, 0.7, 0.2, 1),
+      box-shadow 0.3s;
+  }
+  .matin-news :global(.post:hover),
+  .matin-news :global(.post:focus-within) {
+    transform: translateY(-4px);
+    box-shadow: 0 22px 40px -24px color-mix(in srgb, var(--color-primary) 55%, transparent);
+  }
+  .matin-news :global(.post .post__media) {
+    margin: 0;
+    border-radius: 0;
+    border-block-end: 5px solid var(--color-teal);
+  }
+  .matin-news :global(.post:not(.post--featured) .post__body) {
+    padding: 1.4rem 1.6rem 1.75rem;
+  }
+  .matin-news :global(.post .post__media img),
+  .matin-news :global(.post .post__media svg) {
+    transition: transform 0.6s cubic-bezier(0.2, 0.7, 0.2, 1);
+  }
+  .matin-news :global(.post:hover .post__media > *) {
+    transform: scale(1.05);
+  }
+  .matin-news :global(.post__title) {
+    color: var(--color-primary);
+  }
+  .matin-news :global(.post__excerpt) {
+    color: var(--color-ink);
+    line-height: 1.7;
+  }
+  .matin-news :global(.post__cat) {
+    background: var(--color-aqua);
+    color: var(--color-primary);
+  }
+  /* "Read the article": a clear navy pill. */
+  .matin-news :global(.post .link-arrow) {
+    align-self: flex-start;
+    margin-block-start: 1.25rem;
+    padding: 0.6rem 1.25rem;
+    border-radius: 999px;
+    background: var(--color-primary);
+    color: var(--color-white);
+    text-decoration: none;
+    transition: background-color 0.2s;
+  }
+  .matin-news :global(.post .link-arrow svg) {
+    color: var(--color-gold);
+  }
+  .matin-news :global(.post:hover .link-arrow) {
+    background: var(--color-primary-hover);
+  }
+  @media (min-width: 768px) {
+    .matin-news :global(.post--featured .post__media) {
+      border-block-end: none;
+      border-inline-end: 6px solid var(--color-teal);
+    }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .matin-news :global(.post),
+    .matin-news :global(.post .post__media > *) {
+      transition: none;
+    }
+    .matin-news :global(.post:hover),
+    .matin-news :global(.post:hover .post__media > *) {
+      transform: none;
+    }
   }
   .news-panel__title {
     margin-block-end: 1.25rem;
