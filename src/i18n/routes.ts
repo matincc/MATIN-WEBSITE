@@ -69,6 +69,7 @@ export const faRoutes: Partial<Record<RouteKey, string>> = {
   contact: 'contact',
   legalInfo: 'legal-information',
   news: 'news',
+  resources: 'resources',
 };
 
 export const isRtl = (lang: UiLang) => lang === 'fa';

@@ -13,15 +13,13 @@ export type Category = (typeof categories)[number];
 
 export const faqTopics = ['general', 'programs', 'events', 'volunteering', 'donations'] as const;
 
-/** Cultural Resources & Organizations, in the order of the page. */
-export const resourceCategories = [
-  'municipal',
-  'government',
-  'arts',
-  'community',
-  'research',
-  'other',
-] as const;
+/**
+ * Cultural Resources & Organizations, in the order of the page (owner's brief, Oct 25 2026:
+ * four categories). federal = Canadian federal cultural institutions; quebec = Québec
+ * cultural institutions; community = major cultural and community organizations and public
+ * cultural bodies (Montréal); international = international cultural organizations & networks.
+ */
+export const resourceCategories = ['federal', 'quebec', 'community', 'international'] as const;
 export type ResourceCategory = (typeof resourceCategories)[number];
 
 /**

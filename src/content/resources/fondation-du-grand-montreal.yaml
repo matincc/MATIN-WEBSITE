@@ -1,0 +1,19 @@
+# Directory entry: see README.md. A listing never implies a partnership.
+# Name and official website checked on 2026-10-25. Official logo not added yet:
+# the card shows the name until a verified logo file is set in `logo`.
+name: "Fondation du Grand Montréal"
+category: community
+url: https://fgmtl.org/
+label:
+  fr: "Fondation du Grand Montréal"
+  en: "Fondation du Grand Montréal"
+kind:
+  fr: "Fondation communautaire"
+  en: "Community foundation"
+  fa: "بنیاد اجتماعی"
+description:
+  fr: "Fondation communautaire qui soutient la philanthropie, les initiatives communautaires, l'inclusion sociale et le développement durable des communautés."
+  en: "Community foundation supporting philanthropy, community initiatives, social inclusion, and sustainable community development."
+  fa: "بنیادی اجتماعی که از نیکوکاری، ابتکارهای اجتماعی، شمول اجتماعی و توسعهٔ پایدار جامعه‌ها حمایت می‌کند."
+order: 30
+published: true

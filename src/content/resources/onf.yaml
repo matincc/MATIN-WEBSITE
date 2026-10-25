@@ -1,0 +1,16 @@
+# Directory entry: see README.md. A listing never implies a partnership.
+# Name and official website checked on 2026-10-25. Official logo not added yet:
+# the card shows the name until a verified logo file is set in `logo`.
+name: "Office national du film du Canada (ONF)"
+nameEn: "National Film Board of Canada (NFB)"
+category: federal
+url: https://www.nfb.ca/
+label:
+  fr: "ONF / NFB"
+  en: "NFB / ONF"
+description:
+  fr: "Producteur et distributeur public canadien de films documentaires, d'animation et d'œuvres audiovisuelles."
+  en: "Canada's public producer and distributor of documentary films, animation, and audiovisual works."
+  fa: "تولیدکننده و پخش‌کنندهٔ عمومی کانادا برای فیلم‌های مستند، پویانمایی و آثار دیداری‌شنیداری."
+order: 30
+published: true

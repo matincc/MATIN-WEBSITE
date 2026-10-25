@@ -1,0 +1,19 @@
+# Directory entry: see README.md. A listing never implies a partnership.
+# Name and official website checked on 2026-10-25. Official logo not added yet:
+# the card shows the name until a verified logo file is set in `logo`.
+name: "Centraide du Grand Montréal"
+category: community
+url: https://www.centraide-mtl.org/
+label:
+  fr: "Centraide"
+  en: "Centraide"
+kind:
+  fr: "Organisme sans but lucratif"
+  en: "Nonprofit organization"
+  fa: "سازمان غیرانتفاعی"
+description:
+  fr: "Grand organisme sans but lucratif qui soutient les organismes communautaires, l'inclusion sociale et le développement des communautés dans tout le Grand Montréal."
+  en: "Major nonprofit organization supporting community agencies, social inclusion, and community development throughout Greater Montréal."
+  fa: "سازمان غیرانتفاعی بزرگی که در سراسر مونترال بزرگ از سازمان‌های اجتماعی، شمول اجتماعی و توسعهٔ جامعه‌ها حمایت می‌کند."
+order: 10
+published: true

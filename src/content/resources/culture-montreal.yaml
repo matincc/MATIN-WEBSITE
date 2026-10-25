@@ -1,0 +1,19 @@
+# Directory entry: see README.md. A listing never implies a partnership.
+# Name and official website checked on 2026-10-25. Official logo not added yet:
+# the card shows the name until a verified logo file is set in `logo`.
+name: "Culture Montréal"
+category: community
+url: https://culturemontreal.ca/
+label:
+  fr: "Culture Montréal"
+  en: "Culture Montréal"
+kind:
+  fr: "Organisme indépendant"
+  en: "Independent organization"
+  fa: "سازمان مستقل"
+description:
+  fr: "Organisme culturel indépendant qui fait la promotion de la participation culturelle, des politiques culturelles et du développement de la vie culturelle montréalaise."
+  en: "Independent cultural organization promoting cultural participation, cultural policy, and the development of Montréal's cultural life."
+  fa: "سازمان فرهنگی مستقلی که مشارکت فرهنگی، سیاست فرهنگی و رشد زندگی فرهنگی مونترال را ترویج می‌کند."
+order: 20
+published: true

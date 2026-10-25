@@ -1,0 +1,15 @@
+# Directory entry: see README.md. A listing never implies a partnership.
+# Name and official website checked on 2026-10-25. Official logo not added yet:
+# the card shows the name until a verified logo file is set in `logo`.
+name: "Compendium of Cultural Policies & Trends"
+category: international
+url: https://www.culturalpolicies.net/
+label:
+  fr: "Compendium"
+  en: "Compendium"
+description:
+  fr: "Plateforme internationale de recherche sur les politiques culturelles, qui offre des profils de pays comparatifs, des statistiques et de l'information sur la gouvernance culturelle et les tendances des politiques."
+  en: "International cultural policy research platform providing comparative country profiles, statistics, and information on cultural governance and policy trends."
+  fa: "سکویی بین‌المللی برای پژوهش در سیاست فرهنگی که نیم‌رخ‌های مقایسه‌ای کشورها، آمار و اطلاعاتی دربارهٔ حکمرانی فرهنگی و روندهای سیاست‌گذاری ارائه می‌دهد."
+order: 70
+published: true

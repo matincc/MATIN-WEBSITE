@@ -1,0 +1,16 @@
+# Directory entry: see README.md. A listing never implies a partnership.
+# Name and official website checked on 2026-10-25. Official logo not added yet:
+# the card shows the name until a verified logo file is set in `logo`.
+name: "Conseil de l'Europe — Culture et patrimoine culturel"
+nameEn: "Council of Europe — Culture and Cultural Heritage"
+category: international
+url: https://www.coe.int/en/web/culture-and-heritage/culture
+label:
+  fr: "Conseil de l'Europe"
+  en: "Council of Europe"
+description:
+  fr: "Organisation intergouvernementale européenne qui soutient la coopération culturelle, le dialogue interculturel, les droits culturels et les politiques du patrimoine."
+  en: "European intergovernmental organization supporting cultural cooperation, intercultural dialogue, cultural rights, and heritage policies."
+  fa: "سازمانی بین‌دولتی در اروپا که از همکاری فرهنگی، گفت‌وگوی بین‌فرهنگی، حقوق فرهنگی و سیاست‌های میراث حمایت می‌کند."
+order: 20
+published: true

@@ -1,36 +1,27 @@
 ---
 /**
- * Cultural Resources & Organizations: a curated directory of public, cultural, community
- * and research organizations, by category, with a category filter. Each entry opens the
- * organization's official website in a new tab. A listing never implies a partnership,
- * endorsement or affiliation (a "member" or "partner" badge appears only where the owner
- * confirmed it). Entries: src/content/resources/ (or the admin, /admin/).
- * Below the directory: International Cultural Networks (#networks, src/content/networks/)
- * and Cultural Policy & Strategic Documents (#policy, src/content/policies/), each with a
- * short message until entries are verified and published. The Resources menu links here.
+ * Cultural Resources & Organizations (owner's brief, Oct 25 2026): a curated directory of
+ * major cultural institutions and organizations in four categories (Canadian federal,
+ * Québec, cultural & community organizations and institutions, international), each a
+ * coloured module of logo cards (`OrgCard`) that open the official website in a new tab.
+ * A listing never implies a partnership, endorsement or affiliation: the notice says so at
+ * the top (a "member" or "partner" badge appears only where the owner confirmed it).
+ * Entries: src/content/resources/ (or the admin, /admin/). Below the directory: International
+ * Cultural Networks (#networks, src/content/networks/, shown once entries exist) and
+ * Cultural Policy & Strategic Documents (#policy, src/content/policies/). FR, EN and FA.
  */
-import { Image } from 'astro:assets';
-import {
-  ArrowDown,
-  BookOpen,
-  Download,
-  ExternalLink,
-  FileText,
-  Globe,
-  Info,
-  MapPin,
-} from '@lucide/astro';
+import { ArrowDown, BookOpen, FileText, Info } from '@lucide/astro';
+import OrgCard from '@/components/content/OrgCard.astro';
 import SectionHeader from '@/components/ui/SectionHeader.astro';
 import PageLayout from '@/layouts/PageLayout.astro';
-import { alternatesFor, type Lang } from '@/i18n/routes';
+import { baseLang, siteAlternates, type UiLang } from '@/i18n/routes';
 import { useTranslations, pick } from '@/i18n/ui';
 import { getNetworks, getPolicies, getResources, orgName } from '@/lib/content';
-import { baseLang } from '@/i18n/routes';
 import { resourceCategories } from '@/lib/taxonomy';
 import { resourceAccents, resourceIcons } from '@/lib/resourceIcons';
 
 interface Props {
-  lang: Lang;
+  lang: UiLang;
 }
 const { lang } = Astro.props;
 const t = useTranslations(lang);
@@ -43,32 +34,26 @@ const base = baseLang(lang);
 // A policy's title in the page's language, else the language the publisher used.
 const policyTitle = (p: (typeof policies)[number]) =>
   p.data.title[base] ?? p.data.title.fr ?? p.data.title.en!;
+const num = new Intl.NumberFormat(lang === 'fa' ? 'fa-IR' : 'en-CA');
 const groups = resourceCategories
   .map((c) => ({ category: c, items: resources.filter((r) => r.data.category === c) }))
   .filter((g) => g.items.length);
-const host = (url: string) => new URL(url).hostname.replace(/^www\./, '');
 ---
 
 <PageLayout
   lang={lang}
   title={t('resources.title')}
   lede={t('resources.lede')}
-  alternates={alternatesFor('resources')}
+  alternates={siteAlternates('resources')}
 >
-  <!-- The three parts of the page, as quick links under the title. -->
+  <!-- The parts of the page, as quick links under the title (the category filter sits
+       above the directory itself). -->
   <nav slot="hero" class="res-jump" aria-label={t('legal.onThisPage')}>
-    <a href="#directory" class="res-jump__link" data-accent="navy">
+    <a href="#directory" class="res-jump__link" data-accent="navy" data-jump>
       <span class="res-jump__icon" aria-hidden="true">
         <BookOpen size={18} />
       </span>
       {t('nav.resourcesDirectory')}
-      <ArrowDown size={16} class="res-jump__arrow" aria-hidden="true" />
-    </a>
-    <a href="#networks" class="res-jump__link" data-accent="teal">
-      <span class="res-jump__icon" aria-hidden="true">
-        <Globe size={18} />
-      </span>
-      {t('resources.networksTitle')}
       <ArrowDown size={16} class="res-jump__arrow" aria-hidden="true" />
     </a>
     <a href="#policy" class="res-jump__link" data-accent="mustard">
@@ -80,14 +65,20 @@ const host = (url: string) => new URL(url).hostname.replace(/^www\./, '');
     </a>
   </nav>
 
-  <!-- Owner's brief (Oct 25 2026): alternating warm tones. Directory on ivory, networks
-       on pale teal, policy documents on champagne with gold accents. -->
   <div class="directory-band">
     <div id="directory" class="container-site scroll-mt-28 pt-12 pb-24">
-      <p class="directory-notice">
-        <Info size={20} aria-hidden="true" />
-        <span>{t('resources.notice')}</span>
-      </p>
+      <!-- Independence notice (owner's brief, Oct 25 2026: more visible). -->
+      <aside class="directory-notice" aria-labelledby="directory-notice-title">
+        <span class="directory-notice__icon" aria-hidden="true">
+          <Info size={22} />
+        </span>
+        <div>
+          <p id="directory-notice-title" class="directory-notice__title">
+            {t('resources.noticeTitle')}
+          </p>
+          <p>{t('resources.notice')}</p>
+        </div>
+      </aside>
 
       {groups.length === 0 && <p class="empty-state">{t('resources.empty')}</p>}
 
@@ -109,82 +100,44 @@ const host = (url: string) => new URL(url).hostname.replace(/^www\./, '');
         </div>
       )}
 
-      <div class="space-y-16">
+      <div class="space-y-14">
         {groups.map(({ category, items }) => {
           const Icon = resourceIcons[category];
           return (
             <section
               id={`cat-${category}`}
               class="directory-group scroll-mt-28"
-              data-accent={resourceAccents[category]}
               aria-labelledby={`res-${category}`}
               data-category={category}
             >
               <div class="directory-head">
-                <h2 id={`res-${category}`} class="directory-title">
-                  <span class="directory-title__icon">
-                    <Icon size={22} stroke-width={1.75} aria-hidden="true" />
-                  </span>
-                  {t(`resources.${category}`)}
-                </h2>
+                <span class="directory-head__icon" aria-hidden="true">
+                  <Icon size={26} stroke-width={1.75} />
+                </span>
+                <div class="directory-head__text">
+                  <h2 id={`res-${category}`} class="directory-title">
+                    {t(`resources.${category}`)}
+                  </h2>
+                  <p class="directory-lede">{t(`resources.${category}Lede`)}</p>
+                </div>
+                <span class="directory-count">
+                  <strong>{num.format(items.length)}</strong> {t('resources.count')}
+                </span>
               </div>
-              <ul class:list={['org-grid', items.length < 3 && 'org-grid--few']}>
-                {items.map((r) => {
-                  const name = orgName(r, lang);
-                  const description = pick(r.data.description, lang);
-                  return (
-                    <li class="card org-card" data-accent={resourceAccents[category]}>
-                      <div class="org-card__logo">
-                        {r.data.logo ? (
-                          <Image
-                            src={r.data.logo}
-                            alt=""
-                            width={320}
-                            class="org-card__img"
-                            loading="lazy"
-                          />
-                        ) : (
-                          <span class="org-card__initials" aria-hidden="true">
-                            <Icon size={28} stroke-width={1.6} />
-                          </span>
-                        )}
-                      </div>
-                      {r.data.status !== 'listed' && (
-                        <span class="org-card__status">
-                          {t(`resources.status_${r.data.status}`)}
-                        </span>
-                      )}
-                      <h3 class="org-card__name">
-                        <a
-                          href={r.data.url}
-                          class="org-card__link"
-                          target="_blank"
-                          rel="noopener noreferrer"
-                        >
-                          {name}
-                          <span class="sr-only">{t('a11y.externalLink')}</span>
-                        </a>
-                      </h3>
-                      {r.data.location && (
-                        <p class="org-card__meta">
-                          <MapPin size={16} aria-hidden="true" />
-                          {r.data.location}
-                        </p>
-                      )}
-                      {description && <p class="org-card__text">{description}</p>}
-                      <span class="org-card__site" aria-hidden="true">
-                        <ExternalLink size={16} />
-                        {host(r.data.url)}
-                      </span>
-                      {r.data.file && (
-                        <a href={r.data.file} download class="org-card__file">
-                          <Download size={16} aria-hidden="true" />
-                          {t('resources.download')}
-                        </a>
-                      )}
-                    </li>
-                  );
-                })}
+              <ul class="org-list">
+                {items.map((r) => (
+                  <OrgCard
+                    lang={lang}
+                    name={orgName(r, lang)}
+                    label={pick(r.data.label, lang) || orgName(r, lang)}
+                    url={r.data.url}
+                    logo={r.data.logo}
+                    description={pick(r.data.description, lang)}
+                    kind={pick(r.data.kind, lang)}
+                    status={r.data.status}
+                    accent={resourceAccents[category]}
+                  />
+                ))}
               </ul>
             </section>
           );
@@ -193,78 +146,40 @@ const host = (url: string) => new URL(url).hostname.replace(/^www\./, '');
     </div>
   </div>
 
-  <section
-    id="networks"
-    class="networks-band scroll-mt-28 py-16 sm:py-20"
-    aria-labelledby="networks-title"
-  >
-    <div class="container-site">
-      <SectionHeader
-        align="start"
-        id="networks-title"
-        title={t('resources.networksTitle')}
-        lede={t('resources.networksLede')}
-        class="mb-10"
-      />
-      {networks.length > 0 ? (
-        <ul class="org-grid">
-          {networks.map((n) => (
-            <li class="card org-card" data-accent="teal">
-              <div class="org-card__logo">
-                {n.data.logo ? (
-                  <Image
-                    src={n.data.logo}
-                    alt=""
-                    width={320}
-                    class="org-card__img"
-                    loading="lazy"
-                  />
-                ) : (
-                  <span class="org-card__initials" aria-hidden="true">
-                    <Globe size={28} stroke-width={1.6} />
-                  </span>
-                )}
-              </div>
-              {n.data.status !== 'listed' && (
-                <span class="org-card__status">{t(`resources.status_${n.data.status}`)}</span>
-              )}
-              <h3 class="org-card__name">
-                <a
-                  href={n.data.url}
-                  class="org-card__link"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                >
-                  {(base === 'en' && n.data.nameEn) || n.data.name}
-                  <span class="sr-only">{t('a11y.externalLink')}</span>
-                </a>
-              </h3>
-              {n.data.scope && (
-                <p class="org-card__meta">
-                  <MapPin size={16} aria-hidden="true" />
-                  {n.data.scope}
-                </p>
-              )}
-              {pick(n.data.description, lang) && (
-                <p class="org-card__text">{pick(n.data.description, lang)}</p>
-              )}
-              <span class="org-card__site" aria-hidden="true">
-                <ExternalLink size={16} />
-                {host(n.data.url)}
-              </span>
-            </li>
-          ))}
+  {networks.length > 0 && (
+    <section
+      id="networks"
+      class="networks-band scroll-mt-28 py-16 sm:py-20"
+      aria-labelledby="networks-title"
+    >
+      <div class="container-site">
+        <SectionHeader
+          align="start"
+          id="networks-title"
+          title={t('resources.networksTitle')}
+          lede={t('resources.networksLede')}
+          class="mb-10"
+        />
+        <ul class="org-list">
+          {networks.map((n) => {
+            const name = (base === 'en' && n.data.nameEn) || n.data.name;
+            return (
+              <OrgCard
+                lang={lang}
+                name={name}
+                label={name}
+                url={n.data.url}
+                logo={n.data.logo}
+                description={pick(n.data.description, lang)}
+                status={n.data.status}
+                accent="teal"
+              />
+            );
+          })}
         </ul>
-      ) : (
-        <p class="res-empty" data-accent="teal">
-          <span class="res-empty__icon" aria-hidden="true">
-            <Globe size={26} stroke-width={1.6} />
-          </span>
-          <span>{t('resources.networksEmpty')}</span>
-        </p>
-      )}
-    </div>
-  </section>
+      </div>
+    </section>
+  )}
 
   <section
     id="policy"
@@ -331,7 +246,11 @@ const host = (url: string) => new URL(url).hostname.replace(/^www\./, '');
       sections.forEach((s) => (s.hidden = !!cat && s.dataset.category !== cat));
     };
     buttons.forEach((b) => b.addEventListener('click', () => show(b.dataset.cat ?? '')));
-    // Opened from a category link on the homepage (#cat-municipal…): show that category.
+    // A quick link under the title always shows every category again before jumping.
+    document
+      .querySelectorAll<HTMLAnchorElement>('[data-jump]')
+      .forEach((a) => a.addEventListener('click', () => show('')));
+    // Opened from a category link on the homepage (#cat-federal…): show that category.
     const fromHash = location.hash.replace(/^#cat-/, '');
     if (fromHash && buttons.some((b) => b.dataset.cat === fromHash)) show(fromHash);
   }
@@ -386,29 +305,6 @@ const host = (url: string) => new URL(url).hostname.replace(/^www\./, '');
   .res-jump :global(.res-jump__arrow) {
     color: var(--color-teal-deep);
   }
-
-  /* The directory: warm ivory band; each category is a module with a soft turquoise head. */
-  .directory-band {
-    /* Joins the banner directly (the banner keeps a bottom margin on other pages). */
-    margin-block-start: -3rem;
-    background: var(--color-ivory);
-  }
-  .directory-group {
-    overflow: hidden;
-    border: 1px solid var(--color-card-edge);
-    border-block-start: 5px solid var(--accent);
-    border-radius: calc(var(--radius-card) * 1.3);
-    background: var(--color-cream);
-    box-shadow: var(--shadow-card);
-  }
-  .directory-head {
-    padding: clamp(1.1rem, 0.8rem + 1.2vw, 1.6rem) clamp(1.25rem, 0.8rem + 2vw, 2.25rem);
-    border-block-end: 3px solid var(--color-gold);
-    background: var(--color-aqua);
-  }
-  .directory-group .org-grid {
-    padding: clamp(1.25rem, 0.8rem + 2vw, 2.25rem);
-  }
   .networks-band {
     background: var(--color-aqua);
     border-block: 1px solid var(--color-aqua-edge);
@@ -444,24 +340,6 @@ const host = (url: string) => new URL(url).hostname.replace(/^www\./, '');
     background: var(--color-primary);
     color: var(--color-gold);
   }
-  .directory-notice {
-    display: flex;
-    align-items: flex-start;
-    gap: 0.6rem;
-    max-width: 52rem;
-    margin-block-end: 2.5rem;
-    padding: 0.85rem 1.25rem;
-    border: 1px solid var(--color-card-edge);
-    border-radius: var(--radius-card);
-    background: var(--color-white);
-    font-size: 1rem;
-    color: var(--color-ink);
-  }
-  .directory-notice :global(svg) {
-    flex-shrink: 0;
-    margin-top: 0.15rem;
-    color: var(--color-teal-deep);
-  }
   .directory-filter {
     display: flex;
     flex-wrap: wrap;
@@ -491,130 +369,10 @@ const host = (url: string) => new URL(url).hostname.replace(/^www\./, '');
     background: var(--color-primary);
     color: var(--color-white);
   }
-  .directory-title {
-    display: flex;
-    align-items: center;
-    gap: 0.9rem;
-    font-size: clamp(1.5rem, 1.25rem + 0.9vw, 2rem);
-    font-weight: 800;
-    line-height: 1.25;
-  }
-  .directory-title__icon {
-    display: grid;
-    flex-shrink: 0;
-    place-items: center;
-    width: 3.25rem;
-    height: 3.25rem;
-    border-radius: 0.9rem;
-    background: var(--color-primary);
-    color: var(--color-gold);
-  }
-  /* Logo grid: same card size for everyone, logos kept in proportion. */
   .org-grid {
     display: grid;
     gap: 1.25rem;
     grid-template-columns: repeat(auto-fill, minmax(min(100%, 16rem), 1fr));
-  }
-  .org-card {
-    position: relative;
-    display: flex;
-    flex-direction: column;
-    gap: 0.5rem;
-    padding: 1.25rem 1.25rem 1.4rem;
-    border-block-start: 5px solid var(--accent);
-    transition:
-      border-color 0.2s,
-      transform 0.25s,
-      box-shadow 0.25s;
-  }
-  .org-card:hover,
-  .org-card:focus-within {
-    border-color: var(--color-gold);
-    border-block-start-color: var(--accent);
-    transform: translateY(-4px);
-    box-shadow: 0 20px 36px -22px color-mix(in srgb, var(--color-primary) 60%, transparent);
-  }
-  .org-card__logo {
-    display: grid;
-    place-items: center;
-    height: 7.5rem;
-    margin-block-end: 0.75rem;
-    padding: 1rem;
-    border: 1px solid var(--color-aqua-edge);
-    border-radius: 0.8rem;
-    background: var(--color-aqua);
-  }
-  .org-card :global(.org-card__img) {
-    max-width: 100%;
-    max-height: 100%;
-    width: auto;
-    height: auto;
-    object-fit: contain;
-  }
-  .org-card__initials {
-    display: grid;
-    place-items: center;
-    width: 4rem;
-    height: 4rem;
-    border-radius: 50%;
-    background: var(--color-primary);
-    font-family: var(--font-display);
-    font-size: 1.375rem;
-    font-weight: 800;
-    color: var(--color-gold);
-  }
-  /* Few organizations in a category: wide cards, logo beside the text, so the
-     module is filled rather than leaving an empty half. */
-  @media (min-width: 56rem) {
-    .org-grid--few {
-      grid-template-columns: repeat(2, minmax(0, 1fr));
-    }
-    .org-grid--few .org-card {
-      display: grid;
-      grid-template-columns: 9rem minmax(0, 1fr);
-      column-gap: 1.5rem;
-      align-content: start;
-      padding: 1.5rem;
-    }
-    .org-grid--few .org-card > :global(*) {
-      grid-column: 2;
-    }
-    .org-grid--few .org-card__logo {
-      grid-column: 1;
-      grid-row: 1 / span 6;
-      height: 9rem;
-      margin: 0;
-    }
-  }
-  .org-card__name {
-    font-size: 1.1875rem;
-    font-weight: 800;
-    line-height: 1.3;
-  }
-  /* The whole card opens the website. */
-  .org-card__link {
-    color: var(--color-primary);
-    text-decoration: none;
-  }
-  .org-card__link::after {
-    content: '';
-    position: absolute;
-    inset: 0;
-  }
-  .org-card__link:hover {
-    text-decoration: underline;
-    text-decoration-color: var(--color-gold);
-  }
-  .org-card__status {
-    align-self: flex-start;
-    padding: 0.2rem 0.75rem;
-    border-radius: 999px;
-    font-size: 0.8rem;
-    font-weight: 700;
-    letter-spacing: 0.04em;
-    text-transform: uppercase;
-    color: var(--color-white);
-    background: var(--color-teal-deep);
   }
   .policy-list {
     display: grid;
@@ -647,62 +405,168 @@ const host = (url: string) => new URL(url).hostname.replace(/^www\./, '');
     font-weight: 600;
     color: var(--color-gold-dark);
   }
-  .org-card__meta {
-    display: flex;
-    align-items: center;
-    gap: 0.4rem;
-    font-size: 1rem;
-    font-weight: 600;
-    color: var(--color-ink);
-  }
   .org-card__text {
     font-size: 1.0625rem;
     line-height: 1.6;
   }
-  .org-card__site {
-    display: inline-flex;
-    align-items: center;
-    align-self: flex-start;
-    justify-self: start;
-    gap: 0.4rem;
-    margin-top: auto;
-    padding: 0.35rem 0.9rem;
-    border-radius: 999px;
-    background: var(--color-champagne);
-    font-family: var(--font-display);
-    font-size: 0.9375rem;
-    font-weight: 800;
-    color: var(--color-primary);
-    transition:
-      background-color 0.2s,
-      color 0.2s;
+  /* The directory: warm ivory band; four modules, each with its own colour treatment
+     (owner's brief, Oct 25 2026: warmer, less white; navy, teal, gold, turquoise). Flat
+     colours only, per the site's no-gradient rule. */
+  .directory-band {
+    /* Joins the banner directly (the banner keeps a bottom margin on other pages). */
+    margin-block-start: -3rem;
+    background: var(--color-ivory);
   }
-  .org-card__site :global(svg) {
-    color: var(--color-teal-deep);
+  .directory-notice {
+    display: flex;
+    align-items: flex-start;
+    gap: 1rem;
+    max-width: 60rem;
+    margin-block-end: 2.5rem;
+    padding: 1.15rem 1.5rem;
+    border: 1px solid var(--color-card-edge);
+    border-inline-start: 5px solid var(--color-gold);
+    border-radius: var(--radius-card);
+    background: var(--color-white);
+    box-shadow: var(--shadow-card);
+    font-size: 1.0625rem;
+    line-height: 1.6;
+    color: var(--color-ink);
   }
-  .org-card:hover .org-card__site {
+  .directory-notice__icon {
+    display: grid;
+    flex-shrink: 0;
+    place-items: center;
+    width: 2.75rem;
+    height: 2.75rem;
+    border-radius: 50%;
     background: var(--color-primary);
-    color: var(--color-white);
-  }
-  .org-card:hover .org-card__site :global(svg) {
     color: var(--color-gold);
   }
-  .org-card__file {
-    position: relative;
-    z-index: 1;
-    display: inline-flex;
+  .directory-notice__title {
+    margin-block-end: 0.15rem;
+    font-family: var(--font-display);
+    font-weight: 800;
+    color: var(--color-primary);
+  }
+  .directory-group {
+    --head-bg: var(--color-primary);
+    --head-ink: var(--color-white);
+    --head-lede: var(--color-cream);
+    --head-icon-bg: var(--color-gold);
+    --head-icon: var(--color-primary);
+    --body-bg: var(--color-cream);
+    overflow: hidden;
+    border: 1px solid var(--color-card-edge);
+    border-radius: calc(var(--radius-card) * 1.3);
+    background: var(--body-bg);
+    box-shadow: var(--shadow-card);
+  }
+  /* A: Canadian federal institutions: deep navy head, cream body. */
+  /* B: Québec institutions: deep teal head, soft turquoise body. */
+  .directory-group[data-category='quebec'] {
+    --head-bg: var(--color-teal-deep);
+    --head-icon-bg: var(--color-white);
+    --head-icon: var(--color-teal-deep);
+    --body-bg: var(--color-aqua);
+  }
+  /* C: cultural & community organizations: matte gold head, champagne body. */
+  .directory-group[data-category='community'] {
+    --head-bg: var(--color-gold);
+    --head-ink: var(--color-primary);
+    --head-lede: var(--color-primary);
+    --head-icon-bg: var(--color-primary);
+    --head-icon: var(--color-gold);
+    --body-bg: var(--color-champagne);
+  }
+  /* D: international: soft turquoise head with a navy edge, ivory body, cream cards. */
+  .directory-group[data-category='international'] {
+    --head-bg: var(--color-aqua);
+    --head-ink: var(--color-primary);
+    --head-lede: var(--color-ink);
+    --head-icon-bg: var(--color-primary);
+    --head-icon: var(--color-gold);
+    --body-bg: var(--color-paper);
+    --org-surface: var(--color-cream);
+  }
+  .directory-group[data-category='international'] .directory-head {
+    border-block-start: 6px solid var(--color-primary);
+  }
+  .directory-head {
+    display: grid;
+    grid-template-columns: auto minmax(0, 1fr);
+    gap: 1rem 1.25rem;
     align-items: center;
-    gap: 0.4rem;
+    padding: clamp(1.25rem, 0.9rem + 1.4vw, 2rem) clamp(1.25rem, 0.8rem + 2vw, 2.5rem);
+    border-block-end: 3px solid var(--color-gold);
+    background: var(--head-bg);
+    color: var(--head-ink);
+  }
+  .directory-group[data-category='community'] .directory-head {
+    border-block-end-color: var(--color-primary);
+  }
+  @media (min-width: 56rem) {
+    .directory-head {
+      grid-template-columns: auto minmax(0, 1fr) auto;
+    }
+  }
+  .directory-head__icon {
+    display: grid;
+    place-items: center;
+    width: 3.5rem;
+    height: 3.5rem;
+    border-radius: 1rem;
+    background: var(--head-icon-bg);
+    color: var(--head-icon);
+  }
+  .directory-title {
+    font-size: clamp(1.5rem, 1.2rem + 1.1vw, 2.25rem);
+    font-weight: 800;
+    line-height: 1.2;
+    color: var(--head-ink);
+  }
+  .directory-lede {
+    max-width: 46rem;
+    margin-block-start: 0.4rem;
+    font-size: 1.0625rem;
+    line-height: 1.55;
+    color: var(--head-lede);
+  }
+  .directory-count {
+    grid-column: 1 / -1;
+    justify-self: start;
+    padding: 0.3rem 0.95rem;
+    border-radius: 999px;
+    background: var(--color-white);
+    font-family: var(--font-display);
+    font-size: 0.9375rem;
     font-weight: 700;
+    color: var(--color-primary);
+  }
+  @media (min-width: 56rem) {
+    .directory-count {
+      grid-column: auto;
+    }
+  }
+  /* Two wide cards per row on large screens, one on phones and tablets. */
+  .org-list {
+    display: grid;
+    gap: 1.25rem;
+    padding: clamp(1.25rem, 0.8rem + 2vw, 2.25rem);
+  }
+  .networks-band .org-list {
+    padding: 0;
+  }
+  @media (min-width: 64rem) {
+    .org-list {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
   }
   @media (prefers-reduced-motion: reduce) {
-    .org-card,
     .chip,
     .res-jump__link {
       transition: none;
     }
-    .org-card:hover,
-    .org-card:focus-within,
     .res-jump__link:hover {
       transform: none;
     }
