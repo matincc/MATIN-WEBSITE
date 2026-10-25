@@ -1,20 +1,28 @@
 ---
 /**
- * About page, in this order: Who We Are, Our Mission, Our Vision, Our values, Our story,
- * A personal note from our founder. The Persian page shows the values, the story and the
+ * About page, in this order: Who We Are (photo, text, NEQ and links to Mission, Vision and
+ * Values; moved here from the homepage, owner's brief Oct 25 2026), Our Mission, Our
+ * Vision and Legal status on a pale teal band, two photos of Montréal's cultural life,
+ * Our values, Our story, A personal note from our founder. The Persian page shows the values, the story and the
  * founder's note (Who We Are, Mission and Vision have no Persian translation yet) and
  * links to the English page. The President's biography and the team are on the Our Team
  * page (TeamPage.astro).
  */
+import { Picture } from 'astro:assets';
 import {
+  ArrowRight,
   DoorOpen,
+  Eye,
   HeartHandshake,
   LayoutGrid,
   MessagesSquare,
   Palette,
   Quote,
+  Target,
   Users,
 } from '@lucide/astro';
+import PhotoCredit from '@/components/media/PhotoCredit.astro';
+import { photos } from '@/lib/photos';
 import PageLayout from '@/layouts/PageLayout.astro';
 import DialogueArt from '@/components/brand/DialogueArt.astro';
 import SectionHeader from '@/components/ui/SectionHeader.astro';
@@ -44,7 +52,6 @@ const blocks: {
 }[] = [
   ...(full
     ? [
-        { id: 'who-we-are', title: t('about.whoWeAre'), text: t('home.whoText'), accent: 'navy' },
         {
           id: 'mission',
           title: t('about.mission'),
@@ -73,6 +80,14 @@ const blocks: {
     : []),
 ];
 const valueAccents = ['teal', 'mustard', 'navy', 'coral'];
+// Links from Who We Are to the sections below (formerly on the homepage).
+const whoLinks = [
+  { id: 'mission', label: t('nav.mission'), icon: Target, accent: 'navy' },
+  { id: 'vision', label: t('nav.vision'), icon: Eye, accent: 'mustard' },
+  { id: 'values', label: t('nav.values'), icon: HeartHandshake, accent: 'teal' },
+];
+// Two illustrative photos of Montréal's cultural life (never presented as Matin activities).
+const band = [photos.dialogueCircle, photos.placejc];
 
 // Thin-line icons, all drawn at the same size and stroke width.
 // Equity is four equal squares: never a scale, gavel or other legal symbol.
@@ -114,49 +129,117 @@ const founderRole = pick(president.signature, lang) || pick(president.title, lan
   description={t('about.lede')}
   alternates={siteAlternates('about')}
 >
-  {blocks.length > 0 && (
-    <div class="container-site about-blocks pb-20">
-      {blocks.map((b) => (
-        <section
-          id={b.id}
-          class:list={[
-            'about-block scroll-mt-24',
-            b.id === 'who-we-are' && 'about-block--lead',
-            b.id === 'legal-status' && 'about-block--legal',
-          ]}
-          data-accent={b.accent}
-          data-reveal
-          aria-labelledby={`${b.id}-title`}
-        >
-          {b.id === 'who-we-are' ? (
-            <div>
-              <h2 id={`${b.id}-title`} class="about-block__title">
-                {b.title}
-              </h2>
-              <p class="about-block__positioning">{t('home.positioning')}</p>
-            </div>
-          ) : (
-            <h2 id={`${b.id}-title`} class="about-block__title">
-              {b.title}
-            </h2>
-          )}
-          {b.badge && (
-            <p class="about-block__badge" dir="ltr">
-              {b.badge}
-            </p>
-          )}
-          <p class="about-block__text">{b.text}</p>
-          {b.link && (
-            <p class="mt-4">
-              <a href={b.link.href} class="font-semibold underline">
-                {b.link.label}
+  <!-- Who we are: photo and text side by side, then links to Mission, Vision, Values -->
+  {full && (
+    <section id="who-we-are" class="scroll-mt-24 pt-4 pb-20" aria-labelledby="who-we-are-title">
+      <div class="container-site who-grid">
+        <figure class="who-figure" data-reveal>
+          <span class="who-figure__block" aria-hidden="true"></span>
+          <div class="who-figure__photo">
+            <Picture
+              src={photos.tamtams.src}
+              alt=""
+              formats={['avif', 'webp']}
+              widths={[720, 1080, 1440, 1920]}
+              sizes="(min-width: 64rem) 100rem, 300vw"
+              style={`object-position:${photos.tamtams.focus}`}
+            />
+          </div>
+          <figcaption>
+            <PhotoCredit credit={photos.tamtams.credit} />
+          </figcaption>
+        </figure>
+        <div class="who-body">
+          <h2 id="who-we-are-title" class="who-title">
+            {t('about.whoWeAre')}
+          </h2>
+          <p class="who-positioning">{t('home.positioning')}</p>
+          <p class="who-text">{t('home.whoText')}</p>
+          {settings.legal && (
+            <p class="who-legal">
+              {t('home.legalLine', { neq: settings.legal.neq })} ·{' '}
+              <a href={href('legalInfo', lang)} class="font-semibold underline">
+                {t('home.legalLink')}
               </a>
             </p>
           )}
-        </section>
-      ))}
+          <nav aria-label={t('home.whoCardsLabel')} class="mt-9">
+            <ul class="who-links">
+              {whoLinks.map((c) => (
+                <li>
+                  <a href={`#${c.id}`} class="who-link" data-accent={c.accent}>
+                    <span class="who-link__icon" aria-hidden="true">
+                      <c.icon size={24} stroke-width={1.75} />
+                    </span>
+                    <span class="who-link__label">{c.label}</span>
+                    <ArrowRight size={20} class="who-link__arrow flip-rtl" aria-hidden="true" />
+                  </a>
+                </li>
+              ))}
+            </ul>
+          </nav>
+        </div>
+      </div>
+    </section>
+  )}
+
+  <!-- Mission, Vision and Legal status: white cards on a pale teal band -->
+  {blocks.length > 0 && (
+    <div class="about-band">
+      <div class="container-site about-blocks">
+        {blocks.map((b) => (
+          <section
+            id={b.id}
+            class:list={[
+              'about-block scroll-mt-24',
+              b.id === 'legal-status' && 'about-block--legal',
+            ]}
+            data-accent={b.accent}
+            data-reveal
+            aria-labelledby={`${b.id}-title`}
+          >
+            <h2 id={`${b.id}-title`} class="about-block__title">
+              {b.title}
+            </h2>
+            {b.badge && (
+              <p class="about-block__badge" dir="ltr">
+                {b.badge}
+              </p>
+            )}
+            <p class="about-block__text">{b.text}</p>
+            {b.link && (
+              <p class="mt-4">
+                <a href={b.link.href} class="font-semibold underline">
+                  {b.link.label}
+                </a>
+              </p>
+            )}
+          </section>
+        ))}
+      </div>
     </div>
   )}
+
+  <!-- Montréal's cultural life: two illustrative photos with their credits -->
+  <div class="container-site photo-pair py-16 sm:py-20">
+    {band.map((p, i) => (
+      <figure class="photo-pair__item" data-reveal style={`--reveal-delay:${i * 120}ms`}>
+        <div class="photo-pair__photo">
+          <Picture
+            src={p.src}
+            alt=""
+            formats={['avif', 'webp']}
+            widths={[640, 960, 1280]}
+            sizes="(min-width: 48rem) 45vw, 92vw"
+            style={`object-position:${p.focus}`}
+          />
+        </div>
+        <figcaption>
+          <PhotoCredit credit={p.credit} />
+        </figcaption>
+      </figure>
+    ))}
+  </div>
 
   <!-- Our values -->
   <section id="values" class="scroll-mt-24 bg-tint py-20" aria-labelledby="values-title">
@@ -247,10 +330,188 @@ const founderRole = pick(president.signature, lang) || pick(president.title, lan
 </PageLayout>
 
 <style>
-  /* Who we are (wide lead), then Mission and Vision side by side on wide screens. */
+  /* ---------- Who we are ---------- */
+  .who-grid {
+    display: grid;
+    gap: 3rem;
+    align-items: center;
+  }
+  @media (min-width: 64rem) {
+    .who-grid {
+      grid-template-columns: minmax(0, 5fr) minmax(0, 7fr);
+      gap: clamp(3.5rem, 2rem + 4vw, 7rem);
+    }
+  }
+  .who-figure {
+    position: relative;
+    max-width: 34rem;
+    margin-inline: auto;
+    width: 100%;
+  }
+  /* Teal block offset behind the photo: a quiet graphic accent. */
+  .who-figure__block {
+    position: absolute;
+    inset-block-start: 1.5rem;
+    inset-inline-start: -1.25rem;
+    width: 70%;
+    height: 82%;
+    border-radius: var(--radius-card);
+    background: var(--color-teal);
+  }
+  .who-figure__photo {
+    position: relative;
+    aspect-ratio: 4 / 5;
+    overflow: hidden;
+    border-radius: var(--radius-card);
+    margin-inline-start: 0.75rem;
+  }
+  /* The Tam-Tams photo is wide with a lot of sky: zoom towards the crowd. */
+  .who-figure__photo :global(img) {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transform: scale(1.55);
+    transform-origin: 50% 96%;
+  }
+  .who-figure figcaption {
+    margin-inline-start: 0.75rem;
+  }
+  .who-title {
+    font-size: clamp(2.25rem, 1.6rem + 2.4vw, 3.5rem);
+    font-weight: 800;
+    line-height: 1.1;
+  }
+  .who-title::after {
+    content: '';
+    display: block;
+    width: 4rem;
+    height: 3px;
+    margin-block-start: 1rem;
+    border-radius: 2px;
+    background: var(--color-gold);
+  }
+  /* Secondary positioning line: below the title, never in place of the slogan. */
+  .who-positioning {
+    margin-block: 1.25rem;
+    font-family: var(--font-display);
+    font-size: clamp(1.25rem, 1.1rem + 0.5vw, 1.5rem);
+    font-weight: 800;
+    color: var(--color-teal-deep);
+  }
+  .who-text {
+    max-width: 42rem;
+    font-size: clamp(1.25rem, 1.1rem + 0.55vw, 1.5rem);
+    line-height: 1.65;
+  }
+  .who-legal {
+    max-width: 42rem;
+    margin-block-start: 1.25rem;
+    padding: 0.85rem 1.1rem;
+    border-radius: 0.9rem;
+    border-inline-start: 4px solid var(--color-gold);
+    background: var(--color-ivory);
+    font-size: 1.0625rem;
+  }
+  .who-links {
+    display: grid;
+    gap: 0.75rem;
+    max-width: 42rem;
+  }
+  @media (min-width: 40rem) {
+    .who-links {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+  }
+  /* Link tiles: accent icon tile, navy label, arrow. */
+  .who-link {
+    display: flex;
+    align-items: center;
+    gap: 0.85rem;
+    height: 100%;
+    padding: 0.85rem 1rem;
+    border: 1px solid var(--color-card-edge);
+    border-radius: var(--radius-card);
+    background: var(--color-white);
+    box-shadow: var(--shadow-card);
+    text-decoration: none;
+    transition:
+      border-color 0.2s,
+      transform 0.25s cubic-bezier(0.2, 0.7, 0.2, 1);
+  }
+  .who-link:hover {
+    border-color: var(--accent);
+    transform: translateY(-2px);
+  }
+  .who-link__icon {
+    display: grid;
+    flex-shrink: 0;
+    place-items: center;
+    width: 2.75rem;
+    height: 2.75rem;
+    border-radius: 0.75rem;
+    background: var(--accent);
+    color: var(--color-primary);
+  }
+  /* Navy tile (Mission): mustard icon (5.3:1). */
+  .who-link[data-accent='navy'] .who-link__icon {
+    color: var(--color-gold);
+  }
+  .who-link__label {
+    flex: 1;
+    font-family: var(--font-display);
+    font-size: 1.125rem;
+    font-weight: 800;
+    color: var(--color-primary);
+  }
+  .who-link :global(.who-link__arrow) {
+    flex-shrink: 0;
+    color: var(--accent-ink);
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .who-link:hover {
+      transform: none;
+    }
+  }
+
+  /* Mission, Vision and Legal status on a pale teal band (owner's brief, Oct 25 2026). */
+  .about-band {
+    padding-block: clamp(3.5rem, 2.5rem + 3vw, 5.5rem);
+    background: var(--color-teal-pale);
+    border-block: 1px solid var(--color-teal-edge);
+  }
   .about-blocks {
     display: grid;
     gap: 1.75rem;
+  }
+
+  /* Two photos side by side, each with its credit. */
+  .photo-pair {
+    display: grid;
+    gap: 2rem;
+  }
+  @media (min-width: 48rem) {
+    .photo-pair {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+    .photo-pair__item:nth-child(2) {
+      margin-block-start: 3rem;
+    }
+  }
+  .photo-pair__photo {
+    aspect-ratio: 3 / 2;
+    overflow: hidden;
+    border-radius: var(--radius-card);
+    border-block-end: 6px solid var(--color-gold);
+  }
+  .photo-pair__item:nth-child(2) .photo-pair__photo {
+    border-block-end-color: var(--color-teal);
+  }
+  .photo-pair__photo :global(img) {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
   }
   /* Mission and Vision side by side; the compact Legal status card joins them as a third
      column on wide screens (owner's brief, Oct 24 2026: it was too wide for its text). */
@@ -258,7 +519,6 @@ const founderRole = pick(president.signature, lang) || pick(president.title, lan
     .about-blocks {
       grid-template-columns: repeat(2, minmax(0, 1fr));
     }
-    .about-block--lead,
     .about-block--legal {
       grid-column: 1 / -1;
     }
@@ -304,44 +564,6 @@ const founderRole = pick(president.signature, lang) || pick(president.title, lan
     max-width: 44rem;
     font-size: clamp(1.125rem, 1.05rem + 0.3vw, 1.25rem);
     line-height: 1.7;
-  }
-  /* The lead block: navy band, larger type, white text (11.9:1). */
-  .about-block--lead {
-    display: grid;
-    gap: 1rem 4rem;
-    border: none;
-    background: var(--color-primary);
-    color: var(--color-cream);
-  }
-  @media (min-width: 64rem) {
-    .about-block--lead {
-      grid-template-columns: minmax(0, 1fr) minmax(0, 2fr);
-      align-items: start;
-    }
-  }
-  .about-block--lead .about-block__title {
-    color: var(--color-white);
-  }
-  .about-block--lead .about-block__title::after {
-    content: '';
-    display: block;
-    width: 4rem;
-    height: 3px;
-    margin-block-start: 1rem;
-    background: var(--color-gold);
-  }
-  /* Secondary positioning line on navy: mustard (5.3:1). */
-  .about-block__positioning {
-    margin-block-start: 1.25rem;
-    font-family: var(--font-display);
-    font-size: clamp(1.125rem, 1.05rem + 0.35vw, 1.3125rem);
-    font-weight: 800;
-    color: var(--color-gold);
-  }
-  .about-block--lead .about-block__text {
-    max-width: none;
-    font-size: clamp(1.25rem, 1.1rem + 0.6vw, 1.625rem);
-    line-height: 1.6;
   }
   .value-card {
     border-block-start: 5px solid var(--accent);

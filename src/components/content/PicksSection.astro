@@ -1,15 +1,19 @@
 ---
 /**
- * "Matin's Picks": a few upcoming events Matin especially recommends, shown on the Events
- * page and on the homepage. One source for both: `featuredUntil` in an event's YAML file
+ * "Matin's Picks": upcoming events Matin especially recommends, shown on the Events page
+ * and on the homepage. One source for both: `featuredUntil` in an event's YAML file
  * (src/content/events/README.md), so a change appears in both places at once. Hidden when
  * there is no pick.
+ * Three region tabs (owner's brief, Oct 25 2026): Montréal (default), Canada (the rest of
+ * Québec included) and Around the World, up to three events each; an event belongs to
+ * one tab only, from its `region`.
  */
 import EventCard from '@/components/content/EventCard.astro';
 import SectionHeader from '@/components/ui/SectionHeader.astro';
 import type { UiLang } from '@/i18n/routes';
 import { useTranslations } from '@/i18n/ui';
-import { forLang, getUpcomingEvents, picksOf } from '@/lib/content';
+import { forLang, getUpcomingEvents, pickRegionOf, picksOf } from '@/lib/content';
+import { newsRegions } from '@/lib/taxonomy';
 
 interface Props {
   lang: UiLang;
@@ -17,10 +21,19 @@ interface Props {
   class?: string;
   /** Optional link beside the title, e.g. to the Events page. */
   link?: { href: string; label: string };
+  /** Events already shown elsewhere on the page, so that no event appears twice. */
+  exclude?: string[];
 }
-const { lang, class: className = '', link } = Astro.props;
+const { lang, class: className = '', link, exclude = [] } = Astro.props;
 const t = useTranslations(lang);
-const picks = forLang(picksOf(await getUpcomingEvents()), lang);
+const picks = forLang(picksOf(await getUpcomingEvents()), lang).filter(
+  (e) => !exclude.includes(e.id),
+);
+const tabs = newsRegions.map((region) => ({
+  region,
+  events: picks.filter((e) => pickRegionOf(e) === region),
+}));
+const uid = `picks-${exclude.length ? 'events' : 'home'}`;
 ---
 
 {picks.length > 0 && (
@@ -32,15 +45,55 @@ const picks = forLang(picksOf(await getUpcomingEvents()), lang);
         title={t('events.picksTitle')}
         subtitle={t('events.picksLede')}
         link={link}
-        class="mb-10"
+        class="mb-8"
       />
-      <ul class="grid gap-6 md:grid-cols-2 lg:grid-cols-3" data-upcoming-list>
-        {picks.map((event, i) => (
-          <li data-reveal style={`--reveal-delay:${i * 110}ms`}>
-            <EventCard event={event} lang={lang} />
-          </li>
+      <div data-tabs>
+        <div class="region-tabs__list" role="tablist" aria-label={t('a11y.regionTabs')}>
+          {tabs.map((tab, i) => (
+            <button
+              type="button"
+              role="tab"
+              class="region-tab"
+              id={`${uid}-tab-${tab.region}`}
+              aria-controls={`${uid}-${tab.region}`}
+              aria-selected={i === 0 ? 'true' : 'false'}
+            >
+              {t(`newsRegions.${tab.region}`)}
+            </button>
+          ))}
+        </div>
+        {tabs.map((tab) => (
+          <div
+            class="region-panel"
+            role="tabpanel"
+            id={`${uid}-${tab.region}`}
+            aria-labelledby={`${uid}-tab-${tab.region}`}
+          >
+            <h3 class="region-panel__title">{t(`newsRegions.${tab.region}`)}</h3>
+            {tab.events.length > 0 ? (
+              <ul class="grid gap-6 md:grid-cols-2 lg:grid-cols-3" data-upcoming-list>
+                {tab.events.map((event) => (
+                  <li>
+                    <EventCard
+                      event={event}
+                      lang={lang}
+                      picked
+                      lightboxGroup={`${uid}-${tab.region}`}
+                    />
+                  </li>
+                ))}
+              </ul>
+            ) : (
+              <p class="empty-state">{t('events.picksRegionEmpty')}</p>
+            )}
+          </div>
         ))}
-      </ul>
+      </div>
     </div>
   </section>
 )}
+
+<script>
+  import { enhanceTabs } from '@/scripts/tabs';
+  enhanceTabs();
+</script>

@@ -1,0 +1,107 @@
+---
+/**
+ * Cultural News in three region tabs: Montréal (default), Canada,
+ * Around the World (owner's brief, Oct 25 2026). Only published entries reach this list;
+ * proposed or rejected stories are never in the repository (see
+ * src/content/news/README.md). Each card names its source and links to it.
+ */
+import type { CollectionEntry } from 'astro:content';
+import { Newspaper } from '@lucide/astro';
+import PostCard from '@/components/content/PostCard.astro';
+import type { UiLang } from '@/i18n/routes';
+import { useTranslations } from '@/i18n/ui';
+import { newsRegions } from '@/lib/taxonomy';
+
+interface Props {
+  lang: UiLang;
+  posts: CollectionEntry<'news'>[];
+  /** Stories per tab (newest first); all of them when left out. */
+  perTab?: number;
+  id: string;
+  /** Heading level of the region titles (shown without JavaScript); cards go one below. */
+  level?: 3 | 4;
+}
+const { lang, posts, perTab, id, level = 3 } = Astro.props;
+const RegionHeading = `h${level}` as 'h3' | 'h4';
+const cardLevel = `h${level + 1}` as 'h4' | 'h5';
+const t = useTranslations(lang);
+const tabs = newsRegions.map((region) => {
+  const items = posts.filter((p) => (p.data.region ?? 'international') === region);
+  return { region, items: perTab ? items.slice(0, perTab) : items };
+});
+---
+
+<div data-tabs>
+  <div class="region-tabs__list" role="tablist" aria-label={t('a11y.regionTabs')}>
+    {tabs.map((tab, i) => (
+      <button
+        type="button"
+        role="tab"
+        class="region-tab"
+        id={`${id}-tab-${tab.region}`}
+        aria-controls={`${id}-${tab.region}`}
+        aria-selected={i === 0 ? 'true' : 'false'}
+      >
+        {t(`newsRegions.${tab.region}`)}
+      </button>
+    ))}
+  </div>
+  {tabs.map((tab) => (
+    <div
+      class="region-panel"
+      role="tabpanel"
+      id={`${id}-${tab.region}`}
+      aria-labelledby={`${id}-tab-${tab.region}`}
+    >
+      <RegionHeading class="region-panel__title">{t(`newsRegions.${tab.region}`)}</RegionHeading>
+      {tab.items.length > 0 ? (
+        <ul class="grid gap-6 md:grid-cols-2 lg:grid-cols-3 lg:gap-8">
+          {tab.items.map((post) => (
+            <li>
+              <PostCard post={post} lang={lang} headingLevel={cardLevel} />
+            </li>
+          ))}
+        </ul>
+      ) : (
+        <div class="region-empty">
+          <span class="region-empty__icon" aria-hidden="true">
+            <Newspaper size={26} />
+          </span>
+          <p>{t('news.regionEmpty')}</p>
+        </div>
+      )}
+    </div>
+  ))}
+</div>
+
+<script>
+  import { enhanceTabs } from '@/scripts/tabs';
+  enhanceTabs();
+</script>
+
+<style>
+  /* No approved story yet: a short, finished panel, never sample content. */
+  .region-empty {
+    display: flex;
+    align-items: center;
+    gap: 1.1rem;
+    max-width: 52rem;
+    padding: 1.35rem 1.6rem;
+    border: 1px solid var(--color-card-edge);
+    border-radius: var(--radius-card);
+    background: var(--color-ivory);
+    color: var(--color-primary);
+    font-size: 1.0625rem;
+    line-height: 1.65;
+  }
+  .region-empty__icon {
+    display: grid;
+    flex-shrink: 0;
+    place-items: center;
+    width: 3.25rem;
+    height: 3.25rem;
+    border-radius: 50%;
+    background: var(--color-primary);
+    color: var(--color-gold);
+  }
+</style>

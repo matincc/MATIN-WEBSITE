@@ -3,7 +3,7 @@ import { marked } from 'marked';
 import type { Lang } from '@/i18n/routes';
 import { typo } from './frenchTypo';
 import { montrealTime } from './dates';
-import { newsCategories as newsCategoryList, type NewsCategory } from '@/lib/taxonomy';
+import type { NewsRegion } from '@/lib/taxonomy';
 import { baseLang, href, type UiLang } from '@/i18n/routes';
 import { pick } from '@/i18n/ui';
 
@@ -79,14 +79,27 @@ export async function getPastEvents(now = new Date()) {
     .sort((a, b) => b.startDate.getTime() - a.startDate.getTime());
 }
 
-/** "Matin's Picks": up to 3 upcoming events featured until a date that has not passed. */
+/** The Matin's Picks tab of an event: Montréal, Canada (the rest of Québec included) or
+ *  around the world. */
+export const pickRegionOf = (e: EventEntry): NewsRegion =>
+  e.data.region === 'montreal'
+    ? 'montreal'
+    : e.data.region === 'international'
+      ? 'international'
+      : 'canada';
+
+/** "Matin's Picks": upcoming events featured until a date that has not passed, at most 3
+ *  per region tab. */
 export function picksOf(upcoming: EventEntry[], now = new Date()) {
   const today = now.toISOString().slice(0, 10);
-  return upcoming
-    .filter(
-      (e) => e.data.status !== 'cancelled' && e.data.featuredUntil && e.data.featuredUntil >= today,
-    )
-    .slice(0, 3);
+  const count: Partial<Record<NewsRegion, number>> = {};
+  return upcoming.filter((e) => {
+    if (e.data.status === 'cancelled' || !e.data.featuredUntil || e.data.featuredUntil < today)
+      return false;
+    const r = pickRegionOf(e);
+    count[r] = (count[r] ?? 0) + 1;
+    return count[r] <= 3;
+  });
 }
 
 export async function getPrograms() {
@@ -95,13 +108,11 @@ export async function getPrograms() {
 
 /** Published articles, newest first (drafts only on the local preview). */
 export async function getNews(limit?: number) {
-  const list = (await getCollection('news', (p) => import.meta.env.DEV || !p.data.draft)).sort(
-    (a, b) => b.data.date.getTime() - a.data.date.getTime(),
-  );
+  const list = (
+    await getCollection('news', (p) => !p.data.archived && (import.meta.env.DEV || !p.data.draft))
+  ).sort((a, b) => b.data.date.getTime() - a.data.date.getTime());
   return limit ? list.slice(0, limit) : list;
 }
-
-export const NEWS_PAGE_SIZE = 6;
 
 /** An article has a Persian page once its Persian text is written and reviewed. */
 export const hasPersian = (post: CollectionEntry<'news'>) =>
@@ -111,12 +122,6 @@ export const hasPersian = (post: CollectionEntry<'news'>) =>
 export function articleHref(post: CollectionEntry<'news'>, lang: UiLang): string {
   if (lang === 'fa' && hasPersian(post)) return `/fa/news/${slugOf(post, 'en')}/`;
   return href('news', lang, slugOf(post, baseLang(lang)));
-}
-
-/** News categories that have at least one post, in the canonical order. */
-export function newsCategories(posts: CollectionEntry<'news'>[]): NewsCategory[] {
-  const used = new Set(posts.map((p) => p.data.category));
-  return newsCategoryList.filter((c) => used.has(c));
 }
 
 /**
@@ -181,6 +186,20 @@ export async function getFaq() {
 export async function getResources() {
   return (await getCollection('resources', (r) => import.meta.env.DEV || r.data.published)).sort(
     (a, b) => a.data.order - b.data.order,
+  );
+}
+
+/** International Cultural Networks, published only (drafts on the local preview). */
+export async function getNetworks() {
+  return (await getCollection('networks', (r) => import.meta.env.DEV || r.data.published)).sort(
+    (a, b) => a.data.order - b.data.order,
+  );
+}
+
+/** Cultural Policy & Strategic Documents, newest first within the given order. */
+export async function getPolicies() {
+  return (await getCollection('policies', (r) => import.meta.env.DEV || r.data.published)).sort(
+    (a, b) => a.data.order - b.data.order || b.data.year - a.data.year,
   );
 }
 

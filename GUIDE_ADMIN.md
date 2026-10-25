@@ -68,67 +68,26 @@ Il manque une information obligatoire (par exemple le lien officiel ou la date d
 
 **Chaque semaine (suggestion) :** revérifiez les événements à venir (dates, annulations, liens) et mettez à jour `lastVerified`. Les événements terminés quittent l'agenda automatiquement.
 
-### 2. Publier un article (Actualités et perspectives)
+### 2. Publier une actualité (Actualités)
 
-Dossier **`src/content/news`**, même méthode (Add file → Create new file), puis ce modèle :
+La page **Actualités** a deux sections, jamais mélangées :
 
-```yaml
-date: 2026-11-02
-author: "Équipe Matin"
-category: matin-news # matin-news, perspectives, culture-cities, research, partnerships
-tags: [bénévolat, fête]
-urlSlug:
-  fr: retour-sur-la-fete
-  en: festival-recap
-title:
-  fr: "Retour sur la fête"
-  en: "Festival recap"
-excerpt:
-  fr: "Le résumé affiché sur les cartes (1 ou 2 phrases)."
-  en: "The summary shown on cards (1 or 2 sentences)."
-body:
-  fr: |
-    Le texte complet de l'article.
-  en: |
-    The full article text.
-```
+- **Actualité culturelle** (`category: recommends`) : des nouvelles externes choisies par Matin, en trois onglets (Montréal, Canada, Ailleurs dans le monde). Obligatoires : la `source` (nom et lien de l'article original) et la `region` (`montreal`, `canada` ou `international`). La `date` est celle de la publication par la source, pas celle d'un événement dont elle parle. Le résumé est court et écrit par Matin ; on ne copie jamais l'article. La carte mène directement à la source.
+- **Nouvelles de Matin** (`category: matin-news`) : les nouvelles officielles de l'Institut, avec leur propre page.
 
-**Ajouter une image :**
+**Seules les actualités approuvées par le président entrent dans le dépôt.** Le dépôt est public : les propositions en attente ou refusées n'y vont jamais, même en brouillon. Le déroulement complet (recherche, liste de propositions, approbation, publication) est décrit dans le guide `reports/news-workflow-guide-2026-10-25.md` des fichiers du projet.
 
-1. Envoyez la photo dans le dossier `src/assets/uploads/news` avec **Add file → Upload files**.
-2. Ajoutez ces lignes dans l'article :
+**Le plus simple : la page d'administration** (`/admin`, collection « News · Actualités »). Chaque champ est expliqué. Chaque enregistrement publie le site en quelques minutes (une mise à jour Netlify).
 
-```yaml
-image: ../../assets/uploads/news/nom-de-la-photo.jpg
-imageAlt:
-  fr: "Description de la photo pour les personnes aveugles"
-  en: "Description of the photo for blind visitors"
-imagePermission: true # obligatoire avec une image : Matin a le droit de publier cette photo
-```
+**Sans l'administration :** dossier **`src/content/news`**, même méthode (Add file → Create new file), avec le modèle de `src/content/news/README.md`.
 
-N'utilisez que des photos que Matin possède ou qu'il a la permission de publier (accord de la personne qui a pris la photo et des personnes reconnaissables).
+**Image :** seulement une image que Matin possède ou a le droit d'utiliser. Envoyez-la dans `src/assets/uploads/news`, puis ajoutez `image:`, `imageAlt:`, `imageCredit:` (auteur et licence) et `imagePermission: true`. Sans image, la carte montre le motif du dialogue.
 
-**Article sur un événement ou un sujet externe :** indiquez la source, elle s'affiche sous l'article.
+**Retirer une actualité dépassée :** cochez « Archived » (ou ajoutez `archived: true`). Elle quitte le site mais reste dans l'historique.
 
-```yaml
-source:
-  name: "Nom de l'organisme ou du média"
-  url: https://exemple.org/page
-```
+**Brouillon :** `draft: true` ne montre l'article que sur l'aperçu local (`npm run dev`). Après une mise à jour importante, ajoutez `updated: AAAA-MM-JJ`.
 
-**Les cinq catégories** (une catégorie n'apparaît sur le site qu'une fois qu'elle contient un article publié) :
-
-- `matin-news` : **Nouvelles de Matin**. Développements et annonces de l'Institut.
-- `perspectives` : **Perspectives**. Articles sur le dialogue interculturel, la diversité culturelle et la planification culturelle.
-- `culture-cities` : **Culture et villes**. Politiques culturelles, développement culturel urbain, espaces publics.
-- `research` : **Recherche et publications**. Recherches, rapports et publications choisis.
-- `partnerships` : **Partenariats et initiatives**. Seulement des collaborations confirmées.
-
-**Brouillon :** ajoutez `draft: true` pour préparer un article sans le publier (il n'apparaît nulle part sur le site ni dans les moteurs de recherche). Le jour de la publication, retirez cette ligne et mettez `date` à la date du jour. Après une mise à jour importante, ajoutez `updated: AAAA-MM-JJ`.
-
-**Persan :** ajoutez `fa:` dans `title`, `excerpt` et `body`, puis `faReviewed: true` après relecture : l'article aura alors sa page en persan.
-
-Les événements ne vont **pas** dans les actualités : ils ont leur propre dossier.
+**Persan :** ajoutez `fa:` dans `title`, `excerpt` et `body`, puis `faReviewed: true` après relecture par une personne qui parle persan couramment : l'actualité apparaît alors sur la page persane.
 
 ### 2 bis. Après un événement : compte rendu et photos
 
@@ -334,17 +293,26 @@ Missing a required field (the official link or the check date, for example)? The
 
 **Every week (suggested):** re-check upcoming events (dates, cancellations, links) and update `lastVerified`. Events that have ended leave the agenda automatically.
 
-### 2. Publish an article (News & Insights)
+### 2. Publish a news item (News)
 
-In the **`src/content/news`** folder, use the same method with the **news template** above.
+The **News** page has two sections, never mixed:
 
-Choose the `category` (a category appears on the site only once it has a published article): `matin-news` (**Matin News**: the Institute's developments and announcements), `perspectives` (**Perspectives**: articles on intercultural dialogue, cultural diversity and cultural planning), `culture-cities` (**Culture & Cities**: cultural policy, urban cultural development, public space), `research` (**Research & Publications**: selected research, reports and publications) or `partnerships` (**Partnerships & Initiatives**: confirmed collaborations only). Events don't go in News & Insights; they have their own folder.
+- **Cultural News** (`category: recommends`): external stories selected by Matin, in three tabs (Montréal, Canada, Around the World). Required: the `source` (name and link of the original article) and the `region` (`montreal`, `canada` or `international`). `date` is the source's publication date, not the date of an event it mentions. The summary is short and in Matin's own words; never copy the article. The card links straight to the source.
+- **Matin News** (`category: matin-news`): the institute's official news, each with its own page.
 
-**Draft:** add `draft: true` to prepare an article without publishing it (it appears nowhere on the site or in search engines). On publication day, remove that line and set `date` to that day. After a substantial update, add `updated: YYYY-MM-DD`.
+**Only news the President approved enters the repository.** It is public: pending or rejected proposals never go there, not even as drafts. The full workflow (research, shortlist, approval, publication) is in `reports/news-workflow-guide-2026-10-25.md` in the project files.
 
-**Persian:** add `fa:` in `title`, `excerpt` and `body`, then `faReviewed: true` once reviewed: the article then gets its Persian page.
+**Easiest: the admin page** (`/admin`, "News · Actualités" collection). Every field is explained. Each save publishes the site within a few minutes (one Netlify build).
 
-To add a picture, upload it to `src/assets/uploads/news` (**Add file → Upload files**), then add the `image:`, `imageAlt:` and `imagePermission: true` lines. Only use photos Matin owns or has permission to publish. For a post about an outside event or topic, add the `source:` block (name and address); it is shown under the post.
+**Without the admin:** the **`src/content/news`** folder, same method, with the template in `src/content/news/README.md`.
+
+**Image:** only an image Matin owns or has the right to use. Upload it to `src/assets/uploads/news`, then add `image:`, `imageAlt:`, `imageCredit:` (author and licence) and `imagePermission: true`. Without an image, the card shows the dialogue motif.
+
+**Take an outdated item off the site:** tick "Archived" (or add `archived: true`). It leaves the site but stays in the history.
+
+**Draft:** `draft: true` shows an item only on the local preview (`npm run dev`). After a substantial update, add `updated: YYYY-MM-DD`.
+
+**Persian:** add `fa:` in `title`, `excerpt` and `body`, then `faReviewed: true` once a fluent speaker has reviewed it: the item then appears on the Persian page.
 
 ### 2b. After an event: report and photos
 

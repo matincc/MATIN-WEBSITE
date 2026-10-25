@@ -25,17 +25,17 @@ export const resourceCategories = [
 export type ResourceCategory = (typeof resourceCategories)[number];
 
 /**
- * News & Insights categories. A category appears on the site only once it has a
- * published article.
+ * The two News categories (owner's brief, Oct 25 2026: "News", exactly two, never mixed):
+ * `recommends` = Cultural News, external stories the President approved, each with a
+ * `source` and a `region`; `matin-news` = Matin News, the institute's official news.
  */
-export const newsCategories = [
-  'matin-news',
-  'perspectives',
-  'culture-cities',
-  'research',
-  'partnerships',
-] as const;
+export const newsCategories = ['recommends', 'matin-news'] as const;
 export type NewsCategory = (typeof newsCategories)[number];
+
+/** The three region tabs of Matin's Picks and Cultural News (owner's brief, Oct 25 2026):
+ * Montréal, the rest of Canada (other Québec municipalities included), around the world. */
+export const newsRegions = ['montreal', 'canada', 'international'] as const;
+export type NewsRegion = (typeof newsRegions)[number];
 
 /* Events & Cultural Agenda */
 

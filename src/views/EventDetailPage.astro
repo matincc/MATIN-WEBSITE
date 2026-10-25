@@ -5,6 +5,7 @@ import {
   CalendarPlus,
   Clock,
   Download,
+  ZoomIn,
   ExternalLink,
   MapPin,
   Ticket,
@@ -41,6 +42,11 @@ const alternates: Alternates = {
 const calLang = baseLang(lang);
 // The official poster can be downloaded as the original file (separate from the calendar).
 const poster = d.image && d.imageIsPoster ? posterFile(d.image, slugOf(event, 'en')) : undefined;
+// Large version of the poster for the full-screen viewer (opens on click, never downloads).
+const posterLarge =
+  d.image && d.imageIsPoster
+    ? (await getImage({ src: d.image, width: Math.min(2000, d.image.width), format: 'webp' })).src
+    : undefined;
 const place = placeName(event, lang);
 const site = Astro.site ?? new URL(Astro.url.origin);
 const url = new URL(alternates[lang] ?? alternates.en, site).href;
@@ -132,15 +138,27 @@ const jsonLd = {
         ]}
       >
         {d.image && d.imageIsPoster ? (
-          <Picture
-            src={d.image}
-            alt={pick(d.imageAlt, lang) ?? ''}
-            formats={['avif', 'webp']}
-            widths={[480, 720, 960, 1280]}
-            sizes="(min-width: 1024px) 40rem, 100vw"
-            class="mx-auto block h-auto w-full max-w-[40rem]"
-            loading="eager"
-          />
+          <a
+            href={posterLarge}
+            class="poster-zoom mx-auto block max-w-[40rem]"
+            data-lightbox="poster"
+            data-alt={pick(d.imageAlt, lang) ?? ''}
+            data-caption={title}
+            aria-label={t('gallery.openPoster', { title })}
+          >
+            <Picture
+              src={d.image}
+              alt=""
+              formats={['avif', 'webp']}
+              widths={[480, 720, 960, 1280]}
+              sizes="(min-width: 1024px) 40rem, 100vw"
+              class="block h-auto w-full"
+              loading="eager"
+            />
+            <span class="poster-zoom__icon" aria-hidden="true">
+              <ZoomIn size={20} />
+            </span>
+          </a>
         ) : d.image ? (
           <Picture
             src={d.image}
@@ -224,9 +242,9 @@ const jsonLd = {
               );
             })}
           </ul>
-          <Lightbox lang={lang} />
         </section>
       )}
+      {(poster || photos.length > 0) && <Lightbox lang={lang} />}
       <div class="mt-12 border-t border-line pt-6">
         <ShareButtons lang={lang} url={url} title={title} />
       </div>
@@ -341,6 +359,38 @@ const jsonLd = {
 </PageLayout>
 
 <style>
+  /* The poster opens full screen; a gentle zoom on hover says so. */
+  .poster-zoom {
+    position: relative;
+    overflow: hidden;
+    cursor: zoom-in;
+  }
+  .poster-zoom :global(img) {
+    transition: transform 0.5s ease;
+  }
+  .poster-zoom:hover :global(img) {
+    transform: scale(1.03);
+  }
+  .poster-zoom__icon {
+    position: absolute;
+    right: 0.9rem;
+    bottom: 0.9rem;
+    display: grid;
+    place-items: center;
+    width: 2.6rem;
+    height: 2.6rem;
+    border-radius: 999px;
+    background: var(--color-primary);
+    color: var(--color-white);
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .poster-zoom :global(img) {
+      transition: none;
+    }
+    .poster-zoom:hover :global(img) {
+      transform: none;
+    }
+  }
   /* An official poster is shown whole, on a cream ground. */
   .event-poster {
     padding: clamp(0.75rem, 0.5rem + 1vw, 1.5rem);

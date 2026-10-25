@@ -1,8 +1,10 @@
 ---
 /**
- * Events & Cultural Agenda: Matin's Picks, the upcoming agenda (Matin's own events and
- * selected external events, by date), a Matin Events module and, once there is one,
- * the archive of Matin's past events. Filters appear only when there are enough events.
+ * Events & Cultural Agenda, in the order of the Events menu: Matin Events (Matin's own and
+ * co-organized events), Matin's Picks, the other upcoming events (by date, 9 at a time,
+ * with filters once there are enough), then Matin's past events. Each event appears once
+ * on the page: in Matin Events if it is Matin's, else in the Picks if featured, else in
+ * the upcoming list (owner's brief, Oct 2026).
  */
 import { ArrowRight } from '@lucide/astro';
 import PageLayout from '@/layouts/PageLayout.astro';
@@ -10,9 +12,10 @@ import SectionHeader from '@/components/ui/SectionHeader.astro';
 import EventCard from '@/components/content/EventCard.astro';
 import PicksSection from '@/components/content/PicksSection.astro';
 import ExpireEvents from '@/components/content/ExpireEvents.astro';
+import Lightbox from '@/components/ui/Lightbox.astro';
 import { alternatesFor, path, type Lang } from '@/i18n/routes';
 import { useTranslations, pick } from '@/i18n/ui';
-import { getUpcomingEvents, getPastEvents, isMatinEvent, slugOf } from '@/lib/content';
+import { getUpcomingEvents, getPastEvents, isMatinEvent, picksOf, slugOf } from '@/lib/content';
 import { formatDate } from '@/lib/dates';
 import { eventFormats, eventLanguages, eventRegions, eventSubjects } from '@/lib/taxonomy';
 
@@ -21,8 +24,15 @@ interface Props {
 }
 const { lang } = Astro.props;
 const t = useTranslations(lang);
-const [upcoming, past] = await Promise.all([getUpcomingEvents(), getPastEvents()]);
-const matinUpcoming = upcoming.filter(isMatinEvent);
+const [allUpcoming, past] = await Promise.all([getUpcomingEvents(), getPastEvents()]);
+const matinUpcoming = allUpcoming.filter(isMatinEvent);
+const pickIds = picksOf(allUpcoming)
+  .filter((e) => !isMatinEvent(e))
+  .map((e) => e.id);
+const shownAbove = new Set([...matinUpcoming.map((e) => e.id), ...pickIds]);
+const upcoming = allUpcoming.filter((e) => !shownAbove.has(e.id));
+/** Upcoming events shown at a time; "Show more events" reveals the next ones. */
+const PAGE_SIZE = 9;
 
 /** Filters only list values that occur, and only show when there is something to filter. */
 const FILTER_MIN_EVENTS = 4;
@@ -97,11 +107,43 @@ const showFilters = upcoming.length >= FILTER_MIN_EVENTS && filters.length > 0;
   alternates={alternatesFor('events')}
   searchable={false}
 >
-  <PicksSection lang={lang} class="pt-4 pb-14" />
+  <section
+    id="matin-events"
+    class="scroll-mt-24 bg-tint py-16 sm:py-20"
+    aria-labelledby="matin-events-title"
+  >
+    <div class="container-site">
+      <SectionHeader
+        align="start"
+        id="matin-events-title"
+        title={t('events.matinTitle')}
+        class="mb-10"
+      />
+      {matinUpcoming.length > 0 ? (
+        <ul class="grid gap-6 md:grid-cols-2 lg:grid-cols-3" data-upcoming-list>
+          {matinUpcoming.map((event) => (
+            <li>
+              <EventCard event={event} lang={lang} />
+            </li>
+          ))}
+        </ul>
+      ) : (
+        <div class="empty-state">
+          <p>{t('events.matinEmpty')}</p>
+          <a href={`${path('home', lang)}#newsletter`} class="btn btn-primary">
+            {t('events.stayConnected')}
+            <ArrowRight size={18} aria-hidden="true" />
+          </a>
+        </div>
+      )}
+    </div>
+  </section>
+
+  <PicksSection lang={lang} class="pt-16 pb-6 sm:pt-20" exclude={matinUpcoming.map((e) => e.id)} />
 
   <section
     id="upcoming"
-    class="container-site scroll-mt-24 pt-4 pb-20"
+    class="container-site scroll-mt-24 pt-14 pb-20"
     aria-labelledby="upcoming-title"
   >
     <SectionHeader align="start" id="upcoming-title" title={t('events.upcoming')} class="mb-10" />
@@ -133,7 +175,12 @@ const showFilters = upcoming.length >= FILTER_MIN_EVENTS && filters.length > 0;
 
     <div>
       {upcoming.length > 0 && (
-        <ul id="event-list" class="grid gap-6 md:grid-cols-2 lg:grid-cols-3" data-upcoming-list>
+        <ul
+          id="event-list"
+          class="grid gap-6 md:grid-cols-2 lg:grid-cols-3"
+          data-upcoming-list
+          data-page-size={PAGE_SIZE}
+        >
           {upcoming.map((event) => (
             <li
               data-region={event.data.region}
@@ -148,102 +195,101 @@ const showFilters = upcoming.length >= FILTER_MIN_EVENTS && filters.length > 0;
         </ul>
       )}
       <p class="empty-state" data-upcoming-empty hidden={upcoming.length > 0}>
-        {t('events.emptyAgenda')}
+        {allUpcoming.length > upcoming.length ? t('events.othersEmpty') : t('events.emptyAgenda')}
       </p>
       <p class="empty-state" data-events-noresults hidden>
         {t('events.noResults')}
       </p>
+      {upcoming.length > PAGE_SIZE && (
+        <div class="mt-10 flex justify-center">
+          <button type="button" class="btn btn-outline" data-events-more hidden>
+            {t('events.showMore')}
+          </button>
+        </div>
+      )}
     </div>
   </section>
   <ExpireEvents />
 
-  <section
-    id="matin-events"
-    class="scroll-mt-24 bg-tint py-16 sm:py-20"
-    aria-labelledby="matin-events-title"
-  >
-    <div class="container-site">
-      <SectionHeader
-        align="start"
-        id="matin-events-title"
-        title={t('events.matinTitle')}
-        class="mb-10"
-      />
-      {matinUpcoming.length > 0 ? (
-        <ul class="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-          {matinUpcoming.map((event) => (
-            <li>
-              <EventCard event={event} lang={lang} />
+  {past.length > 0 && (
+    <section id="past" class="scroll-mt-24 bg-tint py-16 sm:py-20" aria-labelledby="past-title">
+      <div class="container-site">
+        <SectionHeader align="start" id="past-title" title={t('events.past')} class="mb-10" />
+        <ul class="divide-y divide-line overflow-hidden rounded-[var(--radius-card)] border border-line bg-white">
+          {past.slice(0, 5).map((e) => (
+            <li class="relative flex flex-col gap-1 px-6 py-5 transition hover:bg-cream sm:flex-row sm:items-center sm:gap-6">
+              <time
+                datetime={e.data.start.slice(0, 10)}
+                class="w-44 shrink-0 text-sm font-semibold text-gold-dark"
+              >
+                {formatDate(e.startDate, lang, false)}
+              </time>
+              <a
+                href={path('events', lang, slugOf(e, lang))}
+                class="text-lg font-bold text-primary no-underline after:absolute after:inset-0 hover:text-ink"
+              >
+                {pick(e.data.title, lang)}
+              </a>
+              <span class="text-sm text-muted sm:ms-auto">
+                {t(`agendaSubjects.${e.data.subject}`)}
+              </span>
             </li>
           ))}
         </ul>
-      ) : (
-        <div class="empty-state">
-          <p>{t('events.matinEmpty')}</p>
-          <a href={`${path('home', lang)}#newsletter`} class="btn btn-primary">
-            {t('events.stayConnected')}
-            <ArrowRight size={18} aria-hidden="true" />
-          </a>
-        </div>
-      )}
-
-      {past.length > 0 && (
-        <div class="mt-16">
-          <h3 class="mb-6 text-2xl font-bold">{t('events.past')}</h3>
-          <ul class="divide-y divide-line overflow-hidden rounded-[var(--radius-card)] border border-line bg-white">
-            {past.slice(0, 5).map((e) => (
-              <li class="relative flex flex-col gap-1 px-6 py-5 transition hover:bg-cream sm:flex-row sm:items-center sm:gap-6">
-                <time
-                  datetime={e.data.start.slice(0, 10)}
-                  class="w-44 shrink-0 text-sm font-semibold text-gold-dark"
-                >
-                  {formatDate(e.startDate, lang, false)}
-                </time>
-                <a
-                  href={path('events', lang, slugOf(e, lang))}
-                  class="text-lg font-bold text-primary no-underline after:absolute after:inset-0 hover:text-ink"
-                >
-                  {pick(e.data.title, lang)}
-                </a>
-                <span class="text-sm text-muted sm:ms-auto">
-                  {t(`agendaSubjects.${e.data.subject}`)}
-                </span>
-              </li>
-            ))}
-          </ul>
-          <a href={path('eventsArchive', lang)} class="link-arrow mt-8">
-            {t('events.viewArchive')}
-            <ArrowRight size={18} aria-hidden="true" />
-          </a>
-        </div>
-      )}
-    </div>
-  </section>
+        <a href={path('eventsArchive', lang)} class="link-arrow mt-8">
+          {t('events.viewArchive')}
+          <ArrowRight size={18} aria-hidden="true" />
+        </a>
+      </div>
+    </section>
+  )}
+  <!-- Fullscreen viewer for the images of Matin's Picks. -->
+  <Lightbox lang={lang} />
 </PageLayout>
 
 <script>
-  const toolbar = document.querySelector<HTMLFormElement>('[data-events-toolbar]');
-  if (toolbar) {
-    // Visible only once JS can make the controls work; space was reserved to avoid a layout shift.
-    toolbar.classList.remove('invisible');
-    const list = document.getElementById('event-list');
+  // Filters (once there are enough events) and "Show more events": the list shows
+  // data-page-size matching events at a time. Without JavaScript every event is shown.
+  const list = document.getElementById('event-list');
+  if (list) {
+    const toolbar = document.querySelector<HTMLFormElement>('[data-events-toolbar]');
     const noResults = document.querySelector<HTMLElement>('[data-events-noresults]');
-    const selects = [...toolbar.querySelectorAll<HTMLSelectElement>('[data-filter]')];
+    const more = document.querySelector<HTMLButtonElement>('[data-events-more]');
+    const selects = toolbar
+      ? [...toolbar.querySelectorAll<HTMLSelectElement>('[data-filter]')]
+      : [];
+    const pageSize = Number(list.dataset.pageSize) || 9;
+    let limit = pageSize;
 
-    const filter = () => {
-      let shown = 0;
-      list?.querySelectorAll<HTMLElement>(':scope > li').forEach((li) => {
+    const render = () => {
+      let matches = 0;
+      list.querySelectorAll<HTMLElement>(':scope > li').forEach((li) => {
         // Items already hidden because they ended stay hidden.
         if (li.dataset.expired) return;
         const ok = selects.every((s) => !s.value || li.dataset[s.dataset.filter!] === s.value);
-        li.hidden = !ok;
-        if (ok) shown++;
+        if (ok) matches++;
+        li.hidden = !ok || matches > limit;
       });
-      if (noResults) noResults.hidden = shown > 0;
+      if (noResults) noResults.hidden = matches > 0 || !toolbar;
+      if (more) more.hidden = matches <= limit;
     };
-    selects.forEach((s) => s.addEventListener('change', filter));
-    // "Show all events": the reset button clears the selects, then the list is refreshed.
-    toolbar.addEventListener('reset', () => setTimeout(filter));
+
+    if (toolbar) {
+      // Visible only once JS can make the controls work; space was reserved to avoid a layout shift.
+      toolbar.classList.remove('invisible');
+      const reset = () => {
+        limit = pageSize;
+        render();
+      };
+      selects.forEach((s) => s.addEventListener('change', reset));
+      // "Show all events": the reset button clears the selects, then the list is refreshed.
+      toolbar.addEventListener('reset', () => setTimeout(reset));
+    }
+    more?.addEventListener('click', () => {
+      limit += pageSize;
+      render();
+    });
+    render();
   }
 </script>
 

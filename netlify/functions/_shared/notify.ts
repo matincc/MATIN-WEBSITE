@@ -125,8 +125,8 @@ export function visitorConfirmation(lang: Lang) {
       body: 'Thank you for contacting Matin Intercultural Institute. We have received your message and will review it as soon as possible.',
     },
     fa: {
-      subject: 'مؤسسه بین‌فرهنگی متین — پیام شما دریافت شد',
-      body: 'از اینکه با مؤسسه بین‌فرهنگی متین تماس گرفتید سپاسگزاریم. پیام شما به دست ما رسید و در نخستین فرصت آن را بررسی می‌کنیم.',
+      subject: 'مؤسسه میان‌فرهنگی متین — پیام شما دریافت شد',
+      body: 'از اینکه با مؤسسه میان‌فرهنگی متین تماس گرفتید سپاسگزاریم. پیام شما به دست ما رسید و در نخستین فرصت آن را بررسی می‌کنیم.',
     },
   }[lang];
   const note = 'Ceci est un message automatique. / This is an automated message.';

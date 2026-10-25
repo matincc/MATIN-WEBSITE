@@ -15,6 +15,10 @@ interface Props {
   autocomplete?: HTMLAttributes<'input'>['autocomplete'];
   options?: string[];
   placeholderOption?: string;
+  /** Required only when another field has a value, e.g. "requester_type=organization". */
+  requiredWhen?: string;
+  /** Another label while another field has a value (the form script swaps it). */
+  labelWhen?: { when: string; label: string };
   class?: string;
 }
 const {
@@ -28,6 +32,8 @@ const {
   autocomplete,
   options = [],
   placeholderOption,
+  requiredWhen,
+  labelWhen,
   class: className = '',
 } = Astro.props;
 const t = useTranslations(lang);
@@ -35,9 +41,20 @@ const errorId = `${id}-error`;
 ---
 
 <div class:list={['field', className]}>
-  <label for={id} class="field-label" data-short={label}>
-    {label}
-    {required && <span class="req"> ({t('form.required')})</span>}
+  <label
+    for={id}
+    class="field-label"
+    data-short={label}
+    data-label-when={labelWhen?.when}
+    data-label-alt={labelWhen?.label}
+  >
+    <span data-label-text>{label}</span>
+    {(required || requiredWhen) && (
+      <span class="req" hidden={!required} data-req-mark>
+        {' '}
+        ({t('form.required')})
+      </span>
+    )}
   </label>
   {as === 'textarea' ? (
     <textarea id={id} name={name} class="input" required={required} aria-describedby={errorId} />
@@ -55,6 +72,7 @@ const errorId = `${id}-error`;
       type={type}
       class="input"
       required={required}
+      data-required-when={requiredWhen}
       autocomplete={autocomplete}
       aria-describedby={errorId}
     />

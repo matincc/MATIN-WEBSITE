@@ -70,16 +70,15 @@ const t = useTranslations(lang);
     height: 100%;
     object-fit: cover;
     object-position: 50% 65%;
-    /* Very slow zoom so the city feels alive (stops with reduced motion). */
-    animation: hero-drift 28s ease-in-out infinite alternate;
     transform-origin: 50% 65%;
+    transition: transform 0.8s cubic-bezier(0.2, 0.7, 0.2, 1);
   }
-  @keyframes hero-drift {
-    from {
-      transform: scale(1);
-    }
-    to {
-      transform: scale(1.08);
+  /* Owner's request (Oct 25 2026): on desktop, the photo alone zooms in gently while the
+     pointer is over the banner, and returns when it leaves. Nothing on touch screens or
+     with reduced motion; the banner clips the photo, so the page never moves. */
+  @media (hover: hover) and (pointer: fine) and (prefers-reduced-motion: no-preference) {
+    .hero:hover .hero__media :global(img) {
+      transform: scale(1.06);
     }
   }
   /* Name, tagline, line and paragraph rise in one after the other. */
@@ -107,7 +106,6 @@ const t = useTranslations(lang);
     }
   }
   @media (prefers-reduced-motion: reduce) {
-    .hero__media :global(img),
     .hero__text > * {
       animation: none;
     }

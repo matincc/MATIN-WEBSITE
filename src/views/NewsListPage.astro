@@ -1,126 +1,126 @@
 ---
-import type { CollectionEntry } from 'astro:content';
+/**
+ * News (owner's brief, Oct 25 2026): one page, two sections that are never mixed.
+ * 1. Cultural News (#cultural-news): external stories the President approved, in three
+ *    region tabs (Montréal, Canada, Around the World) on the deep teal panel; each card
+ *    names its source and links to it.
+ * 2. Matin News (#matin-news): the institute's official news on a warm cream band, the
+ *    newest as a wide lead card.
+ * Only published entries reach this page: proposed or rejected stories never enter the
+ * repository (src/content/news/README.md). French, English and Persian (Persian shows
+ * the entries whose Persian text was reviewed, with a note when others exist).
+ */
 import { Rss } from '@lucide/astro';
 import PageLayout from '@/layouts/PageLayout.astro';
 import PostCard from '@/components/content/PostCard.astro';
-import Pagination from '@/components/ui/Pagination.astro';
-import { categorySegment, categorySlugs, path, type Lang } from '@/i18n/routes';
+import SectionHeader from '@/components/ui/SectionHeader.astro';
+import NewsRegionTabs from '@/components/content/NewsRegionTabs.astro';
+import { path, type Alternates, type UiLang } from '@/i18n/routes';
 import { useTranslations } from '@/i18n/ui';
-import type { NewsCategory as Category } from '@/lib/taxonomy';
-import { getNews, newsCategories as newsCategoriesOf } from '@/lib/content';
+import { forLang, getNews } from '@/lib/content';
 
 interface Props {
-  lang: Lang;
-  posts: CollectionEntry<'news'>[];
-  current?: number;
-  last?: number;
-  category?: Category;
+  lang: UiLang;
 }
-const { lang, posts, current = 1, last = 1, category } = Astro.props;
-// Only categories that have published articles are listed (the menu needs at least two).
-const categories = newsCategoriesOf(await getNews());
+const { lang } = Astro.props;
 const t = useTranslations(lang);
-
-const pageHref = (l: Lang, n: number) => (n === 1 ? path('news', l) : path('news', l, 'page', n));
-const catHref = (l: Lang, c: Category) => path('news', l, categorySegment[l], categorySlugs[c][l]);
-const alternates = category
-  ? { fr: catHref('fr', category), en: catHref('en', category) }
-  : { fr: pageHref('fr', current), en: pageHref('en', current) };
-
-const title = category
-  ? t('news.categoryTitle', { category: t(`newsCategories.${category}`) })
-  : t('news.title');
-const lead = current === 1 && !category ? posts[0] : undefined;
-const rest = lead ? posts.slice(1) : posts;
-const metaTitle =
-  !category && current > 1 ? `${title} — ${t('pagination.page', { n: current })}` : title;
+const all = await getNews();
+const posts = forLang(all, lang);
+const cultural = posts.filter((p) => p.data.category === 'recommends');
+const matin = posts.filter((p) => p.data.category === 'matin-news');
+const [lead, ...rest] = matin;
+// Persian: some entries may exist only in French and English.
+const untranslated = lang === 'fa' && posts.length < all.length;
+const alternates: Alternates = {
+  fr: path('news', 'fr'),
+  en: path('news', 'en'),
+  fa: '/fa/news/',
+};
 ---
 
 <PageLayout
   lang={lang}
-  title={title}
-  metaTitle={metaTitle}
+  title={t('news.title')}
   lede={t('news.lede')}
   alternates={alternates}
   searchable={false}
-  crumbs={category ? [{ label: t('news.title'), href: path('news', lang) }] : []}
 >
-  <section class="container-site pt-4 pb-24">
-    <div class="mb-12 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-      {categories.length > 1 && (
-        <nav aria-label={t('news.categories')}>
-          <ul class="flex flex-wrap gap-2">
-            <li>
-              <a
-                href={path('news', lang)}
-                class="chip-link"
-                aria-current={!category ? 'page' : undefined}
-              >
-                {t('news.allCategories')}
-              </a>
-            </li>
-            {categories.map((c) => (
-              <li>
-                <a
-                  href={catHref(lang, c)}
-                  class="chip-link"
-                  aria-current={category === c ? 'page' : undefined}
-                >
-                  {t(`newsCategories.${c}`)}
-                </a>
-              </li>
-            ))}
-          </ul>
-        </nav>
-      )}
-      <a href={`/${lang}/rss.xml`} class="link-arrow shrink-0 text-sm">
-        <Rss size={18} class="text-gold-dark" aria-hidden="true" />
-        {t('news.rss')}
+  {untranslated && (
+    <p class="container-site news-note">
+      {t('news.otherLanguages')}{' '}
+      <a href={path('news', 'en')} hreflang="en">
+        {t('news.otherLanguagesLink')}
       </a>
+    </p>
+  )}
+
+  <section id="cultural-news" class="news-cultural scroll-mt-28" aria-labelledby="cultural-title">
+    <div class="container-site">
+      <div class="news-teal news-cultural__panel">
+        <SectionHeader
+          align="start"
+          id="cultural-title"
+          title={t('news.culturalTitle')}
+          subtitle={t('news.culturalLede')}
+          class="mb-8"
+        />
+        <NewsRegionTabs lang={lang} posts={cultural} id="cultural-news-tabs" />
+      </div>
     </div>
+  </section>
 
-    {posts.length > 0 ? (
-      <>
-        {/* On the first page, the latest article leads as a wide featured story. */}
-        {lead && <PostCard post={lead} lang={lang} headingLevel="h2" featured />}
-        {rest.length > 0 && (
-          <ul class:list={['grid gap-x-8 gap-y-14 md:grid-cols-2 lg:grid-cols-3', lead && 'mt-14']}>
-            {rest.map((post) => (
-              <li>
-                <PostCard post={post} lang={lang} headingLevel="h2" />
-              </li>
-            ))}
-          </ul>
-        )}
-      </>
-    ) : (
-      <p class="empty-state">{t('news.empty')}</p>
-    )}
-
-    <Pagination lang={lang} current={current} last={last} href={(n) => pageHref(lang, n)} />
+  <section id="matin-news" class="news-matin scroll-mt-28" aria-labelledby="matin-news-title">
+    <div class="container-site">
+      <SectionHeader
+        align="start"
+        id="matin-news-title"
+        title={t('news.matinTitle')}
+        subtitle={t('news.matinLede')}
+        class="mb-10"
+      />
+      {lead ? (
+        <>
+          <PostCard post={lead} lang={lang} featured />
+          {rest.length > 0 && (
+            <ul class="mt-10 grid gap-6 md:grid-cols-2 lg:grid-cols-3 lg:gap-8">
+              {rest.map((post) => (
+                <li>
+                  <PostCard post={post} lang={lang} />
+                </li>
+              ))}
+            </ul>
+          )}
+        </>
+      ) : (
+        <p class="empty-state">{t('news.matinEmpty')}</p>
+      )}
+      {lang !== 'fa' && (
+        <p class="mt-12">
+          <a href={`/${lang}/rss.xml`} class="link-arrow text-base">
+            <Rss size={18} aria-hidden="true" />
+            {t('news.rss')}
+          </a>
+        </p>
+      )}
+    </div>
   </section>
 </PageLayout>
 
 <style>
-  .chip-link {
-    display: inline-flex;
-    align-items: center;
-    min-height: 2.75rem;
-    padding: 0.4rem 1.15rem;
-    border-radius: 999px;
-    font-weight: 600;
-    font-size: 0.9rem;
-    color: var(--color-primary);
-    text-decoration: none;
-    background: var(--color-white);
-    border: 1.5px solid var(--color-line);
+  .news-note {
+    padding-block-start: 1.5rem;
+    font-size: 1.0625rem;
   }
-  .chip-link:hover {
-    border-color: var(--color-primary);
+  .news-cultural {
+    padding-block: clamp(2.5rem, 2rem + 2vw, 4rem) clamp(3rem, 2rem + 3vw, 5rem);
   }
-  .chip-link[aria-current='page'] {
-    background: var(--color-primary);
-    border-color: var(--color-primary);
-    color: var(--color-white);
+  .news-cultural__panel {
+    padding: clamp(1.5rem, 1rem + 2.5vw, 3.5rem);
+  }
+  /* Matin News: warm cream band, a little lighter in feel than the teal panel above. */
+  .news-matin {
+    padding-block: clamp(3rem, 2rem + 3vw, 5.5rem);
+    border-block-start: 4px solid var(--color-gold);
+    background: var(--color-cream);
   }
 </style>

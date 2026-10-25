@@ -7,6 +7,7 @@ role:
   fa: 'بنیان‌گذار و رئیس'
 photo: ../../assets/brand/president.jpg
 linkedin: https://www.linkedin.com/in/rezamoafi/
+group: president # shown by the President section, not in the lists
 order: 1
 faReviewed: true
 draft: true

@@ -1,51 +1,61 @@
 # Actualités · News
 
-One YAML file per article, e.g. `nouveau-partenariat.yaml`. Full guide: `GUIDE_ADMIN.md`.
+One YAML file per **approved** item, e.g. `2026-11-nouveau-partenariat.yaml`. Full guide: `GUIDE_ADMIN.md`.
 Events do not go here: they have their own folder (`src/content/events`).
 
-Five categories (a category appears on the site only once it has a published article):
+**Only approved items enter this folder.** The repository is public, so proposed, pending or
+rejected stories never go here, not even as drafts: they stay in the private shortlist that
+Claude prepares for the President. Once he approves an item, it is added here.
 
-- `matin-news`: **Matin News / Nouvelles de Matin**. The Institute's developments and announcements.
-- `perspectives`: **Perspectives**. Articles on intercultural dialogue, cultural diversity and cultural planning.
-- `culture-cities`: **Culture & Cities / Culture et villes**. Cultural policy, urban cultural development, public space.
-- `research`: **Research & Publications / Recherche et publications**. Selected research, reports and publications.
-- `partnerships`: **Partnerships & Initiatives / Partenariats et initiatives**. Confirmed collaborations only.
+Two sections, never mixed (owner's brief, Oct 25 2026):
 
-Add `draft: true` while an article is being reviewed: drafts appear only on the local preview
-(`npm run dev`), never on the live site, in listings, feeds, the sitemap or search engines.
+- `recommends`: **Cultural News / Actualité culturelle / اخبار فرهنگی**. External stories selected
+  by Matin. Required: `source` (name and link of the original article) and `region`
+  (`montreal`, `canada` with the rest of Québec, or `international`). `date` is the source's
+  publication date, not the date of an event it mentions. The summary is short and in Matin's
+  own words; never copy the article. The card links straight to the source.
+- `matin-news`: **Matin News / Nouvelles de Matin / اخبار متین**. The institute's official news,
+  with its own article page.
+
+Other fields: `archived: true` takes an outdated item off the site (kept in the history);
+`draft: true` shows an item only on the local preview (`npm run dev`); `updated` after a
+substantial change. Images: only with the right to use them (`imagePermission: true`), with
+`imageCredit` for anything Matin did not make itself.
 
 ```yaml
 date: 2027-03-02
-author: "Équipe Matin"
-category: matin-news # perspectives, culture-cities, research, partnerships
-# updated: 2027-03-10   (optional, after a substantial update)
-# draft: true          (while under review)
+author:
+  fr: 'Institut interculturel Matin'
+  en: 'Matin Intercultural Institute'
+  fa: 'مؤسسه میان‌فرهنگی متین'
+category: matin-news # or recommends
+# region: montreal    (Cultural News only: montreal, canada, international)
+# source:             (Cultural News only)
+#   name: "Nom du média ou de l'organisme"
+#   url: https://…
+# updated: 2027-03-10
+# archived: true
 urlSlug:
   fr: titre-en-francais
   en: title-in-english
 title:
-  fr: "Titre de l'article"
-  en: "Article title"
+  fr: "Titre"
+  en: "Title"
 excerpt:
   fr: "Résumé en une ou deux phrases."
   en: "One- or two-sentence summary."
 body:
   fr: |
-    Texte complet.
+    Texte.
   en: |
-    Full text.
+    Text.
 
-# Optional image. Use only photos Matin owns or has permission to publish
-# (photographer's consent and consent of recognizable people):
+# Optional image:
 # image: ../../assets/uploads/news/photo.jpg
 # imageAlt: { fr: "Description", en: "Description" }
+# imageCredit: "Photo : Nom, CC BY 4.0"
 # imagePermission: true
 
-# Optional source, when the article discusses an external event or issue:
-# source:
-#   name: "Nom de l'organisme ou du média"
-#   url: https://…
-
-# Persian (optional): add `fa:` to title, excerpt and body, then faReviewed: true
-# once reviewed. Only then does the article appear on Persian pages.
+# Persian (optional): add `fa:` to title, excerpt and body, then faReviewed: true once a
+# fluent speaker has reviewed it. Only then does the item appear on the Persian pages.
 ```

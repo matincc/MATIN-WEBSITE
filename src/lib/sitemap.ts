@@ -2,23 +2,8 @@
  * Every public page as a FR/EN pair, so the sitemap can declare hreflang
  * alternates even when the URLs are translated (/fr/a-propos/ ↔ /en/about/).
  */
-import {
-  categorySegment,
-  categorySlugs,
-  path,
-  routes,
-  siteAlternates,
-  type RouteKey,
-} from '@/i18n/routes';
-import {
-  getEvents,
-  getNews,
-  getPrograms,
-  NEWS_PAGE_SIZE,
-  newsCategories,
-  presidentProfileVisible,
-  slugOf,
-} from './content';
+import { path, routes, siteAlternates, type RouteKey } from '@/i18n/routes';
+import { getEvents, getNews, getPrograms, presidentProfileVisible, slugOf } from './content';
 
 export interface PagePair {
   fr: string;
@@ -55,16 +40,6 @@ export async function allPagePairs(): Promise<PagePair[]> {
       en: path('news', 'en', slugOf(post, 'en')),
       lastmod: post.data.date,
     });
-  }
-  for (const c of newsCategories(posts)) {
-    pairs.push({
-      fr: path('news', 'fr', categorySegment.fr, categorySlugs[c].fr),
-      en: path('news', 'en', categorySegment.en, categorySlugs[c].en),
-    });
-  }
-  const pages = Math.ceil(posts.length / NEWS_PAGE_SIZE);
-  for (let n = 2; n <= pages; n++) {
-    pairs.push({ fr: path('news', 'fr', 'page', n), en: path('news', 'en', 'page', n) });
   }
   return pairs;
 }

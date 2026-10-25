@@ -70,6 +70,24 @@
   --color-line: color-mix(in srgb, var(--matin-gold) 30%, var(--matin-white));
   /* Card edges: a little stronger than dividers, so white cards read on paper and cream. */
   --color-card-edge: color-mix(in srgb, var(--matin-gold) 45%, var(--matin-white));
+  /* Soft tints mixed from the palette (owner's brief, Oct 25 2026: warmer panels, less
+     pure white). Text on them: navy or ink (contrast above 9:1). */
+  --color-ivory: color-mix(in srgb, var(--matin-cream) 45%, var(--matin-paper));
+  --color-teal-pale: color-mix(in srgb, var(--matin-teal) 11%, var(--matin-paper));
+  --color-teal-edge: color-mix(in srgb, var(--matin-teal) 35%, var(--matin-white));
+  --color-champagne: color-mix(in srgb, var(--matin-gold) 15%, var(--matin-paper));
+  /* Oct 25 2026 (owner: "no pale green"): aqua is a soft turquoise leaning to blue (teal
+     with a little navy, on white), for Our Team and hover states. */
+  --color-aqua: color-mix(
+    in srgb,
+    color-mix(in srgb, var(--matin-teal) 85%, var(--matin-blue)) 22%,
+    var(--matin-white)
+  );
+  --color-aqua-edge: color-mix(
+    in srgb,
+    color-mix(in srgb, var(--matin-teal) 85%, var(--matin-blue)) 40%,
+    var(--matin-white)
+  );
   /* Primary button hover: slightly darker navy. */
   --color-primary-hover: color-mix(in srgb, var(--matin-blue) 82%, black);
 
@@ -509,4 +527,128 @@
     animation-iteration-count: 1 !important;
     transition-duration: 0.01ms !important;
   }
+}
+
+/* Region tabs (Matin's Picks, News & Insights): Montréal | Canada | Around the World.
+   src/scripts/tabs.ts. Without JavaScript the tab row is hidden and every panel shows
+   with its own heading. */
+.region-tabs__list {
+  display: none;
+}
+.is-enhanced > .region-tabs__list {
+  display: inline-flex;
+  flex-wrap: wrap;
+  gap: 0.35rem;
+  margin-block-end: 2.25rem;
+  padding: 0.35rem;
+  border-radius: 999px;
+  border: 1px solid var(--color-card-edge);
+  background: var(--color-white);
+  box-shadow: var(--shadow-card);
+}
+.region-tab {
+  min-height: 2.75rem;
+  padding: 0.5rem 1.35rem;
+  border-radius: 999px;
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: 1rem;
+  color: var(--color-primary);
+  cursor: pointer;
+  transition:
+    background-color 0.25s,
+    color 0.25s,
+    box-shadow 0.25s;
+}
+.region-tab:hover {
+  background: var(--color-aqua);
+}
+.region-tab[aria-selected='true'] {
+  box-shadow: inset 0 -3px 0 var(--color-gold);
+}
+.region-tab[aria-selected='true'] {
+  background: var(--color-primary);
+  color: var(--color-white);
+}
+/* Cultural News panel (owner's brief, Oct 25 2026: a richer teal identity, never pale
+   green): flat deep teal with soft turquoise circles, white title, light tabs with a gold
+   active tab (navy on mustard 5.3:1); the stories keep their own ivory cards. */
+.news-teal {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+  border-radius: calc(var(--radius-card) * 1.4);
+  background: var(--color-teal-deep);
+  color: var(--color-white);
+}
+.news-teal::before,
+.news-teal::after {
+  content: '';
+  position: absolute;
+  z-index: -1;
+  border-radius: 50%;
+  background: var(--color-teal);
+  opacity: 0.55;
+  pointer-events: none;
+}
+.news-teal::before {
+  inset-block-start: -9rem;
+  inset-inline-end: -6rem;
+  width: 24rem;
+  height: 24rem;
+}
+.news-teal::after {
+  inset-block-start: 4rem;
+  inset-inline-end: 9rem;
+  width: 11rem;
+  height: 11rem;
+  background: var(--color-primary);
+  opacity: 0.22;
+}
+.news-teal :is(h2, h3, .section-title, .section-subtitle, .link-arrow, .link-arrow svg) {
+  color: var(--color-white);
+}
+.news-teal :focus-visible {
+  outline-color: var(--color-white);
+}
+.news-teal .is-enhanced > .region-tabs__list {
+  border-color: color-mix(in srgb, var(--color-white) 35%, transparent);
+  background: color-mix(in srgb, var(--color-primary) 30%, transparent);
+  box-shadow: none;
+}
+.news-teal .region-tab {
+  color: var(--color-white);
+}
+.news-teal .region-tab:hover {
+  background: color-mix(in srgb, var(--color-white) 16%, transparent);
+}
+.news-teal .region-tab[aria-selected='true'] {
+  background: var(--color-gold);
+  color: var(--color-primary);
+  box-shadow: none;
+}
+.news-teal .region-panel .region-empty {
+  border: 0;
+  background: var(--color-ivory);
+  color: var(--color-primary);
+}
+
+.region-panel__title {
+  margin-block-end: 1.25rem;
+  font-size: 1.5rem;
+  font-weight: 800;
+}
+.is-enhanced .region-panel__title {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+.region-panel + .region-panel {
+  margin-block-start: 3rem;
+}
+.is-enhanced .region-panel + .region-panel {
+  margin-block-start: 0;
 }
