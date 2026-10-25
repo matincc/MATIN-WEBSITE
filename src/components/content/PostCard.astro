@@ -18,7 +18,7 @@ import type { Category, NewsCategory } from '@/lib/taxonomy';
 interface Props {
   post: CollectionEntry<'news'>;
   lang: UiLang;
-  headingLevel?: 'h2' | 'h3';
+  headingLevel?: 'h2' | 'h3' | 'h4';
   featured?: boolean;
 }
 const { post, lang, headingLevel = 'h3', featured = false } = Astro.props;

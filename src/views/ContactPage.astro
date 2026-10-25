@@ -10,6 +10,7 @@
  */
 import { Clock, Mail, MapPin, Phone } from '@lucide/astro';
 import PageLayout from '@/layouts/PageLayout.astro';
+import CommunityIllustration from '@/components/brand/CommunityIllustration.astro';
 import SectionHeader from '@/components/ui/SectionHeader.astro';
 import ContactForm from '@/components/forms/ContactForm.astro';
 import VolunteerForm from '@/components/forms/VolunteerForm.astro';
@@ -118,6 +119,13 @@ const details = [
           <SocialLinks lang={lang} social={s.social} />
         </section>
 
+        {/* The illustration of the former homepage Get Involved band (owner's brief,
+            Oct 25 2026), with its mustard block. */}
+        <figure class="contact-art" aria-hidden="true">
+          <CommunityIllustration class="contact-art__img" />
+          <span class="contact-art__block"></span>
+        </figure>
+
         {address && (
           <section aria-labelledby="map-title">
             <h2 id="map-title" class="sr-only">
@@ -176,6 +184,25 @@ const details = [
   .info-panel {
     background: var(--color-white);
     border-block-start: 6px solid var(--color-teal);
+  }
+  .contact-art {
+    position: relative;
+    max-width: 30rem;
+    margin-inline: auto;
+    padding-block-end: 1rem;
+  }
+  .contact-art :global(.contact-art__img) {
+    position: relative;
+    z-index: 1;
+  }
+  .contact-art__block {
+    position: absolute;
+    inset-block-end: 0;
+    inset-inline-end: -1rem;
+    width: 45%;
+    height: 55%;
+    border-radius: var(--radius-card);
+    background: var(--color-gold);
   }
   .volunteer-band {
     background: var(--color-paper);

@@ -8,21 +8,10 @@
  * The photographs are openly licensed views of Montréal (see src/lib/photos.ts), shown
  * with their credits; they illustrate the themes, they do not document Matin activities.
  */
-import {
-  ArrowRight,
-  CalendarDays,
-  Download,
-  ExternalLink,
-  HandHeart,
-  Handshake,
-  Mail,
-  MapPin,
-  MessageCircle,
-  ZoomIn,
-} from '@lucide/astro';
+import { ArrowRight, CalendarDays, Download, ExternalLink, MapPin, ZoomIn } from '@lucide/astro';
 import { getImage } from 'astro:assets';
-import CommunityIllustration from '@/components/brand/CommunityIllustration.astro';
 import Lightbox from '@/components/ui/Lightbox.astro';
+import NewsRegionTabs from '@/components/content/NewsRegionTabs.astro';
 import PicksSection from '@/components/content/PicksSection.astro';
 import PostCard from '@/components/content/PostCard.astro';
 import MatinMoments from '@/components/content/MatinMoments.astro';
@@ -58,26 +47,14 @@ const posterLarge =
         })
       ).src
     : undefined;
-// Latest news, after Matin's Picks: the three newest articles, leaving out the one already
-// featured in Matin in Action. Hidden when there is no other article.
-const latestNews = forLang(await getNews(), lang)
-  .filter((p) => articleHref(p, lang) !== featured?.url)
+// News & Insights (owner's brief, Oct 25 2026): cultural news approved by the President
+// in three region tabs, then Matin's own news, leaving out the article already featured
+// in Matin in Action.
+const news = forLang(await getNews(), lang);
+const culturalNews = news.filter((p) => p.data.category === 'recommends');
+const matinNews = news
+  .filter((p) => p.data.category !== 'recommends' && articleHref(p, lang) !== featured?.url)
   .slice(0, 3);
-
-// The next step after seeing what Matin does: Get Involved is now part of Contact &
-// Collaboration (Oct 24 2026). The Persian page has no volunteer section.
-const involvedHref = href('contact', lang);
-const ways = [
-  { label: t('home.actAttend'), href: href('events', lang), icon: CalendarDays },
-  { label: t('home.actCollaborate'), href: `${involvedHref}#write`, icon: Handshake },
-  {
-    label: t('home.actVolunteer'),
-    href: `${involvedHref}#${lang === 'fr' ? 'benevolat' : lang === 'en' ? 'volunteer' : 'write'}`,
-    icon: HandHeart,
-  },
-  { label: t('home.involvedSecondary'), href: '#newsletter', icon: Mail },
-  { label: t('home.actContact'), href: href('contact', lang), icon: MessageCircle },
-];
 ---
 
 <BaseLayout lang={lang} alternates={siteAlternates('home')} searchable={false}>
@@ -196,97 +173,70 @@ const ways = [
   />
   <ExpireEvents />
 
-  <!-- Latest news (News & Insights), without the article featured above -->
-  {latestNews.length > 0 && (
-    <section
-      id="latest-news"
-      class="section-pad scroll-mt-24 border-y border-line bg-paper"
-      aria-labelledby="latest-news-title"
-    >
-      <div class="container-site">
-        <SectionHeader
-          align="start"
-          id="latest-news-title"
-          title={t('home.newsTitle')}
-          link={{ href: href('news', lang), label: t('home.newsAll') }}
-          class="mb-12"
-        />
-        <ul class="grid gap-x-8 gap-y-14 md:grid-cols-2 lg:grid-cols-3">
-          {latestNews.map((post, i) => (
-            <li data-reveal style={`--reveal-delay:${i * 110}ms`}>
-              <PostCard post={post} lang={lang} headingLevel="h3" />
-            </li>
-          ))}
-        </ul>
+  <!-- News & Insights: cultural news in region tabs, then Matin's own news -->
+  <section
+    id="latest-news"
+    class="section-pad scroll-mt-24 border-y border-line bg-paper"
+    aria-labelledby="latest-news-title"
+  >
+    <div class="container-site">
+      <SectionHeader
+        align="start"
+        id="latest-news-title"
+        title={t('home.newsTitle')}
+        subtitle={t('news.culturalLede')}
+        link={{ href: href('news', lang), label: t('home.newsAll') }}
+        class="mb-10"
+      />
+      <div class="news-panel">
+        <h3 class="news-panel__title">{t('news.culturalTitle')}</h3>
+        <NewsRegionTabs lang={lang} posts={culturalNews} perTab={3} id="home-cultural" />
       </div>
-    </section>
-  )}
+      {matinNews.length > 0 && (
+        <div class="mt-14">
+          <h3 class="news-panel__title">{t('newsCategories.matin-news')}</h3>
+          {/* A single article takes the wide card, so no empty columns are left beside it. */}
+          <ul
+            class:list={[
+              'grid gap-x-8 gap-y-14',
+              matinNews.length > 1 && 'md:grid-cols-2 lg:grid-cols-3',
+            ]}
+          >
+            {matinNews.map((post, i) => (
+              <li data-reveal style={`--reveal-delay:${i * 110}ms`}>
+                <PostCard
+                  post={post}
+                  lang={lang}
+                  headingLevel="h4"
+                  featured={matinNews.length === 1}
+                />
+              </li>
+            ))}
+          </ul>
+        </div>
+      )}
+    </div>
+  </section>
 
   <!-- Matin Moments: featured photos and videos from the gallery -->
   <MatinMoments lang={lang} />
 
-  <!-- Get involved: deep teal band, a bright illustration beside the invitation -->
-  <section class="involved on-teal" aria-labelledby="involved-title">
-    <div class="container-site involved__grid">
-      <div class="involved__figure" data-reveal>
-        <CommunityIllustration class="involved__art" />
-        <span class="involved__block" aria-hidden="true"></span>
-      </div>
-      <div class="involved__text">
+  <!-- Areas of work: deep teal band (owner's brief, Oct 25 2026), the introduction set
+       large directly under the title, then the three photo cards -->
+  <section class="section-pad areas-band on-teal" aria-labelledby="areas-title">
+    <div class="container-site">
+      <div class="areas-head">
         <SectionHeader
-          id="involved-title"
-          eyebrow={t('home.involvedEyebrow')}
-          title={t('home.involvedTitle')}
+          id="areas-title"
+          eyebrow={t('home.areasEyebrow')}
+          title={t('home.areasTitle')}
           align="start"
-          class="mb-7"
+          class="mb-6"
         />
-        <p class="involved__paragraph" data-reveal>
-          {t('home.involvedText')}
+        <p class="areas-intro" data-reveal>
+          {t('home.areasLede')}
         </p>
-        <div class="mt-9 flex flex-col gap-3 sm:flex-row sm:flex-wrap" data-reveal>
-          <a href={involvedHref} class="btn btn-primary">
-            {t('home.involvedPrimary')}
-            <ArrowRight size={18} class="flip-rtl" aria-hidden="true" />
-          </a>
-          <a href="#newsletter" class="btn btn-outline">
-            {t('home.involvedSecondary')}
-            <ArrowRight size={18} class="flip-rtl" aria-hidden="true" />
-          </a>
-        </div>
       </div>
-    </div>
-    <div class="container-site">
-      <nav class="ways" aria-labelledby="ways-title">
-        <h3 id="ways-title" class="ways__title">
-          {t('home.actionsTitle')}
-        </h3>
-        <ul class="ways__list">
-          {ways.map((w) => (
-            <li>
-              <a href={w.href} class="ways__link">
-                <w.icon size={24} stroke-width={1.75} aria-hidden="true" />
-                <span>{w.label}</span>
-                <ArrowRight size={18} class="flip-rtl ways__arrow" aria-hidden="true" />
-              </a>
-            </li>
-          ))}
-        </ul>
-      </nav>
-    </div>
-  </section>
-
-  <!-- Areas of work: three large photo cards, each with its own accent -->
-  <section class="section-pad bg-tint" aria-labelledby="areas-title">
-    <div class="container-site">
-      <SectionHeader
-        id="areas-title"
-        eyebrow={t('home.areasEyebrow')}
-        eyebrowTone="teal"
-        title={t('home.areasTitle')}
-        lede={t('home.areasLede')}
-        align="start"
-        class="mb-12 lg:mb-16"
-      />
       <AreasGrid lang={lang} />
     </div>
   </section>
@@ -430,97 +380,54 @@ const ways = [
     margin-top: 0.5rem;
   }
 
-  /* ---------- Ways to take part (inside the Get Involved band) ---------- */
-  .ways {
-    margin-block-start: clamp(3rem, 2rem + 3vw, 4.5rem);
-    padding-block-start: 2rem;
-    border-block-start: 1px solid color-mix(in srgb, var(--color-white) 35%, transparent);
+  /* ---------- News & Insights ---------- */
+  .news-panel {
+    padding: clamp(1.5rem, 1rem + 2.5vw, 3rem);
+    border-radius: calc(var(--radius-card) * 1.4);
+    border: 1px solid var(--color-teal-edge);
+    background: var(--color-teal-pale);
   }
-  .ways__title {
+  .news-panel__title {
     margin-block-end: 1.25rem;
-    font-size: 1.375rem;
+    font-size: clamp(1.5rem, 1.3rem + 0.7vw, 2rem);
     font-weight: 800;
-    color: var(--color-white);
-  }
-  .ways__list {
-    display: grid;
-    gap: 0.85rem;
-    grid-template-columns: repeat(auto-fit, minmax(min(100%, 13.5rem), 1fr));
-  }
-  /* White tiles on deep teal: navy text (11.9:1). */
-  .ways__link {
-    display: flex;
-    align-items: center;
-    gap: 0.75rem;
-    height: 100%;
-    padding: 1rem 1.15rem;
-    border-radius: 1rem;
-    background: var(--color-white);
-    color: var(--color-primary);
-    font-family: var(--font-display);
-    font-size: 1.0625rem;
-    font-weight: 800;
-    line-height: 1.25;
-    text-decoration: none;
-    transition:
-      transform 0.2s,
-      background-color 0.2s;
-  }
-  .ways__link:hover {
-    background: var(--color-cream);
-    transform: translateY(-2px);
-  }
-  .ways__link :global(svg) {
-    flex-shrink: 0;
-    color: var(--color-teal-deep);
-  }
-  .ways__link > span {
-    flex: 1;
-  }
-  .ways__link :focus-visible,
-  .ways__link:focus-visible {
-    outline-color: var(--color-white);
   }
 
-  /* ---------- Get involved ---------- */
-  .involved {
-    position: relative;
-    overflow: hidden;
-    padding-block: clamp(4rem, 2.6rem + 4.5vw, 7rem);
+  /* ---------- Areas of work ---------- */
+  /* The deep teal of the former Get Involved band (white text 6.2:1). */
+  .areas-band {
     background: var(--color-teal-deep);
   }
-  .involved__grid {
-    display: grid;
-    gap: 3rem;
-    align-items: center;
+  .areas-head {
+    max-width: 56rem;
+    margin-block-end: clamp(2.5rem, 2rem + 2vw, 4rem);
   }
-  @media (min-width: 64rem) {
-    .involved__grid {
-      grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
-      gap: clamp(3rem, 1.5rem + 3vw, 5rem);
-    }
-  }
-  .involved__figure {
-    position: relative;
-  }
-  .involved__figure :global(.involved__art) {
-    position: relative;
-    z-index: 1;
-  }
-  /* Mustard block peeking out from behind the illustration. */
-  .involved__block {
-    position: absolute;
-    inset-block-end: 2.25rem;
-    inset-inline-end: -1.25rem;
-    width: 45%;
-    height: 55%;
-    border-radius: var(--radius-card);
-    background: var(--color-gold);
-  }
-  .involved__paragraph {
-    max-width: 38rem;
-    font-size: clamp(1.1875rem, 1.05rem + 0.45vw, 1.375rem);
-    line-height: 1.65;
+  .areas-intro {
+    font-size: clamp(1.25rem, 1.1rem + 0.6vw, 1.625rem);
+    line-height: 1.6;
     color: var(--color-white);
+  }
+  /* Cards on teal: warm ivory, a gold edge and a clearer call to action. */
+  .areas-band :global(.area-card) {
+    border-color: transparent;
+    background: var(--color-ivory);
+    box-shadow: 0 18px 40px -24px color-mix(in srgb, var(--color-primary) 70%, transparent);
+  }
+  .areas-band :global(.area-card__title) {
+    font-size: clamp(1.5rem, 1.3rem + 0.6vw, 1.875rem);
+  }
+  .areas-band :global(.area-card__text) {
+    font-size: 1.1875rem;
+    color: var(--color-ink);
+  }
+  .areas-band :global(.area-card__cta) {
+    align-self: flex-start;
+    padding: 0.55rem 1.2rem;
+    border-radius: 999px;
+    background: var(--color-primary);
+    color: var(--color-white);
+  }
+  .areas-band :global(.photo-credit a) {
+    color: inherit;
   }
 </style>
