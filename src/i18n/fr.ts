@@ -365,7 +365,7 @@ const fr = {
     vision: 'Notre vision',
     values: 'Nos valeurs',
     history: 'Notre histoire',
-    founderTitle: 'Quelques mots de notre président',
+    founderTitle: 'Un mot personnel de notre président',
     presidentPhotoAlt: 'Portrait de {name}',
     team: 'Notre équipe',
     board: "Conseil d'administration",
