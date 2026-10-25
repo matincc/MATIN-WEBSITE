@@ -134,7 +134,7 @@ const groups = resourceCategories
                   <strong>{num.format(items.length)}</strong> {t('resources.count')}
                 </span>
               </div>
-              <ul class="org-list">
+              <ul class:list={['org-list', category === 'municipal' && 'org-list--three']}>
                 {items.map((r) => (
                   <OrgCard
                     lang={lang}
@@ -656,6 +656,25 @@ const groups = resourceCategories
   @media (min-width: 64rem) {
     .org-list {
       grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  }
+  /* The municipalities (owner's brief, Oct 25 2026): three across on desktop, two on
+     tablets, one on phones; the logo sits above the text so every card stays balanced. */
+  .org-list--three :global(.org) {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 1.1rem;
+  }
+  .org-list--three :global(.org__logo) {
+    height: 7.5rem;
+  }
+  @media (min-width: 40rem) {
+    .org-list--three {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  }
+  @media (min-width: 72rem) {
+    .org-list--three {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
     }
   }
   @media (prefers-reduced-motion: reduce) {
