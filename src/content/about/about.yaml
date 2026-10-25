@@ -1,6 +1,8 @@
 vision:
   fr: "Nous croyons que la diversité culturelle est l'une des plus grandes forces d'une société. Matin imagine un avenir où chaque personne, quelle que soit son origine, est accueillie, respectée et en mesure de participer pleinement à la vie sociale, culturelle et citoyenne, et où le dialogue entre les cultures nourrit la confiance, l'équité et la solidarité entre les générations."
   en: "We believe cultural diversity is one of society's greatest strengths. Matin envisions a future in which people of every origin are welcomed, respected, and able to take part fully in social, cultural, and civic life, and in which dialogue between cultures leads to trust, equity, and lasting solidarity across generations."
+  # Persian draft (Oct 25 2026), translated from the English; to be reviewed by the owner.
+  fa: 'ما باور داریم که تنوع فرهنگی یکی از بزرگ‌ترین سرمایه‌های هر جامعه است. متین آینده‌ای را در نظر دارد که در آن هر انسانی، با هر خاستگاهی، پذیرفته و محترم شمرده شود و بتواند به‌طور کامل در زندگی اجتماعی، فرهنگی و مدنی مشارکت کند؛ آینده‌ای که در آن گفت‌وگو میان فرهنگ‌ها به اعتماد، برابری و همبستگی پایدار میان نسل‌ها بینجامد.'
 values:
   - icon: dialogue
     title: { fr: 'Dialogue', en: 'Dialogue', fa: 'گفت‌وگو' }

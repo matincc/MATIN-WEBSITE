@@ -1,19 +1,22 @@
 roles:
-  - title: { fr: 'Accueil et événements', en: 'Welcome & events' }
+  - title: { fr: 'Accueil et événements', en: 'Welcome & events', fa: 'استقبال و رویدادها' }
     text:
       {
         fr: "Accueillir le public, aider à l'installation et à l'animation.",
         en: 'Welcome visitors and help with setup and hosting.',
+        fa: 'خوشامدگویی به مهمانان و کمک به آماده‌سازی و میزبانی برنامه‌ها.',
       }
-  - title: { fr: 'Jumelage linguistique', en: 'Language buddy' }
+  - title: { fr: 'Jumelage linguistique', en: 'Language buddy', fa: 'همراه زبانی' }
     text:
       {
         fr: 'Accompagner une personne nouvellement arrivée dans sa pratique du français.',
         en: 'Help a newcomer practise their French.',
+        fa: 'همراهی با یک تازه‌وارد برای تمرین زبان فرانسوی.',
       }
-  - title: { fr: 'Communication', en: 'Communications' }
+  - title: { fr: 'Communication', en: 'Communications', fa: 'ارتباطات' }
     text:
       {
         fr: 'Photo, rédaction, réseaux sociaux, traduction.',
         en: 'Photography, writing, social media, translation.',
+        fa: 'عکاسی، نویسندگی، شبکه‌های اجتماعی، ترجمه.',
       }

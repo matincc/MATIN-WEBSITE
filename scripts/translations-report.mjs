@@ -5,7 +5,7 @@
 import { readFile, writeFile } from 'node:fs/promises';
 import fr from '../src/i18n/fr.ts';
 import en from '../src/i18n/en.ts';
-import fa, { faFallbackNotice, faAboutMore } from '../src/i18n/fa.ts';
+import fa, { faFallbackNotice } from '../src/i18n/fa.ts';
 
 // French copy supplied verbatim in the brief (not a translation to review).
 const frSupplied = new Set([
@@ -119,10 +119,6 @@ out.push(
   `| French/English page opened from the Persian site | This page is not available in Persian yet and is shown in English. | ${cell(faFallbackNotice.text)} |`,
 );
 out.push(`| Same notice, link | Back to the Persian home page | ${cell(faFallbackNotice.back)} |`);
-out.push(
-  `| Persian About page | The full version of this page, with the other sections, is available in English. | ${cell(faAboutMore.text)} |`,
-);
-out.push(`| Same note, link | View the English version | ${cell(faAboutMore.link)} |`);
 out.push(
   '| Language switcher (description for screen readers) | Read this page in Persian / Go to the Persian site | این صفحه را به فارسی بخوانید / رفتن به نسخه فارسی سایت |',
 );

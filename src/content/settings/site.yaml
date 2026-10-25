@@ -6,6 +6,8 @@
 mission:
   fr: "Promouvoir le dialogue interculturel, l'équité et les échanges culturels au Québec, au Canada et à l'international. Nous soutenons l'accueil et la pleine participation des personnes immigrantes, mettons en valeur les arts et le patrimoine des diverses communautés, faisons avancer la recherche et les publications sur l'interculturalité, et renforçons les liens entre les jeunes, les familles et les personnes aînées."
   en: 'To promote intercultural dialogue, equity, and cultural exchange in Québec, Canada, and internationally. We support the welcoming and full participation of immigrants, celebrate the arts and heritage of diverse communities, advance research and publications on interculturality, and strengthen ties between youth, families, and seniors.'
+  # Persian: same text as in the article « Introducing Matin » (to be reviewed by the owner).
+  fa: 'ترویج گفت‌وگوی بین‌فرهنگی، برابری و تبادل فرهنگی در کبک، کانادا و در سطح بین‌المللی. ما از پذیرش و مشارکت کامل مهاجران پشتیبانی می‌کنیم، هنر و میراث جوامع گوناگون را ارج می‌نهیم، پژوهش و انتشارات دربارهٔ میان‌فرهنگی‌بودن را پیش می‌بریم و پیوند میان جوانان، خانواده‌ها و سالمندان را استوارتر می‌کنیم.'
 phone: '+1 263 378-9340'
 email: info@matincc.ca
 # Identité légale : affichée sur la page « Informations légales » (lien dans le pied de page)
