@@ -440,6 +440,8 @@ const fr = {
       "Les organismes présentés dans ce répertoire le sont à titre informatif. Leur présence n'implique aucun partenariat, appui, commandite ni affiliation institutionnelle avec l'Institut interculturel Matin.",
     filterLabel: 'Filtrer par catégorie',
     all: 'Toutes',
+    municipal: 'Institutions culturelles municipales canadiennes',
+    municipalLede: 'Les services et ressources culturels officiels de grandes villes canadiennes.',
     federal: 'Institutions culturelles fédérales du Canada',
     federalLede:
       'Les ministères et organismes du gouvernement du Canada consacrés à la culture, aux arts et au patrimoine.',

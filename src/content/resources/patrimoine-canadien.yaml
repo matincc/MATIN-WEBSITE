@@ -1,16 +1,16 @@
 # Directory entry: see README.md. A listing never implies a partnership.
 # Name and official website checked on 2026-10-25. Official logo not added yet:
 # the card shows the name until a verified logo file is set in `logo`.
-name: "Patrimoine canadien"
-nameEn: "Canadian Heritage"
+name: 'Patrimoine canadien'
+nameEn: 'Canadian Heritage'
 category: federal
 url: https://www.canada.ca/en/canadian-heritage.html
 label:
-  fr: "Patrimoine canadien"
-  en: "Canadian Heritage"
+  fr: 'Patrimoine canadien'
+  en: 'Canadian Heritage'
 description:
-  fr: "Ministère fédéral qui soutient la culture, le patrimoine, le multiculturalisme et le développement culturel au Canada."
-  en: "Federal department supporting Canadian culture, heritage, multiculturalism, and cultural development."
-  fa: "وزارتخانهٔ فدرال کانادا که از فرهنگ، میراث، چندفرهنگی و توسعهٔ فرهنگی در کانادا حمایت می‌کند."
+  fr: 'Ministère fédéral qui soutient la culture, le patrimoine, le multiculturalisme et le développement culturel au Canada.'
+  en: 'Federal department supporting Canadian culture, heritage, multiculturalism, and cultural development.'
+  fa: 'وزارتخانهٔ فدرال کانادا که از فرهنگ، میراث، چندفرهنگی و توسعهٔ فرهنگی در کانادا حمایت می‌کند.'
 order: 10
 published: true

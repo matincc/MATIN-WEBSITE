@@ -1,15 +1,15 @@
 # Directory entry: see README.md. A listing never implies a partnership.
 # Name and official website checked on 2026-10-25. Official logo not added yet:
 # the card shows the name until a verified logo file is set in `logo`.
-name: "Conseil des arts et des lettres du Québec (CALQ)"
+name: 'Conseil des arts et des lettres du Québec (CALQ)'
 category: quebec
 url: https://www.calq.gouv.qc.ca/
 label:
-  fr: "CALQ"
-  en: "CALQ"
+  fr: 'CALQ'
+  en: 'CALQ'
 description:
-  fr: "Organisme public québécois de financement des arts, qui soutient les artistes et les organismes artistiques sans but lucratif."
+  fr: 'Organisme public québécois de financement des arts, qui soutient les artistes et les organismes artistiques sans but lucratif.'
   en: "Québec's public arts funding agency supporting artists and nonprofit arts organizations."
-  fa: "نهاد عمومی تأمین بودجهٔ هنر در کبک که از هنرمندان و سازمان‌های هنری غیرانتفاعی حمایت می‌کند."
+  fa: 'نهاد عمومی تأمین بودجهٔ هنر در کبک که از هنرمندان و سازمان‌های هنری غیرانتفاعی حمایت می‌کند.'
 order: 20
 published: true

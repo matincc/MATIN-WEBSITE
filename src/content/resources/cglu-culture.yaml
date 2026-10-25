@@ -1,16 +1,16 @@
 # Directory entry: see README.md. A listing never implies a partnership.
 # Name and official website checked on 2026-10-25. Official logo not added yet:
 # the card shows the name until a verified logo file is set in `logo`.
-name: "Commission culture de CGLU — Agenda 21 de la culture"
-nameEn: "UCLG Committee on Culture — Agenda 21 for Culture"
+name: 'Commission culture de CGLU — Agenda 21 de la culture'
+nameEn: 'UCLG Committee on Culture — Agenda 21 for Culture'
 category: international
 url: https://www.agenda21culture.net/
 label:
-  fr: "CGLU Culture"
-  en: "UCLG Culture"
+  fr: 'CGLU Culture'
+  en: 'UCLG Culture'
 description:
-  fr: "Réseau mondial qui fait la promotion des politiques culturelles, de la planification culturelle participative, de la gouvernance locale et de la place de la culture dans le développement durable."
-  en: "Global network promoting cultural policies, participatory cultural planning, local governance, and culture in sustainable development."
-  fa: "شبکه‌ای جهانی که سیاست‌های فرهنگی، برنامه‌ریزی فرهنگی مشارکتی، حکمرانی محلی و جایگاه فرهنگ در توسعهٔ پایدار را ترویج می‌کند."
+  fr: 'Réseau mondial qui fait la promotion des politiques culturelles, de la planification culturelle participative, de la gouvernance locale et de la place de la culture dans le développement durable.'
+  en: 'Global network promoting cultural policies, participatory cultural planning, local governance, and culture in sustainable development.'
+  fa: 'شبکه‌ای جهانی که سیاست‌های فرهنگی، برنامه‌ریزی فرهنگی مشارکتی، حکمرانی محلی و جایگاه فرهنگ در توسعهٔ پایدار را ترویج می‌کند.'
 order: 40
 published: true

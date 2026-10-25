@@ -1,15 +1,15 @@
 # Directory entry: see README.md. A listing never implies a partnership.
 # Name and official website checked on 2026-10-25. Official logo not added yet:
 # the card shows the name until a verified logo file is set in `logo`.
-name: "International Federation of Arts Councils and Culture Agencies (IFACCA)"
+name: 'International Federation of Arts Councils and Culture Agencies (IFACCA)'
 category: international
 url: https://ifacca.org/
 label:
-  fr: "IFACCA"
-  en: "IFACCA"
+  fr: 'IFACCA'
+  en: 'IFACCA'
 description:
-  fr: "Réseau international qui relie des conseils des arts, des ministères de la culture et des organismes culturels pour échanger recherches, connaissances en matière de politiques et expériences professionnelles."
-  en: "International network connecting arts councils, ministries of culture, and cultural agencies to exchange research, policy knowledge, and professional experience."
-  fa: "شبکه‌ای بین‌المللی که شوراهای هنر، وزارتخانه‌های فرهنگ و نهادهای فرهنگی را برای تبادل پژوهش، دانش سیاست‌گذاری و تجربهٔ حرفه‌ای به هم پیوند می‌دهد."
+  fr: 'Réseau international qui relie des conseils des arts, des ministères de la culture et des organismes culturels pour échanger recherches, connaissances en matière de politiques et expériences professionnelles.'
+  en: 'International network connecting arts councils, ministries of culture, and cultural agencies to exchange research, policy knowledge, and professional experience.'
+  fa: 'شبکه‌ای بین‌المللی که شوراهای هنر، وزارتخانه‌های فرهنگ و نهادهای فرهنگی را برای تبادل پژوهش، دانش سیاست‌گذاری و تجربهٔ حرفه‌ای به هم پیوند می‌دهد.'
 order: 50
 published: true

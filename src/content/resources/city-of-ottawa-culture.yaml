@@ -1,0 +1,16 @@
+# Directory entry: see README.md. A listing never implies a partnership.
+# Name and official cultural page checked on 2026-10-25. Official logo not added yet:
+# the card shows the name until a verified logo file is set in `logo`.
+name: "Ville d'Ottawa — Arts, patrimoine et événements"
+nameEn: 'City of Ottawa — Arts, Heritage and Events'
+category: municipal
+url: https://ottawa.ca/en/arts-heritage-and-events
+label:
+  fr: "Ville d'Ottawa"
+  en: 'City of Ottawa'
+description:
+  fr: "Les programmes culturels municipaux d'Ottawa, qui soutiennent le patrimoine, les musées, les galeries, l'art public, le développement culturel et les possibilités de financement culturel."
+  en: "Ottawa's municipal cultural programmes supporting heritage, museums, galleries, public art, cultural development, and cultural funding opportunities."
+  fa: 'برنامه‌های فرهنگی شهرداری اتاوا که از میراث، موزه‌ها، نگارخانه‌ها، هنر عمومی، توسعهٔ فرهنگی و فرصت‌های تأمین بودجهٔ فرهنگی حمایت می‌کنند.'
+order: 40
+published: true

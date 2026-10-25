@@ -1,15 +1,15 @@
 # Directory entry: see README.md. A listing never implies a partnership.
 # Name and official website checked on 2026-10-25. Official logo not added yet:
 # the card shows the name until a verified logo file is set in `logo`.
-name: "Bibliothèque et Archives nationales du Québec (BAnQ)"
+name: 'Bibliothèque et Archives nationales du Québec (BAnQ)'
 category: quebec
 url: https://www.banq.qc.ca/
 label:
-  fr: "BAnQ"
-  en: "BAnQ"
+  fr: 'BAnQ'
+  en: 'BAnQ'
 description:
   fr: "Institution nationale de bibliothèque et d'archives du Québec, qui préserve le patrimoine documentaire et offre des ressources culturelles et de recherche."
   en: "Québec's national library and archives institution, preserving documentary heritage and providing cultural and research resources."
-  fa: "کتابخانه و آرشیو ملی کبک که میراث مستند را نگهداری می‌کند و منابع فرهنگی و پژوهشی در دسترس می‌گذارد."
+  fa: 'کتابخانه و آرشیو ملی کبک که میراث مستند را نگهداری می‌کند و منابع فرهنگی و پژوهشی در دسترس می‌گذارد.'
 order: 40
 published: true

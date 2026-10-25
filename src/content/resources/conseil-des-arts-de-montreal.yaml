@@ -1,19 +1,19 @@
 # Directory entry: see README.md. A listing never implies a partnership.
 # Name and official website checked on 2026-10-25. Official logo not added yet:
 # the card shows the name until a verified logo file is set in `logo`.
-name: "Conseil des arts de Montréal"
+name: 'Conseil des arts de Montréal'
 category: community
 url: https://www.artsmontreal.org/
 label:
-  fr: "Conseil des arts de Montréal"
-  en: "Conseil des arts de Montréal"
+  fr: 'Conseil des arts de Montréal'
+  en: 'Conseil des arts de Montréal'
 kind:
-  fr: "Organisme public municipal"
-  en: "Municipal public body"
-  fa: "نهاد عمومی شهری"
+  fr: 'Organisme public municipal'
+  en: 'Municipal public body'
+  fa: 'نهاد عمومی شهری'
 description:
-  fr: "Conseil public des arts de Montréal, qui soutient les artistes professionnels, les organismes culturels et le développement artistique dans la ville."
+  fr: 'Conseil public des arts de Montréal, qui soutient les artistes professionnels, les organismes culturels et le développement artistique dans la ville.'
   en: "Montréal's public arts council supporting professional artists, cultural organizations, and artistic development in the city."
-  fa: "شورای عمومی هنر مونترال که از هنرمندان حرفه‌ای، سازمان‌های فرهنگی و رشد هنری در شهر حمایت می‌کند."
+  fa: 'شورای عمومی هنر مونترال که از هنرمندان حرفه‌ای، سازمان‌های فرهنگی و رشد هنری در شهر حمایت می‌کند.'
 order: 40
 published: true

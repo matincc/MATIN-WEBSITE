@@ -288,8 +288,9 @@ collections:
         label: Category
         widget: select
         options:
-          - { label: Canadian Federal Cultural Institutions, value: federal }
+          - { label: Canadian Municipal Cultural Institutions, value: municipal }
           - { label: Québec Cultural Institutions, value: quebec }
+          - { label: Canadian Federal Cultural Institutions, value: federal }
           - { label: Major Cultural & Community Organizations and Institutions, value: community }
           - { label: International Cultural Organizations & Networks, value: international }
       - name: url

@@ -1,16 +1,16 @@
 # Directory entry: see README.md. A listing never implies a partnership.
 # Name and official website checked on 2026-10-25. Official logo not added yet:
 # the card shows the name until a verified logo file is set in `logo`.
-name: "Commission européenne — Culture et créativité"
-nameEn: "European Commission — Culture and Creativity"
+name: 'Commission européenne — Culture et créativité'
+nameEn: 'European Commission — Culture and Creativity'
 category: international
 url: https://culture.ec.europa.eu/
 label:
-  fr: "Commission européenne"
-  en: "European Commission"
+  fr: 'Commission européenne'
+  en: 'European Commission'
 description:
   fr: "Institution de l'Union européenne responsable des initiatives de politique culturelle, des secteurs créatifs et des programmes européens de coopération culturelle."
-  en: "European Union institution responsible for cultural policy initiatives, creative sectors, and European cultural cooperation programmes."
-  fa: "نهادی از اتحادیهٔ اروپا که مسئول ابتکارهای سیاست فرهنگی، بخش‌های خلاق و برنامه‌های همکاری فرهنگی اروپایی است."
+  en: 'European Union institution responsible for cultural policy initiatives, creative sectors, and European cultural cooperation programmes.'
+  fa: 'نهادی از اتحادیهٔ اروپا که مسئول ابتکارهای سیاست فرهنگی، بخش‌های خلاق و برنامه‌های همکاری فرهنگی اروپایی است.'
 order: 30
 published: true

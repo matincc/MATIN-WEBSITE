@@ -1,16 +1,16 @@
 # Directory entry: see README.md. A listing never implies a partnership.
 # Name and official website checked on 2026-10-25. Official logo not added yet:
 # the card shows the name until a verified logo file is set in `logo`.
-name: "Conseil international des musées (ICOM)"
-nameEn: "International Council of Museums (ICOM)"
+name: 'Conseil international des musées (ICOM)'
+nameEn: 'International Council of Museums (ICOM)'
 category: international
 url: https://icom.museum/en/
 label:
-  fr: "ICOM"
-  en: "ICOM"
+  fr: 'ICOM'
+  en: 'ICOM'
 description:
-  fr: "Organisation mondiale des musées qui fait progresser la préservation du patrimoine culturel, les normes muséales, la recherche et la coopération professionnelle internationale."
-  en: "Global museum organization advancing cultural heritage preservation, museum standards, research, and international professional cooperation."
-  fa: "سازمان جهانی موزه‌ها که به پیشبرد حفاظت از میراث فرهنگی، استانداردهای موزه‌ای، پژوهش و همکاری حرفه‌ای بین‌المللی می‌پردازد."
+  fr: 'Organisation mondiale des musées qui fait progresser la préservation du patrimoine culturel, les normes muséales, la recherche et la coopération professionnelle internationale.'
+  en: 'Global museum organization advancing cultural heritage preservation, museum standards, research, and international professional cooperation.'
+  fa: 'سازمان جهانی موزه‌ها که به پیشبرد حفاظت از میراث فرهنگی، استانداردهای موزه‌ای، پژوهش و همکاری حرفه‌ای بین‌المللی می‌پردازد.'
 order: 80
 published: true

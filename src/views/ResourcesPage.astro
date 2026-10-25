@@ -1,8 +1,9 @@
 ---
 /**
  * Cultural Resources & Organizations (owner's brief, Oct 25 2026): a curated directory of
- * major cultural institutions and organizations in four categories (Canadian federal,
- * Québec, cultural & community organizations and institutions, international), each a
+ * major cultural institutions and organizations in five categories (Canadian municipal,
+ * Québec, Canadian federal, cultural & community organizations and institutions,
+ * international), each a
  * coloured module of logo cards (`OrgCard`) that open the official website in a new tab.
  * A listing never implies a partnership, endorsement or affiliation: the notice says so at
  * the top (a "member" or "partner" badge appears only where the owner confirmed it).
@@ -405,6 +406,9 @@ const groups = resourceCategories
       color 0.2s,
       transform 0.2s;
   }
+  .chip[data-cat='municipal'] {
+    --chip-color: var(--color-terracotta-deep);
+  }
   .chip[data-cat='quebec'] {
     --chip-color: var(--color-teal-deep);
   }
@@ -543,6 +547,16 @@ const groups = resourceCategories
     border-radius: calc(var(--radius-card) * 1.3);
     background: var(--body-bg);
     box-shadow: var(--shadow-card);
+  }
+  /* Canadian municipal institutions (first, Oct 25 2026): deep terracotta head, ivory
+     body with cream cards. */
+  .directory-group[data-category='municipal'] {
+    --head-bg: var(--color-terracotta-deep);
+    --head-lede: var(--color-cream);
+    --head-icon-bg: var(--color-cream);
+    --head-icon: var(--color-terracotta-deep);
+    --body-bg: var(--color-ivory);
+    --org-surface: var(--color-cream);
   }
   /* A: Canadian federal institutions: deep navy head, cream body. */
   /* B: Québec institutions: deep teal head, soft turquoise body. */

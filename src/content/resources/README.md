@@ -5,8 +5,10 @@ page (/fr/ressources/, /en/resources/, /fa/resources/) and summarized on the hom
 **Listing an organization never means a partnership, endorsement, sponsorship or
 affiliation with Matin.**
 
-Four categories (owner's brief, Oct 25 2026): `federal` (Canadian federal cultural
-institutions), `quebec` (Québec cultural institutions), `community` (major cultural and
+Five categories, in this order (owner's briefs, Oct 25 2026): `municipal` (Canadian
+municipal cultural institutions: a city's official cultural department or page, never its
+homepage), `quebec` (Québec cultural institutions), `federal` (Canadian federal cultural
+institutions), `community` (major cultural and
 community organizations and public cultural bodies), `international` (international
 cultural organizations and networks).
 
@@ -16,7 +18,7 @@ By hand: one YAML file per organization in this folder.
 ```yaml
 name: 'Conseil des arts et des lettres du Québec (CALQ)' # official name (French form)
 nameEn: 'Canada Council for the Arts' # optional: English form, only if the organization uses one
-category: quebec # federal, quebec, community, international
+category: quebec # municipal, quebec, federal, community, international
 url: https://www.calq.gouv.qc.ca/ # the organization's own official page, https:// (never a generic portal)
 label: # the short clickable name on the card (Persian uses the English one)
   fr: 'CALQ'

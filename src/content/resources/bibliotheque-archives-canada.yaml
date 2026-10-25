@@ -1,16 +1,16 @@
 # Directory entry: see README.md. A listing never implies a partnership.
 # Name and official website checked on 2026-10-25. Official logo not added yet:
 # the card shows the name until a verified logo file is set in `logo`.
-name: "Bibliothèque et Archives Canada"
-nameEn: "Library and Archives Canada"
+name: 'Bibliothèque et Archives Canada'
+nameEn: 'Library and Archives Canada'
 category: federal
 url: https://www.canada.ca/en/library-archives.html
 label:
-  fr: "Bibliothèque et Archives Canada"
-  en: "Library and Archives Canada"
+  fr: 'Bibliothèque et Archives Canada'
+  en: 'Library and Archives Canada'
 description:
-  fr: "Institution fédérale vouée à la préservation du patrimoine documentaire du Canada et à son accès."
+  fr: 'Institution fédérale vouée à la préservation du patrimoine documentaire du Canada et à son accès.'
   en: "Federal institution dedicated to preserving and providing access to Canada's documentary heritage."
-  fa: "نهادی فدرال که به نگهداری از میراث مستند کانادا و فراهم کردن دسترسی به آن می‌پردازد."
+  fa: 'نهادی فدرال که به نگهداری از میراث مستند کانادا و فراهم کردن دسترسی به آن می‌پردازد.'
 order: 40
 published: true
