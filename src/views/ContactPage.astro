@@ -30,8 +30,9 @@ const inv = await getSingleton('involvement');
 // The volunteer roles and form exist in all three languages.
 const hasVolunteer = true;
 const volunteerId = lang === 'fr' ? 'benevolat' : 'volunteer';
-// Volunteer role cards: Welcome & Events, Language Buddy, Communications.
-const roleAccents = ['teal', 'mustard', 'navy'];
+// Volunteer role cards: Welcome & Events, Communications (Language Buddy removed by the
+// owner, Oct 25 2026); each keeps its colour.
+const roleAccents = ['teal', 'navy'];
 // Each detail appears only once it is set in the site settings.
 const a = s.address;
 const address = a && `${a.street}, ${a.city} (${a.region}) ${a.postalCode}`;
@@ -145,7 +146,8 @@ const details = [
       aria-labelledby="volunteer-title"
     >
       <div class="container-site grid gap-12 lg:grid-cols-[1fr_1.15fr]">
-        <div>
+        <!-- The two role cards stay in view beside the taller form on wide screens. -->
+        <div class="lg:sticky lg:top-28 lg:self-start">
           <SectionHeader
             align="start"
             id="volunteer-title"

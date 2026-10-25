@@ -6,13 +6,6 @@ roles:
         en: 'Welcome visitors and help with setup and hosting.',
         fa: 'خوشامدگویی به مهمانان و کمک به آماده‌سازی و میزبانی برنامه‌ها.',
       }
-  - title: { fr: 'Jumelage linguistique', en: 'Language buddy', fa: 'همراه زبانی' }
-    text:
-      {
-        fr: 'Accompagner une personne nouvellement arrivée dans sa pratique du français.',
-        en: 'Help a newcomer practise their French.',
-        fa: 'همراهی با یک تازه‌وارد برای تمرین زبان فرانسوی.',
-      }
   - title: { fr: 'Communication', en: 'Communications', fa: 'ارتباطات' }
     text:
       {
