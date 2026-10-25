@@ -1,8 +1,0 @@
-# Name and website checked on 2026-10-21. Unpublished until its official logo is added
-# (logo: ../../assets/uploads/resources/<file>) and approved; then set published: true.
-name: 'Ville de Montréal'
-category: municipal
-url: https://montreal.ca/
-location: Montréal
-order: 10
-published: false

@@ -1,0 +1,15 @@
+# Directory entry: see README.md. A listing never implies a partnership.
+# Name and official website checked on 2026-10-25. Official logo not added yet:
+# the card shows the name until a verified logo file is set in `logo`.
+name: 'Société de développement des entreprises culturelles (SODEC)'
+category: quebec
+url: https://sodec.gouv.qc.ca/
+label:
+  fr: 'SODEC'
+  en: 'SODEC'
+description:
+  fr: "Société d'État québécoise qui soutient les industries culturelles, notamment le cinéma, la musique, l'édition et les entreprises créatives."
+  en: 'Québec government agency supporting cultural industries, including film, music, publishing, and creative enterprises.'
+  fa: 'نهاد دولتی کبک که از صنایع فرهنگی، از جمله سینما، موسیقی، نشر و کسب‌وکارهای خلاق، حمایت می‌کند.'
+order: 30
+published: true

@@ -545,6 +545,13 @@ const resources = defineCollection({
       name: z.string().min(1),
       /** English form of the name, only when the organization uses a different one. */
       nameEn: z.string().optional(),
+      /**
+       * The short, clickable name on the card (e.g. « CALQ », "NFB / ONF"), per language;
+       * Persian falls back to English. Without it, the card shows the name.
+       */
+      label: biOpt,
+      /** Short kind shown on the card (e.g. "Municipal public body"), only where useful. */
+      kind: biOpt,
       category: z.enum(resourceCategories),
       /** Official website (opens in a new tab). */
       url: z.url().refine((u) => u.startsWith('https://'), 'Use the https:// address'),

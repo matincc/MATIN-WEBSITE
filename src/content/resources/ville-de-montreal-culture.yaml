@@ -1,0 +1,15 @@
+# Directory entry: see README.md. A listing never implies a partnership.
+# Name and official cultural page checked on 2026-10-25. Official logo not added yet:
+# the card shows the name until a verified logo file is set in `logo`.
+name: 'Ville de Montréal — Service de la culture, des sports et des loisirs'
+category: municipal
+url: https://montreal.ca/unites/service-de-la-culture-des-sports-et-des-loisirs
+label:
+  fr: 'Ville de Montréal'
+  en: 'Ville de Montréal'
+description:
+  fr: "Service municipal de Montréal qui soutient le développement culturel, l'art public, les équipements culturels, les festivals, les bibliothèques et l'accès de la population à la culture."
+  en: "Montréal's municipal service supporting cultural development, public art, cultural facilities, festivals, libraries, and community access to culture."
+  fa: 'واحد شهرداری مونترال که از توسعهٔ فرهنگی، هنر عمومی، تأسیسات فرهنگی، جشنواره‌ها، کتابخانه‌ها و دسترسی شهروندان به فرهنگ حمایت می‌کند.'
+order: 10
+published: true
