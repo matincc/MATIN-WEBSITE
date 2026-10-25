@@ -19,6 +19,7 @@ import {
   MessagesSquare,
   MonitorPlay,
   Palette,
+  Star,
   Ticket,
   Users,
 } from '@lucide/astro';
@@ -33,8 +34,10 @@ interface Props {
   event: EventEntry;
   lang: UiLang;
   headingLevel?: 'h2' | 'h3';
+  /** Shown in Matin's Picks: adds the "Selected by Matin" label. */
+  picked?: boolean;
 }
-const { event, lang, headingLevel = 'h3' } = Astro.props;
+const { event, lang, headingLevel = 'h3', picked = false } = Astro.props;
 const t = useTranslations(lang);
 const d = event.data;
 const tz = d.timeZone;
@@ -110,6 +113,12 @@ const SubjectIcon = subjectIcons[d.subject] ?? MessagesSquare;
       <span class="date-badge__month">{badge.month.replace('.', '')}</span>
     </div>
     <div class="flex flex-wrap gap-2 pt-1">
+      {picked && (
+        <span class="pill pill--pick">
+          <Star size={14} aria-hidden="true" />
+          {t('events.selectedByMatin')}
+        </span>
+      )}
       <span class:list={['pill', ours ? 'pill--matin' : 'pill--selected']}>
         {t(`agendaKinds.${d.kind}`)}
       </span>
@@ -274,6 +283,17 @@ const SubjectIcon = subjectIcons[d.subject] ?? MessagesSquare;
   .pill--matin {
     background: var(--color-primary);
     color: var(--color-gold);
+  }
+  /* Matin's Picks: navy with mustard (5.3:1), with a small star. */
+  .pill--pick {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    background: var(--color-primary);
+    color: var(--color-gold);
+  }
+  .pill--pick :global(svg) {
+    fill: currentColor;
   }
   .pill--selected {
     border: 1.5px solid var(--color-primary);

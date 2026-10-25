@@ -27,6 +27,9 @@ const fr = {
     aboutSubmenu: 'Afficher les sections de la page À propos',
     teamSubmenu: 'Afficher les sections de la page Notre équipe',
     eventsSubmenu: 'Afficher les sections de la page Événements',
+    newsSubmenu: 'Afficher les rubriques de la page Actualités et perspectives',
+    gallerySubmenu: 'Afficher les sections de la Galerie',
+    resourcesSubmenu: 'Afficher les sections de la page Ressources',
     externalLink: '(ouvre un nouvel onglet)',
     breadcrumbs: "Fil d'Ariane",
     social: 'Réseaux sociaux',
@@ -59,6 +62,7 @@ const fr = {
     teamMembers: 'Équipe',
     teamExecutive: 'Équipe de direction',
     teamAdvisors: 'Conseillers et amis de Matin',
+    resourcesDirectory: 'Répertoire des organismes',
     president: 'Quelques mots de notre président',
     ourPresident: 'Notre président',
   },
@@ -189,6 +193,7 @@ const fr = {
     title: 'Événements et agenda culturel',
     lede: "Découvrez une sélection d'événements culturels, de dialogues publics et de rencontres professionnelles à Montréal, au Québec et ailleurs, choisis pour leur lien avec le dialogue interculturel, la planification culturelle et la vie des communautés.",
     picksTitle: 'Les choix de Matin',
+    selectedByMatin: 'Sélection de Matin',
     picksLede: 'Quelques événements à venir que nous recommandons tout particulièrement.',
     upcoming: 'Événements à venir',
     emptyAgenda:
@@ -225,6 +230,9 @@ const fr = {
     allMonths: 'Tous les mois',
     allFormats: 'Tous les formats',
     showAll: 'Afficher tous les événements',
+    showMore: "Afficher plus d'événements",
+    othersEmpty:
+      "Les événements à venir de Matin et les choix de Matin sont présentés plus haut. D'autres événements s'ajouteront bientôt à l'agenda.",
     noResults: 'Aucun événement ne correspond à ces filtres.',
     backToEvents: 'Retour aux événements',
     archiveTitle: 'Événements passés de Matin',
@@ -271,6 +279,10 @@ const fr = {
     categoryTitle: 'Actualités : {category}',
     backToNews: 'Retour aux actualités',
     empty: 'Aucun article pour le moment.',
+    sectionEmpty: 'Aucun article dans cette rubrique pour le moment.',
+    recommendsEmpty:
+      'Matin recommandera ici une sélection de nouvelles culturelles du Québec, du Canada et du monde, toujours avec leur source.',
+    sections: 'Rubriques',
     source: 'Source',
     sourceIntro: 'Cet article porte sur un sujet ou un événement externe. Source :',
     getInvolvedTitle: 'Suivre ou rejoindre les travaux de Matin',
@@ -285,6 +297,13 @@ const fr = {
     'culture-cities': 'Culture et villes',
     research: 'Recherche et publications',
     partnerships: 'Partenariats et initiatives',
+    recommends: 'Matin recommande',
+    insights: 'Articles et perspectives',
+  },
+  newsRegions: {
+    quebec: 'Québec',
+    canada: 'Canada',
+    international: 'International',
   },
   pagination: {
     label: 'Pagination',
@@ -301,10 +320,9 @@ const fr = {
     copied: 'Lien copié!',
   },
   team: {
-    executiveLede:
-      "Les personnes qui coordonnent et gèrent les activités courantes de l'Institut.",
+    executiveLede: "Les personnes qui coordonnent et gèrent les activités courantes de l'Institut.",
     executiveEmpty:
-      "Notre équipe de direction est en cours de constitution. Les profils seront publiés ici au fur et à mesure, avec l'accord des personnes concernées.",
+      "Notre équipe de direction se constitue actuellement. Les profils seront publiés ici au fur et à mesure, avec l'accord des personnes concernées.",
     advisorsLede:
       'Des personnes qui partagent bénévolement leurs connaissances, leurs conseils et leur soutien, sans être employées ni dirigeantes de Matin.',
     advisorsEmpty:
@@ -372,6 +390,15 @@ const fr = {
     videoCount: '{n} vidéos',
     noResults: 'Rien dans cette catégorie pour le moment.',
     comingSoon: 'À venir',
+    zoom: 'Voir en taille réelle',
+    filterPosters: 'Affiches',
+    postersTitle: 'Affiches',
+    postersLede:
+      'Les affiches officielles des événements de Matin. Cliquez sur une affiche pour la voir en plein écran.',
+    openPoster: "Voir l'affiche en plein écran : {title}",
+    viewEvent: "Voir l'événement",
+    previousPosters: 'Affiches précédentes',
+    nextPosters: 'Affiches suivantes',
   },
   involved: {
     title: "S'impliquer",
@@ -411,6 +438,21 @@ const fr = {
     download: 'Télécharger',
     empty: 'Des organismes seront bientôt ajoutés à ce répertoire.',
     noResults: 'Aucun organisme dans cette catégorie pour le moment.',
+    status_member: 'Matin est membre',
+    status_partner: 'Partenaire de Matin',
+    networksTitle: 'Réseaux culturels internationaux',
+    networksLede:
+      'Des réseaux de villes, d’institutions et de professionnels qui travaillent sur la culture et le dialogue interculturel.',
+    networksEmpty: 'Des réseaux culturels internationaux seront bientôt présentés ici.',
+    policyTitle: 'Politiques culturelles et documents stratégiques',
+    policyLede:
+      'Des politiques, plans et stratégies publics, avec un lien vers le document officiel de chaque éditeur.',
+    policyEmpty:
+      'Une bibliothèque de politiques culturelles et de documents stratégiques sera bientôt proposée ici.',
+    jurisdiction_montreal: 'Montréal',
+    jurisdiction_quebec: 'Québec',
+    jurisdiction_canada: 'Canada',
+    jurisdiction_international: 'International',
   },
   contact: {
     title: 'Contact et collaboration',

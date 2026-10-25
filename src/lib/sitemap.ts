@@ -15,7 +15,7 @@ import {
   getNews,
   getPrograms,
   NEWS_PAGE_SIZE,
-  newsCategories,
+  newsListKeys,
   presidentProfileVisible,
   slugOf,
 } from './content';
@@ -56,7 +56,7 @@ export async function allPagePairs(): Promise<PagePair[]> {
       lastmod: post.data.date,
     });
   }
-  for (const c of newsCategories(posts)) {
+  for (const c of newsListKeys(posts)) {
     pairs.push({
       fr: path('news', 'fr', categorySegment.fr, categorySlugs[c].fr),
       en: path('news', 'en', categorySegment.en, categorySlugs[c].en),

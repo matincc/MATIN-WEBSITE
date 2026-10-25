@@ -3,14 +3,20 @@
  * Cultural Resources & Organizations: a curated directory of public, cultural, community
  * and research organizations, by category, with a category filter. Each entry opens the
  * organization's official website in a new tab. A listing never implies a partnership,
- * endorsement or affiliation. Entries: src/content/resources/ (or the admin, /admin/).
+ * endorsement or affiliation (a "member" or "partner" badge appears only where the owner
+ * confirmed it). Entries: src/content/resources/ (or the admin, /admin/).
+ * Below the directory: International Cultural Networks (#networks, src/content/networks/)
+ * and Cultural Policy & Strategic Documents (#policy, src/content/policies/), each with a
+ * short message until entries are verified and published. The Resources menu links here.
  */
 import { Image } from 'astro:assets';
-import { Download, ExternalLink, Info, MapPin } from '@lucide/astro';
+import { Download, ExternalLink, FileText, Globe, Info, MapPin } from '@lucide/astro';
+import SectionHeader from '@/components/ui/SectionHeader.astro';
 import PageLayout from '@/layouts/PageLayout.astro';
 import { alternatesFor, type Lang } from '@/i18n/routes';
 import { useTranslations, pick } from '@/i18n/ui';
-import { getResources, orgName } from '@/lib/content';
+import { getNetworks, getPolicies, getResources, orgName } from '@/lib/content';
+import { baseLang } from '@/i18n/routes';
 import { resourceCategories } from '@/lib/taxonomy';
 import { resourceAccents, resourceIcons } from '@/lib/resourceIcons';
 
@@ -19,7 +25,15 @@ interface Props {
 }
 const { lang } = Astro.props;
 const t = useTranslations(lang);
-const resources = await getResources();
+const [resources, networks, policies] = await Promise.all([
+  getResources(),
+  getNetworks(),
+  getPolicies(),
+]);
+const base = baseLang(lang);
+// A policy's title in the page's language, else the language the publisher used.
+const policyTitle = (p: (typeof policies)[number]) =>
+  p.data.title[base] ?? p.data.title.fr ?? p.data.title.en!;
 const groups = resourceCategories
   .map((c) => ({ category: c, items: resources.filter((r) => r.data.category === c) }))
   .filter((g) => g.items.length);
@@ -32,7 +46,7 @@ const host = (url: string) => new URL(url).hostname.replace(/^www\./, '');
   lede={t('resources.lede')}
   alternates={alternatesFor('resources')}
 >
-  <div class="container-site pt-2 pb-24">
+  <div id="directory" class="container-site scroll-mt-28 pt-2 pb-24">
     <p class="directory-notice">
       <Info size={20} aria-hidden="true" />
       <span>{t('resources.notice')}</span>
@@ -95,6 +109,9 @@ const host = (url: string) => new URL(url).hostname.replace(/^www\./, '');
                         </span>
                       )}
                     </div>
+                    {r.data.status !== 'listed' && (
+                      <span class="org-card__status">{t(`resources.status_${r.data.status}`)}</span>
+                    )}
                     <h3 class="org-card__name">
                       <a
                         href={r.data.url}
@@ -132,6 +149,120 @@ const host = (url: string) => new URL(url).hostname.replace(/^www\./, '');
       })}
     </div>
   </div>
+
+  <section
+    id="networks"
+    class="scroll-mt-28 bg-tint py-16 sm:py-20"
+    aria-labelledby="networks-title"
+  >
+    <div class="container-site">
+      <SectionHeader
+        align="start"
+        id="networks-title"
+        title={t('resources.networksTitle')}
+        lede={t('resources.networksLede')}
+        class="mb-10"
+      />
+      {networks.length > 0 ? (
+        <ul class="org-grid">
+          {networks.map((n) => (
+            <li class="card org-card" data-accent="teal">
+              <div class="org-card__logo">
+                {n.data.logo ? (
+                  <Image
+                    src={n.data.logo}
+                    alt=""
+                    width={320}
+                    class="org-card__img"
+                    loading="lazy"
+                  />
+                ) : (
+                  <span class="org-card__initials" aria-hidden="true">
+                    <Globe size={28} stroke-width={1.6} />
+                  </span>
+                )}
+              </div>
+              {n.data.status !== 'listed' && (
+                <span class="org-card__status">{t(`resources.status_${n.data.status}`)}</span>
+              )}
+              <h3 class="org-card__name">
+                <a
+                  href={n.data.url}
+                  class="org-card__link"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  {(base === 'en' && n.data.nameEn) || n.data.name}
+                  <span class="sr-only">{t('a11y.externalLink')}</span>
+                </a>
+              </h3>
+              {n.data.scope && (
+                <p class="org-card__meta">
+                  <MapPin size={16} aria-hidden="true" />
+                  {n.data.scope}
+                </p>
+              )}
+              {pick(n.data.description, lang) && (
+                <p class="org-card__text">{pick(n.data.description, lang)}</p>
+              )}
+              <span class="org-card__site" aria-hidden="true">
+                <ExternalLink size={16} />
+                {host(n.data.url)}
+              </span>
+            </li>
+          ))}
+        </ul>
+      ) : (
+        <p class="empty-state">{t('resources.networksEmpty')}</p>
+      )}
+    </div>
+  </section>
+
+  <section
+    id="policy"
+    class="container-site scroll-mt-28 py-16 sm:py-20"
+    aria-labelledby="policy-title"
+  >
+    <SectionHeader
+      align="start"
+      id="policy-title"
+      title={t('resources.policyTitle')}
+      lede={t('resources.policyLede')}
+      class="mb-10"
+    />
+    {policies.length > 0 ? (
+      <ul class="policy-list">
+        {policies.map((p) => (
+          <li class="card policy">
+            <span class="policy__icon" aria-hidden="true">
+              <FileText size={22} stroke-width={1.75} />
+            </span>
+            <div class="policy__body">
+              <h3 class="policy__title">
+                <a
+                  href={p.data.url ?? p.data.file}
+                  target={p.data.url ? '_blank' : undefined}
+                  rel={p.data.url ? 'noopener noreferrer' : undefined}
+                >
+                  {policyTitle(p)}
+                  {p.data.url && <span class="sr-only">{t('a11y.externalLink')}</span>}
+                </a>
+              </h3>
+              <p class="policy__meta">
+                {p.data.publisher} · {p.data.year} ·{' '}
+                {t(`resources.jurisdiction_${p.data.jurisdiction}`)}
+              </p>
+              {pick(p.data.description, lang) && (
+                <p class="org-card__text">{pick(p.data.description, lang)}</p>
+              )}
+            </div>
+          </li>
+        ))}
+      </ul>
+    ) : (
+      <p class="empty-state">{t('resources.policyEmpty')}</p>
+    )}
+  </section>
 </PageLayout>
 
 <script>
@@ -281,6 +412,48 @@ const host = (url: string) => new URL(url).hostname.replace(/^www\./, '');
   .org-card__link:hover {
     text-decoration: underline;
     text-decoration-color: var(--color-gold);
+  }
+  .org-card__status {
+    align-self: flex-start;
+    padding: 0.2rem 0.75rem;
+    border-radius: 999px;
+    font-size: 0.8rem;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    color: var(--color-white);
+    background: var(--color-teal-deep);
+  }
+  .policy-list {
+    display: grid;
+    gap: 1.25rem;
+    max-width: 60rem;
+  }
+  .policy {
+    display: flex;
+    gap: 1.1rem;
+    padding: 1.4rem 1.6rem;
+  }
+  .policy__icon {
+    display: grid;
+    flex-shrink: 0;
+    place-items: center;
+    width: 2.9rem;
+    height: 2.9rem;
+    border-radius: 0.9rem;
+    color: var(--color-white);
+    background: var(--color-primary);
+  }
+  .policy__title {
+    font-size: 1.2rem;
+    font-weight: 800;
+    line-height: 1.35;
+  }
+  .policy__meta {
+    margin-block: 0.3rem 0.4rem;
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: var(--color-gold-dark);
   }
   .org-card__meta {
     display: flex;

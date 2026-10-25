@@ -2,8 +2,9 @@
 /**
  * Homepage (French, English and Persian), in this order: Matin in Action (Matin's own
  * featured item, src/lib/matin.ts), Matin's Picks (the same section as on the Events
- * page), Matin Moments (featured gallery items), Get Involved, Who We Are, Areas of
- * Work, Cultural Resources & Organizations, newsletter.
+ * page), the latest news (without the featured article), Matin Moments (featured gallery
+ * items), Get Involved, Who We Are, Areas of Work, Cultural Resources & Organizations,
+ * newsletter.
  * The photographs are openly licensed views of Montréal (see src/lib/photos.ts), shown
  * with their credits; they illustrate the themes, they do not document Matin activities.
  */
@@ -25,6 +26,7 @@ import {
 import { Picture } from 'astro:assets';
 import CommunityIllustration from '@/components/brand/CommunityIllustration.astro';
 import PicksSection from '@/components/content/PicksSection.astro';
+import PostCard from '@/components/content/PostCard.astro';
 import MatinMoments from '@/components/content/MatinMoments.astro';
 import ResourcesTeaser from '@/components/content/ResourcesTeaser.astro';
 import ExpireEvents from '@/components/content/ExpireEvents.astro';
@@ -38,7 +40,7 @@ import AreasGrid from '@/components/content/AreasGrid.astro';
 import { href, siteAlternates, type UiLang } from '@/i18n/routes';
 import { useTranslations } from '@/i18n/ui';
 import { getMatinFeed } from '@/lib/matin';
-import { getSettings } from '@/lib/content';
+import { articleHref, forLang, getNews, getSettings } from '@/lib/content';
 import { ctaFor } from '@/lib/matinLabels';
 import MatinMedia from '@/components/content/MatinMedia.astro';
 import { photos } from '@/lib/photos';
@@ -52,6 +54,11 @@ const t = useTranslations(lang);
 // Matin in Action: Matin's own content only (highlights, Matin's events, published news).
 const { featured } = await getMatinFeed(lang, 0);
 const settings = await getSettings();
+// Latest news, after Matin's Picks: the three newest articles, leaving out the one already
+// featured in Matin in Action. Hidden when there is no other article.
+const latestNews = forLang(await getNews(), lang)
+  .filter((p) => articleHref(p, lang) !== featured?.url)
+  .slice(0, 3);
 
 // The next step after seeing what Matin does: Get Involved is now part of Contact &
 // Collaboration (Oct 24 2026). The Persian page has no volunteer section.
@@ -175,6 +182,32 @@ const whoCards = [
     link={{ href: href('events', lang), label: t('home.eventsAll') }}
   />
   <ExpireEvents />
+
+  <!-- Latest news (News & Insights), without the article featured above -->
+  {latestNews.length > 0 && (
+    <section
+      id="latest-news"
+      class="section-pad scroll-mt-24 border-y border-line bg-paper"
+      aria-labelledby="latest-news-title"
+    >
+      <div class="container-site">
+        <SectionHeader
+          align="start"
+          id="latest-news-title"
+          title={t('home.newsTitle')}
+          link={{ href: href('news', lang), label: t('home.newsAll') }}
+          class="mb-12"
+        />
+        <ul class="grid gap-x-8 gap-y-14 md:grid-cols-2 lg:grid-cols-3">
+          {latestNews.map((post, i) => (
+            <li data-reveal style={`--reveal-delay:${i * 110}ms`}>
+              <PostCard post={post} lang={lang} headingLevel="h3" />
+            </li>
+          ))}
+        </ul>
+      </div>
+    </section>
+  )}
 
   <!-- Matin Moments: featured photos and videos from the gallery -->
   <MatinMoments lang={lang} />

@@ -2,9 +2,18 @@
 import { ChevronDown, Menu, X, Search } from '@lucide/astro';
 import Lockup from '@/components/brand/Lockup.astro';
 import LangToggle from './LangToggle.astro';
-import { href, type Alternates, type RouteKey, type UiLang } from '@/i18n/routes';
+import {
+  baseLang,
+  categorySegment,
+  categorySlugs,
+  href,
+  type Alternates,
+  type RouteKey,
+  type UiLang,
+} from '@/i18n/routes';
 import { useTranslations } from '@/i18n/ui';
 import { getUpcomingEvents, picksOf } from '@/lib/content';
+import { newsSections } from '@/lib/taxonomy';
 
 interface Props {
   lang: UiLang;
@@ -12,6 +21,9 @@ interface Props {
 }
 const { lang, alternates } = Astro.props;
 const t = useTranslations(lang);
+const newsSectionKeys = Object.keys(newsSections) as (keyof typeof newsSections)[];
+/** Adds #id to a page URL (after ?from=fa when there is one). */
+const anchor = (url: string, id: string) => `${url}#${id}`;
 
 // Main menu, in this order (owner's brief, Oct 24 2026): Gallery and Resources join the
 // menu. Get Involved is merged into Contact & Collaboration (Phase 3).
@@ -57,12 +69,38 @@ const eventsLinks = [
   { id: 'upcoming', label: t('events.upcoming') },
 ].map((l) => ({ ...l, href: `${eventsHref}#${l.id}` }));
 eventsLinks.push({ id: 'past', label: t('nav.eventsArchive'), href: href('eventsArchive', lang) });
+// Sub-links of "News & Insights": its three headings (owner's choice, Oct 25 2026).
+const newsLinks = newsSectionKeys.map((s) => ({
+  id: `news-${s}`,
+  label: t(`newsCategories.${s}`),
+  href: href('news', lang, categorySegment[baseLang(lang)], categorySlugs[s][baseLang(lang)]),
+}));
+// Sub-links of "Gallery" and "Resources": sections of those pages.
+const galleryHref = href('gallery', lang);
+const galleryLinks = [
+  { id: 'photos', label: t('gallery.filterPhotos') },
+  { id: 'videos', label: t('gallery.filterVideos') },
+  { id: 'posters', label: t('gallery.filterPosters') },
+].map((l) => ({ ...l, href: anchor(galleryHref, l.id) }));
+const resourcesHref = href('resources', lang);
+const resourcesLinks = [
+  { id: 'directory', label: t('nav.resourcesDirectory') },
+  { id: 'networks', label: t('resources.networksTitle') },
+  { id: 'policy', label: t('resources.policyTitle') },
+].map((l) => ({ ...l, href: anchor(resourcesHref, l.id) }));
 // Menu items that open a dropdown.
 const subMenus: Partial<Record<RouteKey, { id: string; label: string; links: typeof aboutLinks }>> =
   {
     about: { id: 'about-submenu', label: t('a11y.aboutSubmenu'), links: aboutLinks },
     team: { id: 'team-submenu', label: t('a11y.teamSubmenu'), links: teamLinks },
     events: { id: 'events-submenu', label: t('a11y.eventsSubmenu'), links: eventsLinks },
+    news: { id: 'news-submenu', label: t('a11y.newsSubmenu'), links: newsLinks },
+    gallery: { id: 'gallery-submenu', label: t('a11y.gallerySubmenu'), links: galleryLinks },
+    resources: {
+      id: 'resources-submenu',
+      label: t('a11y.resourcesSubmenu'),
+      links: resourcesLinks,
+    },
   };
 
 const current = Astro.url.pathname;
@@ -328,10 +366,13 @@ const isActive = (url: string) => !url.includes('?') && current.startsWith(url);
   }
 
   /* 16px (owner's brief: navigation about 15 to 16px). */
+  /* Six dropdowns since Oct 25 2026: the French menu (the longest) fits from 78rem with
+     this padding, and gets more room from 90rem. */
   .nav-link {
+    --nav-pad: 0.55rem;
     position: relative;
     display: block;
-    padding: 0.5rem 0.7rem;
+    padding: 0.5rem var(--nav-pad);
     font-family: var(--font-display);
     font-weight: 700;
     font-size: 1rem;
@@ -342,14 +383,14 @@ const isActive = (url: string) => !url.includes('?') && current.startsWith(url);
   }
   @media (min-width: 90rem) {
     .nav-link {
-      padding-inline: 0.9rem;
+      --nav-pad: 0.9rem;
     }
   }
   /* Thin gold underline: grows in on hover, stays on the current page. */
   .nav-link::after {
     content: '';
     position: absolute;
-    inset-inline: 0.7rem;
+    inset-inline: var(--nav-pad);
     inset-block-end: 0.2rem;
     height: 2px;
     border-radius: 2px;
@@ -391,6 +432,12 @@ const isActive = (url: string) => !url.includes('?') && current.startsWith(url);
     background: var(--color-white);
     box-shadow: var(--shadow-lift);
     border: 1px solid var(--color-line);
+  }
+  /* Dropdowns of the last items (Gallery, Resources) open towards the start, so they
+     stay inside the window. */
+  .has-sub:nth-last-child(-n + 3) .submenu {
+    inset-inline-start: auto;
+    inset-inline-end: 0;
   }
   .submenu::before {
     /* Bridges the gap so the menu doesn't close while the pointer moves down. */

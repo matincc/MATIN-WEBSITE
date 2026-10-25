@@ -17,10 +17,14 @@ interface Props {
   class?: string;
   /** Optional link beside the title, e.g. to the Events page. */
   link?: { href: string; label: string };
+  /** Events already shown elsewhere on the page, so that no event appears twice. */
+  exclude?: string[];
 }
-const { lang, class: className = '', link } = Astro.props;
+const { lang, class: className = '', link, exclude = [] } = Astro.props;
 const t = useTranslations(lang);
-const picks = forLang(picksOf(await getUpcomingEvents()), lang);
+const picks = forLang(picksOf(await getUpcomingEvents()), lang).filter(
+  (e) => !exclude.includes(e.id),
+);
 ---
 
 {picks.length > 0 && (
@@ -37,7 +41,7 @@ const picks = forLang(picksOf(await getUpcomingEvents()), lang);
       <ul class="grid gap-6 md:grid-cols-2 lg:grid-cols-3" data-upcoming-list>
         {picks.map((event, i) => (
           <li data-reveal style={`--reveal-delay:${i * 110}ms`}>
-            <EventCard event={event} lang={lang} />
+            <EventCard event={event} lang={lang} picked />
           </li>
         ))}
       </ul>

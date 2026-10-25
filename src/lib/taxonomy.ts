@@ -26,7 +26,8 @@ export type ResourceCategory = (typeof resourceCategories)[number];
 
 /**
  * News & Insights categories. A category appears on the site only once it has a
- * published article.
+ * published article. `recommends` = Matin Recommends: selected external news, each with
+ * a `source` and a `region` (Québec, Canada or International).
  */
 export const newsCategories = [
   'matin-news',
@@ -34,8 +35,27 @@ export const newsCategories = [
   'culture-cities',
   'research',
   'partnerships',
+  'recommends',
 ] as const;
 export type NewsCategory = (typeof newsCategories)[number];
+
+/**
+ * The three headings of News & Insights (owner's choice, Oct 25 2026, option A): the five
+ * original categories are kept and grouped, so no link changes. Each heading always has
+ * a page, linked from the News menu.
+ */
+export const newsSections = {
+  'matin-news': ['matin-news'],
+  insights: ['perspectives', 'culture-cities', 'research', 'partnerships'],
+  recommends: ['recommends'],
+} as const satisfies Record<string, readonly NewsCategory[]>;
+export type NewsSection = keyof typeof newsSections;
+/** A category page or a heading page. */
+export type NewsListKey = NewsCategory | NewsSection;
+
+/** Regions of Matin Recommends. */
+export const newsRegions = ['quebec', 'canada', 'international'] as const;
+export type NewsRegion = (typeof newsRegions)[number];
 
 /* Events & Cultural Agenda */
 

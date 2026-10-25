@@ -38,6 +38,9 @@ export const categorySlugs = {
   'culture-cities': { fr: 'culture-et-villes', en: 'culture-cities' },
   research: { fr: 'recherche-et-publications', en: 'research-publications' },
   partnerships: { fr: 'partenariats-et-initiatives', en: 'partnerships-initiatives' },
+  recommends: { fr: 'matin-recommande', en: 'matin-recommends' },
+  /** Heading "Articles & Insights" (perspectives, culture-cities, research, partnerships). */
+  insights: { fr: 'articles-et-perspectives', en: 'articles-insights' },
 } as const satisfies Record<string, Record<Lang, string>>;
 
 /** Build a localized path, e.g. path('events', 'en', 'summer-fest') → /en/events/summer-fest/ */

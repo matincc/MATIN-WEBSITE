@@ -1,12 +1,19 @@
 ---
+/**
+ * News & Insights list: all articles (paged), a heading page or a category page. Three
+ * headings (owner's choice, Oct 25 2026): Matin News, Articles & Insights (Perspectives,
+ * Culture & Cities, Research & Publications, Partnerships & Initiatives) and Matin
+ * Recommends (selected external news, grouped by region: Québec, Canada, International).
+ */
 import type { CollectionEntry } from 'astro:content';
 import { Rss } from '@lucide/astro';
 import PageLayout from '@/layouts/PageLayout.astro';
 import PostCard from '@/components/content/PostCard.astro';
 import Pagination from '@/components/ui/Pagination.astro';
+import SectionHeader from '@/components/ui/SectionHeader.astro';
 import { categorySegment, categorySlugs, path, type Lang } from '@/i18n/routes';
 import { useTranslations } from '@/i18n/ui';
-import type { NewsCategory as Category } from '@/lib/taxonomy';
+import { newsRegions, newsSections, type NewsListKey, type NewsSection } from '@/lib/taxonomy';
 import { getNews, newsCategories as newsCategoriesOf } from '@/lib/content';
 
 interface Props {
@@ -14,15 +21,25 @@ interface Props {
   posts: CollectionEntry<'news'>[];
   current?: number;
   last?: number;
-  category?: Category;
+  category?: NewsListKey;
 }
 const { lang, posts, current = 1, last = 1, category } = Astro.props;
-// Only categories that have published articles are listed (the menu needs at least two).
-const categories = newsCategoriesOf(await getNews());
 const t = useTranslations(lang);
+const sections = Object.keys(newsSections) as NewsSection[];
+// The heading the page belongs to (a category page belongs to its heading).
+const section = category
+  ? sections.find(
+      (s) => (newsSections[s] as readonly string[]).includes(category) || s === category,
+    )
+  : undefined;
+// Under Articles & Insights: its categories that have published articles.
+const used = newsCategoriesOf(await getNews());
+const subCategories =
+  section === 'insights' ? newsSections.insights.filter((c) => used.includes(c)) : [];
 
 const pageHref = (l: Lang, n: number) => (n === 1 ? path('news', l) : path('news', l, 'page', n));
-const catHref = (l: Lang, c: Category) => path('news', l, categorySegment[l], categorySlugs[c][l]);
+const catHref = (l: Lang, c: NewsListKey) =>
+  path('news', l, categorySegment[l], categorySlugs[c][l]);
 const alternates = category
   ? { fr: catHref('fr', category), en: catHref('en', category) }
   : { fr: pageHref('fr', current), en: pageHref('en', current) };
@@ -34,6 +51,20 @@ const lead = current === 1 && !category ? posts[0] : undefined;
 const rest = lead ? posts.slice(1) : posts;
 const metaTitle =
   !category && current > 1 ? `${title} — ${t('pagination.page', { n: current })}` : title;
+// Matin Recommends: one group per region that has items.
+const byRegion =
+  category === 'recommends'
+    ? newsRegions
+        .map((r) => ({ region: r, items: posts.filter((p) => p.data.region === r) }))
+        .concat([{ region: undefined as never, items: posts.filter((p) => !p.data.region) }])
+        .filter((g) => g.items.length > 0)
+    : [];
+const emptyText =
+  category === 'recommends'
+    ? t('news.recommendsEmpty')
+    : category
+      ? t('news.sectionEmpty')
+      : t('news.empty');
 ---
 
 <PageLayout
@@ -47,23 +78,36 @@ const metaTitle =
 >
   <section class="container-site pt-4 pb-24">
     <div class="mb-12 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-      {categories.length > 1 && (
-        <nav aria-label={t('news.categories')}>
-          <ul class="flex flex-wrap gap-2">
+      <nav aria-label={t('news.sections')} class="flex flex-col gap-3">
+        <ul class="flex flex-wrap gap-2">
+          <li>
+            <a
+              href={path('news', lang)}
+              class="chip-link"
+              aria-current={!category ? 'page' : undefined}
+            >
+              {t('news.allCategories')}
+            </a>
+          </li>
+          {sections.map((s) => (
             <li>
               <a
-                href={path('news', lang)}
+                href={catHref(lang, s)}
                 class="chip-link"
-                aria-current={!category ? 'page' : undefined}
+                aria-current={category === s ? 'page' : section === s ? 'true' : undefined}
               >
-                {t('news.allCategories')}
+                {t(`newsCategories.${s}`)}
               </a>
             </li>
-            {categories.map((c) => (
+          ))}
+        </ul>
+        {subCategories.length > 1 && (
+          <ul class="flex flex-wrap gap-2" aria-label={t('news.categories')}>
+            {subCategories.map((c) => (
               <li>
                 <a
                   href={catHref(lang, c)}
-                  class="chip-link"
+                  class="chip-link chip-link--sub"
                   aria-current={category === c ? 'page' : undefined}
                 >
                   {t(`newsCategories.${c}`)}
@@ -71,15 +115,37 @@ const metaTitle =
               </li>
             ))}
           </ul>
-        </nav>
-      )}
+        )}
+      </nav>
       <a href={`/${lang}/rss.xml`} class="link-arrow shrink-0 text-sm">
         <Rss size={18} class="text-gold-dark" aria-hidden="true" />
         {t('news.rss')}
       </a>
     </div>
 
-    {posts.length > 0 ? (
+    {posts.length > 0 && byRegion.length > 0 ? (
+      <div class="space-y-16">
+        {byRegion.map((g) => (
+          <section aria-labelledby={`region-${g.region ?? 'other'}`}>
+            {g.region && (
+              <SectionHeader
+                align="start"
+                id={`region-${g.region}`}
+                title={t(`newsRegions.${g.region}`)}
+                class="mb-8"
+              />
+            )}
+            <ul class="grid gap-x-8 gap-y-14 md:grid-cols-2 lg:grid-cols-3">
+              {g.items.map((post) => (
+                <li>
+                  <PostCard post={post} lang={lang} headingLevel="h3" />
+                </li>
+              ))}
+            </ul>
+          </section>
+        ))}
+      </div>
+    ) : posts.length > 0 ? (
       <>
         {/* On the first page, the latest article leads as a wide featured story. */}
         {lead && <PostCard post={lead} lang={lang} headingLevel="h2" featured />}
@@ -94,7 +160,7 @@ const metaTitle =
         )}
       </>
     ) : (
-      <p class="empty-state">{t('news.empty')}</p>
+      <p class="empty-state">{emptyText}</p>
     )}
 
     <Pagination lang={lang} current={current} last={last} href={(n) => pageHref(lang, n)} />
@@ -117,6 +183,14 @@ const metaTitle =
   }
   .chip-link:hover {
     border-color: var(--color-primary);
+  }
+  .chip-link--sub {
+    min-height: 2.4rem;
+    font-size: 0.85rem;
+  }
+  .chip-link[aria-current='true'] {
+    border-color: var(--color-primary);
+    box-shadow: inset 0 0 0 1px var(--color-primary);
   }
   .chip-link[aria-current='page'] {
     background: var(--color-primary);

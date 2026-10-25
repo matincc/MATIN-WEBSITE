@@ -2,9 +2,10 @@
 /**
  * One accessible lightbox per page, built on <dialog> (focus trap + Escape for free).
  * Any <a data-lightbox="group" href="large.webp" data-alt="…" data-caption="…"> opens it;
- * without JS the link simply opens the large image.
+ * without JS the link simply opens the large image. The zoom button (or a click on the
+ * image) shows it at full size, to read a poster's small print; nothing is downloaded.
  */
-import { ChevronLeft, ChevronRight, X } from '@lucide/astro';
+import { ChevronLeft, ChevronRight, X, ZoomIn } from '@lucide/astro';
 import type { UiLang } from '@/i18n/routes';
 import { useTranslations } from '@/i18n/ui';
 
@@ -22,12 +23,18 @@ const t = useTranslations(Astro.props.lang);
 >
   <div class="lightbox__inner">
     <figure class="lightbox__figure">
-      <img alt="" data-lb-img />
+      <div class="lightbox__frame" data-lb-frame>
+        <img alt="" data-lb-img />
+      </div>
       <figcaption class="lightbox__caption">
         <span data-lb-caption></span>
         <span class="lightbox__count" data-lb-count></span>
       </figcaption>
     </figure>
+    <button type="button" class="lb-btn lb-zoom" aria-pressed="false" data-lb-zoom>
+      <ZoomIn size={22} aria-hidden="true" />
+      <span class="sr-only">{t('gallery.zoom')}</span>
+    </button>
     <button type="button" class="lb-btn lb-close" data-lb-close>
       <X size={24} aria-hidden="true" />
       <span class="sr-only">{t('gallery.close')}</span>
@@ -49,11 +56,17 @@ const t = useTranslations(Astro.props.lang);
     const img = dialog.querySelector<HTMLImageElement>('[data-lb-img]')!;
     const caption = dialog.querySelector<HTMLElement>('[data-lb-caption]')!;
     const count = dialog.querySelector<HTMLElement>('[data-lb-count]')!;
+    const zoom = dialog.querySelector<HTMLButtonElement>('[data-lb-zoom]')!;
+    const setZoom = (on: boolean) => {
+      dialog.classList.toggle('is-zoomed', on);
+      zoom.setAttribute('aria-pressed', String(on));
+    };
     let items: HTMLAnchorElement[] = [];
     let index = 0;
     let opener: HTMLElement | null = null;
 
     const show = (i: number) => {
+      setZoom(false);
       index = (i + items.length) % items.length;
       const a = items[index];
       img.src = a.href;
@@ -79,6 +92,8 @@ const t = useTranslations(Astro.props.lang);
       show(items.indexOf(a));
       dialog.showModal();
     });
+    zoom.addEventListener('click', () => setZoom(!dialog.classList.contains('is-zoomed')));
+    img.addEventListener('click', () => setZoom(!dialog.classList.contains('is-zoomed')));
     dialog.querySelector('[data-lb-close]')?.addEventListener('click', () => dialog.close());
     dialog.querySelector('[data-lb-prev]')?.addEventListener('click', () => show(index - 1));
     dialog.querySelector('[data-lb-next]')?.addEventListener('click', () => show(index + 1));
@@ -122,11 +137,31 @@ const t = useTranslations(Astro.props.lang);
     gap: 0.9rem;
     max-width: min(1400px, 100%);
   }
-  .lightbox__figure img {
+  .lightbox__frame {
+    max-width: 100%;
+    max-height: calc(100dvh - 10rem);
+    overflow: auto;
+    border-radius: 0.75rem;
+  }
+  .lightbox__frame img {
+    display: block;
     max-height: calc(100dvh - 10rem);
     max-width: 100%;
     object-fit: contain;
-    border-radius: 0.75rem;
+    cursor: zoom-in;
+  }
+  /* Zoomed: the image at its real size, scrolled inside the frame. */
+  .is-zoomed .lightbox__frame {
+    width: min(1400px, 100%);
+  }
+  .is-zoomed .lightbox__frame img {
+    max-height: none;
+    max-width: none;
+    cursor: zoom-out;
+  }
+  .is-zoomed .lb-zoom {
+    background: var(--color-gold);
+    color: var(--color-ink);
   }
   .lightbox__caption {
     display: flex;
@@ -160,6 +195,10 @@ const t = useTranslations(Astro.props.lang);
   .lb-close {
     top: 1rem;
     right: 1rem;
+  }
+  .lb-zoom {
+    top: 1rem;
+    right: 4.75rem;
   }
   .lb-prev {
     left: 1rem;

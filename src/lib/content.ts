@@ -3,7 +3,12 @@ import { marked } from 'marked';
 import type { Lang } from '@/i18n/routes';
 import { typo } from './frenchTypo';
 import { montrealTime } from './dates';
-import { newsCategories as newsCategoryList, type NewsCategory } from '@/lib/taxonomy';
+import {
+  newsCategories as newsCategoryList,
+  newsSections,
+  type NewsCategory,
+  type NewsListKey,
+} from '@/lib/taxonomy';
 import { baseLang, href, type UiLang } from '@/i18n/routes';
 import { pick } from '@/i18n/ui';
 
@@ -119,6 +124,20 @@ export function newsCategories(posts: CollectionEntry<'news'>[]): NewsCategory[]
   return newsCategoryList.filter((c) => used.has(c));
 }
 
+/** The categories a list page covers: a heading covers its categories. */
+export const categoriesOf = (key: NewsListKey): readonly NewsCategory[] =>
+  key in newsSections ? newsSections[key as keyof typeof newsSections] : [key as NewsCategory];
+
+/**
+ * Every news list page to build: the three headings (always, so the News menu never
+ * leads nowhere) and each category that has a post.
+ */
+export function newsListKeys(posts: CollectionEntry<'news'>[]): NewsListKey[] {
+  const keys: NewsListKey[] = Object.keys(newsSections) as NewsListKey[];
+  for (const c of newsCategories(posts)) if (!keys.includes(c)) keys.push(c);
+  return keys;
+}
+
 /**
  * Entries shown on a page in this language. Persian pages only show entries whose
  * Persian translation has been reviewed (faReviewed: true).
@@ -181,6 +200,20 @@ export async function getFaq() {
 export async function getResources() {
   return (await getCollection('resources', (r) => import.meta.env.DEV || r.data.published)).sort(
     (a, b) => a.data.order - b.data.order,
+  );
+}
+
+/** International Cultural Networks, published only (drafts on the local preview). */
+export async function getNetworks() {
+  return (await getCollection('networks', (r) => import.meta.env.DEV || r.data.published)).sort(
+    (a, b) => a.data.order - b.data.order,
+  );
+}
+
+/** Cultural Policy & Strategic Documents, newest first within the given order. */
+export async function getPolicies() {
+  return (await getCollection('policies', (r) => import.meta.env.DEV || r.data.published)).sort(
+    (a, b) => a.data.order - b.data.order || b.data.year - a.data.year,
   );
 }
 

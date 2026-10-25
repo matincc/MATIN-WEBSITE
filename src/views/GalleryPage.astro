@@ -1,19 +1,22 @@
 ---
 /**
- * Gallery: Matin's introductory video (once set), then one section per album (title,
- * date, place, description, photos that open in an enlarged viewer, videos). Filters:
- * All, Photos, Videos, Events (albums of Matin events). Albums: src/content/gallery/ or
- * the admin (/admin/). Only real Matin content, published with consent.
+ * Gallery: Matin's introductory video (once set), the official posters of Matin's own and
+ * co-organized events (a row that scrolls, each poster opens full screen with zoom; the
+ * download stays an explicit button on the event page), then one section per album
+ * (title, date, place, description, photos that open in an enlarged viewer, videos).
+ * Filters: All, Photos, Videos, Posters, Events (albums of Matin events). The Gallery
+ * menu links to #photos, #videos and #posters. Albums: src/content/gallery/ or the admin
+ * (/admin/). Only real Matin content, published with consent.
  */
 import { Picture, getImage } from 'astro:assets';
-import { CalendarDays, Expand, MapPin } from '@lucide/astro';
+import { ArrowRight, CalendarDays, ChevronLeft, ChevronRight, Expand, MapPin } from '@lucide/astro';
 import PageLayout from '@/layouts/PageLayout.astro';
 import Lightbox from '@/components/ui/Lightbox.astro';
 import GalleryVideo from '@/components/ui/GalleryVideo.astro';
 import DialogueArt from '@/components/brand/DialogueArt.astro';
-import { alternatesFor, type Lang } from '@/i18n/routes';
+import { alternatesFor, path, type Lang } from '@/i18n/routes';
 import { useTranslations, pick } from '@/i18n/ui';
-import { getAlbums, getIntroVideo } from '@/lib/content';
+import { getAlbums, getEvents, getIntroVideo, slugOf } from '@/lib/content';
 import { formatDate } from '@/lib/dates';
 import { albumAnchor, youtubeId } from '@/lib/gallery';
 
@@ -22,7 +25,29 @@ interface Props {
 }
 const { lang } = Astro.props;
 const t = useTranslations(lang);
-const [albums, intro] = await Promise.all([getAlbums(), getIntroVideo()]);
+const [albums, intro, events] = await Promise.all([getAlbums(), getIntroVideo(), getEvents()]);
+
+// Official posters of Matin's own and co-organized events, newest first.
+const posters = await Promise.all(
+  events
+    .filter((e) => e.data.image && e.data.imageIsPoster)
+    .sort((a, b) => b.startDate.getTime() - a.startDate.getTime())
+    .map(async (e) => ({
+      id: e.id,
+      image: e.data.image!,
+      title: pick(e.data.title, lang)!,
+      alt: pick(e.data.imageAlt, lang) ?? '',
+      date: e.startDate,
+      href: path('events', lang, slugOf(e, lang)),
+      large: (
+        await getImage({
+          src: e.data.image!,
+          width: Math.min(2000, e.data.image!.width),
+          format: 'webp',
+        })
+      ).src,
+    })),
+);
 
 // Large version for the viewer (max 1800 px wide, WebP).
 const albumsWithLarge = await Promise.all(
@@ -45,6 +70,7 @@ const filters = [
   { key: '', label: t('gallery.filterAll') },
   hasPhotos && { key: 'photos', label: t('gallery.filterPhotos') },
   hasVideos && { key: 'videos', label: t('gallery.filterVideos') },
+  posters.length > 0 && { key: 'posters', label: t('gallery.filterPosters') },
   hasEvents && { key: 'events', label: t('gallery.filterEvents') },
 ].filter((f) => !!f) as { key: string; label: string }[];
 const empty = albums.length === 0 && !intro;
@@ -58,7 +84,8 @@ const empty = albums.length === 0 && !intro;
 >
   <div class="container-site pt-2 pb-24">
     {empty && (
-      <div class="gallery-empty">
+      <div class="gallery-empty scroll-mt-28" id="photos">
+        <span id="videos" class="scroll-mt-28" aria-hidden="true"></span>
         <DialogueArt accent="navy" seed="gallery" class="gallery-empty__art" />
         <p class="gallery-empty__text">
           <span class="gallery-empty__label">{t('gallery.comingSoon')}</span>
@@ -66,6 +93,15 @@ const empty = albums.length === 0 && !intro;
         </p>
       </div>
     )}
+
+    {/* Targets of the Gallery menu (#photos, #videos, #posters) while a kind has no
+        section of its own; with JavaScript the matching filter is also applied. */}
+    {!empty && (
+      <span id="photos" class="block scroll-mt-28" aria-hidden="true">
+        <span id="videos" class="block scroll-mt-28" />
+      </span>
+    )}
+    {posters.length === 0 && <span id="posters" class="block scroll-mt-28" aria-hidden="true" />}
 
     {filters.length > 2 && (
       <div
@@ -90,8 +126,76 @@ const empty = albums.length === 0 && !intro;
       {t('gallery.noResults')}
     </p>
 
+    {posters.length > 0 && (
+      <section
+        id="posters"
+        class="posters scroll-mt-28"
+        data-kind="posters"
+        aria-labelledby="posters-title"
+      >
+        <div class="posters__head">
+          <div>
+            <h2 id="posters-title" class="album-title">
+              {t('gallery.postersTitle')}
+            </h2>
+            <p class="album__text">{t('gallery.postersLede')}</p>
+          </div>
+          {posters.length > 3 && (
+            <div class="posters__nav" data-posters-nav hidden>
+              <button type="button" class="posters__btn" data-posters-prev>
+                <ChevronLeft size={22} class="flip-rtl" aria-hidden="true" />
+                <span class="sr-only">{t('gallery.previousPosters')}</span>
+              </button>
+              <button type="button" class="posters__btn" data-posters-next>
+                <ChevronRight size={22} class="flip-rtl" aria-hidden="true" />
+                <span class="sr-only">{t('gallery.nextPosters')}</span>
+              </button>
+            </div>
+          )}
+        </div>
+        <ul class="posters__row" data-posters-row>
+          {posters.map((p) => (
+            <li class="poster-card">
+              <a
+                href={p.large}
+                class="poster-card__img"
+                data-lightbox="posters"
+                data-alt={p.alt}
+                data-caption={p.title}
+                aria-label={t('gallery.openPoster', { title: p.title })}
+              >
+                <Picture
+                  src={p.image}
+                  alt=""
+                  formats={['avif', 'webp']}
+                  widths={[320, 480, 640]}
+                  sizes="(min-width: 64rem) 22rem, 70vw"
+                />
+                <span class="thumb__icon" aria-hidden="true">
+                  <Expand size={18} />
+                </span>
+              </a>
+              <h3 class="poster-card__title">{p.title}</h3>
+              <p class="poster-card__meta">
+                <time datetime={p.date.toISOString().slice(0, 10)}>{formatDate(p.date, lang)}</time>
+              </p>
+              <a href={p.href} class="link-arrow poster-card__link">
+                {t('gallery.viewEvent')}
+                <ArrowRight size={16} class="flip-rtl" aria-hidden="true" />
+              </a>
+            </li>
+          ))}
+        </ul>
+      </section>
+    )}
+
     {intro && (
-      <section class="intro-video" data-kind="videos" aria-labelledby="intro-video-title">
+      <section
+        id="intro"
+        class="intro-video scroll-mt-28"
+        data-kind="videos"
+        aria-labelledby="intro-video-title"
+      >
         <h2 id="intro-video-title" class="album-title">
           {pick(intro.title, lang)}
         </h2>
@@ -220,31 +324,153 @@ const empty = albums.length === 0 && !intro;
     const buttons = [...bar.querySelectorAll<HTMLButtonElement>('[data-show]')];
     const albums = [...document.querySelectorAll<HTMLElement>('[data-album]')];
     const intro = document.querySelector<HTMLElement>('.intro-video');
+    const posters = document.querySelector<HTMLElement>('.posters');
     const noResults = document.querySelector<HTMLElement>('[data-gallery-noresults]');
     const show = (what: string) => {
       buttons.forEach((b) => b.setAttribute('aria-pressed', String(b.dataset.show === what)));
       let visible = 0;
-      // Photos or Videos: only that kind of media; Events: albums of Matin events.
+      // Photos or Videos: only that kind of media; Posters: the posters only; Events:
+      // albums of Matin events.
       for (const album of albums) {
         let any = false;
         album.querySelectorAll<HTMLElement>('[data-kind]').forEach((list) => {
           list.hidden = (what === 'photos' || what === 'videos') && list.dataset.kind !== what;
           if (!list.hidden) any = true;
         });
-        album.hidden = !any || (what === 'events' && album.dataset.event !== '1');
+        album.hidden =
+          !any || what === 'posters' || (what === 'events' && album.dataset.event !== '1');
         if (!album.hidden) visible++;
       }
       if (intro) {
-        intro.hidden = what === 'photos' || what === 'events';
+        intro.hidden = what !== '' && what !== 'videos';
         if (!intro.hidden) visible++;
+      }
+      if (posters) {
+        posters.hidden = what !== '' && what !== 'posters';
+        if (!posters.hidden) visible++;
       }
       if (noResults) noResults.hidden = visible > 0;
     };
     buttons.forEach((b) => b.addEventListener('click', () => show(b.dataset.show ?? '')));
+    // The Gallery menu links to #photos, #videos and #posters: open with that filter.
+    const fromHash = () => {
+      const what = location.hash.slice(1);
+      if (buttons.some((b) => b.dataset.show === what)) {
+        show(what);
+        bar.scrollIntoView({ block: 'start' });
+      }
+    };
+    fromHash();
+    window.addEventListener('hashchange', fromHash);
+  }
+
+  // Posters row: previous / next buttons scroll by one screen of posters.
+  const row = document.querySelector<HTMLElement>('[data-posters-row]');
+  const nav = document.querySelector<HTMLElement>('[data-posters-nav]');
+  if (row && nav) {
+    nav.hidden = false;
+    const step = (dir: number) => {
+      const rtl = getComputedStyle(row).direction === 'rtl';
+      row.scrollBy({ left: dir * (rtl ? -1 : 1) * row.clientWidth * 0.9, behavior: 'smooth' });
+    };
+    nav.querySelector('[data-posters-prev]')?.addEventListener('click', () => step(-1));
+    nav.querySelector('[data-posters-next]')?.addEventListener('click', () => step(1));
   }
 </script>
 
 <style>
+  .posters {
+    margin-bottom: 5rem;
+  }
+  .posters__head {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: end;
+    justify-content: space-between;
+    gap: 1rem 2rem;
+    margin-bottom: 1.75rem;
+  }
+  .posters__nav {
+    display: flex;
+    gap: 0.6rem;
+  }
+  .posters__btn {
+    display: grid;
+    place-items: center;
+    width: 2.9rem;
+    height: 2.9rem;
+    border-radius: 999px;
+    border: 1.5px solid var(--color-gold);
+    background: var(--color-white);
+    color: var(--color-primary);
+    cursor: pointer;
+  }
+  .posters__btn:hover {
+    background: var(--color-primary);
+    color: var(--color-white);
+  }
+  .posters__row {
+    display: grid;
+    grid-auto-flow: column;
+    grid-auto-columns: min(78vw, 20rem);
+    gap: 1.5rem;
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    padding-bottom: 1rem;
+  }
+  .poster-card {
+    scroll-snap-align: start;
+    display: flex;
+    flex-direction: column;
+    gap: 0.4rem;
+  }
+  .poster-card__img {
+    position: relative;
+    display: block;
+    overflow: hidden;
+    aspect-ratio: 3 / 4;
+    border-radius: var(--radius-card);
+    border: 1px solid var(--color-card-edge);
+    background: var(--color-cream);
+    box-shadow: var(--shadow-card);
+    cursor: zoom-in;
+  }
+  .poster-card__img :global(picture) {
+    display: block;
+    height: 100%;
+  }
+  .poster-card__img .thumb__icon {
+    opacity: 1;
+    transform: none;
+  }
+  .poster-card__img :global(img) {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    transition: transform 0.5s ease;
+  }
+  .poster-card__img:hover :global(img) {
+    transform: scale(1.04);
+  }
+  .poster-card__title {
+    margin-top: 0.6rem;
+    font-size: 1.15rem;
+    font-weight: 800;
+    line-height: 1.3;
+  }
+  .poster-card__meta {
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: var(--color-gold-dark);
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .poster-card__img :global(img) {
+      transition: none;
+    }
+    .poster-card__img:hover :global(img) {
+      transform: none;
+    }
+  }
   .gallery-filter {
     display: flex;
     flex-wrap: wrap;
@@ -274,6 +500,7 @@ const empty = albums.length === 0 && !intro;
   /* Nothing published yet: the dialogue motif and a short note, no sample pictures. */
   .gallery-empty {
     position: relative;
+    margin-bottom: 4rem;
     overflow: hidden;
     height: clamp(20rem, 12rem + 18vw, 30rem);
     border-radius: var(--radius-card);

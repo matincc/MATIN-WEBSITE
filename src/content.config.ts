@@ -16,6 +16,7 @@ import {
   eventSubjects,
   faqTopics,
   newsCategories,
+  newsRegions,
   priceTypes,
   resourceCategories,
 } from './lib/taxonomy';
@@ -206,8 +207,10 @@ const news = defineCollection({
         updated: z.coerce.date().optional(),
         /** A name, or { fr, en, fa } for an institutional signature. */
         author: z.union([z.string(), bi]),
-        /** matin-news, perspectives, culture-cities, research, partnerships */
+        /** matin-news, perspectives, culture-cities, research, partnerships, recommends */
         category: z.enum(newsCategories),
+        /** Matin Recommends only: quebec, canada or international. */
+        region: z.enum(newsRegions).optional(),
         tags: z.array(z.string()).default([]),
         image: image().optional(),
         imageAlt: biOpt,
@@ -547,10 +550,71 @@ const resources = defineCollection({
         .string()
         .regex(/^\/documents\/.+\.pdf$/, 'Use a path like /documents/guide.pdf')
         .optional(),
+      /**
+       * listed (default): simply listed in the directory. member: Matin is a member of it.
+       * partner: a real, confirmed partnership. Set member or partner only with the owner's
+       * confirmation; the directory notice still says a listing implies no partnership.
+       */
+      status: z.enum(['listed', 'member', 'partner']).default('listed'),
       order: z.number().default(100),
       /** Shown on the site only when true (once name, website and logo are verified). */
       published: z.boolean().default(false),
     }),
+});
+
+/**
+ * International Cultural Networks (Resources page, #networks): networks and federations
+ * of cities, institutions or professionals working on culture and intercultural dialogue.
+ * A listing never means membership or partnership unless `status` says so.
+ */
+const networks = defineCollection({
+  loader: yaml('networks'),
+  schema: ({ image }) =>
+    z.object({
+      name: z.string().min(1),
+      nameEn: z.string().optional(),
+      url: z.url().refine((u) => u.startsWith('https://'), 'Use the https:// address'),
+      logo: image().optional(),
+      description: biOpt,
+      /** Where it works, e.g. « International », « Europe », « Canada ». */
+      scope: z.string().optional(),
+      status: z.enum(['listed', 'member', 'partner']).default('listed'),
+      order: z.number().default(100),
+      /** Shown only when true, once name, website and description are verified. */
+      published: z.boolean().default(false),
+    }),
+});
+
+/**
+ * Cultural Policy & Strategic Documents (Resources page, #policy): official public
+ * policies, plans and strategies, linked to the publisher's own page (or a PDF in
+ * public/documents/ when the licence allows it). Never a summary presented as the text.
+ */
+const policies = defineCollection({
+  loader: yaml('policies'),
+  schema: z
+    .object({
+      /** Official title, in each language the publisher uses (fr and/or en). */
+      title: z.object({ fr: z.string().optional(), en: z.string().optional() }),
+      /** Publisher, e.g. « Gouvernement du Québec », « Ville de Montréal », « UNESCO ». */
+      publisher: z.string().min(1),
+      year: z.number().int().min(1900).max(2100),
+      jurisdiction: z.enum(['montreal', 'quebec', 'canada', 'international']),
+      url: z
+        .url()
+        .refine((u) => u.startsWith('https://'), 'Use the https:// address')
+        .optional(),
+      file: z
+        .string()
+        .regex(/^\/documents\/.+\.pdf$/, 'Use a path like /documents/policy.pdf')
+        .optional(),
+      description: biOpt,
+      order: z.number().default(100),
+      /** Shown only when true, once title, publisher, year and link are verified. */
+      published: z.boolean().default(false),
+    })
+    .refine((d) => d.title.fr || d.title.en, 'Give the title in French or English')
+    .refine((d) => d.url || d.file, 'Give a url or a file'),
 });
 
 /** Get Involved page content: volunteer roles and partnership text. */
@@ -588,6 +652,8 @@ export const collections = {
   introVideo,
   faq,
   resources,
+  networks,
+  policies,
   involvement,
   legal,
 };
