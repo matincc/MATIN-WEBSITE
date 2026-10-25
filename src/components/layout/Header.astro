@@ -12,7 +12,7 @@ interface Props {
 }
 const { lang, alternates } = Astro.props;
 const t = useTranslations(lang);
-/** Adds #id to a page URL (after ?from=fa when there is one). */
+/** Adds #id to a page URL. */
 const anchor = (url: string, id: string) => `${url}#${id}`;
 
 // Main menu, in this order (owner's brief, Oct 24 2026): Gallery and Resources join the
@@ -32,12 +32,11 @@ const aboutHref = href('about', lang);
 // Sub-links of "About": only Who We Are and the President's note. Mission, Vision,
 // Values, Our Story and Legal status stay on the About page with their anchors
 // (#mission, #vision, #values, #story, #legal-status), so old links keep working.
-// The Persian About page has no Who We Are block, so that link opens the page itself.
 const aboutLinks = [
   {
     id: 'who-we-are',
     label: t('nav.whoWeAre'),
-    href: lang === 'fa' ? aboutHref : `${aboutHref}#who-we-are`,
+    href: `${aboutHref}#who-we-are`,
   },
   { id: 'president', label: t('nav.president'), href: `${aboutHref}#president` },
 ];

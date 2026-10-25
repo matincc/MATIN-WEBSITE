@@ -5,11 +5,11 @@
  * The index is split by page language, so French pages only find French results.
  */
 import PageLayout from '@/layouts/PageLayout.astro';
-import { alternatesFor, type Lang } from '@/i18n/routes';
+import { siteAlternates, type UiLang } from '@/i18n/routes';
 import { useTranslations } from '@/i18n/ui';
 
 interface Props {
-  lang: Lang;
+  lang: UiLang;
 }
 const { lang } = Astro.props;
 const t = useTranslations(lang);
@@ -19,7 +19,7 @@ const t = useTranslations(lang);
   lang={lang}
   title={t('search.title')}
   lede={t('search.lede')}
-  alternates={alternatesFor('search')}
+  alternates={siteAlternates('search')}
   noindex
   searchable={false}
 >

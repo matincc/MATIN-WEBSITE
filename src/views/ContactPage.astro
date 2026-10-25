@@ -27,8 +27,8 @@ const { lang } = Astro.props;
 const t = useTranslations(lang);
 const s = await getSettings();
 const inv = await getSingleton('involvement');
-// The volunteer roles and form exist in French and English only.
-const hasVolunteer = lang !== 'fa';
+// The volunteer roles and form exist in all three languages.
+const hasVolunteer = true;
 const volunteerId = lang === 'fr' ? 'benevolat' : 'volunteer';
 // Volunteer role cards: Welcome & Events, Language Buddy, Communications.
 const roleAccents = ['teal', 'mustard', 'navy'];

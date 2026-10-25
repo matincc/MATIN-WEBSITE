@@ -2,12 +2,12 @@
 /** Past events archive: reports, photos and highlights, newest first. */
 import PageLayout from '@/layouts/PageLayout.astro';
 import EventCardWide from '@/components/content/EventCardWide.astro';
-import { alternatesFor, path, type Lang } from '@/i18n/routes';
+import { href, siteAlternates, type UiLang } from '@/i18n/routes';
 import { useTranslations } from '@/i18n/ui';
 import { getPastEvents } from '@/lib/content';
 
 interface Props {
-  lang: Lang;
+  lang: UiLang;
 }
 const { lang } = Astro.props;
 const t = useTranslations(lang);
@@ -18,8 +18,8 @@ const past = await getPastEvents();
   lang={lang}
   title={t('events.archiveTitle')}
   lede={t('events.archiveLede')}
-  alternates={alternatesFor('eventsArchive')}
-  crumbs={[{ label: t('events.title'), href: path('events', lang) }]}
+  alternates={siteAlternates('eventsArchive')}
+  crumbs={[{ label: t('events.title'), href: href('events', lang) }]}
 >
   <section class="container-site pt-4 pb-24">
     {past.length > 0 ? (

@@ -5,19 +5,19 @@ import type { CollectionEntry } from 'astro:content';
 import CoverArt from './CoverArt.astro';
 import CategoryIcon from './CategoryIcon.astro';
 import { slugOf } from '@/lib/content';
-import { path, type Lang } from '@/i18n/routes';
+import { baseLang, href as hrefOf, type UiLang } from '@/i18n/routes';
 import { useTranslations, pick } from '@/i18n/ui';
 import { NBSP } from '@/lib/frenchTypo';
 
 interface Props {
   program: CollectionEntry<'programs'>;
-  lang: Lang;
+  lang: UiLang;
   headingLevel?: 'h2' | 'h3';
 }
 const { program, lang, headingLevel = 'h3' } = Astro.props;
 const t = useTranslations(lang);
 const d = program.data;
-const href = path('programs', lang, slugOf(program, lang));
+const href = hrefOf('programs', lang, slugOf(program, baseLang(lang)));
 const Heading = headingLevel;
 const audienceLabel = t('programs.audience') + (lang === 'fr' ? `${NBSP}: ` : ': ');
 ---
@@ -63,7 +63,7 @@ const audienceLabel = t('programs.audience') + (lang === 'fr' ? `${NBSP}: ` : ':
         </span>
       </span>
       <span class="link-arrow text-sm" aria-hidden="true">
-        <ArrowRight size={18} />
+        <ArrowRight size={18} class="flip-rtl" aria-hidden="true" />
       </span>
     </div>
   </div>

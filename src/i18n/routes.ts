@@ -51,49 +51,38 @@ export function isLang(value: unknown): value is Lang {
 export const otherLang = (lang: Lang): Lang => (lang === 'fr' ? 'en' : 'fr');
 
 /* ------------------------------------------------------------------------ *
- * Persian (فارسی): an additional access language.
- * French and English remain the main languages (every page exists in both).
- * Persian has its own versions of a few pages only; links to the others go
- * to the FA_FALLBACK version with ?from=fa, which shows a short Persian note.
+ * Persian (فارسی): a full interface language (owner's brief, Oct 25 2026).
+ * Every page exists in Persian under /fa/, with the English slug, so the
+ * Persian site always has the same pages, menus and links as English and
+ * French. A new route above gets its Persian page automatically here; only
+ * its thin wrapper in src/pages/fa/ has to be added (see CLAUDE.md).
+ * Content without a Persian text yet falls back to English (`pick`).
  * ------------------------------------------------------------------------ */
 export const uiLanguages = ['fr', 'en', 'fa'] as const;
 export type UiLang = (typeof uiLanguages)[number];
+/** Language whose slugs Persian URLs reuse, and whose text fills in missing Persian. */
 export const FA_FALLBACK: Lang = 'en';
 
-/** Pages that have a Persian version, and their slug under /fa/. */
-export const faRoutes: Partial<Record<RouteKey, string>> = {
-  home: '',
-  about: 'about',
-  president: 'about/reza-moafi',
-  team: 'team',
-  contact: 'contact',
-  legalInfo: 'legal-information',
-  news: 'news',
-  resources: 'resources',
-};
+/** Slug of each page under /fa/ (the English slug). */
+export const faRoutes = Object.fromEntries(
+  Object.entries(routes).map(([key, slugs]) => [key, slugs[FA_FALLBACK]]),
+) as Record<RouteKey, string>;
 
 export const isRtl = (lang: UiLang) => lang === 'fa';
-/** Language whose content/pages to use when a Persian version does not exist. */
+/** Language whose content slugs and calendar files a page in this language uses. */
 export const baseLang = (lang: UiLang): Lang => (lang === 'fa' ? FA_FALLBACK : lang);
 
-/**
- * Link to a page in any interface language. In Persian, pages without a
- * Persian version point to the fallback language with ?from=fa.
- */
+/** Link to a page in any interface language, e.g. href('events', 'fa', 'autumn-walk-2026'). */
 export function href(key: RouteKey, lang: UiLang, ...rest: (string | number)[]): string {
   if (lang !== 'fa') return path(key, lang, ...rest);
-  const slug = faRoutes[key];
-  if (slug !== undefined && rest.length === 0) return slug ? `/fa/${slug}/` : '/fa/';
-  return `${path(key, FA_FALLBACK, ...rest)}?from=fa`;
+  const parts = ['fa', faRoutes[key], ...rest.map(String)].filter(Boolean);
+  return `/${parts.join('/')}/`;
 }
 
-/** Equivalent URL of a page in each language; `fa` only when it exists. */
+/** Equivalent URL of a page in each language. */
 export type Alternates = { fr: string; en: string; fa?: string };
 
-/** Alternates including Persian when the page has a Persian version. */
+/** Alternates of a page in French, English and Persian. */
 export function siteAlternates(key: RouteKey): Alternates {
-  const alts: Alternates = alternatesFor(key);
-  const slug = faRoutes[key];
-  if (slug !== undefined) alts.fa = slug ? `/fa/${slug}/` : '/fa/';
-  return alts;
+  return { ...alternatesFor(key), fa: href(key, 'fa') };
 }

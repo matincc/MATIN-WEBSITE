@@ -90,11 +90,7 @@ function fromHighlight(h: CollectionEntry<'highlights'>, lang: UiLang, now: Date
 
 function fromEvent(e: EventEntry, lang: UiLang): MatinItem {
   const d = e.data;
-  // Persian page when the event's Persian text has been reviewed.
-  const url =
-    lang === 'fa' && d.faReviewed
-      ? `/fa/events/${slugOf(e, 'en')}/`
-      : href('events', lang, slugOf(e, baseLang(lang)));
+  const url = href('events', lang, slugOf(e, baseLang(lang)));
   return {
     id: `event-${e.id}`,
     type: 'event',

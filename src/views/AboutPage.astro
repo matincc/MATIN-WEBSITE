@@ -24,8 +24,7 @@ import { photos } from '@/lib/photos';
 import PageLayout from '@/layouts/PageLayout.astro';
 import DialogueArt from '@/components/brand/DialogueArt.astro';
 import SectionHeader from '@/components/ui/SectionHeader.astro';
-import { href, path, siteAlternates, type UiLang } from '@/i18n/routes';
-import { faAboutMore } from '@/i18n/fa';
+import { href, siteAlternates, type UiLang } from '@/i18n/routes';
 import { useTranslations, pick } from '@/i18n/ui';
 import { getSettings, getSingleton } from '@/lib/content';
 
@@ -34,11 +33,9 @@ interface Props {
 }
 const { lang } = Astro.props;
 const t = useTranslations(lang);
-const full = lang !== 'fa';
 const [settings, about] = await Promise.all([getSettings(), getSingleton('about')]);
 
 // Same accents as the Mission / Vision / Values links on the homepage.
-// Persian has only the legal status block (the others have no Persian translation yet).
 const blocks: {
   id: string;
   title: string;
@@ -50,24 +47,20 @@ const blocks: {
   /** Short facts shown as a badge above the text (Legal status: the NEQ). */
   badge?: string;
 }[] = [
-  ...(full
-    ? [
-        {
-          id: 'mission',
-          title: t('about.mission'),
-          text: pick(settings.mission, lang),
-          accent: 'navy',
-          tone: 'navy',
-        },
-        {
-          id: 'vision',
-          title: t('about.vision'),
-          text: pick(about.vision, lang),
-          accent: 'teal',
-          tone: 'teal',
-        },
-      ]
-    : []),
+  {
+    id: 'mission',
+    title: t('about.mission'),
+    text: pick(settings.mission, lang),
+    accent: 'navy',
+    tone: 'navy',
+  },
+  {
+    id: 'vision',
+    title: t('about.vision'),
+    text: pick(about.vision, lang),
+    accent: 'teal',
+    tone: 'teal',
+  },
   ...(settings.legal
     ? [
         {
@@ -107,14 +100,12 @@ const paragraphs = (text?: string) =>
     .filter(Boolean);
 // Years in Persian digits on the Persian page.
 const year = (y: string) => (lang === 'fa' ? y.replace(/\d/g, (d) => '۰۱۲۳۴۵۶۷۸۹'[Number(d)]) : y);
-// Timeline entries shown in this language (Persian only where a Persian text exists).
-const history = about.history
-  .filter((h) => lang !== 'fa' || (h.title.fa && h.text.fa))
-  .map((h) => ({
-    year: year(h.year),
-    title: pick(h.title, lang)!,
-    paragraphs: paragraphs(pick(h.text, lang)),
-  }));
+// Timeline entries (Persian shows the English text of an entry without a Persian one).
+const history = about.history.map((h) => ({
+  year: year(h.year),
+  title: pick(h.title, lang)!,
+  paragraphs: paragraphs(pick(h.text, lang)),
+}));
 const message = paragraphs(lang === 'fa' ? president.message.fa : president.message[lang]);
 const founderName = pick(president.displayName, lang) || president.name;
 const founderRole = pick(president.signature, lang) || pick(president.title, lang);
@@ -127,43 +118,41 @@ const founderRole = pick(president.signature, lang) || pick(president.title, lan
   alternates={siteAlternates('about')}
 >
   <!-- Who we are: photo and text side by side -->
-  {full && (
-    <section id="who-we-are" class="scroll-mt-24 pt-4 pb-20" aria-labelledby="who-we-are-title">
-      <div class="container-site who-grid">
-        <figure class="who-figure" data-reveal>
-          <span class="who-figure__block" aria-hidden="true"></span>
-          <div class="who-figure__photo">
-            <Picture
-              src={photos.tamtams.src}
-              alt=""
-              formats={['avif', 'webp']}
-              widths={[720, 1080, 1440, 1920]}
-              sizes="(min-width: 64rem) 100rem, 300vw"
-              style={`object-position:${photos.tamtams.focus}`}
-            />
-          </div>
-          <figcaption>
-            <PhotoCredit credit={photos.tamtams.credit} />
-          </figcaption>
-        </figure>
-        <div class="who-body">
-          <h2 id="who-we-are-title" class="who-title">
-            {t('about.whoWeAre')}
-          </h2>
-          <p class="who-positioning">{t('home.positioning')}</p>
-          <p class="who-text">{t('home.whoText')}</p>
-          {settings.legal && (
-            <p class="who-legal">
-              {t('home.legalLine', { neq: settings.legal.neq })} ·{' '}
-              <a href={href('legalInfo', lang)} class="font-semibold underline">
-                {t('home.legalLink')}
-              </a>
-            </p>
-          )}
+  <section id="who-we-are" class="scroll-mt-24 pt-4 pb-20" aria-labelledby="who-we-are-title">
+    <div class="container-site who-grid">
+      <figure class="who-figure" data-reveal>
+        <span class="who-figure__block" aria-hidden="true"></span>
+        <div class="who-figure__photo">
+          <Picture
+            src={photos.tamtams.src}
+            alt=""
+            formats={['avif', 'webp']}
+            widths={[720, 1080, 1440, 1920]}
+            sizes="(min-width: 64rem) 100rem, 300vw"
+            style={`object-position:${photos.tamtams.focus}`}
+          />
         </div>
+        <figcaption>
+          <PhotoCredit credit={photos.tamtams.credit} />
+        </figcaption>
+      </figure>
+      <div class="who-body">
+        <h2 id="who-we-are-title" class="who-title">
+          {t('about.whoWeAre')}
+        </h2>
+        <p class="who-positioning">{t('home.positioning')}</p>
+        <p class="who-text">{t('home.whoText')}</p>
+        {settings.legal && (
+          <p class="who-legal">
+            {t('home.legalLine', { neq: settings.legal.neq })} ·{' '}
+            <a href={href('legalInfo', lang)} class="font-semibold underline">
+              {t('home.legalLink')}
+            </a>
+          </p>
+        )}
       </div>
-    </section>
-  )}
+    </div>
+  </section>
 
   <!-- Mission, Vision and Legal status: navy, deep teal and aqua cards on an ivory band -->
   {blocks.length > 0 && (
@@ -223,17 +212,6 @@ const founderRole = pick(president.signature, lang) || pick(president.title, lan
       </ul>
     </div>
   </section>
-
-  {!full && (
-    <section class="values pb-20">
-      <p class="container-site text-center">
-        {faAboutMore.text}{' '}
-        <a href={`${path('about', 'en')}?from=fa`} lang="fa" class="font-semibold underline">
-          {faAboutMore.link}
-        </a>
-      </p>
-    </section>
-  )}
 
   <!-- Our story: one entry per milestone in about.yaml (history), oldest first. -->
   <section id="story" class="story section-pad scroll-mt-24" aria-labelledby="history-title">

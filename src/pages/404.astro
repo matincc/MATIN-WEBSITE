@@ -51,7 +51,7 @@ const links: RouteKey[] = ['programs', 'events', 'news', 'contact'];
                   <li>
                     <a href={path(key, lang)} class="link-arrow text-sm">
                       {t(`nav.${key}`)}
-                      <ArrowRight size={16} aria-hidden="true" />
+                      <ArrowRight size={16} class="flip-rtl" aria-hidden="true" />
                     </a>
                   </li>
                 ))}

@@ -16,12 +16,12 @@ import CoverArt from '@/components/content/CoverArt.astro';
 import ProgramCard from '@/components/content/ProgramCard.astro';
 import Prose from '@/components/ui/Prose.astro';
 import ShareButtons from '@/components/ui/ShareButtons.astro';
-import { path, type Lang } from '@/i18n/routes';
+import { href, path, type UiLang } from '@/i18n/routes';
 import { useTranslations, pick } from '@/i18n/ui';
 import { getPrograms, renderMarkdown, slugOf } from '@/lib/content';
 
 interface Props {
-  lang: Lang;
+  lang: UiLang;
   program: CollectionEntry<'programs'>;
 }
 const { lang, program } = Astro.props;
@@ -31,6 +31,7 @@ const title = pick(d.title, lang)!;
 const alternates = {
   fr: path('programs', 'fr', slugOf(program, 'fr')),
   en: path('programs', 'en', slugOf(program, 'en')),
+  fa: href('programs', 'fa', slugOf(program, 'en')),
 };
 const others = (await getPrograms()).filter((p) => p.id !== program.id).slice(0, 3);
 const url = new URL(alternates[lang], Astro.site ?? Astro.url.origin).href;
@@ -51,7 +52,7 @@ const facts = [
   eyebrow={t(`categories.${d.category}`)}
   lede={pick(d.summary, lang)}
   alternates={alternates}
-  crumbs={[{ label: t('programs.title'), href: path('programs', lang) }]}
+  crumbs={[{ label: t('programs.title'), href: href('programs', lang) }]}
 >
   <div class="container-site grid gap-12 pt-6 pb-20 lg:grid-cols-[1fr_22rem]">
     <article>
@@ -70,7 +71,7 @@ const facts = [
           <CoverArt category={d.category} seed={program.id} class="size-full" />
         )}
       </div>
-      <Prose html={renderMarkdown(d.body[lang], lang)} class="text-lg" />
+      <Prose html={renderMarkdown(pick(d.body, lang)!, lang)} class="text-lg" />
       <div class="mt-12 border-t border-line pt-6">
         <ShareButtons lang={lang} url={url} title={title} />
       </div>
@@ -105,15 +106,15 @@ const facts = [
               <span class="sr-only">{t('a11y.externalLink')}</span>
             </a>
           ) : (
-            <a href={path('contact', lang)} class="btn btn-primary w-full">
+            <a href={href('contact', lang)} class="btn btn-primary w-full">
               <Mail size={18} aria-hidden="true" />
               {t('programs.registerContact')}
             </a>
           )}
         </div>
       </div>
-      <a href={path('programs', lang)} class="link-arrow mt-6">
-        <ArrowLeft size={18} aria-hidden="true" />
+      <a href={href('programs', lang)} class="link-arrow mt-6">
+        <ArrowLeft size={18} class="flip-rtl" aria-hidden="true" />
         {t('programs.backToPrograms')}
       </a>
     </aside>

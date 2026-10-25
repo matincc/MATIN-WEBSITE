@@ -50,7 +50,6 @@ const settings = await getSettings();
 const fullTitle = title ? `${title} | ${t('meta.siteName')}` : t('meta.homeTitle');
 const site = Astro.site ?? new URL(Astro.url.origin);
 const htmlLang = lang === 'fr' ? 'fr-CA' : lang === 'en' ? 'en-CA' : 'fa';
-const rssLang = lang === 'fa' ? 'en' : lang;
 ---
 
 <!doctype html>
@@ -71,7 +70,7 @@ const rssLang = lang === 'fa' ? 'en' : lang;
       rel="alternate"
       type="application/rss+xml"
       title={`${t('meta.siteName')} — ${t('nav.news')}`}
-      href={`/${rssLang}/rss.xml`}
+      href={`/${lang}/rss.xml`}
     />
     <SEO
       lang={lang}

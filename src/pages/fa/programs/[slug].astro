@@ -1,0 +1,15 @@
+---
+import type { GetStaticPaths } from 'astro';
+import ProgramDetailPage from '@/views/ProgramDetailPage.astro';
+import { getPrograms, slugOf } from '@/lib/content';
+
+export const getStaticPaths = (async () =>
+  (await getPrograms()).map((program) => ({
+    params: { slug: slugOf(program, 'en') },
+    props: { program },
+  }))) satisfies GetStaticPaths;
+
+const { program } = Astro.props;
+---
+
+<ProgramDetailPage lang="fa" program={program} />

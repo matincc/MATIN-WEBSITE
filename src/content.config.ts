@@ -31,8 +31,8 @@ const biOpt = z
   .object({ fr: z.string().default(''), en: z.string().default(''), fa: z.string().optional() })
   .optional();
 /**
- * Set to true once the Persian (fa) texts of an entry have been reviewed; only then
- * does the entry appear on Persian pages.
+ * Set to true once the Persian (fa) texts of an entry have been reviewed by the owner.
+ * Persian pages show every entry either way (English text where Persian is missing).
  */
 const faReviewed = z.boolean().default(false);
 /** Localized URL slugs; fall back to the file name when absent. */
