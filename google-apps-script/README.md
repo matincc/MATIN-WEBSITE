@@ -9,8 +9,9 @@ This script runs in the Google Workspace account **forms@matincc.ca**, in the Ap
 ```
 Visitor → Netlify Forms (stores, spam filter, notifies matincc.mtl@gmail.com and info@)   unchanged
         → Netlify runs netlify/functions/submission-created.mts (event "submission-created")
-            1. re-reads the submission from the Netlify API (NETLIFY_API_TOKEN):
-               must exist, be verified (not spam) and belong to "contact" or "benevolat"
+            (Netlify runs it only for verified, non-spam submissions, and signs each
+             event so outside requests cannot invoke it; no access token is needed)
+            1. keeps only "contact" and "benevolat", skips the honeypot
             2. sends {id, form, lang, email, created_at}, a timestamp and an HMAC-SHA256
                signature (ACK_SHARED_SECRET) to the web app (ACK_ENDPOINT_URL)
         → doPost (Ack_Main.gs) in forms@:
@@ -50,7 +51,7 @@ The visitor's name and message never leave Netlify.
 
 ## Netlify environment variables (names only)
 
-`ACK_ENDPOINT_URL`, `ACK_SHARED_SECRET`, `NETLIFY_API_TOKEN`. Use scope **Functions**, and tick **Contains secret values** for the last two. Without all three, nothing happens.
+`ACK_ENDPOINT_URL` and `ACK_SHARED_SECRET`. Without both, nothing happens. Set a value only in the deploy context being tested (Deploy Previews first, Production at activation). On plans without scopes, leave "All scopes": no website code reads these names, and Astro only exposes `PUBLIC_` variables to the browser.
 
 ## Sender
 
