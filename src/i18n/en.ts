@@ -266,6 +266,7 @@ const en: Dictionary = {
     title: 'News',
     lede: 'Cultural news selected by Matin from reliable sources, and official news from the institute.',
     readMore: 'Read article',
+    readingTime: '{n} min read',
     by: 'By',
     publishedOn: 'Published on',
     related: 'More Matin News',

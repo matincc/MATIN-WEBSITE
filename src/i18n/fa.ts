@@ -250,6 +250,7 @@ const fa: DeepPartial<Dictionary> = {
     title: 'اخبار',
     lede: 'اخبار فرهنگی برگزیدهٔ متین از منابع معتبر، و اخبار رسمی مؤسسه.',
     readMore: 'خواندن مطلب',
+    readingTime: '{n} دقیقه مطالعه',
     by: 'نوشته',
     publishedOn: 'تاریخ انتشار',
     related: 'دیگر اخبار متین',

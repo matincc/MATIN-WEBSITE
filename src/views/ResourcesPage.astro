@@ -10,7 +10,16 @@
  * short message until entries are verified and published. The Resources menu links here.
  */
 import { Image } from 'astro:assets';
-import { Download, ExternalLink, FileText, Globe, Info, MapPin } from '@lucide/astro';
+import {
+  ArrowDown,
+  BookOpen,
+  Download,
+  ExternalLink,
+  FileText,
+  Globe,
+  Info,
+  MapPin,
+} from '@lucide/astro';
 import SectionHeader from '@/components/ui/SectionHeader.astro';
 import PageLayout from '@/layouts/PageLayout.astro';
 import { alternatesFor, type Lang } from '@/i18n/routes';
@@ -46,6 +55,31 @@ const host = (url: string) => new URL(url).hostname.replace(/^www\./, '');
   lede={t('resources.lede')}
   alternates={alternatesFor('resources')}
 >
+  <!-- The three parts of the page, as quick links under the title. -->
+  <nav slot="hero" class="res-jump" aria-label={t('legal.onThisPage')}>
+    <a href="#directory" class="res-jump__link" data-accent="navy">
+      <span class="res-jump__icon" aria-hidden="true">
+        <BookOpen size={18} />
+      </span>
+      {t('nav.resourcesDirectory')}
+      <ArrowDown size={16} class="res-jump__arrow" aria-hidden="true" />
+    </a>
+    <a href="#networks" class="res-jump__link" data-accent="teal">
+      <span class="res-jump__icon" aria-hidden="true">
+        <Globe size={18} />
+      </span>
+      {t('resources.networksTitle')}
+      <ArrowDown size={16} class="res-jump__arrow" aria-hidden="true" />
+    </a>
+    <a href="#policy" class="res-jump__link" data-accent="mustard">
+      <span class="res-jump__icon" aria-hidden="true">
+        <FileText size={18} />
+      </span>
+      {t('resources.policyTitle')}
+      <ArrowDown size={16} class="res-jump__arrow" aria-hidden="true" />
+    </a>
+  </nav>
+
   <!-- Owner's brief (Oct 25 2026): alternating warm tones. Directory on ivory, networks
        on pale teal, policy documents on champagne with gold accents. -->
   <div class="directory-band">
@@ -86,13 +120,15 @@ const host = (url: string) => new URL(url).hostname.replace(/^www\./, '');
               aria-labelledby={`res-${category}`}
               data-category={category}
             >
-              <h2 id={`res-${category}`} class="directory-title">
-                <span class="directory-title__icon" data-accent={resourceAccents[category]}>
-                  <Icon size={22} stroke-width={1.75} aria-hidden="true" />
-                </span>
-                {t(`resources.${category}`)}
-              </h2>
-              <ul class="org-grid">
+              <div class="directory-head">
+                <h2 id={`res-${category}`} class="directory-title">
+                  <span class="directory-title__icon">
+                    <Icon size={22} stroke-width={1.75} aria-hidden="true" />
+                  </span>
+                  {t(`resources.${category}`)}
+                </h2>
+              </div>
+              <ul class:list={['org-grid', items.length < 3 && 'org-grid--few']}>
                 {items.map((r) => {
                   const name = orgName(r, lang);
                   const description = pick(r.data.description, lang);
@@ -302,21 +338,80 @@ const host = (url: string) => new URL(url).hostname.replace(/^www\./, '');
 </script>
 
 <style>
-  /* The directory's band: warm ivory across the full width. */
+  /* Quick links under the title: white pills with a coloured icon tile. */
+  .res-jump {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+    margin-block-start: 2rem;
+  }
+  .res-jump__link {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.65rem;
+    min-height: 3rem;
+    padding: 0.4rem 1.1rem 0.4rem 0.45rem;
+    border: 1px solid var(--color-card-edge);
+    border-radius: 999px;
+    background: var(--color-white);
+    box-shadow: var(--shadow-card);
+    color: var(--color-primary);
+    font-family: var(--font-display);
+    font-size: 1rem;
+    font-weight: 800;
+    text-decoration: none;
+    transition:
+      border-color 0.2s,
+      transform 0.2s;
+  }
+  .res-jump__link:hover {
+    border-color: var(--color-gold);
+    transform: translateY(-2px);
+  }
+  .res-jump__icon {
+    display: grid;
+    place-items: center;
+    width: 2.25rem;
+    height: 2.25rem;
+    border-radius: 50%;
+    background: var(--accent);
+    color: var(--color-white);
+  }
+  .res-jump__link[data-accent='navy'] .res-jump__icon {
+    color: var(--color-gold);
+  }
+  .res-jump__link[data-accent='mustard'] .res-jump__icon {
+    color: var(--color-primary);
+  }
+  .res-jump :global(.res-jump__arrow) {
+    color: var(--color-teal-deep);
+  }
+
+  /* The directory: warm ivory band; each category is a module with a soft turquoise head. */
   .directory-band {
+    /* Joins the banner directly (the banner keeps a bottom margin on other pages). */
+    margin-block-start: -3rem;
     background: var(--color-ivory);
   }
   .directory-group {
-    padding: clamp(1.25rem, 0.8rem + 2vw, 2.25rem);
-    border-radius: calc(var(--radius-card) * 1.3);
+    overflow: hidden;
     border: 1px solid var(--color-card-edge);
     border-block-start: 5px solid var(--accent);
-    background: var(--color-paper);
+    border-radius: calc(var(--radius-card) * 1.3);
+    background: var(--color-cream);
     box-shadow: var(--shadow-card);
   }
+  .directory-head {
+    padding: clamp(1.1rem, 0.8rem + 1.2vw, 1.6rem) clamp(1.25rem, 0.8rem + 2vw, 2.25rem);
+    border-block-end: 3px solid var(--color-gold);
+    background: var(--color-aqua);
+  }
+  .directory-group .org-grid {
+    padding: clamp(1.25rem, 0.8rem + 2vw, 2.25rem);
+  }
   .networks-band {
-    background: var(--color-teal-pale);
-    border-block: 1px solid var(--color-teal-edge);
+    background: var(--color-aqua);
+    border-block: 1px solid var(--color-aqua-edge);
   }
   .policy-band {
     background: var(--color-champagne);
@@ -324,19 +419,20 @@ const host = (url: string) => new URL(url).hostname.replace(/^www\./, '');
   .policy-band .policy {
     border-inline-start: 5px solid var(--color-gold);
   }
-  /* Empty sections: a quiet, finished panel rather than a bare line. */
+  /* Empty sections: a finished ivory panel with an accent edge, rather than a bare line. */
   .res-empty {
     display: flex;
     align-items: center;
     gap: 1.25rem;
-    max-width: 52rem;
     padding: 1.5rem 1.75rem;
+    border: 1px solid var(--color-card-edge);
+    border-inline-start: 5px solid var(--accent);
     border-radius: calc(var(--radius-card) * 1.2);
-    border: 1px dashed color-mix(in srgb, var(--accent) 55%, var(--color-white));
-    background: var(--color-white);
+    background: var(--color-ivory);
     box-shadow: var(--shadow-card);
     font-size: 1.125rem;
     line-height: 1.6;
+    color: var(--color-primary);
   }
   .res-empty__icon {
     display: grid;
@@ -345,8 +441,8 @@ const host = (url: string) => new URL(url).hostname.replace(/^www\./, '');
     width: 3.25rem;
     height: 3.25rem;
     border-radius: 50%;
-    background: color-mix(in srgb, var(--accent) 22%, var(--color-white));
-    color: var(--color-primary);
+    background: var(--color-primary);
+    color: var(--color-gold);
   }
   .directory-notice {
     display: flex;
@@ -354,6 +450,10 @@ const host = (url: string) => new URL(url).hostname.replace(/^www\./, '');
     gap: 0.6rem;
     max-width: 52rem;
     margin-block-end: 2.5rem;
+    padding: 0.85rem 1.25rem;
+    border: 1px solid var(--color-card-edge);
+    border-radius: var(--radius-card);
+    background: var(--color-white);
     font-size: 1rem;
     color: var(--color-ink);
   }
@@ -394,20 +494,20 @@ const host = (url: string) => new URL(url).hostname.replace(/^www\./, '');
   .directory-title {
     display: flex;
     align-items: center;
-    gap: 0.85rem;
-    margin-block-end: 1.75rem;
+    gap: 0.9rem;
     font-size: clamp(1.5rem, 1.25rem + 0.9vw, 2rem);
     font-weight: 800;
+    line-height: 1.25;
   }
   .directory-title__icon {
     display: grid;
     flex-shrink: 0;
     place-items: center;
-    width: 3rem;
-    height: 3rem;
+    width: 3.25rem;
+    height: 3.25rem;
     border-radius: 0.9rem;
-    background: color-mix(in srgb, var(--accent) 22%, var(--color-white));
-    color: var(--color-primary);
+    background: var(--color-primary);
+    color: var(--color-gold);
   }
   /* Logo grid: same card size for everyone, logos kept in proportion. */
   .org-grid {
@@ -427,9 +527,12 @@ const host = (url: string) => new URL(url).hostname.replace(/^www\./, '');
       transform 0.25s,
       box-shadow 0.25s;
   }
-  .org-card:hover {
-    transform: translateY(-3px);
-    box-shadow: 0 14px 28px -22px color-mix(in srgb, var(--color-primary) 60%, transparent);
+  .org-card:hover,
+  .org-card:focus-within {
+    border-color: var(--color-gold);
+    border-block-start-color: var(--accent);
+    transform: translateY(-4px);
+    box-shadow: 0 20px 36px -22px color-mix(in srgb, var(--color-primary) 60%, transparent);
   }
   .org-card__logo {
     display: grid;
@@ -437,8 +540,9 @@ const host = (url: string) => new URL(url).hostname.replace(/^www\./, '');
     height: 7.5rem;
     margin-block-end: 0.75rem;
     padding: 1rem;
+    border: 1px solid var(--color-aqua-edge);
     border-radius: 0.8rem;
-    background: var(--color-teal-pale);
+    background: var(--color-aqua);
   }
   .org-card :global(.org-card__img) {
     max-width: 100%;
@@ -453,11 +557,34 @@ const host = (url: string) => new URL(url).hostname.replace(/^www\./, '');
     width: 4rem;
     height: 4rem;
     border-radius: 50%;
-    background: color-mix(in srgb, var(--accent) 22%, var(--color-white));
+    background: var(--color-primary);
     font-family: var(--font-display);
     font-size: 1.375rem;
     font-weight: 800;
-    color: var(--color-primary);
+    color: var(--color-gold);
+  }
+  /* Few organizations in a category: wide cards, logo beside the text, so the
+     module is filled rather than leaving an empty half. */
+  @media (min-width: 56rem) {
+    .org-grid--few {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+    .org-grid--few .org-card {
+      display: grid;
+      grid-template-columns: 9rem minmax(0, 1fr);
+      column-gap: 1.5rem;
+      align-content: start;
+      padding: 1.5rem;
+    }
+    .org-grid--few .org-card > :global(*) {
+      grid-column: 2;
+    }
+    .org-grid--few .org-card__logo {
+      grid-column: 1;
+      grid-row: 1 / span 6;
+      height: 9rem;
+      margin: 0;
+    }
   }
   .org-card__name {
     font-size: 1.1875rem;
@@ -535,12 +662,30 @@ const host = (url: string) => new URL(url).hostname.replace(/^www\./, '');
   .org-card__site {
     display: inline-flex;
     align-items: center;
+    align-self: flex-start;
+    justify-self: start;
     gap: 0.4rem;
     margin-top: auto;
-    padding-top: 0.5rem;
-    font-size: 1rem;
-    font-weight: 600;
-    color: var(--color-ink);
+    padding: 0.35rem 0.9rem;
+    border-radius: 999px;
+    background: var(--color-champagne);
+    font-family: var(--font-display);
+    font-size: 0.9375rem;
+    font-weight: 800;
+    color: var(--color-primary);
+    transition:
+      background-color 0.2s,
+      color 0.2s;
+  }
+  .org-card__site :global(svg) {
+    color: var(--color-teal-deep);
+  }
+  .org-card:hover .org-card__site {
+    background: var(--color-primary);
+    color: var(--color-white);
+  }
+  .org-card:hover .org-card__site :global(svg) {
+    color: var(--color-gold);
   }
   .org-card__file {
     position: relative;
@@ -552,10 +697,13 @@ const host = (url: string) => new URL(url).hostname.replace(/^www\./, '');
   }
   @media (prefers-reduced-motion: reduce) {
     .org-card,
-    .chip {
+    .chip,
+    .res-jump__link {
       transition: none;
     }
-    .org-card:hover {
+    .org-card:hover,
+    .org-card:focus-within,
+    .res-jump__link:hover {
       transform: none;
     }
   }

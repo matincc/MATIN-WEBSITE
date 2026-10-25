@@ -272,6 +272,7 @@ const fr = {
     title: 'Actualités',
     lede: "L'actualité culturelle choisie par Matin auprès de sources fiables, et les nouvelles officielles de l'Institut.",
     readMore: "Lire l'article",
+    readingTime: '{n} min de lecture',
     by: 'Par',
     publishedOn: 'Publié le',
     related: 'Autres nouvelles de Matin',
