@@ -1,6 +1,6 @@
 /**
  * /api/editorial/*: the private editorial dashboard's only door to the data.
- * Every route except `login` checks the signed-in session on the server first; changing
+ * Every route except the two sign-in steps checks the signed-in session on the server first; changing
  * routes also need the `x-editorial: 1` header (see _news/auth). Every action is logged.
  *
  * State machine (the only transitions that exist):
@@ -20,7 +20,19 @@ import {
   finalizeWithAI,
   readUsage,
 } from './_news/ai';
-import { clearCookie, sessionCookie, sessionOf, signIn, signOut } from './_news/auth';
+import {
+  appConfigured,
+  canWrite,
+  clearCookie,
+  clearFlowCookie,
+  finishSignIn,
+  installationToken,
+  sessionCookie,
+  sessionOf,
+  signOut,
+  signOutEverywhere,
+  startSignIn,
+} from './_news/auth';
 import { linkId } from './_news/feeds';
 import { notifyConfigured, sendCandidatesEmail } from './_news/notify';
 import { commitStories, newsYaml, publishBranch, readyToPublish, slugify } from './_news/publish';
@@ -91,19 +103,30 @@ export default async (req: Request, context: Context) => {
   const body =
     req.method === 'POST' ? ((await req.json().catch(() => ({}))) as Record<string, unknown>) : {};
 
-  /* ------------------------------------------------ sign-in (no session yet) */
-  if (route === 'login' && req.method === 'POST') {
-    if (req.headers.get('x-editorial') !== '1') return json({ error: 'Bad request' }, 400);
-    const result = await signIn(store, clean(body.token, 300), context.ip);
-    if ('error' in result) return json({ error: result.error }, result.status);
-    await audit(store, { by: result.session.login, action: 'sign-in' });
-    return json({ ok: true, login: result.session.login }, 200, {
-      'set-cookie': sessionCookie(result.id),
-    });
+  /* ------------------------------------------------ sign-in with GitHub (no session yet) */
+  const redirect = (location: string, cookies: string[]) => {
+    const headers = new Headers({ location, 'cache-control': 'no-store' });
+    for (const c of cookies) headers.append('set-cookie', c);
+    return new Response(null, { status: 303, headers });
+  };
+  if (route === 'signin/start' && req.method === 'GET') {
+    const result = await startSignIn(store, new URL(req.url).origin, context.ip);
+    if ('error' in result) return redirect(`${dashboard}?signin=${result.error}`, []);
+    return redirect(result.location, [result.cookie]);
+  }
+  if (route === 'signin/callback' && req.method === 'GET') {
+    const result = await finishSignIn(store, req);
+    if ('error' in result) {
+      await audit(store, { by: 'unknown', action: 'sign-in-refused', detail: result.error });
+      return redirect(`${dashboard}?signin=${result.error}`, [clearFlowCookie()]);
+    }
+    await audit(store, { by: result.login, action: 'sign-in' });
+    return redirect(dashboard, [clearFlowCookie(), sessionCookie(result.id)]);
   }
 
   const session = await sessionOf(store, req);
-  if (route === 'me' && !session) return json({ signedIn: false, context: ctx });
+  if (route === 'me' && !session)
+    return json({ signedIn: false, context: ctx, signInReady: appConfigured() });
   if (!session) return json({ error: 'Please sign in.' }, 401);
   const by = session.login;
 
@@ -111,6 +134,12 @@ export default async (req: Request, context: Context) => {
     case 'POST logout': {
       await signOut(store, req);
       await audit(store, { by, action: 'sign-out' });
+      return json({ ok: true }, 200, { 'set-cookie': clearCookie() });
+    }
+
+    case 'POST logout-all': {
+      const ended = await signOutEverywhere(store);
+      await audit(store, { by, action: 'sign-out-everywhere', detail: `${ended} sessions ended` });
       return json({ ok: true }, 200, { 'set-cookie': clearCookie() });
     }
 
@@ -254,8 +283,17 @@ export default async (req: Request, context: Context) => {
       const branch = publishBranch(ctx);
       let result;
       try {
+        // Checked again with GitHub right before writing: the editor must still have access.
+        const token = await installationToken();
+        if (!(await canWrite(by, token))) {
+          await audit(store, { by, action: 'publish-refused', detail: 'no write access' });
+          return json(
+            { error: 'Your GitHub account no longer has access. Nothing was changed.' },
+            403,
+          );
+        }
         result = await commitStories(
-          session.token,
+          token,
           branch,
           files,
           `News: publish ${files.length} approved cultural news ${files.length === 1 ? 'story' : 'stories'}\n\nApproved and published by ${by} in the editorial dashboard.`,

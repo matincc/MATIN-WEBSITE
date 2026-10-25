@@ -1,6 +1,7 @@
 /**
  * Publication: approved stories become News files (src/content/news/*.yaml) in ONE commit,
- * made with the signed-in editor's own GitHub token. On matincc.ca the commit goes to `main`
+ * made with the Matin GitHub App's one-hour token (see auth.ts), only after the signed-in
+ * editor's click and a fresh check of their access. On matincc.ca the commit goes to `main`
  * and Netlify rebuilds the site once. On a Deploy Preview it goes to a separate test branch,
  * never to `main`, so testing can never publish anything.
  */
@@ -137,7 +138,13 @@ export async function commitStories(
   });
   const commit = await gh<{ sha: string }>(token, '/git/commits', {
     method: 'POST',
-    body: { message, tree: tree.sha, parents: [parent] },
+    // Authored under the website's own GitHub identity, as every commit to this repository.
+    body: {
+      message,
+      tree: tree.sha,
+      parents: [parent],
+      author: { name: 'matincc', email: 'matincc.mtl@gmail.com' },
+    },
   });
   await gh(token, `/git/refs/heads/${branch}`, { method: 'PATCH', body: { sha: commit.sha } });
   return { sha: commit.sha, paths: unique.map((f) => f.path) };

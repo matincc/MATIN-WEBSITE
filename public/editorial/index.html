@@ -24,6 +24,7 @@
       <div class="top__user" id="user" hidden>
         <span id="who"></span>
         <button type="button" class="btn btn--quiet" id="signout">Sign out</button>
+        <button type="button" class="btn btn--quiet" id="signout-all">Sign out all sessions</button>
       </div>
     </header>
 
@@ -33,14 +34,12 @@
       <section id="signin" class="panel signin" hidden>
         <h2>Sign in</h2>
         <p>
-          Use the same GitHub access token as for <strong>matincc.ca/admin</strong>. Only Matin's
-          GitHub account is accepted. The token stays on the server and is never shown again.
+          Sign in on GitHub's own page with Matin's GitHub account. No password or token is typed
+          here. The website only learns which account signed in and never keeps a GitHub token.
         </p>
-        <form id="signin-form">
-          <label for="token">GitHub access token</label>
-          <input id="token" name="token" type="password" autocomplete="off" spellcheck="false" required />
-          <button type="submit" class="btn btn--primary">Sign in</button>
-        </form>
+        <a class="btn btn--primary btn--github" id="signin-link" href="/api/editorial/signin/start">
+          Sign in with GitHub
+        </a>
         <p class="msg" id="signin-msg" role="alert"></p>
       </section>
 

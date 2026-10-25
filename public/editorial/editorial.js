@@ -69,20 +69,28 @@
     $('desk').hidden = true;
     $('user').hidden = true;
   }
-  $('signin-form').addEventListener('submit', async (e) => {
-    e.preventDefault();
-    say('signin-msg', 'Checking with GitHub…');
-    try {
-      await api('login', { token: $('token').value.trim() });
-      $('token').value = '';
-      say('signin-msg', '');
-      await start();
-    } catch (err) {
-      say('signin-msg', err.message, 'error');
-    }
-  });
+  const SIGNIN = {
+    'not-configured': 'Sign-in with GitHub is not set up yet on this site (the Matin GitHub App keys are missing).',
+    'too-many': 'Too many sign-in attempts. Please wait 15 minutes.',
+    denied: 'Sign-in was cancelled on GitHub.',
+    expired: 'The sign-in took too long or was opened in another window. Please try again.',
+    'not-editor': 'This GitHub account is not an editor of the Matin website.',
+    'no-access': 'This GitHub account cannot write to the website repository.',
+    'not-installed': 'The Matin GitHub App is not installed on the MATIN-WEBSITE repository.',
+    failed: 'GitHub did not confirm the sign-in. Please try again.',
+  };
+  const code = new URLSearchParams(location.search).get('signin');
+  if (code) {
+    history.replaceState(null, '', location.pathname);
+    say('signin-msg', SIGNIN[code] || SIGNIN.failed, 'error');
+  }
   $('signout').addEventListener('click', async () => {
     await api('logout', {}).catch(() => undefined);
+    showSignin();
+  });
+  $('signout-all').addEventListener('click', async () => {
+    if (!confirm('End every open session of this dashboard, on all devices?')) return;
+    await api('logout-all', {}).catch(() => undefined);
     showSignin();
   });
 
@@ -432,7 +440,10 @@
   }
   async function start() {
     const me = await api('me').catch(() => ({ signedIn: false }));
-    if (!me.signedIn) return showSignin();
+    if (!me.signedIn) {
+      if (me.signInReady === false && !code) say('signin-msg', SIGNIN['not-configured'], 'error');
+      return showSignin();
+    }
     $('signin').hidden = true;
     $('desk').hidden = false;
     await refresh();
