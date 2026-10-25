@@ -27,6 +27,7 @@ const fr = {
     aboutSubmenu: 'Afficher les sections de la page À propos',
     teamSubmenu: 'Afficher les sections de la page Notre équipe',
     eventsSubmenu: 'Afficher les sections de la page Événements',
+    regionTabs: 'Choisir une région',
     newsSubmenu: 'Afficher les rubriques de la page Actualités et perspectives',
     gallerySubmenu: 'Afficher les sections de la Galerie',
     resourcesSubmenu: 'Afficher les sections de la page Ressources',
@@ -194,7 +195,9 @@ const fr = {
     lede: "Découvrez une sélection d'événements culturels, de dialogues publics et de rencontres professionnelles à Montréal, au Québec et ailleurs, choisis pour leur lien avec le dialogue interculturel, la planification culturelle et la vie des communautés.",
     picksTitle: 'Les choix de Matin',
     selectedByMatin: 'Sélection de Matin',
-    picksLede: 'Quelques événements à venir que nous recommandons tout particulièrement.',
+    picksLede:
+      'Des événements et des initiatives culturels à découvrir, de Montréal au monde entier.',
+    picksRegionEmpty: 'Aucune sélection pour cette région pour le moment.',
     upcoming: 'Événements à venir',
     emptyAgenda:
       'Nous sélectionnons des événements culturels à venir à Montréal et au Québec. Revenez consulter notre agenda bientôt.',
@@ -283,6 +286,14 @@ const fr = {
     recommendsEmpty:
       'Matin recommandera ici une sélection de nouvelles culturelles du Québec, du Canada et du monde, toujours avec leur source.',
     sections: 'Rubriques',
+    culturalTitle: 'Actualité culturelle',
+    culturalLede:
+      'Des décisions, des politiques et des initiatives culturelles marquantes, vérifiées et reliées à leur source.',
+    regionEmpty: 'Les nouvelles approuvées pour cette région paraîtront ici prochainement.',
+    allCultural: "Toute l'actualité culturelle",
+    matinTitle: 'Nouvelles et articles de Matin',
+    sourceNamed: 'Source : {name}',
+    readSource: 'Lire à la source',
     source: 'Source',
     sourceIntro: 'Cet article porte sur un sujet ou un événement externe. Source :',
     getInvolvedTitle: 'Suivre ou rejoindre les travaux de Matin',
@@ -301,9 +312,9 @@ const fr = {
     insights: 'Articles et perspectives',
   },
   newsRegions: {
-    quebec: 'Québec',
+    montreal: 'Montréal',
     canada: 'Canada',
-    international: 'International',
+    international: 'Ailleurs dans le monde',
   },
   pagination: {
     label: 'Pagination',
@@ -507,6 +518,20 @@ const fr = {
     roles: 'Rôle souhaité',
     availability: 'Disponibilités',
     languages: 'Langues parlées',
+    languagesHint: 'Choisissez une ou plusieurs langues.',
+    languagesOther: 'Autre langue (précisez)',
+    languageNames: {
+      French: 'Français',
+      English: 'Anglais',
+      Persian: 'Persan',
+      Arabic: 'Arabe',
+      Spanish: 'Espagnol',
+      Mandarin: 'Chinois (mandarin)',
+      Portuguese: 'Portugais',
+      Hindi: 'Hindi',
+      Urdu: 'Ourdou',
+      Other: 'Autre',
+    },
     motivation: 'Pourquoi souhaitez-vous vous impliquer?',
     any: 'Peu importe',
     errTooMany:

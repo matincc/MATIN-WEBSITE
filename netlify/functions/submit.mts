@@ -112,6 +112,7 @@ const FORMS: Record<string, FormDef> = {
       { name: 'role', label: 'Rôle souhaité / Preferred role' },
       { name: 'availability', label: 'Disponibilités / Availability' },
       { name: 'languages', label: 'Langues / Languages' },
+      { name: 'languages_other', label: 'Autre langue / Other language' },
       { name: 'motivation', label: 'Motivation', long: true, required: true },
       consentField,
     ],

@@ -175,12 +175,24 @@ export function enhanceForms() {
           form.querySelector(`input[name="${f.name}"]`) === f,
       );
 
-    // Re-validate a field once the visitor leaves it (after a first attempt).
-    fields.forEach((f) =>
-      f.addEventListener('blur', () => {
-        if (f.hasAttribute('aria-invalid')) setError(f, validate(f, m));
-      }),
-    );
+    // After a first attempt, a field marked invalid is checked again as the visitor types,
+    // ticks or leaves it, and the error summary drops the fixed ones (it closes once
+    // everything is fixed) instead of showing stale warnings.
+    const recheck = (f: (typeof fields)[number]) => {
+      if (!f.hasAttribute('aria-invalid')) return;
+      setError(f, validate(f, m));
+      if (summary.hidden) return;
+      summary.querySelectorAll<HTMLAnchorElement>('a[href^="#"]').forEach((a) => {
+        const target = form.querySelector<HTMLElement>(`[id="${a.hash.slice(1)}"]`);
+        if (!target?.hasAttribute('aria-invalid')) a.closest('li')?.remove();
+      });
+      if (!summary.querySelector('li')) summary.hidden = true;
+    };
+    fields.forEach((f) => {
+      f.addEventListener('blur', () => recheck(f));
+      f.addEventListener('input', () => recheck(f));
+      f.addEventListener('change', () => recheck(f));
+    });
 
     form.addEventListener('submit', async (e) => {
       e.preventDefault();
@@ -237,7 +249,13 @@ export function enhanceForms() {
           res = await fetch('/api/submit', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(Object.fromEntries(new FormData(form))),
+            // Several ticked boxes with one name (e.g. languages) become one line.
+            body: JSON.stringify(
+              [...new FormData(form)].reduce<Record<string, string>>((o, [k, v]) => {
+                o[k] = o[k] ? `${o[k]}, ${v}` : String(v);
+                return o;
+              }, {}),
+            ),
           });
           const result = (await res.json().catch(() => ({}))) as { ok?: boolean };
           if (res.status === 429) throw new Error('too-many');

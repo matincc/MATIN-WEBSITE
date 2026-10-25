@@ -13,18 +13,16 @@ import {
   CalendarDays,
   Download,
   ExternalLink,
-  Eye,
   HandHeart,
   Handshake,
-  HeartHandshake,
-  LockKeyhole,
   Mail,
   MapPin,
   MessageCircle,
-  Target,
+  ZoomIn,
 } from '@lucide/astro';
-import { Picture } from 'astro:assets';
+import { getImage } from 'astro:assets';
 import CommunityIllustration from '@/components/brand/CommunityIllustration.astro';
+import Lightbox from '@/components/ui/Lightbox.astro';
 import PicksSection from '@/components/content/PicksSection.astro';
 import PostCard from '@/components/content/PostCard.astro';
 import MatinMoments from '@/components/content/MatinMoments.astro';
@@ -34,16 +32,13 @@ import BaseLayout from '@/layouts/BaseLayout.astro';
 import HomeHero from '@/components/brand/HomeHero.astro';
 import CulturesRibbon from '@/components/brand/CulturesRibbon.astro';
 import SectionHeader from '@/components/ui/SectionHeader.astro';
-import NewsletterForm from '@/components/forms/NewsletterForm.astro';
-import PhotoCredit from '@/components/media/PhotoCredit.astro';
 import AreasGrid from '@/components/content/AreasGrid.astro';
 import { href, siteAlternates, type UiLang } from '@/i18n/routes';
 import { useTranslations } from '@/i18n/ui';
 import { getMatinFeed } from '@/lib/matin';
-import { articleHref, forLang, getNews, getSettings } from '@/lib/content';
+import { articleHref, forLang, getNews } from '@/lib/content';
 import { ctaFor } from '@/lib/matinLabels';
 import MatinMedia from '@/components/content/MatinMedia.astro';
-import { photos } from '@/lib/photos';
 
 interface Props {
   lang: UiLang;
@@ -53,7 +48,16 @@ const t = useTranslations(lang);
 
 // Matin in Action: Matin's own content only (highlights, Matin's events, published news).
 const { featured } = await getMatinFeed(lang, 0);
-const settings = await getSettings();
+const posterLarge =
+  featured?.poster && featured.image
+    ? (
+        await getImage({
+          src: featured.image,
+          width: Math.min(2000, featured.image.width),
+          format: 'webp',
+        })
+      ).src
+    : undefined;
 // Latest news, after Matin's Picks: the three newest articles, leaving out the one already
 // featured in Matin in Action. Hidden when there is no other article.
 const latestNews = forLang(await getNews(), lang)
@@ -74,22 +78,9 @@ const ways = [
   { label: t('home.involvedSecondary'), href: '#newsletter', icon: Mail },
   { label: t('home.actContact'), href: href('contact', lang), icon: MessageCircle },
 ];
-
-const aboutHref = href('about', lang);
-const whoCards = [
-  { id: 'mission', label: t('nav.mission'), icon: Target, accent: 'navy' },
-  { id: 'vision', label: t('nav.vision'), icon: Eye, accent: 'mustard' },
-  { id: 'values', label: t('nav.values'), icon: HeartHandshake, accent: 'teal' },
-  // The Persian About page has the values section only.
-].filter((c) => lang !== 'fa' || c.id === 'values');
 ---
 
-<BaseLayout
-  lang={lang}
-  alternates={siteAlternates('home')}
-  footerNewsletter={false}
-  searchable={false}
->
+<BaseLayout lang={lang} alternates={siteAlternates('home')} searchable={false}>
   <!-- Shown when Brevo's confirmation link brings the visitor back (?infolettre=confirmee). -->
   <div class="container-site" data-newsletter-confirmed hidden>
     <p class="mt-4 rounded-2xl bg-tint p-4 text-center font-semibold text-ink" role="status">
@@ -114,11 +105,33 @@ const whoCards = [
       />
       {featured ? (
         <article class="feature" data-reveal>
-          <MatinMedia
-            item={featured}
-            sizes="(min-width: 64rem) 46rem, 92vw"
-            class:list={['feature__media', featured.poster && 'is-poster']}
-          />
+          {posterLarge ? (
+            /* A poster opens in the same fullscreen viewer as Gallery → Posters; the
+               button beside it still leads to the activity's page. */
+            <a
+              href={posterLarge}
+              class="feature__zoom"
+              data-lightbox="feature-poster"
+              data-alt={featured.imageAlt}
+              data-caption={featured.title}
+              aria-label={t('gallery.openPoster', { title: featured.title })}
+            >
+              <MatinMedia
+                item={featured}
+                sizes="(min-width: 64rem) 46rem, 92vw"
+                class="feature__media is-poster"
+              />
+              <span class="feature__zoom-icon" aria-hidden="true">
+                <ZoomIn size={22} />
+              </span>
+            </a>
+          ) : (
+            <MatinMedia
+              item={featured}
+              sizes="(min-width: 64rem) 46rem, 92vw"
+              class:list={['feature__media', featured.poster && 'is-poster']}
+            />
+          )}
           <div class="feature__body">
             <p class="feature__type">{t(`matinTypes.${featured.type}`)}</p>
             <h3 class="feature__title">{featured.title}</h3>
@@ -262,60 +275,6 @@ const whoCards = [
     </div>
   </section>
 
-  <!-- Who we are: photo and text side by side, then the three About links -->
-  <section id="who-we-are" class="section-pad scroll-mt-24 bg-paper" aria-labelledby="who-title">
-    <div class="container-site who-grid">
-      <figure class="who-figure" data-reveal>
-        <span class="who-figure__block" aria-hidden="true"></span>
-        <div class="who-figure__photo">
-          <Picture
-            src={photos.tamtams.src}
-            alt=""
-            formats={['avif', 'webp']}
-            widths={[720, 1080, 1440, 1920]}
-            sizes="(min-width: 64rem) 100rem, 300vw"
-            style={`object-position:${photos.tamtams.focus}`}
-          />
-        </div>
-        <figcaption>
-          <PhotoCredit credit={photos.tamtams.credit} />
-        </figcaption>
-      </figure>
-      <div class="who-body">
-        <SectionHeader id="who-title" title={t('home.whoTitle')} align="start" class="mb-7" />
-        <p class="who-positioning" data-reveal>
-          {t('home.positioning')}
-        </p>
-        <p class="who-text" data-reveal>
-          {t('home.whoText')}
-        </p>
-        {settings.legal && (
-          <p class="who-legal" data-reveal>
-            {t('home.legalLine', { neq: settings.legal.neq })} ·{' '}
-            <a href={href('legalInfo', lang)} class="font-semibold underline">
-              {t('home.legalLink')}
-            </a>
-          </p>
-        )}
-        <nav aria-label={t('home.whoCardsLabel')} class="mt-10">
-          <ul class="who-links">
-            {whoCards.map((c, i) => (
-              <li data-reveal style={`--reveal-delay:${i * 110}ms`}>
-                <a href={`${aboutHref}#${c.id}`} class="who-link" data-accent={c.accent}>
-                  <span class="who-link__icon" aria-hidden="true">
-                    <c.icon size={26} stroke-width={1.75} />
-                  </span>
-                  <span class="who-link__label">{c.label}</span>
-                  <ArrowRight size={22} class="who-link__arrow flip-rtl" aria-hidden="true" />
-                </a>
-              </li>
-            ))}
-          </ul>
-        </nav>
-      </div>
-    </div>
-  </section>
-
   <!-- Areas of work: three large photo cards, each with its own accent -->
   <section class="section-pad bg-tint" aria-labelledby="areas-title">
     <div class="container-site">
@@ -335,41 +294,7 @@ const whoCards = [
   <!-- Cultural Resources & Organizations: opens the directory -->
   <ResourcesTeaser lang={lang} />
 
-  <!-- Newsletter: one warm card, invitation on one side, the form on the other -->
-  <section
-    id="newsletter"
-    class="scroll-mt-24 bg-paper py-14 sm:py-20"
-    aria-labelledby="newsletter-title"
-  >
-    <div class="container-site">
-      <div class="newsletter-card">
-        <div class="newsletter-card__intro">
-          <SectionHeader
-            id="newsletter-title"
-            eyebrow={t('newsletter.eyebrow')}
-            eyebrowTone="teal"
-            title={t('newsletter.title')}
-            align="start"
-            class="mb-5"
-          />
-          <p class="newsletter-card__text">{t('newsletter.text')}</p>
-          <div class="mosaic newsletter-card__mosaic" aria-hidden="true">
-            <span></span>
-            <span></span>
-            <span></span>
-            <span></span>
-          </div>
-        </div>
-        <div class="newsletter-card__form">
-          <NewsletterForm lang={lang} id="home-newsletter" />
-          <p class="newsletter-card__note">
-            <LockKeyhole size={18} aria-hidden="true" />
-            {t('newsletter.privacyNote')}
-          </p>
-        </div>
-      </div>
-    </div>
-  </section>
+  {posterLarge && <Lightbox lang={lang} />}
 </BaseLayout>
 
 <script>
@@ -380,135 +305,52 @@ const whoCards = [
 </script>
 
 <style>
-  /* ---------- Who we are ---------- */
-  .who-grid {
-    display: grid;
-    gap: 3rem;
-    align-items: center;
-  }
-  @media (min-width: 64rem) {
-    .who-grid {
-      grid-template-columns: minmax(0, 5fr) minmax(0, 7fr);
-      gap: clamp(3.5rem, 2rem + 4vw, 7rem);
-    }
-  }
-  .who-figure {
-    position: relative;
-    max-width: 34rem;
-    margin-inline: auto;
-    width: 100%;
-  }
-  /* Teal block offset behind the photo: a quiet graphic accent. */
-  .who-figure__block {
-    position: absolute;
-    inset-block-start: 1.5rem;
-    inset-inline-start: -1.25rem;
-    width: 70%;
-    height: 82%;
-    border-radius: var(--radius-card);
-    background: var(--color-teal);
-  }
-  .who-figure__photo {
-    position: relative;
-    aspect-ratio: 4 / 5;
-    overflow: hidden;
-    border-radius: var(--radius-card);
-    margin-inline-start: 0.75rem;
-  }
-  /* The Tam-Tams photo is wide with a lot of sky: zoom towards the crowd. */
-  .who-figure__photo :global(img) {
-    display: block;
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    transform: scale(1.55);
-    transform-origin: 50% 96%;
-  }
-  .who-figure figcaption {
-    margin-inline-start: 0.75rem;
-  }
-  /* About 24px on desktop, comfortable line length. */
-  .who-text {
-    max-width: 40rem;
-    font-size: clamp(1.25rem, 1.1rem + 0.55vw, 1.5rem);
-    line-height: 1.6;
-    color: var(--color-ink);
-  }
-  .who-legal {
-    max-width: 40rem;
-    margin-block-start: 1rem;
-    font-size: 1.0625rem;
-    color: var(--color-ink);
-  }
-  /* Secondary positioning line: below the title, never in place of the slogan. */
-  .who-positioning {
-    margin-block-end: 1.25rem;
-    font-family: var(--font-display);
-    font-size: clamp(1.25rem, 1.1rem + 0.5vw, 1.5rem);
-    font-weight: 800;
-    color: var(--color-teal-deep);
-  }
-  .who-links {
-    display: grid;
-    gap: 0.85rem;
-    max-width: 40rem;
-  }
-  /* Large link rows: accent icon tile, navy label, arrow. */
-  .who-link {
-    display: flex;
-    align-items: center;
-    gap: 1.25rem;
-    padding: 1rem 1.5rem 1rem 1rem;
-    border: 1px solid var(--color-line);
-    border-radius: var(--radius-card);
-    background: var(--color-white);
-    text-decoration: none;
-    transition:
-      border-color 0.2s,
-      transform 0.25s cubic-bezier(0.2, 0.7, 0.2, 1),
-      box-shadow 0.25s;
-  }
-  .who-link:hover {
-    border-color: var(--accent);
-    transform: translateX(4px);
-    box-shadow: 0 12px 26px -20px color-mix(in srgb, var(--color-primary) 60%, transparent);
-  }
-  :global([dir='rtl']) .who-link:hover {
-    transform: translateX(-4px);
-  }
-  .who-link__icon {
-    display: grid;
-    flex-shrink: 0;
-    place-items: center;
-    width: 3.5rem;
-    height: 3.5rem;
-    border-radius: 0.9rem;
-    background: var(--accent);
-    color: var(--color-primary);
-  }
-  /* Navy tile (Mission): mustard icon (5.3:1). */
-  .who-link[data-accent='navy'] .who-link__icon {
-    color: var(--color-gold);
-  }
-  .who-link__label {
-    flex: 1;
-    font-size: clamp(1.25rem, 1.15rem + 0.35vw, 1.5rem);
-    font-weight: 800;
-    color: var(--color-primary);
-  }
-  .who-link :global(.who-link__arrow) {
-    flex-shrink: 0;
-    color: var(--accent-ink);
-  }
-
   /* ---------- Matin in Action ---------- */
   /* The featured item: the visual on one side, the details on the other. */
   .feature {
     display: grid;
     overflow: hidden;
-    border: 1px solid var(--color-line);
+    border: 1px solid var(--color-card-edge);
     border-radius: calc(var(--radius-card) * 1.4);
-    background: var(--color-white);
+    /* Warm ivory rather than white, with a soft shadow (owner's brief, Oct 25 2026). */
+    background: var(--color-ivory);
+    box-shadow: var(--shadow-card);
+  }
+  .feature__zoom {
+    position: relative;
+    display: block;
+    cursor: zoom-in;
+  }
+  .feature__zoom :global(.feature__media) {
+    height: 100%;
+  }
+  .feature__zoom :global(img) {
+    transition: transform 0.5s ease;
+  }
+  .feature__zoom:hover :global(img) {
+    transform: scale(1.03);
+  }
+  /* Same zoom badge as the Gallery posters and event pages. */
+  .feature__zoom-icon {
+    position: absolute;
+    inset-block-end: 1rem;
+    inset-inline-end: 1rem;
+    display: grid;
+    place-items: center;
+    width: 2.75rem;
+    height: 2.75rem;
+    border-radius: 999px;
+    background: var(--color-primary);
+    color: var(--color-white);
+    box-shadow: var(--shadow-lift);
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .feature__zoom :global(img) {
+      transition: none;
+    }
+    .feature__zoom:hover :global(img) {
+      transform: none;
+    }
   }
   .feature :global(.feature__media) {
     aspect-ratio: 4 / 3;
@@ -680,73 +522,5 @@ const whoCards = [
     font-size: clamp(1.1875rem, 1.05rem + 0.45vw, 1.375rem);
     line-height: 1.65;
     color: var(--color-white);
-  }
-
-  /* ---------- Newsletter ---------- */
-  /* One warm cream card: the invitation and the form share the same surface, with a
-     gold edge; the button is deep teal (white text 6.2:1). */
-  .newsletter-card {
-    display: grid;
-    gap: 2.25rem;
-    align-items: center;
-    padding: clamp(2rem, 1.2rem + 3vw, 4rem);
-    border-radius: calc(var(--radius-card) * 1.4);
-    border-inline-start: 8px solid var(--color-gold);
-    background: var(--color-tint);
-  }
-  @media (min-width: 56rem) {
-    .newsletter-card {
-      grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
-      gap: clamp(3rem, 1rem + 4vw, 6rem);
-    }
-  }
-  .newsletter-card__intro :global(.section-title) {
-    font-size: clamp(2rem, 1.5rem + 1.6vw, 3rem);
-  }
-  .newsletter-card__text {
-    max-width: 36rem;
-    font-size: clamp(1.125rem, 1.05rem + 0.35vw, 1.3125rem);
-    line-height: 1.65;
-    color: var(--color-ink);
-  }
-  .newsletter-card__mosaic {
-    width: 12rem;
-    margin-block-start: 1.75rem;
-  }
-  .newsletter-card__form {
-    font-size: 1.0625rem;
-  }
-  /* Field and button on one aligned row, the same height and shape. */
-  .newsletter-card__form :global(.newsletter__label) {
-    font-size: 1.0625rem;
-    color: var(--color-primary);
-  }
-  .newsletter-card__form :global(.newsletter__input) {
-    min-height: 3.5rem;
-    border-color: color-mix(in srgb, var(--color-primary) 30%, transparent);
-    font-size: 1.0625rem;
-  }
-  .newsletter-card__form :global(.newsletter__row .btn-primary) {
-    min-height: 3.5rem;
-    background: var(--color-teal-deep);
-    color: var(--color-white);
-  }
-  .newsletter-card__form :global(.newsletter__row .btn-primary:hover) {
-    background: color-mix(in srgb, var(--color-teal-deep) 82%, black);
-  }
-  .newsletter-card__note {
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-    margin-block-start: 1.25rem;
-    padding-block-start: 1.25rem;
-    border-block-start: 1px solid color-mix(in srgb, var(--color-primary) 15%, transparent);
-    font-size: 1rem;
-    font-weight: 500;
-    color: var(--color-ink);
-  }
-  .newsletter-card__note :global(svg) {
-    flex-shrink: 0;
-    color: var(--color-teal-deep);
   }
 </style>

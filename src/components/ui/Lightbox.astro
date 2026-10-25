@@ -64,6 +64,8 @@ const t = useTranslations(Astro.props.lang);
     let items: HTMLAnchorElement[] = [];
     let index = 0;
     let opener: HTMLElement | null = null;
+    // Closing returns the visitor to exactly where they were on the page.
+    let scroll = { x: 0, y: 0 };
 
     const show = (i: number) => {
       setZoom(false);
@@ -90,6 +92,7 @@ const t = useTranslations(Astro.props.lang);
         ...document.querySelectorAll<HTMLAnchorElement>(`a[data-lightbox="${a.dataset.lightbox}"]`),
       ];
       show(items.indexOf(a));
+      scroll = { x: window.scrollX, y: window.scrollY };
       dialog.showModal();
     });
     zoom.addEventListener('click', () => setZoom(!dialog.classList.contains('is-zoomed')));
@@ -104,7 +107,10 @@ const t = useTranslations(Astro.props.lang);
     dialog.addEventListener('click', (e) => {
       if (e.target === dialog) dialog.close();
     });
-    dialog.addEventListener('close', () => opener?.focus());
+    dialog.addEventListener('close', () => {
+      opener?.focus({ preventScroll: true });
+      window.scrollTo({ left: scroll.x, top: scroll.y, behavior: 'instant' });
+    });
   }
 </script>
 

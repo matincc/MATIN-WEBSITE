@@ -46,113 +46,120 @@ const host = (url: string) => new URL(url).hostname.replace(/^www\./, '');
   lede={t('resources.lede')}
   alternates={alternatesFor('resources')}
 >
-  <div id="directory" class="container-site scroll-mt-28 pt-2 pb-24">
-    <p class="directory-notice">
-      <Info size={20} aria-hidden="true" />
-      <span>{t('resources.notice')}</span>
-    </p>
+  <!-- Owner's brief (Oct 25 2026): alternating warm tones. Directory on ivory, networks
+       on pale teal, policy documents on champagne with gold accents. -->
+  <div class="directory-band">
+    <div id="directory" class="container-site scroll-mt-28 pt-12 pb-24">
+      <p class="directory-notice">
+        <Info size={20} aria-hidden="true" />
+        <span>{t('resources.notice')}</span>
+      </p>
 
-    {groups.length === 0 && <p class="empty-state">{t('resources.empty')}</p>}
+      {groups.length === 0 && <p class="empty-state">{t('resources.empty')}</p>}
 
-    {groups.length > 1 && (
-      <div
-        class="directory-filter invisible"
-        role="group"
-        aria-label={t('resources.filterLabel')}
-        data-directory-filter
-      >
-        <button type="button" class="chip" aria-pressed="true" data-cat="">
-          {t('resources.all')}
-        </button>
-        {groups.map(({ category }) => (
-          <button type="button" class="chip" aria-pressed="false" data-cat={category}>
-            {t(`resources.${category}`)}
+      {groups.length > 1 && (
+        <div
+          class="directory-filter invisible"
+          role="group"
+          aria-label={t('resources.filterLabel')}
+          data-directory-filter
+        >
+          <button type="button" class="chip" aria-pressed="true" data-cat="">
+            {t('resources.all')}
           </button>
-        ))}
-      </div>
-    )}
-
-    <div class="space-y-16">
-      {groups.map(({ category, items }) => {
-        const Icon = resourceIcons[category];
-        return (
-          <section
-            id={`cat-${category}`}
-            class="scroll-mt-28"
-            aria-labelledby={`res-${category}`}
-            data-category={category}
-          >
-            <h2 id={`res-${category}`} class="directory-title">
-              <span class="directory-title__icon" data-accent={resourceAccents[category]}>
-                <Icon size={22} stroke-width={1.75} aria-hidden="true" />
-              </span>
+          {groups.map(({ category }) => (
+            <button type="button" class="chip" aria-pressed="false" data-cat={category}>
               {t(`resources.${category}`)}
-            </h2>
-            <ul class="org-grid">
-              {items.map((r) => {
-                const name = orgName(r, lang);
-                const description = pick(r.data.description, lang);
-                return (
-                  <li class="card org-card" data-accent={resourceAccents[category]}>
-                    <div class="org-card__logo">
-                      {r.data.logo ? (
-                        <Image
-                          src={r.data.logo}
-                          alt=""
-                          width={320}
-                          class="org-card__img"
-                          loading="lazy"
-                        />
-                      ) : (
-                        <span class="org-card__initials" aria-hidden="true">
-                          <Icon size={28} stroke-width={1.6} />
+            </button>
+          ))}
+        </div>
+      )}
+
+      <div class="space-y-16">
+        {groups.map(({ category, items }) => {
+          const Icon = resourceIcons[category];
+          return (
+            <section
+              id={`cat-${category}`}
+              class="directory-group scroll-mt-28"
+              data-accent={resourceAccents[category]}
+              aria-labelledby={`res-${category}`}
+              data-category={category}
+            >
+              <h2 id={`res-${category}`} class="directory-title">
+                <span class="directory-title__icon" data-accent={resourceAccents[category]}>
+                  <Icon size={22} stroke-width={1.75} aria-hidden="true" />
+                </span>
+                {t(`resources.${category}`)}
+              </h2>
+              <ul class="org-grid">
+                {items.map((r) => {
+                  const name = orgName(r, lang);
+                  const description = pick(r.data.description, lang);
+                  return (
+                    <li class="card org-card" data-accent={resourceAccents[category]}>
+                      <div class="org-card__logo">
+                        {r.data.logo ? (
+                          <Image
+                            src={r.data.logo}
+                            alt=""
+                            width={320}
+                            class="org-card__img"
+                            loading="lazy"
+                          />
+                        ) : (
+                          <span class="org-card__initials" aria-hidden="true">
+                            <Icon size={28} stroke-width={1.6} />
+                          </span>
+                        )}
+                      </div>
+                      {r.data.status !== 'listed' && (
+                        <span class="org-card__status">
+                          {t(`resources.status_${r.data.status}`)}
                         </span>
                       )}
-                    </div>
-                    {r.data.status !== 'listed' && (
-                      <span class="org-card__status">{t(`resources.status_${r.data.status}`)}</span>
-                    )}
-                    <h3 class="org-card__name">
-                      <a
-                        href={r.data.url}
-                        class="org-card__link"
-                        target="_blank"
-                        rel="noopener noreferrer"
-                      >
-                        {name}
-                        <span class="sr-only">{t('a11y.externalLink')}</span>
-                      </a>
-                    </h3>
-                    {r.data.location && (
-                      <p class="org-card__meta">
-                        <MapPin size={16} aria-hidden="true" />
-                        {r.data.location}
-                      </p>
-                    )}
-                    {description && <p class="org-card__text">{description}</p>}
-                    <span class="org-card__site" aria-hidden="true">
-                      <ExternalLink size={16} />
-                      {host(r.data.url)}
-                    </span>
-                    {r.data.file && (
-                      <a href={r.data.file} download class="org-card__file">
-                        <Download size={16} aria-hidden="true" />
-                        {t('resources.download')}
-                      </a>
-                    )}
-                  </li>
-                );
-              })}
-            </ul>
-          </section>
-        );
-      })}
+                      <h3 class="org-card__name">
+                        <a
+                          href={r.data.url}
+                          class="org-card__link"
+                          target="_blank"
+                          rel="noopener noreferrer"
+                        >
+                          {name}
+                          <span class="sr-only">{t('a11y.externalLink')}</span>
+                        </a>
+                      </h3>
+                      {r.data.location && (
+                        <p class="org-card__meta">
+                          <MapPin size={16} aria-hidden="true" />
+                          {r.data.location}
+                        </p>
+                      )}
+                      {description && <p class="org-card__text">{description}</p>}
+                      <span class="org-card__site" aria-hidden="true">
+                        <ExternalLink size={16} />
+                        {host(r.data.url)}
+                      </span>
+                      {r.data.file && (
+                        <a href={r.data.file} download class="org-card__file">
+                          <Download size={16} aria-hidden="true" />
+                          {t('resources.download')}
+                        </a>
+                      )}
+                    </li>
+                  );
+                })}
+              </ul>
+            </section>
+          );
+        })}
+      </div>
     </div>
   </div>
 
   <section
     id="networks"
-    class="scroll-mt-28 bg-tint py-16 sm:py-20"
+    class="networks-band scroll-mt-28 py-16 sm:py-20"
     aria-labelledby="networks-title"
   >
     <div class="container-site">
@@ -213,55 +220,67 @@ const host = (url: string) => new URL(url).hostname.replace(/^www\./, '');
           ))}
         </ul>
       ) : (
-        <p class="empty-state">{t('resources.networksEmpty')}</p>
+        <p class="res-empty" data-accent="teal">
+          <span class="res-empty__icon" aria-hidden="true">
+            <Globe size={26} stroke-width={1.6} />
+          </span>
+          <span>{t('resources.networksEmpty')}</span>
+        </p>
       )}
     </div>
   </section>
 
   <section
     id="policy"
-    class="container-site scroll-mt-28 py-16 sm:py-20"
+    class="policy-band scroll-mt-28 py-16 sm:py-20"
     aria-labelledby="policy-title"
   >
-    <SectionHeader
-      align="start"
-      id="policy-title"
-      title={t('resources.policyTitle')}
-      lede={t('resources.policyLede')}
-      class="mb-10"
-    />
-    {policies.length > 0 ? (
-      <ul class="policy-list">
-        {policies.map((p) => (
-          <li class="card policy">
-            <span class="policy__icon" aria-hidden="true">
-              <FileText size={22} stroke-width={1.75} />
-            </span>
-            <div class="policy__body">
-              <h3 class="policy__title">
-                <a
-                  href={p.data.url ?? p.data.file}
-                  target={p.data.url ? '_blank' : undefined}
-                  rel={p.data.url ? 'noopener noreferrer' : undefined}
-                >
-                  {policyTitle(p)}
-                  {p.data.url && <span class="sr-only">{t('a11y.externalLink')}</span>}
-                </a>
-              </h3>
-              <p class="policy__meta">
-                {p.data.publisher} · {p.data.year} ·{' '}
-                {t(`resources.jurisdiction_${p.data.jurisdiction}`)}
-              </p>
-              {pick(p.data.description, lang) && (
-                <p class="org-card__text">{pick(p.data.description, lang)}</p>
-              )}
-            </div>
-          </li>
-        ))}
-      </ul>
-    ) : (
-      <p class="empty-state">{t('resources.policyEmpty')}</p>
-    )}
+    <div class="container-site">
+      <SectionHeader
+        align="start"
+        id="policy-title"
+        title={t('resources.policyTitle')}
+        lede={t('resources.policyLede')}
+        class="mb-10"
+      />
+      {policies.length > 0 ? (
+        <ul class="policy-list">
+          {policies.map((p) => (
+            <li class="card policy">
+              <span class="policy__icon" aria-hidden="true">
+                <FileText size={22} stroke-width={1.75} />
+              </span>
+              <div class="policy__body">
+                <h3 class="policy__title">
+                  <a
+                    href={p.data.url ?? p.data.file}
+                    target={p.data.url ? '_blank' : undefined}
+                    rel={p.data.url ? 'noopener noreferrer' : undefined}
+                  >
+                    {policyTitle(p)}
+                    {p.data.url && <span class="sr-only">{t('a11y.externalLink')}</span>}
+                  </a>
+                </h3>
+                <p class="policy__meta">
+                  {p.data.publisher} · {p.data.year} ·{' '}
+                  {t(`resources.jurisdiction_${p.data.jurisdiction}`)}
+                </p>
+                {pick(p.data.description, lang) && (
+                  <p class="org-card__text">{pick(p.data.description, lang)}</p>
+                )}
+              </div>
+            </li>
+          ))}
+        </ul>
+      ) : (
+        <p class="res-empty" data-accent="mustard">
+          <span class="res-empty__icon" aria-hidden="true">
+            <FileText size={26} stroke-width={1.6} />
+          </span>
+          <span>{t('resources.policyEmpty')}</span>
+        </p>
+      )}
+    </div>
   </section>
 </PageLayout>
 
@@ -283,6 +302,52 @@ const host = (url: string) => new URL(url).hostname.replace(/^www\./, '');
 </script>
 
 <style>
+  /* The directory's band: warm ivory across the full width. */
+  .directory-band {
+    background: var(--color-ivory);
+  }
+  .directory-group {
+    padding: clamp(1.25rem, 0.8rem + 2vw, 2.25rem);
+    border-radius: calc(var(--radius-card) * 1.3);
+    border: 1px solid var(--color-card-edge);
+    border-block-start: 5px solid var(--accent);
+    background: var(--color-paper);
+    box-shadow: var(--shadow-card);
+  }
+  .networks-band {
+    background: var(--color-teal-pale);
+    border-block: 1px solid var(--color-teal-edge);
+  }
+  .policy-band {
+    background: var(--color-champagne);
+  }
+  .policy-band .policy {
+    border-inline-start: 5px solid var(--color-gold);
+  }
+  /* Empty sections: a quiet, finished panel rather than a bare line. */
+  .res-empty {
+    display: flex;
+    align-items: center;
+    gap: 1.25rem;
+    max-width: 52rem;
+    padding: 1.5rem 1.75rem;
+    border-radius: calc(var(--radius-card) * 1.2);
+    border: 1px dashed color-mix(in srgb, var(--accent) 55%, var(--color-white));
+    background: var(--color-white);
+    box-shadow: var(--shadow-card);
+    font-size: 1.125rem;
+    line-height: 1.6;
+  }
+  .res-empty__icon {
+    display: grid;
+    flex-shrink: 0;
+    place-items: center;
+    width: 3.25rem;
+    height: 3.25rem;
+    border-radius: 50%;
+    background: color-mix(in srgb, var(--accent) 22%, var(--color-white));
+    color: var(--color-primary);
+  }
   .directory-notice {
     display: flex;
     align-items: flex-start;
@@ -373,7 +438,7 @@ const host = (url: string) => new URL(url).hostname.replace(/^www\./, '');
     margin-block-end: 0.75rem;
     padding: 1rem;
     border-radius: 0.8rem;
-    background: var(--color-paper);
+    background: var(--color-teal-pale);
   }
   .org-card :global(.org-card__img) {
     max-width: 100%;
@@ -441,8 +506,8 @@ const host = (url: string) => new URL(url).hostname.replace(/^www\./, '');
     width: 2.9rem;
     height: 2.9rem;
     border-radius: 0.9rem;
-    color: var(--color-white);
-    background: var(--color-primary);
+    color: var(--color-primary);
+    background: var(--color-gold);
   }
   .policy__title {
     font-size: 1.2rem;

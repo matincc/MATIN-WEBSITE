@@ -54,7 +54,9 @@ export type NewsSection = keyof typeof newsSections;
 export type NewsListKey = NewsCategory | NewsSection;
 
 /** Regions of Matin Recommends. */
-export const newsRegions = ['quebec', 'canada', 'international'] as const;
+/** The three region tabs of Matin's Picks and News & Insights (owner's brief, Oct 25 2026):
+ * Montréal, the rest of Canada (other Québec municipalities included), around the world. */
+export const newsRegions = ['montreal', 'canada', 'international'] as const;
 export type NewsRegion = (typeof newsRegions)[number];
 
 /* Events & Cultural Agenda */

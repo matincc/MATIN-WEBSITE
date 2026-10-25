@@ -209,7 +209,7 @@ const news = defineCollection({
         author: z.union([z.string(), bi]),
         /** matin-news, perspectives, culture-cities, research, partnerships, recommends */
         category: z.enum(newsCategories),
-        /** Matin Recommends only: quebec, canada or international. */
+        /** Matin Recommends only: its tab, montreal, canada (the rest of Québec included) or international. */
         region: z.enum(newsRegions).optional(),
         tags: z.array(z.string()).default([]),
         image: image().optional(),

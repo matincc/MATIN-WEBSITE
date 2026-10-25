@@ -134,6 +134,8 @@ const hasContact = Boolean(a || s.phone || s.email);
           hasContact || s.hours ? 'lg:col-span-3' : 'lg:col-span-4',
         ]}
       >
+        {/* Old #newsletter links (the homepage panel was removed, Oct 25 2026) land here. */}
+        <span id="newsletter" class="block scroll-mt-24" aria-hidden="true"></span>
         <h2 class="footer-title">{t('footer.newsletterTitle')}</h2>
         <p class="mb-4 text-[1.125rem] text-cream">{t('newsletter.text')}</p>
         <NewsletterForm lang={lang} compact id="footer-newsletter" />

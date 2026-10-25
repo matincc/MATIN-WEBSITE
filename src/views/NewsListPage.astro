@@ -3,7 +3,9 @@
  * News & Insights list: all articles (paged), a heading page or a category page. Three
  * headings (owner's choice, Oct 25 2026): Matin News, Articles & Insights (Perspectives,
  * Culture & Cities, Research & Publications, Partnerships & Initiatives) and Matin
- * Recommends (selected external news, grouped by region: Québec, Canada, International).
+ * Recommends (cultural news, in three region tabs: Montréal, Canada, Around the World).
+ * The first page opens with those tabs (up to three stories each), then Matin's own
+ * news and articles (owner's brief, Oct 25 2026).
  */
 import type { CollectionEntry } from 'astro:content';
 import { Rss } from '@lucide/astro';
@@ -11,9 +13,10 @@ import PageLayout from '@/layouts/PageLayout.astro';
 import PostCard from '@/components/content/PostCard.astro';
 import Pagination from '@/components/ui/Pagination.astro';
 import SectionHeader from '@/components/ui/SectionHeader.astro';
+import NewsRegionTabs from '@/components/content/NewsRegionTabs.astro';
 import { categorySegment, categorySlugs, path, type Lang } from '@/i18n/routes';
 import { useTranslations } from '@/i18n/ui';
-import { newsRegions, newsSections, type NewsListKey, type NewsSection } from '@/lib/taxonomy';
+import { newsSections, type NewsListKey, type NewsSection } from '@/lib/taxonomy';
 import { getNews, newsCategories as newsCategoriesOf } from '@/lib/content';
 
 interface Props {
@@ -47,18 +50,15 @@ const alternates = category
 const title = category
   ? t('news.categoryTitle', { category: t(`newsCategories.${category}`) })
   : t('news.title');
-const lead = current === 1 && !category ? posts[0] : undefined;
-const rest = lead ? posts.slice(1) : posts;
+// First page: cultural news in region tabs, then Matin's own news and articles.
+const landing = current === 1 && !category;
+const allPosts = await getNews();
+const cultural = landing ? allPosts.filter((p) => p.data.category === 'recommends') : [];
+const listed = landing ? posts.filter((p) => p.data.category !== 'recommends') : posts;
+const lead = landing ? listed[0] : undefined;
+const rest = lead ? listed.slice(1) : listed;
 const metaTitle =
   !category && current > 1 ? `${title} — ${t('pagination.page', { n: current })}` : title;
-// Matin Recommends: one group per region that has items.
-const byRegion =
-  category === 'recommends'
-    ? newsRegions
-        .map((r) => ({ region: r, items: posts.filter((p) => p.data.region === r) }))
-        .concat([{ region: undefined as never, items: posts.filter((p) => !p.data.region) }])
-        .filter((g) => g.items.length > 0)
-    : [];
 const emptyText =
   category === 'recommends'
     ? t('news.recommendsEmpty')
@@ -123,44 +123,58 @@ const emptyText =
       </a>
     </div>
 
-    {posts.length > 0 && byRegion.length > 0 ? (
-      <div class="space-y-16">
-        {byRegion.map((g) => (
-          <section aria-labelledby={`region-${g.region ?? 'other'}`}>
-            {g.region && (
-              <SectionHeader
-                align="start"
-                id={`region-${g.region}`}
-                title={t(`newsRegions.${g.region}`)}
-                class="mb-8"
-              />
-            )}
-            <ul class="grid gap-x-8 gap-y-14 md:grid-cols-2 lg:grid-cols-3">
-              {g.items.map((post) => (
-                <li>
-                  <PostCard post={post} lang={lang} headingLevel="h3" />
-                </li>
-              ))}
-            </ul>
-          </section>
-        ))}
-      </div>
-    ) : posts.length > 0 ? (
+    {category === 'recommends' ? (
+      <NewsRegionTabs lang={lang} posts={posts} id="cultural-news" />
+    ) : (
       <>
-        {/* On the first page, the latest article leads as a wide featured story. */}
-        {lead && <PostCard post={lead} lang={lang} headingLevel="h2" featured />}
-        {rest.length > 0 && (
-          <ul class:list={['grid gap-x-8 gap-y-14 md:grid-cols-2 lg:grid-cols-3', lead && 'mt-14']}>
-            {rest.map((post) => (
-              <li>
-                <PostCard post={post} lang={lang} headingLevel="h2" />
-              </li>
-            ))}
-          </ul>
+        {landing && (
+          <section class="cultural-band" aria-labelledby="cultural-title">
+            <SectionHeader
+              align="start"
+              id="cultural-title"
+              title={t('news.culturalTitle')}
+              subtitle={t('news.culturalLede')}
+              link={
+                cultural.length > 0
+                  ? { href: catHref(lang, 'recommends'), label: t('news.allCultural') }
+                  : undefined
+              }
+              class="mb-8"
+            />
+            <NewsRegionTabs lang={lang} posts={cultural} perTab={3} id="cultural-news" />
+          </section>
+        )}
+        {landing && (
+          <SectionHeader
+            align="start"
+            id="matin-news-title"
+            title={t('news.matinTitle')}
+            class="mt-20 mb-10"
+          />
+        )}
+        {listed.length > 0 ? (
+          <>
+            {/* On the first page, the latest article leads as a wide featured story. */}
+            {lead && <PostCard post={lead} lang={lang} headingLevel="h3" featured />}
+            {rest.length > 0 && (
+              <ul
+                class:list={[
+                  'grid gap-x-8 gap-y-14 md:grid-cols-2 lg:grid-cols-3',
+                  lead && 'mt-14',
+                ]}
+              >
+                {rest.map((post) => (
+                  <li>
+                    <PostCard post={post} lang={lang} headingLevel={landing ? 'h3' : 'h2'} />
+                  </li>
+                ))}
+              </ul>
+            )}
+          </>
+        ) : (
+          <p class="empty-state">{emptyText}</p>
         )}
       </>
-    ) : (
-      <p class="empty-state">{emptyText}</p>
     )}
 
     <Pagination lang={lang} current={current} last={last} href={(n) => pageHref(lang, n)} />
@@ -183,6 +197,13 @@ const emptyText =
   }
   .chip-link:hover {
     border-color: var(--color-primary);
+  }
+  /* Cultural news: a pale teal band inside the page (owner's brief, Oct 25 2026). */
+  .cultural-band {
+    padding: clamp(1.75rem, 1rem + 3vw, 3.5rem);
+    border-radius: calc(var(--radius-card) * 1.4);
+    border: 1px solid var(--color-teal-edge);
+    background: var(--color-teal-pale);
   }
   .chip-link--sub {
     min-height: 2.4rem;

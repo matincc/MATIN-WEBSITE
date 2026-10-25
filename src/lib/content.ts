@@ -8,6 +8,7 @@ import {
   newsSections,
   type NewsCategory,
   type NewsListKey,
+  type NewsRegion,
 } from '@/lib/taxonomy';
 import { baseLang, href, type UiLang } from '@/i18n/routes';
 import { pick } from '@/i18n/ui';
@@ -84,14 +85,27 @@ export async function getPastEvents(now = new Date()) {
     .sort((a, b) => b.startDate.getTime() - a.startDate.getTime());
 }
 
-/** "Matin's Picks": up to 3 upcoming events featured until a date that has not passed. */
+/** The Matin's Picks tab of an event: Montréal, Canada (the rest of Québec included) or
+ *  around the world. */
+export const pickRegionOf = (e: EventEntry): NewsRegion =>
+  e.data.region === 'montreal'
+    ? 'montreal'
+    : e.data.region === 'international'
+      ? 'international'
+      : 'canada';
+
+/** "Matin's Picks": upcoming events featured until a date that has not passed, at most 3
+ *  per region tab. */
 export function picksOf(upcoming: EventEntry[], now = new Date()) {
   const today = now.toISOString().slice(0, 10);
-  return upcoming
-    .filter(
-      (e) => e.data.status !== 'cancelled' && e.data.featuredUntil && e.data.featuredUntil >= today,
-    )
-    .slice(0, 3);
+  const count: Partial<Record<NewsRegion, number>> = {};
+  return upcoming.filter((e) => {
+    if (e.data.status === 'cancelled' || !e.data.featuredUntil || e.data.featuredUntil < today)
+      return false;
+    const r = pickRegionOf(e);
+    count[r] = (count[r] ?? 0) + 1;
+    return count[r] <= 3;
+  });
 }
 
 export async function getPrograms() {

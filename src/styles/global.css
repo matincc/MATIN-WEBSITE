@@ -70,6 +70,12 @@
   --color-line: color-mix(in srgb, var(--matin-gold) 30%, var(--matin-white));
   /* Card edges: a little stronger than dividers, so white cards read on paper and cream. */
   --color-card-edge: color-mix(in srgb, var(--matin-gold) 45%, var(--matin-white));
+  /* Soft tints mixed from the palette (owner's brief, Oct 25 2026: warmer panels, less
+     pure white). Text on them: navy or ink (contrast above 9:1). */
+  --color-ivory: color-mix(in srgb, var(--matin-cream) 45%, var(--matin-paper));
+  --color-teal-pale: color-mix(in srgb, var(--matin-teal) 11%, var(--matin-paper));
+  --color-teal-edge: color-mix(in srgb, var(--matin-teal) 35%, var(--matin-white));
+  --color-champagne: color-mix(in srgb, var(--matin-gold) 15%, var(--matin-paper));
   /* Primary button hover: slightly darker navy. */
   --color-primary-hover: color-mix(in srgb, var(--matin-blue) 82%, black);
 
@@ -509,4 +515,61 @@
     animation-iteration-count: 1 !important;
     transition-duration: 0.01ms !important;
   }
+}
+
+/* Region tabs (Matin's Picks, News & Insights): Montréal | Canada | Around the World.
+   src/scripts/tabs.ts. Without JavaScript the tab row is hidden and every panel shows
+   with its own heading. */
+.region-tabs__list {
+  display: none;
+}
+.is-enhanced > .region-tabs__list {
+  display: inline-flex;
+  flex-wrap: wrap;
+  gap: 0.35rem;
+  margin-block-end: 2.25rem;
+  padding: 0.35rem;
+  border-radius: 999px;
+  border: 1px solid var(--color-card-edge);
+  background: var(--color-white);
+  box-shadow: var(--shadow-card);
+}
+.region-tab {
+  min-height: 2.75rem;
+  padding: 0.5rem 1.35rem;
+  border-radius: 999px;
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: 1rem;
+  color: var(--color-primary);
+  cursor: pointer;
+  transition:
+    background-color 0.2s,
+    color 0.2s;
+}
+.region-tab:hover {
+  background: var(--color-teal-pale);
+}
+.region-tab[aria-selected='true'] {
+  background: var(--color-primary);
+  color: var(--color-white);
+}
+.region-panel__title {
+  margin-block-end: 1.25rem;
+  font-size: 1.5rem;
+  font-weight: 800;
+}
+.is-enhanced .region-panel__title {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+.region-panel + .region-panel {
+  margin-block-start: 3rem;
+}
+.is-enhanced .region-panel + .region-panel {
+  margin-block-start: 0;
 }

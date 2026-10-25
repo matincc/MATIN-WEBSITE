@@ -9,7 +9,15 @@
  * (/admin/). Only real Matin content, published with consent.
  */
 import { Picture, getImage } from 'astro:assets';
-import { ArrowRight, CalendarDays, ChevronLeft, ChevronRight, Expand, MapPin } from '@lucide/astro';
+import {
+  ArrowRight,
+  CalendarDays,
+  ChevronLeft,
+  ChevronRight,
+  Expand,
+  MapPin,
+  ZoomIn,
+} from '@lucide/astro';
 import PageLayout from '@/layouts/PageLayout.astro';
 import Lightbox from '@/components/ui/Lightbox.astro';
 import GalleryVideo from '@/components/ui/GalleryVideo.astro';
@@ -172,7 +180,7 @@ const empty = albums.length === 0 && !intro;
                   sizes="(min-width: 64rem) 22rem, 70vw"
                 />
                 <span class="thumb__icon" aria-hidden="true">
-                  <Expand size={18} />
+                  <ZoomIn size={18} />
                 </span>
               </a>
               <h3 class="poster-card__title">{p.title}</h3>

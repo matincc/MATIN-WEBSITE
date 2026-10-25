@@ -1,0 +1,80 @@
+---
+/**
+ * Cultural news (Matin Recommends) in three region tabs: Montréal (default), Canada,
+ * Around the World (owner's brief, Oct 25 2026). Only published entries reach this list;
+ * proposed or rejected stories are never in the repository (see
+ * src/content/news/README.md). Each card names its source and links to it.
+ */
+import type { CollectionEntry } from 'astro:content';
+import PostCard from '@/components/content/PostCard.astro';
+import type { UiLang } from '@/i18n/routes';
+import { useTranslations } from '@/i18n/ui';
+import { newsRegions } from '@/lib/taxonomy';
+
+interface Props {
+  lang: UiLang;
+  posts: CollectionEntry<'news'>[];
+  /** Stories per tab (newest first); all of them when left out. */
+  perTab?: number;
+  id: string;
+}
+const { lang, posts, perTab, id } = Astro.props;
+const t = useTranslations(lang);
+const tabs = newsRegions.map((region) => {
+  const items = posts.filter((p) => (p.data.region ?? 'international') === region);
+  return { region, items: perTab ? items.slice(0, perTab) : items };
+});
+---
+
+<div data-tabs>
+  <div class="region-tabs__list" role="tablist" aria-label={t('a11y.regionTabs')}>
+    {tabs.map((tab, i) => (
+      <button
+        type="button"
+        role="tab"
+        class="region-tab"
+        id={`${id}-tab-${tab.region}`}
+        aria-controls={`${id}-${tab.region}`}
+        aria-selected={i === 0 ? 'true' : 'false'}
+      >
+        {t(`newsRegions.${tab.region}`)}
+      </button>
+    ))}
+  </div>
+  {tabs.map((tab) => (
+    <div
+      class="region-panel"
+      role="tabpanel"
+      id={`${id}-${tab.region}`}
+      aria-labelledby={`${id}-tab-${tab.region}`}
+    >
+      <h3 class="region-panel__title">{t(`newsRegions.${tab.region}`)}</h3>
+      {tab.items.length > 0 ? (
+        <ul class="grid gap-x-8 gap-y-14 md:grid-cols-2 lg:grid-cols-3">
+          {tab.items.map((post) => (
+            <li>
+              <PostCard post={post} lang={lang} headingLevel="h3" />
+            </li>
+          ))}
+        </ul>
+      ) : (
+        <p class="region-empty">{t('news.regionEmpty')}</p>
+      )}
+    </div>
+  ))}
+</div>
+
+<script>
+  import { enhanceTabs } from '@/scripts/tabs';
+  enhanceTabs();
+</script>
+
+<style>
+  .region-empty {
+    padding: 1.5rem 1.75rem;
+    border-radius: var(--radius-card);
+    border: 1px dashed var(--color-teal-edge);
+    background: var(--color-white);
+    font-size: 1.0625rem;
+  }
+</style>

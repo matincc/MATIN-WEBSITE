@@ -10,6 +10,18 @@ interface Props {
 }
 const { lang, roles } = Astro.props;
 const t = useTranslations(lang);
+const LANGUAGES = [
+  'French',
+  'English',
+  'Persian',
+  'Arabic',
+  'Spanish',
+  'Mandarin',
+  'Portuguese',
+  'Hindi',
+  'Urdu',
+  'Other',
+] as const;
 ---
 
 <FormShell lang={lang} name="benevolat" id="volunteer" submitLabel={t('involved.volunteerForm')}>
@@ -48,8 +60,37 @@ const t = useTranslations(lang);
       options={[t('form.any'), ...roles]}
     />
     <Field lang={lang} id="vol-availability" name="availability" label={t('form.availability')} />
-    <Field lang={lang} id="vol-languages" name="languages" label={t('form.languages')} />
   </div>
+  {/* Languages spoken: several choices (owner's brief, Oct 25 2026). Values are sent in
+      English so submissions read the same in every language; "Other" opens a text field. */}
+  <fieldset class="field lang-choices" aria-describedby="vol-languages-hint">
+    <legend class="field-label">{t('form.languages')}</legend>
+    <p id="vol-languages-hint" class="lang-choices__hint">
+      {t('form.languagesHint')}
+    </p>
+    <ul class="lang-choices__list">
+      {LANGUAGES.map((l) => (
+        <li>
+          <input
+            type="checkbox"
+            id={`vol-lang-${l.toLowerCase()}`}
+            name="languages"
+            value={l}
+            class="size-5 accent-primary"
+          />
+          <label for={`vol-lang-${l.toLowerCase()}`}>{t(`form.languageNames.${l}`)}</label>
+        </li>
+      ))}
+    </ul>
+    <div data-show-when="languages=Other" class="mt-4">
+      <Field
+        lang={lang}
+        id="vol-languages-other"
+        name="languages_other"
+        label={t('form.languagesOther')}
+      />
+    </div>
+  </fieldset>
   <Field
     lang={lang}
     id="vol-motivation"
@@ -59,3 +100,33 @@ const t = useTranslations(lang);
     required
   />
 </FormShell>
+
+<style>
+  .lang-choices {
+    margin-block-start: 1.25rem;
+    padding: 1.1rem 1.25rem 1.25rem;
+    border: 1px solid var(--color-teal-edge);
+    border-radius: 1rem;
+    background: var(--color-white);
+  }
+  .lang-choices legend {
+    padding-inline: 0.35rem;
+  }
+  .lang-choices__hint {
+    margin-block-end: 0.85rem;
+    font-size: 0.95rem;
+  }
+  .lang-choices__list {
+    display: grid;
+    gap: 0.6rem 1.25rem;
+    grid-template-columns: repeat(auto-fill, minmax(10.5rem, 1fr));
+  }
+  .lang-choices__list li {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+  }
+  .lang-choices__list label {
+    cursor: pointer;
+  }
+</style>

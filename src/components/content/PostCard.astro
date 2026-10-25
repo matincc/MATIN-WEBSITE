@@ -2,11 +2,12 @@
 /**
  * News & Insights card, magazine style: image (or the dialogue motif), coloured category
  * label, date, large headline, excerpt. `featured` makes it the lead story: one wide card
- * with the image beside the text on wider screens.
+ * with the image beside the text on wider screens. A cultural news story (Matin
+ * Recommends with a source) names its source and links straight to it.
  */
 import { Picture } from 'astro:assets';
 import type { CollectionEntry } from 'astro:content';
-import { ArrowRight, CalendarDays } from '@lucide/astro';
+import { ArrowRight, CalendarDays, ExternalLink } from '@lucide/astro';
 import CoverArt from './CoverArt.astro';
 import { articleHref } from '@/lib/content';
 import { type UiLang } from '@/i18n/routes';
@@ -23,7 +24,8 @@ interface Props {
 const { post, lang, headingLevel = 'h3', featured = false } = Astro.props;
 const t = useTranslations(lang);
 const d = post.data;
-const href = articleHref(post, lang);
+const external = d.category === 'recommends' && d.source ? d.source : undefined;
+const href = external ? external.url : articleHref(post, lang);
 const Heading = headingLevel;
 // Illustration used when the article has no photo.
 const covers: Record<NewsCategory, Category> = {
@@ -82,15 +84,19 @@ const accents: Record<NewsCategory, string> = {
     <Heading class="post__title">
       <a
         href={href}
+        target={external ? '_blank' : undefined}
+        rel={external ? 'noopener noreferrer' : undefined}
         class="text-primary no-underline after:absolute after:inset-0 after:content-[''] group-hover:underline group-hover:decoration-[var(--accent)] group-hover:decoration-2"
       >
         {pick(d.title, lang)}
+        {external && <span class="sr-only">{t('a11y.externalLink')}</span>}
       </a>
     </Heading>
     <p class="post__excerpt">{pick(d.excerpt, lang)}</p>
+    {external && <p class="post__source">{t('news.sourceNamed', { name: external.name })}</p>}
     <span class="link-arrow mt-4" aria-hidden="true">
-      {t('news.readMore')}
-      <ArrowRight size={18} class="flip-rtl" />
+      {external ? t('news.readSource') : t('news.readMore')}
+      {external ? <ExternalLink size={17} /> : <ArrowRight size={18} class="flip-rtl" />}
     </span>
   </div>
 </article>
@@ -128,6 +134,12 @@ const accents: Record<NewsCategory, string> = {
   }
   .post__date :global(svg) {
     color: var(--color-primary);
+  }
+  .post__source {
+    margin-block-start: 0.75rem;
+    font-size: 0.9375rem;
+    font-weight: 600;
+    color: var(--color-teal-deep);
   }
   .post__title {
     margin-block-end: 0.6rem;
