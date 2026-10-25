@@ -4,12 +4,12 @@ import FilterBar from '@/components/ui/FilterBar.astro';
 import ProgramCard from '@/components/content/ProgramCard.astro';
 import AreasGrid from '@/components/content/AreasGrid.astro';
 import SectionHeader from '@/components/ui/SectionHeader.astro';
-import { alternatesFor, type Lang } from '@/i18n/routes';
+import { siteAlternates, type UiLang } from '@/i18n/routes';
 import { useTranslations } from '@/i18n/ui';
 import { getPrograms } from '@/lib/content';
 
 interface Props {
-  lang: Lang;
+  lang: UiLang;
 }
 const { lang } = Astro.props;
 const t = useTranslations(lang);
@@ -21,7 +21,7 @@ const present = [...new Set(programs.map((p) => p.data.category))];
   lang={lang}
   title={t('programs.title')}
   lede={t('programs.lede')}
-  alternates={alternatesFor('programs')}
+  alternates={siteAlternates('programs')}
   searchable={false}
 >
   <!-- The three areas of work frame the programs (same cards as on the homepage). -->

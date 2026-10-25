@@ -1,0 +1,16 @@
+# Directory entry: see README.md. A listing never implies a partnership.
+# Name and official website checked on 2026-10-25. Official logo not added yet:
+# the card shows the name until a verified logo file is set in `logo`.
+name: 'Conseil des arts du Canada'
+nameEn: 'Canada Council for the Arts'
+category: federal
+url: https://canadacouncil.ca/
+label:
+  fr: 'Conseil des arts du Canada'
+  en: 'Canada Council for the Arts'
+description:
+  fr: 'Organisme national de financement des arts du Canada, qui soutient les artistes, les organismes artistiques et le développement artistique.'
+  en: "Canada's national arts funding agency, supporting artists, arts organizations, and artistic development."
+  fa: 'نهاد ملی تأمین بودجهٔ هنر در کانادا که از هنرمندان، سازمان‌های هنری و رشد هنری حمایت می‌کند.'
+order: 20
+published: true

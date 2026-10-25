@@ -13,14 +13,14 @@ import EventCard from '@/components/content/EventCard.astro';
 import PicksSection from '@/components/content/PicksSection.astro';
 import ExpireEvents from '@/components/content/ExpireEvents.astro';
 import Lightbox from '@/components/ui/Lightbox.astro';
-import { alternatesFor, path, type Lang } from '@/i18n/routes';
+import { baseLang, href, siteAlternates, type UiLang } from '@/i18n/routes';
 import { useTranslations, pick } from '@/i18n/ui';
 import { getUpcomingEvents, getPastEvents, isMatinEvent, picksOf, slugOf } from '@/lib/content';
 import { formatDate } from '@/lib/dates';
 import { eventFormats, eventLanguages, eventRegions, eventSubjects } from '@/lib/taxonomy';
 
 interface Props {
-  lang: Lang;
+  lang: UiLang;
 }
 const { lang } = Astro.props;
 const t = useTranslations(lang);
@@ -104,7 +104,7 @@ const showFilters = upcoming.length >= FILTER_MIN_EVENTS && filters.length > 0;
   title={t('events.title')}
   lede={t('events.lede')}
   ledeStrong
-  alternates={alternatesFor('events')}
+  alternates={siteAlternates('events')}
   searchable={false}
 >
   <section
@@ -130,9 +130,9 @@ const showFilters = upcoming.length >= FILTER_MIN_EVENTS && filters.length > 0;
       ) : (
         <div class="empty-state">
           <p>{t('events.matinEmpty')}</p>
-          <a href={`${path('home', lang)}#newsletter`} class="btn btn-primary">
+          <a href={`${href('home', lang)}#newsletter`} class="btn btn-primary">
             {t('events.stayConnected')}
-            <ArrowRight size={18} aria-hidden="true" />
+            <ArrowRight size={18} class="flip-rtl" aria-hidden="true" />
           </a>
         </div>
       )}
@@ -225,7 +225,7 @@ const showFilters = upcoming.length >= FILTER_MIN_EVENTS && filters.length > 0;
                 {formatDate(e.startDate, lang, false)}
               </time>
               <a
-                href={path('events', lang, slugOf(e, lang))}
+                href={href('events', lang, slugOf(e, baseLang(lang)))}
                 class="text-lg font-bold text-primary no-underline after:absolute after:inset-0 hover:text-ink"
               >
                 {pick(e.data.title, lang)}
@@ -236,9 +236,9 @@ const showFilters = upcoming.length >= FILTER_MIN_EVENTS && filters.length > 0;
             </li>
           ))}
         </ul>
-        <a href={path('eventsArchive', lang)} class="link-arrow mt-8">
+        <a href={href('eventsArchive', lang)} class="link-arrow mt-8">
           {t('events.viewArchive')}
-          <ArrowRight size={18} aria-hidden="true" />
+          <ArrowRight size={18} class="flip-rtl" aria-hidden="true" />
         </a>
       </div>
     </section>

@@ -1,0 +1,15 @@
+# Directory entry: see README.md. A listing never implies a partnership.
+# Name and official website checked on 2026-10-25. Official logo not added yet:
+# the card shows the name until a verified logo file is set in `logo`.
+name: 'Ministère de la Culture, du Patrimoine, des Communications et de la Langue française'
+category: quebec
+url: https://www.quebec.ca/gouvernement/ministeres-organismes/culture-communications
+label:
+  fr: 'Ministère de la Culture'
+  en: 'Ministère de la Culture'
+description:
+  fr: 'Ministère du gouvernement du Québec responsable de la politique culturelle, du patrimoine culturel et du développement culturel.'
+  en: "Québec's government department responsible for cultural policy, cultural heritage, and cultural development."
+  fa: 'وزارتخانهٔ دولت کبک که مسئول سیاست فرهنگی، میراث فرهنگی و توسعهٔ فرهنگی است.'
+order: 10
+published: true

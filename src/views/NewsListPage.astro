@@ -15,9 +15,9 @@ import PageLayout from '@/layouts/PageLayout.astro';
 import PostCard from '@/components/content/PostCard.astro';
 import SectionHeader from '@/components/ui/SectionHeader.astro';
 import NewsRegionTabs from '@/components/content/NewsRegionTabs.astro';
-import { path, type Alternates, type UiLang } from '@/i18n/routes';
+import { path, siteAlternates, type UiLang } from '@/i18n/routes';
 import { useTranslations } from '@/i18n/ui';
-import { forLang, getNews } from '@/lib/content';
+import { forLang, getNews, hasPersian } from '@/lib/content';
 
 interface Props {
   lang: UiLang;
@@ -29,13 +29,9 @@ const posts = forLang(all, lang);
 const cultural = posts.filter((p) => p.data.category === 'recommends');
 const matin = posts.filter((p) => p.data.category === 'matin-news');
 const [lead, ...rest] = matin;
-// Persian: some entries may exist only in French and English.
-const untranslated = lang === 'fa' && posts.length < all.length;
-const alternates: Alternates = {
-  fr: path('news', 'fr'),
-  en: path('news', 'en'),
-  fa: '/fa/news/',
-};
+// Persian: some entries may not have a Persian text yet (shown in English).
+const untranslated = lang === 'fa' && posts.some((p) => !hasPersian(p));
+const alternates = siteAlternates('news');
 ---
 
 <PageLayout
@@ -94,14 +90,12 @@ const alternates: Alternates = {
       ) : (
         <p class="empty-state">{t('news.matinEmpty')}</p>
       )}
-      {lang !== 'fa' && (
-        <p class="mt-12">
-          <a href={`/${lang}/rss.xml`} class="link-arrow text-base">
-            <Rss size={18} aria-hidden="true" />
-            {t('news.rss')}
-          </a>
-        </p>
-      )}
+      <p class="mt-12">
+        <a href={`/${lang}/rss.xml`} class="link-arrow text-base">
+          <Rss size={18} aria-hidden="true" />
+          {t('news.rss')}
+        </a>
+      </p>
     </div>
   </section>
 </PageLayout>

@@ -24,6 +24,15 @@
     # "allow-popups": the admin (/admin/) signs in to GitHub through a pop-up window.
     Cross-Origin-Opener-Policy = "same-origin-allow-popups"
 
+# Private editorial desk (Cultural News): never cached or indexed, scripts and data from this
+# site only. Its data comes only from /api/editorial/*, which checks the session server-side.
+[[headers]]
+  for = "/editorial/*"
+  [headers.values]
+    Content-Security-Policy = "default-src 'none'; script-src 'self'; style-src 'self'; img-src 'self' data:; connect-src 'self'; base-uri 'none'; form-action 'none'; frame-ancestors 'none'"
+    Cache-Control = "no-store"
+    X-Robots-Tag = "noindex, nofollow"
+
 # Fingerprinted build assets never change: cache them for a year.
 [[headers]]
   for = "/_astro/*"

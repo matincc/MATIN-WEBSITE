@@ -1,11 +1,11 @@
 ---
 import type { GetStaticPaths } from 'astro';
 import ArticlePage from '@/views/ArticlePage.astro';
-import { getNews, hasPersian, slugOf } from '@/lib/content';
+import { getNews, slugOf } from '@/lib/content';
 
-// Persian pages exist only for articles whose Persian text has been reviewed.
+// Same articles as the English pages, at the English slug.
 export const getStaticPaths = (async () =>
-  (await getNews()).filter(hasPersian).map((post) => ({
+  (await getNews()).map((post) => ({
     params: { slug: slugOf(post, 'en') },
     props: { post },
   }))) satisfies GetStaticPaths;

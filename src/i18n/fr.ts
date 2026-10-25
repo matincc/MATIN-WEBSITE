@@ -134,7 +134,7 @@ const fr = {
     momentsCta: 'Explorer notre galerie',
     resourcesTitle: 'Ressources et organismes culturels',
     resourcesLede:
-      'Découvrez des institutions culturelles, des services publics et des organismes communautaires.',
+      'Un répertoire choisi de grandes institutions et organisations culturelles, au Québec, au Canada et dans le monde.',
     resourcesCta: 'Explorer les ressources',
   },
   matinTypes: {
@@ -284,7 +284,7 @@ const fr = {
     region: 'Région',
     culturalTitle: 'Actualité culturelle',
     culturalLede:
-      'Des nouvelles culturelles de Montréal, du Canada et du monde, choisies par Matin, vérifiées et reliées à leur source.',
+      'Des nouvelles culturelles de Montréal, du Québec, du Canada et du monde, choisies par Matin, vérifiées et reliées à leur source.',
     regionEmpty:
       "Aucune nouvelle n'a encore été retenue pour cette région. Matin publie uniquement des nouvelles vérifiées, toujours reliées à leur source d'origine.",
     allCultural: "Toute l'actualité culturelle",
@@ -311,6 +311,7 @@ const fr = {
   },
   newsRegions: {
     montreal: 'Montréal',
+    quebec: 'Québec',
     canada: 'Canada',
     international: 'Ailleurs dans le monde',
   },
@@ -365,7 +366,7 @@ const fr = {
     vision: 'Notre vision',
     values: 'Nos valeurs',
     history: 'Notre histoire',
-    founderTitle: 'Quelques mots de notre président',
+    founderTitle: 'Un mot personnel de notre président',
     presidentPhotoAlt: 'Portrait de {name}',
     team: 'Notre équipe',
     board: "Conseil d'administration",
@@ -434,17 +435,28 @@ const fr = {
   },
   resources: {
     title: 'Ressources et organismes culturels',
-    lede: 'Découvrez des institutions culturelles, des services publics et des organismes communautaires.',
+    lede: 'Un répertoire choisi de grandes institutions et organisations culturelles, au Québec, au Canada et dans le monde.',
+    noticeTitle: 'À propos de ce répertoire',
     notice:
-      "La présence d'un organisme dans ce répertoire n'implique aucun partenariat, appui ou affiliation avec Matin.",
+      "Les organismes présentés dans ce répertoire le sont à titre informatif. Leur présence n'implique aucun partenariat, appui, commandite ni affiliation institutionnelle avec l'Institut interculturel Matin.",
     filterLabel: 'Filtrer par catégorie',
     all: 'Toutes',
-    municipal: 'Municipalités et administrations locales',
-    government: 'Institutions gouvernementales du Québec et du Canada',
-    arts: 'Organismes artistiques et culturels',
-    community: 'Organismes communautaires et interculturels',
-    research: 'Établissements universitaires et de recherche',
-    other: 'Autres ressources utiles',
+    municipal: 'Institutions culturelles municipales canadiennes',
+    municipalLede: 'Les services et ressources culturels officiels de grandes villes canadiennes.',
+    federal: 'Institutions culturelles fédérales du Canada',
+    federalLede:
+      'Les ministères et organismes du gouvernement du Canada consacrés à la culture, aux arts et au patrimoine.',
+    quebec: 'Institutions culturelles du Québec',
+    quebecLede:
+      'Le ministère et les organismes publics du Québec qui soutiennent la culture, les arts et le patrimoine documentaire.',
+    community: 'Organismes et institutions culturels et communautaires',
+    communityLede:
+      'Des organismes communautaires, des fondations et un conseil public des arts qui font vivre la culture et la vie communautaire dans le Grand Montréal.',
+    international: 'Organisations et réseaux culturels internationaux',
+    internationalLede:
+      'Des organisations intergouvernementales, des réseaux et des plateformes de recherche consacrés à la coopération culturelle et aux politiques culturelles.',
+    count: 'organismes',
+    logo: 'Logo : ',
     visit: 'Visiter le site',
     download: 'Télécharger',
     empty: 'Des organismes seront bientôt ajoutés à ce répertoire.',

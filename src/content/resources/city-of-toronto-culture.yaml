@@ -1,0 +1,15 @@
+# Directory entry: see README.md. A listing never implies a partnership.
+# Name and official cultural page checked on 2026-10-25. Official logo not added yet:
+# the card shows the name until a verified logo file is set in `logo`.
+name: 'City of Toronto — History, Art & Culture'
+category: municipal
+url: https://www.toronto.ca/explore-enjoy/history-art-culture/
+label:
+  fr: 'City of Toronto'
+  en: 'City of Toronto'
+description:
+  fr: "Les ressources culturelles municipales de Toronto, dont les musées, les centres culturels, l'art public, les programmes patrimoniaux et les activités culturelles communautaires."
+  en: "Toronto's municipal cultural resources, including museums, cultural centres, public art, heritage programmes, and community cultural activities."
+  fa: 'منابع فرهنگی شهرداری تورنتو، از جمله موزه‌ها، مراکز فرهنگی، هنر عمومی، برنامه‌های میراث و فعالیت‌های فرهنگی محله‌ای.'
+order: 20
+published: true

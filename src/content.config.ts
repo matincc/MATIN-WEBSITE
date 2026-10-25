@@ -16,7 +16,7 @@ import {
   eventSubjects,
   faqTopics,
   newsCategories,
-  newsRegions,
+  culturalNewsRegions,
   priceTypes,
   resourceCategories,
 } from './lib/taxonomy';
@@ -31,8 +31,8 @@ const biOpt = z
   .object({ fr: z.string().default(''), en: z.string().default(''), fa: z.string().optional() })
   .optional();
 /**
- * Set to true once the Persian (fa) texts of an entry have been reviewed; only then
- * does the entry appear on Persian pages.
+ * Set to true once the Persian (fa) texts of an entry have been reviewed by the owner.
+ * Persian pages show every entry either way (English text where Persian is missing).
  */
 const faReviewed = z.boolean().default(false);
 /** Localized URL slugs; fall back to the file name when absent. */
@@ -209,8 +209,8 @@ const news = defineCollection({
         author: z.union([z.string(), bi]),
         /** recommends (Cultural News, external, with source and region) or matin-news (Matin News) */
         category: z.enum(newsCategories),
-        /** Cultural News only: its tab, montreal, canada (the rest of Québec included) or international. */
-        region: z.enum(newsRegions).optional(),
+        /** Cultural News only: its tab, montreal, quebec, canada or international. */
+        region: z.enum(culturalNewsRegions).optional(),
         tags: z.array(z.string()).default([]),
         image: image().optional(),
         imageAlt: biOpt,
@@ -545,6 +545,13 @@ const resources = defineCollection({
       name: z.string().min(1),
       /** English form of the name, only when the organization uses a different one. */
       nameEn: z.string().optional(),
+      /**
+       * The short, clickable name on the card (e.g. « CALQ », "NFB / ONF"), per language;
+       * Persian falls back to English. Without it, the card shows the name.
+       */
+      label: biOpt,
+      /** Short kind shown on the card (e.g. "Municipal public body"), only where useful. */
+      kind: biOpt,
       category: z.enum(resourceCategories),
       /** Official website (opens in a new tab). */
       url: z.url().refine((u) => u.startsWith('https://'), 'Use the https:// address'),

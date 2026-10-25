@@ -13,14 +13,20 @@ export type Category = (typeof categories)[number];
 
 export const faqTopics = ['general', 'programs', 'events', 'volunteering', 'donations'] as const;
 
-/** Cultural Resources & Organizations, in the order of the page. */
+/**
+ * Cultural Resources & Organizations, in the order of the page (owner's briefs, Oct 25 2026:
+ * five categories, in this exact order). municipal = Canadian municipal cultural institutions
+ * (cities' official cultural departments); quebec = Québec cultural institutions; federal =
+ * Canadian federal cultural institutions; community = major cultural and community
+ * organizations and public cultural bodies (Montréal); international = international
+ * cultural organizations & networks.
+ */
 export const resourceCategories = [
   'municipal',
-  'government',
-  'arts',
+  'quebec',
+  'federal',
   'community',
-  'research',
-  'other',
+  'international',
 ] as const;
 export type ResourceCategory = (typeof resourceCategories)[number];
 
@@ -36,6 +42,12 @@ export type NewsCategory = (typeof newsCategories)[number];
  * Montréal, the rest of Canada (other Québec municipalities included), around the world. */
 export const newsRegions = ['montreal', 'canada', 'international'] as const;
 export type NewsRegion = (typeof newsRegions)[number];
+
+/** The four region tabs of Cultural News (owner's brief, Oct 25 2026, news assistant):
+ * Montréal, Québec (outside Montréal), Canada (outside Québec) and around the world.
+ * Matin's Picks keep their three tabs above. */
+export const culturalNewsRegions = ['montreal', 'quebec', 'canada', 'international'] as const;
+export type CulturalNewsRegion = (typeof culturalNewsRegions)[number];
 
 /* Events & Cultural Agenda */
 

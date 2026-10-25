@@ -25,7 +25,7 @@ import Prose from '@/components/ui/Prose.astro';
 import ShareButtons from '@/components/ui/ShareButtons.astro';
 import { href, newsAnchors, path, type Alternates, type UiLang } from '@/i18n/routes';
 import { useTranslations, pick } from '@/i18n/ui';
-import { forLang, getNews, hasPersian, renderMarkdown, slugOf } from '@/lib/content';
+import { forLang, getNews, renderMarkdown, slugOf } from '@/lib/content';
 import { formatDate } from '@/lib/dates';
 
 interface Props {
@@ -39,7 +39,7 @@ const title = pick(d.title, lang)!;
 const alternates: Alternates = {
   fr: path('news', 'fr', slugOf(post, 'fr')),
   en: path('news', 'en', slugOf(post, 'en')),
-  ...(hasPersian(post) && { fa: `/fa/news/${slugOf(post, 'en')}/` }),
+  fa: href('news', 'fa', slugOf(post, 'en')),
 };
 const site = Astro.site ?? new URL(Astro.url.origin);
 const url = new URL(alternates[lang] ?? alternates.en, site).href;

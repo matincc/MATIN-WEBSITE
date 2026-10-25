@@ -31,12 +31,10 @@ const { lang, event } = Astro.props;
 const t = useTranslations(lang);
 const d = event.data;
 const title = pick(d.title, lang)!;
-// Matin events with a reviewed Persian text also have a Persian page (/fa/events/…).
-const faPage = d.faReviewed && d.kind !== 'selected';
 const alternates: Alternates = {
   fr: path('events', 'fr', slugOf(event, 'fr')),
   en: path('events', 'en', slugOf(event, 'en')),
-  ...(faPage && { fa: `/fa/events/${slugOf(event, 'en')}/` }),
+  fa: href('events', 'fa', slugOf(event, 'en')),
 };
 // Calendar files and links use French or English (the fallback language for Persian).
 const calLang = baseLang(lang);
@@ -351,7 +349,7 @@ const jsonLd = {
       )}
 
       <a href={href('events', lang)} class="link-arrow">
-        <ArrowLeft size={18} aria-hidden="true" />
+        <ArrowLeft size={18} class="flip-rtl" aria-hidden="true" />
         {t('events.backToEvents')}
       </a>
     </aside>
@@ -373,7 +371,7 @@ const jsonLd = {
   }
   .poster-zoom__icon {
     position: absolute;
-    right: 0.9rem;
+    inset-inline-end: 0.9rem;
     bottom: 0.9rem;
     display: grid;
     place-items: center;

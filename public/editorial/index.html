@@ -1,0 +1,164 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="robots" content="noindex, nofollow" />
+    <title>Matin · Editorial desk</title>
+    <link rel="icon" href="/icons/favicon-32.png" />
+    <link rel="stylesheet" href="/editorial/editorial.css" />
+    <script src="/editorial/editorial.js" defer></script>
+  </head>
+  <!-- Private editorial dashboard for Cultural News. This page holds no data: every list
+       and every action goes through /api/editorial/*, which checks the editor's session on
+       the server first. -->
+  <body data-pagefind-ignore="all">
+    <header class="top">
+      <div class="top__brand">
+        <img src="/icons/logo-512.png" alt="" width="36" height="36" />
+        <div>
+          <p class="top__kicker">Matin Intercultural Institute</p>
+          <h1>Editorial desk · Cultural News</h1>
+        </div>
+      </div>
+      <div class="top__user" id="user" hidden>
+        <span id="who"></span>
+        <button type="button" class="btn btn--quiet" id="signout">Sign out</button>
+        <button type="button" class="btn btn--quiet" id="signout-all">Sign out all sessions</button>
+      </div>
+    </header>
+
+    <p class="env" id="env" hidden></p>
+
+    <main>
+      <section id="signin" class="panel signin" hidden>
+        <h2>Sign in</h2>
+        <p>
+          Sign in on GitHub's own page with Matin's GitHub account. No password or token is typed
+          here. The website only learns which account signed in and never keeps a GitHub token.
+        </p>
+        <a class="btn btn--primary btn--github" id="signin-link" href="/api/editorial/signin/start">
+          Sign in with GitHub
+        </a>
+        <p class="msg" id="signin-msg" role="alert"></p>
+      </section>
+
+      <section id="desk" hidden>
+        <div class="status panel">
+          <div class="status__item">
+            <span class="status__label">Daily discovery</span>
+            <label class="switch">
+              <input type="checkbox" id="daily" />
+              <span id="daily-text">Off</span>
+            </label>
+          </div>
+          <div class="status__item">
+            <span class="status__label">AI help</span>
+            <span id="ai-status"></span>
+          </div>
+          <div class="status__item">
+            <span class="status__label">Email to admin@matincc.ca</span>
+            <span id="email-status"></span>
+          </div>
+          <div class="status__item">
+            <span class="status__label">Last discovery</span>
+            <span id="last-run">None yet</span>
+          </div>
+          <div class="status__actions">
+            <button type="button" class="btn btn--primary" id="run">Run discovery now</button>
+            <button type="button" class="btn btn--quiet" id="test-email" hidden>Send test email</button>
+          </div>
+        </div>
+        <p class="msg" id="desk-msg" role="status"></p>
+
+        <nav class="tabs" role="tablist" aria-label="Story lists">
+          <button type="button" role="tab" data-tab="pending" aria-selected="true">Pending <span class="count"></span></button>
+          <button type="button" role="tab" data-tab="hold" aria-selected="false">On hold <span class="count"></span></button>
+          <button type="button" role="tab" data-tab="approved" aria-selected="false">Approved <span class="count"></span></button>
+          <button type="button" role="tab" data-tab="published" aria-selected="false">Published <span class="count"></span></button>
+          <button type="button" role="tab" data-tab="rejected" aria-selected="false">Rejected <span class="count"></span></button>
+          <button type="button" role="tab" data-tab="activity" aria-selected="false">Activity</button>
+        </nav>
+
+        <div id="publish-bar" class="publish-bar" hidden>
+          <p id="publish-text"></p>
+          <button type="button" class="btn btn--gold" id="publish">Publish approved stories</button>
+        </div>
+
+        <div id="list" class="list" aria-live="polite"></div>
+
+        <section id="activity" hidden>
+          <div class="panel">
+            <h2>Discovery runs</h2>
+            <div class="table-wrap"><table id="runs"></table></div>
+          </div>
+          <div class="panel">
+            <h2>Add stories from a file</h2>
+            <p>For stories found by hand (for example the 25 October shortlist). They are added as Pending.</p>
+            <input type="file" id="import-file" accept="application/json,.json" />
+            <p class="msg" id="import-msg" role="status"></p>
+          </div>
+          <div class="panel">
+            <h2>Editorial log</h2>
+            <ol id="audit" class="audit"></ol>
+          </div>
+        </section>
+      </section>
+    </main>
+
+    <dialog id="edit" aria-labelledby="edit-title">
+      <form id="edit-form" method="dialog">
+        <h2 id="edit-title">Edit story</h2>
+        <p class="hint">
+          The publisher's original headline and text are shown below for reference. Write in your
+          own words; never copy the article.
+        </p>
+        <div class="orig" id="edit-orig"></div>
+        <div class="grid2">
+          <label>Tab
+            <select name="region">
+              <option value="montreal">Montréal</option>
+              <option value="quebec">Québec</option>
+              <option value="canada">Canada</option>
+              <option value="international">Around the World</option>
+            </select>
+          </label>
+          <label>Theme
+            <select name="topic">
+              <option value="policy">Cultural policy and planning</option>
+              <option value="dialogue">Intercultural dialogue</option>
+              <option value="participation">Cultural participation</option>
+              <option value="arts-heritage">Arts and heritage</option>
+              <option value="community">Community cultural development</option>
+              <option value="research">Cultural research</option>
+              <option value="inclusion">Diversity, equity and inclusion</option>
+              <option value="cooperation">Partnerships and cooperation</option>
+            </select>
+          </label>
+        </div>
+        <fieldset>
+          <legend>Français</legend>
+          <label>Titre <input name="title.fr" maxlength="200" lang="fr" /></label>
+          <label>Résumé <textarea name="summary.fr" rows="3" maxlength="1200" lang="fr"></textarea></label>
+        </fieldset>
+        <fieldset>
+          <legend>English</legend>
+          <label>Headline <input name="title.en" maxlength="200" lang="en" /></label>
+          <label>Summary <textarea name="summary.en" rows="3" maxlength="1200" lang="en"></textarea></label>
+        </fieldset>
+        <fieldset dir="rtl" lang="fa">
+          <legend>فارسی</legend>
+          <label>عنوان <input name="title.fa" maxlength="200" /></label>
+          <label>خلاصه <textarea name="summary.fa" rows="3" maxlength="1200"></textarea></label>
+        </fieldset>
+        <label>Why it matters to Matin (internal) <textarea name="relevance" rows="2" maxlength="1000"></textarea></label>
+        <label>Verification notes (internal) <textarea name="notes" rows="2" maxlength="2000"></textarea></label>
+        <p class="msg" id="edit-msg" role="alert"></p>
+        <div class="dialog__actions">
+          <button type="button" class="btn btn--quiet" id="edit-cancel">Cancel</button>
+          <button type="submit" class="btn btn--primary" value="save">Save changes</button>
+        </div>
+      </form>
+    </dialog>
+  </body>
+</html>

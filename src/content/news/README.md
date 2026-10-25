@@ -4,14 +4,15 @@ One YAML file per **approved** item, e.g. `2026-11-nouveau-partenariat.yaml`. Fu
 Events do not go here: they have their own folder (`src/content/events`).
 
 **Only approved items enter this folder.** The repository is public, so proposed, pending or
-rejected stories never go here, not even as drafts: they stay in the private shortlist that
-Claude prepares for the President. Once he approves an item, it is added here.
+rejected stories never go here, not even as drafts: they stay in the private editorial store
+(Netlify Blobs) behind the editorial desk at `/editorial/` (see `netlify/functions/_news/`).
+Only Matin's "Publish approved stories" button there writes approved items here, in one commit.
 
 Two sections, never mixed (owner's brief, Oct 25 2026):
 
 - `recommends`: **Cultural News / Actualité culturelle / اخبار فرهنگی**. External stories selected
   by Matin. Required: `source` (name and link of the original article) and `region`
-  (`montreal`, `canada` with the rest of Québec, or `international`). `date` is the source's
+  (`montreal`, `quebec` outside Montréal, `canada` outside Québec, or `international`). `date` is the source's
   publication date, not the date of an event it mentions. The summary is short and in Matin's
   own words; never copy the article. The card links straight to the source.
 - `matin-news`: **Matin News / Nouvelles de Matin / اخبار متین**. The institute's official news,
@@ -29,7 +30,7 @@ author:
   en: 'Matin Intercultural Institute'
   fa: 'مؤسسه میان‌فرهنگی متین'
 category: matin-news # or recommends
-# region: montreal    (Cultural News only: montreal, canada, international)
+# region: montreal    (Cultural News only: montreal, quebec, canada, international)
 # source:             (Cultural News only)
 #   name: "Nom du média ou de l'organisme"
 #   url: https://…
