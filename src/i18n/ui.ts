@@ -4,7 +4,7 @@ import fa from './fa';
 import type { UiLang } from './routes';
 import { typo } from '@/lib/frenchTypo';
 
-/** Persian covers the pages that exist in Persian; any missing key falls back to English. */
+/** Persian has every page; any missing Persian key falls back to English. */
 export type DeepPartial<T> = { [K in keyof T]?: T[K] extends string ? string : DeepPartial<T[K]> };
 
 const dictionaries: Record<UiLang, DeepPartial<Dictionary>> = { fr, en, fa };

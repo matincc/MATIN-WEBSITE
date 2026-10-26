@@ -288,24 +288,38 @@ collections:
         label: Category
         widget: select
         options:
-          - { label: Municipalities & Local Government, value: municipal }
-          - { label: Québec & Canadian Government Institutions, value: government }
-          - { label: Arts & Cultural Organizations, value: arts }
-          - { label: Community & Intercultural Organizations, value: community }
-          - { label: Educational & Research Institutions, value: research }
-          - { label: Other Useful Resources, value: other }
+          - { label: Canadian Municipal Cultural Institutions, value: municipal }
+          - { label: Québec Cultural Institutions, value: quebec }
+          - { label: Canadian Federal Cultural Institutions, value: federal }
+          - { label: Major Cultural & Community Organizations and Institutions, value: community }
+          - { label: International Cultural Organizations & Networks, value: international }
       - name: url
         label: Official website (https://…)
         widget: string
         pattern: ['^https://[^\s]+$', 'Enter the full address, starting with https://']
       - { name: logo, label: 'Official logo (PNG, SVG, JPEG or WebP)', widget: image, required: false, accept: 'image/png,image/svg+xml,image/jpeg,image/webp' }
+      - name: label
+        label: Short clickable name on the card (e.g. CALQ)
+        widget: object
+        required: false
+        fields:
+          - { name: fr, label: Français, widget: string, required: false }
+          - { name: en, label: English, widget: string, required: false }
+      - name: kind
+        label: Kind, only where useful (e.g. Municipal public body)
+        widget: object
+        required: false
+        fields:
+          - { name: fr, label: Français, widget: string, required: false }
+          - { name: en, label: English, widget: string, required: false }
+          - { name: fa, label: فارسی, widget: string, required: false }
       - name: description
-        label: Short description (optional)
+        label: Short description
         widget: object
         required: false
         fields:
           - { name: fr, label: Français, widget: text, required: false }
           - { name: en, label: English, widget: text, required: false }
-      - { name: location, label: Area or jurisdiction (optional), widget: string, required: false }
+          - { name: fa, label: فارسی, widget: text, required: false }
       - { name: order, label: Order within the category (lower first), widget: number, value_type: int, default: 100 }
       - { name: published, label: Published on the site, widget: boolean, default: false }

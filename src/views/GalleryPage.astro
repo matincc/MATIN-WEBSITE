@@ -22,14 +22,14 @@ import PageLayout from '@/layouts/PageLayout.astro';
 import Lightbox from '@/components/ui/Lightbox.astro';
 import GalleryVideo from '@/components/ui/GalleryVideo.astro';
 import DialogueArt from '@/components/brand/DialogueArt.astro';
-import { alternatesFor, path, type Lang } from '@/i18n/routes';
+import { baseLang, href, siteAlternates, type UiLang } from '@/i18n/routes';
 import { useTranslations, pick } from '@/i18n/ui';
 import { getAlbums, getEvents, getIntroVideo, slugOf } from '@/lib/content';
 import { formatDate } from '@/lib/dates';
 import { albumAnchor, youtubeId } from '@/lib/gallery';
 
 interface Props {
-  lang: Lang;
+  lang: UiLang;
 }
 const { lang } = Astro.props;
 const t = useTranslations(lang);
@@ -46,7 +46,7 @@ const posters = await Promise.all(
       title: pick(e.data.title, lang)!,
       alt: pick(e.data.imageAlt, lang) ?? '',
       date: e.startDate,
-      href: path('events', lang, slugOf(e, lang)),
+      href: href('events', lang, slugOf(e, baseLang(lang))),
       large: (
         await getImage({
           src: e.data.image!,
@@ -88,7 +88,7 @@ const empty = albums.length === 0 && !intro;
   lang={lang}
   title={t('gallery.title')}
   lede={t('gallery.lede')}
-  alternates={alternatesFor('gallery')}
+  alternates={siteAlternates('gallery')}
 >
   <div class="container-site pt-2 pb-24">
     {empty && (

@@ -1,0 +1,15 @@
+# Directory entry: see README.md. A listing never implies a partnership.
+# Name and official website checked on 2026-10-25. Official logo not added yet:
+# the card shows the name until a verified logo file is set in `logo`.
+name: 'European Cultural Foundation'
+category: international
+url: https://culturalfoundation.eu/
+label:
+  fr: 'European Cultural Foundation'
+  en: 'European Cultural Foundation'
+description:
+  fr: 'Fondation indépendante qui soutient la coopération culturelle transfrontalière, la participation citoyenne et les initiatives culturelles partout en Europe.'
+  en: 'Independent foundation supporting cross-border cultural cooperation, civic participation, and cultural initiatives across Europe.'
+  fa: 'بنیادی مستقل که از همکاری فرهنگی فرامرزی، مشارکت مدنی و ابتکارهای فرهنگی در سراسر اروپا حمایت می‌کند.'
+order: 60
+published: true

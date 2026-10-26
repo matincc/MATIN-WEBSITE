@@ -1,13 +1,13 @@
 ---
 import PageLayout from '@/layouts/PageLayout.astro';
 import Accordion from '@/components/ui/Accordion.astro';
-import { alternatesFor, path, type Lang } from '@/i18n/routes';
+import { href, siteAlternates, type UiLang } from '@/i18n/routes';
 import { useTranslations, pick } from '@/i18n/ui';
 import { getFaq, renderMarkdown } from '@/lib/content';
 import { faqTopics } from '@/lib/taxonomy';
 
 interface Props {
-  lang: Lang;
+  lang: UiLang;
 }
 const { lang } = Astro.props;
 const t = useTranslations(lang);
@@ -31,7 +31,7 @@ const jsonLd = {
   lang={lang}
   title={t('faq.title')}
   lede={t('faq.lede')}
-  alternates={alternatesFor('faq')}
+  alternates={siteAlternates('faq')}
   jsonLd={[jsonLd]}
 >
   <nav slot="hero" aria-label={t('faq.topics')} class="mt-8" hidden={groups.length === 0}>
@@ -61,7 +61,7 @@ const jsonLd = {
             items={g.items.map((f) => ({
               id: `q-${f.id}`,
               question: pick(f.data.question, lang)!,
-              answerHtml: renderMarkdown(f.data.answer[lang], lang),
+              answerHtml: renderMarkdown(pick(f.data.answer, lang)!, lang),
             }))}
           />
         </section>
@@ -69,7 +69,7 @@ const jsonLd = {
     </div>
     <aside class="faq-aside card">
       <p class="font-display text-2xl font-bold text-primary">{t('faq.stillQuestions')}</p>
-      <a href={path('contact', lang)} class="btn btn-primary">
+      <a href={href('contact', lang)} class="btn btn-primary">
         {t('faq.contactUs')}
       </a>
     </aside>

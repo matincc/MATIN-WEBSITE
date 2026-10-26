@@ -1,0 +1,15 @@
+# Directory entry: see README.md. A listing never implies a partnership.
+# Name and official cultural page checked on 2026-10-25. Official logo not added yet:
+# the card shows the name until a verified logo file is set in `logo`.
+name: 'The City of Calgary — Arts and Culture'
+category: municipal
+url: https://www.calgary.ca/arts-culture.html
+label:
+  fr: 'City of Calgary'
+  en: 'City of Calgary'
+description:
+  fr: "Les initiatives culturelles municipales de Calgary, dont la planification culturelle, l'art public, les festivals, le développement culturel des communautés et les programmes de financement des arts."
+  en: "Calgary's municipal cultural initiatives, including cultural planning, public art, festivals, community cultural development, and arts funding programmes."
+  fa: 'ابتکارهای فرهنگی شهرداری کلگری، از جمله برنامه‌ریزی فرهنگی، هنر عمومی، جشنواره‌ها، توسعهٔ فرهنگی جامعه‌ها و برنامه‌های تأمین بودجهٔ هنر.'
+order: 50
+published: true

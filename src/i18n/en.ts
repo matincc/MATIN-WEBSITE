@@ -129,7 +129,8 @@ const en: Dictionary = {
     momentsLede: 'Stories, people, and experiences that bring us together.',
     momentsCta: 'Explore Our Gallery',
     resourcesTitle: 'Cultural Resources & Organizations',
-    resourcesLede: 'Discover cultural institutions, public services, and community organizations.',
+    resourcesLede:
+      'A curated directory of major cultural institutions and organizations in Québec, Canada and around the world.',
     resourcesCta: 'Explore Resources',
   },
   matinTypes: {
@@ -359,7 +360,7 @@ const en: Dictionary = {
     vision: 'Our Vision',
     values: 'Our values',
     history: 'Our story',
-    founderTitle: 'A Personal Note from Our President, Reza Moafi',
+    founderTitle: 'A Personal Note from Our President',
     presidentPhotoAlt: 'Portrait of {name}',
     team: 'Our Team',
     board: 'Board of directors',
@@ -428,17 +429,28 @@ const en: Dictionary = {
   },
   resources: {
     title: 'Cultural Resources & Organizations',
-    lede: 'Discover cultural institutions, public services, and community organizations.',
+    lede: 'A curated directory of major cultural institutions and organizations in Québec, Canada and around the world.',
+    noticeTitle: 'About this directory',
     notice:
-      'Listing an organization in this directory does not imply any partnership, endorsement or affiliation with Matin.',
+      'Organizations listed in this directory are provided for informational purposes. Inclusion does not imply partnership, endorsement, sponsorship, or institutional affiliation with Matin Intercultural Institute.',
     filterLabel: 'Filter by category',
     all: 'All',
-    municipal: 'Municipalities & Local Government',
-    government: 'Québec & Canadian Government Institutions',
-    arts: 'Arts & Cultural Organizations',
-    community: 'Community & Intercultural Organizations',
-    research: 'Educational & Research Institutions',
-    other: 'Other Useful Resources',
+    municipal: 'Canadian Municipal Cultural Institutions',
+    municipalLede: 'The official cultural departments and resources of major Canadian cities.',
+    federal: 'Canadian Federal Cultural Institutions',
+    federalLede:
+      'Government of Canada departments and agencies dedicated to culture, the arts and heritage.',
+    quebec: 'Québec Cultural Institutions',
+    quebecLede:
+      "Québec's ministry and public bodies supporting culture, the arts and documentary heritage.",
+    community: 'Major Cultural & Community Organizations and Institutions',
+    communityLede:
+      'Community organizations, foundations and a public arts council that sustain culture and community life in Greater Montréal.',
+    international: 'International Cultural Organizations & Networks',
+    internationalLede:
+      'Intergovernmental organizations, networks and research platforms dedicated to cultural cooperation and cultural policy.',
+    count: 'organizations',
+    logo: 'Logo: ',
     visit: 'Visit the website',
     download: 'Download',
     empty: 'Organizations will be added to this directory soon.',

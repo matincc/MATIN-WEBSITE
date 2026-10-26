@@ -118,21 +118,23 @@ export async function getNews(limit?: number) {
 export const hasPersian = (post: CollectionEntry<'news'>) =>
   post.data.faReviewed && !!post.data.body.fa;
 
-/** Link to an article in the page's language (Persian page when it exists). */
+/** Link to an article in the page's language. */
 export function articleHref(post: CollectionEntry<'news'>, lang: UiLang): string {
-  if (lang === 'fa' && hasPersian(post)) return `/fa/news/${slugOf(post, 'en')}/`;
   return href('news', lang, slugOf(post, baseLang(lang)));
 }
 
 /**
- * Entries shown on a page in this language. Persian pages only show entries whose
- * Persian translation has been reviewed (faReviewed: true).
+ * Entries shown on a page in this language. Every language shows the same approved
+ * entries (owner's brief, Oct 25 2026: Persian mirrors English); a Persian page shows
+ * the English text of an entry that has no Persian text yet. `faReviewed` only records
+ * that the Persian text has been reviewed.
  */
 export function forLang<T extends { data: { faReviewed?: boolean } }>(
   items: T[],
-  lang: UiLang,
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars -- kept so callers stay language-aware
+  _lang: UiLang,
 ): T[] {
-  return lang === 'fa' ? items.filter((i) => i.data.faReviewed) : items;
+  return items;
 }
 
 /** Published team members in display order (drafts only on the local preview). */

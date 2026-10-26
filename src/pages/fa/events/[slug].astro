@@ -3,14 +3,12 @@ import type { GetStaticPaths } from 'astro';
 import EventDetailPage from '@/views/EventDetailPage.astro';
 import { getEvents, slugOf } from '@/lib/content';
 
-// Persian pages only for Matin's own events whose Persian text has been reviewed.
+// Same events as the English pages, at the English slug.
 export const getStaticPaths = (async () =>
-  (await getEvents())
-    .filter((event) => event.data.faReviewed && event.data.kind !== 'selected')
-    .map((event) => ({
-      params: { slug: slugOf(event, 'en') },
-      props: { event },
-    }))) satisfies GetStaticPaths;
+  (await getEvents()).map((event) => ({
+    params: { slug: slugOf(event, 'en') },
+    props: { event },
+  }))) satisfies GetStaticPaths;
 
 const { event } = Astro.props;
 ---
