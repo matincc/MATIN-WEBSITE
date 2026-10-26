@@ -96,7 +96,7 @@ const fr = {
     // Secondary positioning line (owner's decision, Oct 24 2026); never replaces the
     // slogan « Cultures en dialogue ».
     positioning: 'Ancré localement, relié au monde',
-    legalLine: 'Organisme sans but lucratif (OSBL) constitué au Québec · NEQ {neq}',
+    legalLine: 'Organisme sans but lucratif (OSBL) constitué au Québec',
     legalLink: 'Informations légales',
     whoText:
       "L'Institut interculturel Matin est un organisme à but non lucratif montréalais qui rassemble des personnes de toutes origines par le dialogue, les arts et la recherche, pour bâtir la compréhension mutuelle et un sentiment d'appartenance partagé.",
@@ -624,7 +624,6 @@ const fr = {
     basisValue: 'Partie III de la Loi sur les compagnies (chapitre C-38)',
     registry: "Autorité d'immatriculation",
     registryValue: 'Registraire des entreprises du Québec',
-    neq: "Numéro d'entreprise du Québec (NEQ)",
     representative: 'Fondateur et représentant',
     website: 'Site officiel',
     email: 'Courriel officiel',
@@ -638,7 +637,6 @@ const fr = {
     newsletterTitle: 'Infolettre',
     rights: 'Tous droits réservés.',
     charity: "Numéro d'organisme de bienfaisance :",
-    neq: 'NEQ {neq}',
     about:
       "L'Institut interculturel Matin est un organisme à but non lucratif montréalais qui se consacre à la planification culturelle, au dialogue interculturel et aux initiatives culturelles ancrées dans les communautés. Par la recherche, la collaboration et des projets culturels, Matin cherche à renforcer la place de la culture dans nos communautés et dans la vie publique.",
   },

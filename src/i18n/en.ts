@@ -92,7 +92,7 @@ const en: Dictionary = {
       'A Montréal non-profit organization (NGO) where cultures meet, listen, and create together — rooted in Québec, open to the world.',
     whoTitle: 'Who We Are',
     positioning: 'Locally Rooted, Globally Connected',
-    legalLine: 'Nonprofit corporation incorporated in Québec · NEQ {neq}',
+    legalLine: 'Nonprofit corporation incorporated in Québec',
     legalLink: 'Legal Information',
     whoText:
       'Matin Intercultural Institute is a Montréal-based non-profit that brings together people of all origins through dialogue, the arts, and research, to build mutual understanding and a shared sense of belonging.',
@@ -618,7 +618,6 @@ const en: Dictionary = {
     basisValue: 'Part III of the Québec Companies Act (Loi sur les compagnies, chapter C-38)',
     registry: 'Registration authority',
     registryValue: 'Registraire des entreprises du Québec',
-    neq: 'Québec Enterprise Number (NEQ)',
     representative: 'Founder and organizational representative',
     website: 'Official website',
     email: 'Official email',
@@ -632,7 +631,6 @@ const en: Dictionary = {
     newsletterTitle: 'Newsletter',
     rights: 'All rights reserved.',
     charity: 'Registered charity number:',
-    neq: 'NEQ {neq}',
     about:
       'Matin Intercultural Institute is a Montréal-based non-profit organization dedicated to cultural planning, intercultural dialogue, and community-based cultural initiatives. Through research, collaboration, and cultural projects, Matin seeks to strengthen the place of culture in our communities and public life.',
   },

@@ -30,11 +30,6 @@ export function organizationJsonLd(
           legalName: names.fr,
           foundingDate: legal.incorporated.toISOString().slice(0, 10),
           founder: { '@type': 'Person', name: legal.representative },
-          identifier: {
-            '@type': 'PropertyValue',
-            propertyID: "Numéro d'entreprise du Québec (NEQ)",
-            value: legal.neq,
-          },
         }
       : {}),
     slogan: lang === 'fr' ? 'Cultures en dialogue' : 'Cultures in Dialogue',

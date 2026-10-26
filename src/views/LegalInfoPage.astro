@@ -1,6 +1,6 @@
 ---
 /**
- * Legal Information: the institute's legal identity (names, nonprofit status, NEQ,
+ * Legal Information: the institute's legal identity (names, nonprofit status,
  * incorporation, official domain and email, address). The address is the city only
  * (Montréal, Québec, Canada) unless a street address is set in site.yaml.
  */
@@ -33,7 +33,6 @@ const rows: { label: string; value: string; href?: string; ltr?: boolean }[] = [
   { label: t('legalInfo.incorporated'), value: incorporated },
   { label: t('legalInfo.basis'), value: t('legalInfo.basisValue') },
   { label: t('legalInfo.registry'), value: t('legalInfo.registryValue') },
-  { label: t('legalInfo.neq'), value: legal.neq, ltr: true },
   { label: t('legalInfo.representative'), value: legal.representative, ltr: true },
   { label: t('legalInfo.website'), value: domain, href: legal.website, ltr: true },
   ...(email
