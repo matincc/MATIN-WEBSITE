@@ -311,7 +311,6 @@ const settings = defineCollection({
     legal: z
       .object({
         names: z.object({ fr: z.string(), en: z.string(), fa: z.string() }),
-        incorporated: z.coerce.date(),
         representative: z.string(),
         website: z.url(),
         /** Official email, shown on the Legal Information page and in structured data. */

@@ -12,6 +12,7 @@ These rules apply to every page, now and in the future. Read them before changin
   - **One approved exception (owner's decision, Oct 21 2026):** the President's biography keeps « university teaching » / « l'enseignement universitaire » / «تدریس در دانشگاه», because it describes his personal career, not Matin's services.
 - **Persian name (owner's decision, Oct 21 2026):** «مؤسسه میان‌فرهنگی متین» (with میان‌فرهنگی) everywhere. The general phrase «گفت‌وگوی بین‌فرهنگی» (intercultural dialogue) and other organizations' official names are unchanged.
 - **No NEQ (owner's decision, Oct 26 2026):** the Québec enterprise number (NEQ) is not shown anywhere on the site, in any language, nor in the structured data. Do not add it back.
+- **No incorporation date (owner's decision, Oct 26 2026):** the date of incorporation (October 14, 2026) is not shown anywhere on the site, in any language, nor in the structured data (`foundingDate`). Do not add it back.
 - **Legal identity (owner's brief, Oct 22 2026):** Matin is a Québec nonprofit (OSBL), set once in `legal` in `src/content/settings/site.yaml` and shown on the Legal Information page (`LegalInfoPage.astro`, linked from the footer, Home, About and Contact) and in the NGO structured data. The only address published is "Montréal, Québec, Canada" (owner's decision, Oct 22 2026): no street, apartment or postal code anywhere, including structured data. Never claim CRA charity status or any Google approval.
 - Tone: professional and credible, but warm and human. Not stiff, not overly casual.
 - No food or party imagery.

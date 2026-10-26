@@ -630,7 +630,6 @@ const fr = {
     statusValue: 'Organisme sans but lucratif (OSBL)',
     jurisdiction: 'Juridiction',
     jurisdictionValue: 'Québec, Canada',
-    incorporated: 'Date de constitution',
     basis: 'Loi constitutive',
     basisValue: 'Partie III de la Loi sur les compagnies (chapitre C-38)',
     registry: "Autorité d'immatriculation",

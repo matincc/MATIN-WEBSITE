@@ -567,7 +567,6 @@ const fa: DeepPartial<Dictionary> = {
     statusValue: 'شخصیت حقوقی غیرانتفاعی (OSBL)',
     jurisdiction: 'حوزه قضایی',
     jurisdictionValue: 'کبک، کانادا',
-    incorporated: 'تاریخ ثبت',
     basis: 'مبنای قانونی',
     basisValue: 'بخش سوم قانون شرکت‌های کبک (فصل C-38)',
     registry: 'مرجع ثبت',

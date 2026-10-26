@@ -625,7 +625,6 @@ const en: Dictionary = {
     statusValue: 'Nonprofit corporation (Organisme sans but lucratif, OSBL)',
     jurisdiction: 'Jurisdiction',
     jurisdictionValue: 'Québec, Canada',
-    incorporated: 'Date of incorporation',
     basis: 'Legal basis',
     basisValue: 'Part III of the Québec Companies Act (Loi sur les compagnies, chapter C-38)',
     registry: 'Registration authority',
