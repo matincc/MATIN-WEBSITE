@@ -1,5 +1,7 @@
 # French is the default language (Charte de la langue française).
-/            /fr/   301
+# "!" forces the redirect: without it Netlify serves the fallback dist/index.html
+# (which carries noindex) and Google reports https://matincc.ca/ as excluded by noindex.
+/            /fr/   301!
 
 # Get Involved is merged into Contact & Collaboration (Oct 2026); anchors follow the redirect.
 /fr/s-impliquer      /fr/contact/   301
