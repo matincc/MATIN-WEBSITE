@@ -435,7 +435,7 @@ const en: Dictionary = {
       'Organizations listed in this directory are provided for informational purposes. Inclusion does not imply partnership, endorsement, sponsorship, or institutional affiliation with Matin Intercultural Institute.',
     filterLabel: 'Filter by category',
     all: 'All',
-    municipal: 'Canadian Municipal Cultural Institutions',
+    municipal: 'Canadian Municipalities',
     municipalLede: 'The official cultural departments and resources of major Canadian cities.',
     federal: 'Canadian Federal Cultural Institutions',
     federalLede:
