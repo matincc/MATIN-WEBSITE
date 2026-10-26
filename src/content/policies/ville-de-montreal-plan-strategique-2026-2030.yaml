@@ -1,0 +1,16 @@
+# The City of Montréal's strategic plan (it succeeds the « Montréal 2030 » plan on the same
+# montreal.ca page). Verified 2026-10-26 on montreal.ca (page updated Oct 14, 2026); the
+# full document is linked from that page.
+title:
+  fr: 'Plan stratégique : Agir pour Montréal 2026-2030'
+  en: 'Strategic Plan: Taking Action for Montréal 2026-2030'
+publisher: 'Ville de Montréal'
+year: 2026
+jurisdiction: montreal
+url: https://montreal.ca/articles/plan-strategique-agir-pour-montreal-2026-2030-8318
+description:
+  fr: "Le principal outil de planification de la Ville de Montréal jusqu’en 2030. Il fixe six orientations : des milieux de vie exceptionnels, une métropole prospère et vivante, l’habitation pour tous et un filet social solide, une mobilité planifiée et inclusive, une ville verte et résiliente, et une administration performante."
+  en: "The City of Montréal’s main planning tool through 2030. It sets six priorities: exceptional living environments, a prosperous and vibrant metropolis, housing for all and a robust social safety net, planned and inclusive mobility, a green and resilient city, and efficient municipal management."
+  fa: 'اصلی‌ترین ابزار برنامه‌ریزی شهرداری مونترال تا سال ۲۰۳۰. این برنامه شش جهت‌گیری دارد: محیط‌های زندگی برجسته، کلان‌شهری شکوفا و پویا، مسکن برای همه و شبکهٔ حمایت اجتماعی قوی، جابه‌جایی برنامه‌ریزی‌شده و فراگیر، شهری سبز و تاب‌آور، و مدیریت شهری کارآمد.'
+order: 10
+published: true
