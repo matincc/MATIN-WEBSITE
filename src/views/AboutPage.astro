@@ -1,6 +1,6 @@
 ---
 /**
- * About page, in this order: Who We Are (photo, text and NEQ; moved here from the homepage,
+ * About page, in this order: Who We Are (photo, text and legal line; moved here from the homepage,
  * owner's brief Oct 25 2026), Our Mission (navy), Our Vision (deep teal) and Legal status
  * (aqua) as coloured cards on an ivory band, Our values (six coloured cards), Our story
  * (aqua band), A personal note from our President (owner's About brief, Oct 25 2026: no
@@ -44,7 +44,7 @@ const blocks: {
   /** Card surface: navy and teal are dark cards with white text, aqua a light one. */
   tone: string;
   link?: { href: string; label: string };
-  /** Short facts shown as a badge above the text (Legal status: the NEQ). */
+  /** Short facts shown as a badge above the text (none at the moment). */
   badge?: string;
 }[] = [
   {
@@ -70,7 +70,6 @@ const blocks: {
           accent: 'mustard',
           tone: 'aqua',
           link: { href: href('legalInfo', lang), label: t('about.legalMore') },
-          badge: t('footer.neq', { neq: settings.legal.neq }),
         },
       ]
     : []),
@@ -144,7 +143,7 @@ const founderRole = pick(president.signature, lang) || pick(president.title, lan
         <p class="who-text">{t('home.whoText')}</p>
         {settings.legal && (
           <p class="who-legal">
-            {t('home.legalLine', { neq: settings.legal.neq })} ·{' '}
+            {t('home.legalLine')} ·{' '}
             <a href={href('legalInfo', lang)} class="font-semibold underline">
               {t('home.legalLink')}
             </a>

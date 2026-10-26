@@ -149,11 +149,6 @@ const hasContact = Boolean(a || s.phone || s.email);
     <div class="container-site flex flex-col gap-4 py-7 text-[1.0625rem] md:flex-row md:items-center md:justify-between">
       <p>
         © {year} {t('meta.siteName')}. {t('footer.rights')}
-        {s.legal && (
-          <span class="block md:ms-1 md:inline" dir="ltr">
-            {t('footer.neq', { neq: s.legal.neq })}
-          </span>
-        )}
         {s.charityNumber && (
           <span class="block md:inline">
             {t('footer.charity')} {s.charityNumber}

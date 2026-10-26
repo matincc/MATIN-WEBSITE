@@ -311,7 +311,6 @@ const settings = defineCollection({
     legal: z
       .object({
         names: z.object({ fr: z.string(), en: z.string(), fa: z.string() }),
-        neq: z.string().regex(/^\d{10}$/),
         incorporated: z.coerce.date(),
         representative: z.string(),
         website: z.url(),
