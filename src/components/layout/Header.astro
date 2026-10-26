@@ -4,7 +4,7 @@ import Lockup from '@/components/brand/Lockup.astro';
 import LangToggle from './LangToggle.astro';
 import { newsAnchors, href, type Alternates, type RouteKey, type UiLang } from '@/i18n/routes';
 import { useTranslations } from '@/i18n/ui';
-import { getUpcomingEvents, picksOf } from '@/lib/content';
+import { getNetworks, getUpcomingEvents, picksOf } from '@/lib/content';
 
 interface Props {
   lang: UiLang;
@@ -12,7 +12,7 @@ interface Props {
 }
 const { lang, alternates } = Astro.props;
 const t = useTranslations(lang);
-/** Adds #id to a page URL (after ?from=fa when there is one). */
+/** Adds #id to a page URL. */
 const anchor = (url: string, id: string) => `${url}#${id}`;
 
 // Main menu, in this order (owner's brief, Oct 24 2026): Gallery and Resources join the
@@ -32,12 +32,11 @@ const aboutHref = href('about', lang);
 // Sub-links of "About": only Who We Are and the President's note. Mission, Vision,
 // Values, Our Story and Legal status stay on the About page with their anchors
 // (#mission, #vision, #values, #story, #legal-status), so old links keep working.
-// The Persian About page has no Who We Are block, so that link opens the page itself.
 const aboutLinks = [
   {
     id: 'who-we-are',
     label: t('nav.whoWeAre'),
-    href: lang === 'fa' ? aboutHref : `${aboutHref}#who-we-are`,
+    href: `${aboutHref}#who-we-are`,
   },
   { id: 'president', label: t('nav.president'), href: `${aboutHref}#president` },
 ];
@@ -74,9 +73,14 @@ const galleryLinks = [
   { id: 'posters', label: t('gallery.filterPosters') },
 ].map((l) => ({ ...l, href: anchor(galleryHref, l.id) }));
 const resourcesHref = href('resources', lang);
+// Until International Cultural Networks has entries, its link opens the directory's
+// international category instead (the networks section is hidden while empty).
+const hasNetworks = (await getNetworks()).length > 0;
 const resourcesLinks = [
   { id: 'directory', label: t('nav.resourcesDirectory') },
-  { id: 'networks', label: t('resources.networksTitle') },
+  hasNetworks
+    ? { id: 'networks', label: t('resources.networksTitle') }
+    : { id: 'cat-international', label: t('resources.international') },
   { id: 'policy', label: t('resources.policyTitle') },
 ].map((l) => ({ ...l, href: anchor(resourcesHref, l.id) }));
 // Menu items that open a dropdown.

@@ -6,6 +6,8 @@
 mission:
   fr: "Promouvoir le dialogue interculturel, l'équité et les échanges culturels au Québec, au Canada et à l'international. Nous soutenons l'accueil et la pleine participation des personnes immigrantes, mettons en valeur les arts et le patrimoine des diverses communautés, faisons avancer la recherche et les publications sur l'interculturalité, et renforçons les liens entre les jeunes, les familles et les personnes aînées."
   en: 'To promote intercultural dialogue, equity, and cultural exchange in Québec, Canada, and internationally. We support the welcoming and full participation of immigrants, celebrate the arts and heritage of diverse communities, advance research and publications on interculturality, and strengthen ties between youth, families, and seniors.'
+  # Persian: same text as in the article « Introducing Matin » (to be reviewed by the owner).
+  fa: 'ترویج گفت‌وگوی بین‌فرهنگی، برابری و تبادل فرهنگی در کبک، کانادا و در سطح بین‌المللی. ما از پذیرش و مشارکت کامل مهاجران پشتیبانی می‌کنیم، هنر و میراث جوامع گوناگون را ارج می‌نهیم، پژوهش و انتشارات دربارهٔ میان‌فرهنگی‌بودن را پیش می‌بریم و پیوند میان جوانان، خانواده‌ها و سالمندان را استوارتر می‌کنیم.'
 phone: '+1 263 378-9340'
 email: info@matincc.ca
 # Identité légale : affichée sur la page « Informations légales » (lien dans le pied de page)
@@ -19,15 +21,13 @@ legal:
     fr: 'Institut interculturel Matin'
     en: 'Matin Intercultural Institute'
     fa: 'مؤسسه میان‌فرهنگی متین'
-  neq: '1182667569'
-  incorporated: 2026-10-14
   representative: 'Reza Moafi'
   website: https://matincc.ca
   email: admin@matincc.ca
   statement:
-    fr: "L'Institut interculturel Matin est un organisme sans but lucratif (OSBL) légalement constitué au Québec le 14 octobre 2026, en vertu de la partie III de la Loi sur les compagnies. Il est immatriculé au Registraire des entreprises du Québec sous le numéro d'entreprise du Québec (NEQ) 1182667569."
-    en: 'Matin Intercultural Institute is a nonprofit corporation legally incorporated in Québec, Canada, on October 14, 2026, under Part III of the Québec Companies Act. The organization is registered with the Registraire des entreprises du Québec under Québec Enterprise Number (NEQ) 1182667569.'
-    fa: 'مؤسسه میان‌فرهنگی متین یک شخصیت حقوقی غیرانتفاعی است که در تاریخ ۱۴ اکتبر ۲۰۲۶، مطابق بخش سوم قانون شرکت‌های کبک، به ثبت رسیده است. شماره ثبت مؤسسه در اداره ثبت شرکت‌های کبک (NEQ) برابر با ۱۱۸۲۶۶۷۵۶۹ است.'
+    fr: "L'Institut interculturel Matin est un organisme sans but lucratif (OSBL) légalement constitué au Québec en vertu de la partie III de la Loi sur les compagnies. Il est immatriculé au Registraire des entreprises du Québec."
+    en: 'Matin Intercultural Institute is a nonprofit corporation legally incorporated in Québec, Canada, under Part III of the Québec Companies Act. The organization is registered with the Registraire des entreprises du Québec.'
+    fa: 'مؤسسه میان‌فرهنگی متین یک شخصیت حقوقی غیرانتفاعی است که مطابق بخش سوم قانون شرکت‌های کبک به ثبت رسیده است. مرجع ثبت آن، اداره ثبت شرکت‌های کبک است.'
 social:
   youtube: https://www.youtube.com/@matin.institute
   linkedin: https://www.linkedin.com/company/matin-intercultural-institute/

@@ -5,12 +5,15 @@ organizer:
 title:
   fr: 'Mundial Montréal 2026'
   en: 'Mundial Montréal 2026'
+  fa: 'موندیال مونترال ۲۰۲۶'
 summary:
   fr: "Le rendez-vous annuel des professionnels des musiques du monde : vitrines d'artistes venus de partout, soirées OFF Mundial dans des salles montréalaises et activités de réseautage. Un laissez-passer festival donne accès aux vitrines et aux soirées."
   en: 'The annual gathering of world music professionals: showcases by artists from around the globe, OFF Mundial nights in Montréal venues and networking activities. A festival pass gives access to the showcases and evening shows.'
+  fa: 'گردهمایی سالانهٔ حرفه‌ای‌های موسیقی جهان: اجراهای معرفی هنرمندانی از سراسر دنیا، شب‌های OFF Mundial در سالن‌های مونترال و برنامه‌های شبکه‌سازی. با کارت ورود جشنواره می‌توان در اجراهای معرفی و برنامه‌های شبانه شرکت کرد.'
 whyItMatters:
   fr: 'Montréal y accueille des artistes du monde entier : un exemple de collaboration culturelle internationale ancrée dans la ville.'
   en: 'Montréal welcomes artists from around the world: an example of international cultural collaboration rooted in the city.'
+  fa: 'مونترال میزبان هنرمندانی از سراسر جهان است؛ نمونه‌ای از همکاری فرهنگی بین‌المللی که در دل این شهر ریشه دارد.'
 subject: arts
 region: montreal
 city: Montréal
@@ -31,3 +34,4 @@ image: ../../assets/uploads/events/mundial-montreal-2026/mundial-2026.jpg
 imageAlt:
   fr: 'Visuel officiel de Mundial Montréal 2026 : cinq artistes aux tenues colorées sur fond bleu vif.'
   en: 'Official Mundial Montréal 2026 visual: five artists in colourful outfits on a bright blue background.'
+  fa: 'تصویر رسمی موندیال مونترال ۲۰۲۶: پنج هنرمند با لباس‌های رنگارنگ روی زمینهٔ آبی روشن.'

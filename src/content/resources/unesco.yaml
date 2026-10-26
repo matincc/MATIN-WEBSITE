@@ -1,0 +1,16 @@
+# Directory entry: see README.md. A listing never implies a partnership.
+# Name and official website checked on 2026-10-25. Official logo not added yet:
+# the card shows the name until a verified logo file is set in `logo`.
+name: "UNESCO — Organisation des Nations Unies pour l'éducation, la science et la culture"
+nameEn: 'UNESCO — United Nations Educational, Scientific and Cultural Organization'
+category: international
+url: https://www.unesco.org/creativity/en
+label:
+  fr: 'UNESCO'
+  en: 'UNESCO'
+description:
+  fr: 'Institution spécialisée des Nations Unies qui soutient la diversité culturelle, la protection du patrimoine, les politiques culturelles et la coopération culturelle internationale.'
+  en: 'United Nations specialized agency supporting cultural diversity, heritage protection, cultural policies, and international cultural cooperation.'
+  fa: 'نهاد تخصصی سازمان ملل متحد که از تنوع فرهنگی، حفاظت از میراث، سیاست‌های فرهنگی و همکاری فرهنگی بین‌المللی حمایت می‌کند.'
+order: 10
+published: true

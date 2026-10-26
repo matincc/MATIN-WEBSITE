@@ -1,0 +1,15 @@
+# Directory entry: see README.md. A listing never implies a partnership.
+# Name and official cultural page checked on 2026-10-25. Official logo not added yet:
+# the card shows the name until a verified logo file is set in `logo`.
+name: 'Ville de Québec — Culture et patrimoine'
+category: municipal
+url: https://www.ville.quebec.qc.ca/apropos/planification-orientations/culture-et-patrimoine/index.aspx
+label:
+  fr: 'Ville de Québec'
+  en: 'Ville de Québec'
+description:
+  fr: "Les services culturels municipaux de la Ville de Québec soutiennent la planification culturelle, la préservation du patrimoine, l'art public, l'accès à la culture et la mise en œuvre de la Politique culturelle 2025-2030 de la Ville."
+  en: "Québec City's municipal cultural services support cultural planning, heritage preservation, public art, access to culture, and implementation of the city's Cultural Policy 2025–2030."
+  fa: 'خدمات فرهنگی شهرداری شهر کبک از برنامه‌ریزی فرهنگی، حفاظت از میراث، هنر عمومی، دسترسی به فرهنگ و اجرای سیاست فرهنگی ۲۰۲۵–۲۰۳۰ این شهر حمایت می‌کنند.'
+order: 60
+published: true

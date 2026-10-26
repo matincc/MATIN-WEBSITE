@@ -1,0 +1,15 @@
+# Directory entry: see README.md. A listing never implies a partnership.
+# Name and official cultural page checked on 2026-10-25. Official logo not added yet:
+# the card shows the name until a verified logo file is set in `logo`.
+name: 'City of Vancouver — Arts and Culture'
+category: municipal
+url: https://vancouver.ca/parks-recreation-culture/arts-and-culture.aspx
+label:
+  fr: 'City of Vancouver'
+  en: 'City of Vancouver'
+description:
+  fr: "Les programmes municipaux d'arts et de culture de Vancouver, qui soutiennent l'art public, les espaces culturels, les communautés créatives et les initiatives culturelles sans but lucratif."
+  en: "Vancouver's municipal arts and culture programmes, supporting public art, cultural spaces, creative communities, and nonprofit cultural initiatives."
+  fa: 'برنامه‌های هنری و فرهنگی شهرداری ونکوور که از هنر عمومی، فضاهای فرهنگی، جامعه‌های خلاق و ابتکارهای فرهنگی غیرانتفاعی حمایت می‌کنند.'
+order: 30
+published: true

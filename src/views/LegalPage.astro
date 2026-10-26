@@ -1,13 +1,13 @@
 ---
 import PageLayout from '@/layouts/PageLayout.astro';
 import Prose from '@/components/ui/Prose.astro';
-import { alternatesFor, path, type Lang } from '@/i18n/routes';
+import { href, siteAlternates, type UiLang } from '@/i18n/routes';
 import { useTranslations, pick } from '@/i18n/ui';
 import { getLegal, getSettings, renderMarkdown } from '@/lib/content';
 import { formatDate } from '@/lib/dates';
 
 interface Props {
-  lang: Lang;
+  lang: UiLang;
   page: 'privacy' | 'terms' | 'accessibility';
 }
 const { lang, page } = Astro.props;
@@ -19,9 +19,9 @@ const officer = settings.privacyOfficer;
 // so the policy always shows the details from the site settings. Until a person is
 // named there, the policy points to the Contact page.
 const officerMd = officer
-  ? `**${officer.name}**, ${officer.title[lang]}  \n[${officer.email}](mailto:${officer.email})`
-  : t('legal.officerFallback', { href: path('contact', lang) });
-const body = doc.body[lang].replaceAll('{{privacyOfficer}}', officerMd);
+  ? `**${officer.name}**, ${pick(officer.title, lang)}  \n[${officer.email}](mailto:${officer.email})`
+  : t('legal.officerFallback', { href: href('contact', lang) });
+const body = pick(doc.body, lang)!.replaceAll('{{privacyOfficer}}', officerMd);
 
 // Give each section heading an anchor and list them in the "On this page" contents.
 const slug = (text: string) =>
@@ -40,7 +40,7 @@ const html = renderMarkdown(body, lang).replace(/<h2>(.*?)<\/h2>/g, (_, inner: s
 });
 ---
 
-<PageLayout lang={lang} title={pick(doc.title, lang)!} alternates={alternatesFor(page)}>
+<PageLayout lang={lang} title={pick(doc.title, lang)!} alternates={siteAlternates(page)}>
   <p slot="hero" class="mt-6 text-sm text-muted">
     {t('legal.updated', { date: formatDate(doc.updated, lang) })}
   </p>

@@ -31,8 +31,8 @@ const biOpt = z
   .object({ fr: z.string().default(''), en: z.string().default(''), fa: z.string().optional() })
   .optional();
 /**
- * Set to true once the Persian (fa) texts of an entry have been reviewed; only then
- * does the entry appear on Persian pages.
+ * Set to true once the Persian (fa) texts of an entry have been reviewed by the owner.
+ * Persian pages show every entry either way (English text where Persian is missing).
  */
 const faReviewed = z.boolean().default(false);
 /** Localized URL slugs; fall back to the file name when absent. */
@@ -311,8 +311,6 @@ const settings = defineCollection({
     legal: z
       .object({
         names: z.object({ fr: z.string(), en: z.string(), fa: z.string() }),
-        neq: z.string().regex(/^\d{10}$/),
-        incorporated: z.coerce.date(),
         representative: z.string(),
         website: z.url(),
         /** Official email, shown on the Legal Information page and in structured data. */
@@ -545,6 +543,13 @@ const resources = defineCollection({
       name: z.string().min(1),
       /** English form of the name, only when the organization uses a different one. */
       nameEn: z.string().optional(),
+      /**
+       * The short, clickable name on the card (e.g. « CALQ », "NFB / ONF"), per language;
+       * Persian falls back to English. Without it, the card shows the name.
+       */
+      label: biOpt,
+      /** Short kind shown on the card (e.g. "Municipal public body"), only where useful. */
+      kind: biOpt,
       category: z.enum(resourceCategories),
       /** Official website (opens in a new tab). */
       url: z.url().refine((u) => u.startsWith('https://'), 'Use the https:// address'),

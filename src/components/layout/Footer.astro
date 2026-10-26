@@ -54,7 +54,7 @@ const hasContact = Boolean(a || s.phone || s.email);
     <span></span>
   </div>
   <div class="container-site grid gap-12 pt-16 pb-12 md:grid-cols-2 lg:grid-cols-12">
-    <div class:list={[hasContact || s.hours ? 'lg:col-span-4' : 'lg:col-span-5']}>
+    <div class:list={[hasContact || s.hours ? 'lg:col-span-3 2xl:col-span-4' : 'lg:col-span-5']}>
       <div class="mb-6">
         <Lockup lang={lang} variant="dark" />
       </div>
@@ -77,7 +77,7 @@ const hasContact = Boolean(a || s.phone || s.email);
     </nav>
 
     {(hasContact || s.hours) && (
-      <div class:list={[showNewsletter ? 'lg:col-span-2' : 'lg:col-span-3']}>
+      <div class:list={[showNewsletter ? 'lg:col-span-3 2xl:col-span-2' : 'lg:col-span-3']}>
         {hasContact && (
           <>
             <h2 class="footer-title">{t('footer.contactTitle')}</h2>
@@ -96,7 +96,11 @@ const hasContact = Boolean(a || s.phone || s.email);
               {s.phone && (
                 <p class="flex gap-3">
                   <Phone size={18} class="mt-1 shrink-0 text-cream" aria-hidden="true" />
-                  <a href={`tel:${s.phone.replace(/[^\d+]/g, '')}`} class="footer-link" dir="ltr">
+                  <a
+                    href={`tel:${s.phone.replace(/[^\d+]/g, '')}`}
+                    class="footer-link whitespace-nowrap"
+                    dir="ltr"
+                  >
                     {s.phone}
                   </a>
                 </p>
@@ -104,7 +108,7 @@ const hasContact = Boolean(a || s.phone || s.email);
               {s.email && (
                 <p class="flex gap-3">
                   <Mail size={18} class="mt-1 shrink-0 text-cream" aria-hidden="true" />
-                  <a href={`mailto:${s.email}`} class="footer-link break-all" dir="ltr">
+                  <a href={`mailto:${s.email}`} class="footer-link whitespace-nowrap" dir="ltr">
                     {s.email}
                   </a>
                 </p>
@@ -149,11 +153,6 @@ const hasContact = Boolean(a || s.phone || s.email);
     <div class="container-site flex flex-col gap-4 py-7 text-[1.0625rem] md:flex-row md:items-center md:justify-between">
       <p>
         © {year} {t('meta.siteName')}. {t('footer.rights')}
-        {s.legal && (
-          <span class="block md:ms-1 md:inline" dir="ltr">
-            {t('footer.neq', { neq: s.legal.neq })}
-          </span>
-        )}
         {s.charityNumber && (
           <span class="block md:inline">
             {t('footer.charity')} {s.charityNumber}

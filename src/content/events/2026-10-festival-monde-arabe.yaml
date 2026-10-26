@@ -5,12 +5,15 @@ organizer:
 title:
   fr: 'Festival du Monde Arabe de Montréal, 27e édition'
   en: 'Festival du Monde Arabe de Montréal, 27th edition'
+  fa: 'جشنوارهٔ جهان عرب مونترال، بیست‌وهفتمین دوره'
 summary:
   fr: "Pendant un peu plus de deux semaines, le festival présente des spectacles de musique et d'arts de la scène ancrés dans les cultures du monde arabe, dans plusieurs salles de Montréal."
   en: 'For a little over two weeks, the festival presents music and performing-arts shows rooted in the cultures of the Arab world, in several Montréal venues.'
+  fa: 'این جشنواره در بیش از دو هفته، اجراهای موسیقی و هنرهای نمایشی برگرفته از فرهنگ‌های جهان عرب را در چند سالن مونترال به صحنه می‌برد.'
 whyItMatters:
   fr: 'Un rendez-vous montréalais de longue date où les arts servent de pont entre les cultures.'
   en: 'A long-standing Montréal gathering where the arts act as a bridge between cultures.'
+  fa: 'گردهمایی دیرینه‌ای در مونترال که در آن هنر پلی میان فرهنگ‌ها می‌شود.'
 subject: arts
 region: montreal
 city: Montréal
@@ -30,3 +33,4 @@ image: ../../assets/uploads/events/festival-monde-arabe-2026/fma-2026.jpg
 imageAlt:
   fr: 'Visuel officiel 2026 du Festival du Monde Arabe de Montréal : une frise ancienne et des tapis aux tons rouges et dorés.'
   en: 'Official 2026 visual of the Festival du Monde Arabe de Montréal: an ancient frieze and carpets in red and gold tones.'
+  fa: 'تصویر رسمی ۲۰۲۶ جشنوارهٔ جهان عرب مونترال: نقش‌برجسته‌ای کهن و فرش‌هایی با رنگ‌های سرخ و طلایی.'
