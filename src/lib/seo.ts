@@ -28,7 +28,6 @@ export function organizationJsonLd(
     ...(legal
       ? {
           legalName: names.fr,
-          foundingDate: legal.incorporated.toISOString().slice(0, 10),
           founder: { '@type': 'Person', name: legal.representative },
         }
       : {}),

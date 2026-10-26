@@ -1,7 +1,7 @@
 ---
 /**
  * Legal Information: the institute's legal identity (names, nonprofit status,
- * incorporation, official domain and email, address). The address is the city only
+ * legal basis, official domain and email, address). The address is the city only
  * (Montréal, Québec, Canada) unless a street address is set in site.yaml.
  */
 import PageLayout from '@/layouts/PageLayout.astro';
@@ -17,20 +17,12 @@ const t = useTranslations(lang);
 const s = await getSettings();
 const legal = s.legal!;
 const a = legal.registeredAddress;
-const locale = { fr: 'fr-CA', en: 'en-CA', fa: 'fa-IR-u-ca-gregory' }[lang];
-const incorporated = new Intl.DateTimeFormat(locale, {
-  day: 'numeric',
-  month: 'long',
-  year: 'numeric',
-  timeZone: 'UTC',
-}).format(legal.incorporated);
 const domain = new URL(legal.website).host;
 const email = legal.email;
 
 const rows: { label: string; value: string; href?: string; ltr?: boolean }[] = [
   { label: t('legalInfo.status'), value: t('legalInfo.statusValue') },
   { label: t('legalInfo.jurisdiction'), value: t('legalInfo.jurisdictionValue') },
-  { label: t('legalInfo.incorporated'), value: incorporated },
   { label: t('legalInfo.basis'), value: t('legalInfo.basisValue') },
   { label: t('legalInfo.registry'), value: t('legalInfo.registryValue') },
   { label: t('legalInfo.representative'), value: legal.representative, ltr: true },
