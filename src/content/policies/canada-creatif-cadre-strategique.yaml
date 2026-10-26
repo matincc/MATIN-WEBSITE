@@ -1,0 +1,15 @@
+# The federal cultural policy framework (2017), still published on canada.ca (verified
+# 2026-10-26; no newer national framework found). Owner's decision (Oct 26 2026): French
+# title in all three languages; description only from the official text.
+title:
+  fr: 'Le cadre stratégique du Canada créatif'
+publisher: 'Gouvernement du Canada'
+year: 2017
+jurisdiction: canada
+url: https://www.canada.ca/content/dam/pch/documents/campaigns/creative-canada/CCCadreFramework-FR.pdf
+description:
+  fr: "Selon le gouvernement du Canada, « un Canada créatif traduit notre nouvelle vision des industries créatives et l’approche que nous comptons adopter pour stimuler la croissance économique de ce secteur ». Trois piliers : investir dans les créateurs et les entrepreneurs culturels canadiens et leurs récits ; promouvoir la découverte et la distribution à l’échelle nationale et internationale ; revitaliser la radiodiffusion publique et appuyer la diffusion de nouvelles locales."
+  en: "The Government of Canada’s vision for the creative industries and its approach to stimulating the sector’s economic growth. Three pillars: invest in Canadian creators, cultural entrepreneurs and their stories; promote discovery and distribution at home and globally; strengthen public broadcasting and support local news."
+  fa: 'چشم‌انداز دولت کانادا برای صنایع خلاق و رویکرد آن برای رشد اقتصادی این بخش. سه ستون: سرمایه‌گذاری روی آفرینندگان و کارآفرینان فرهنگی کانادایی و روایت‌هایشان؛ معرفی و پخش محتوای کانادایی در داخل و خارج از کشور؛ و نیرو بخشیدن به رسانهٔ عمومی و پشتیبانی از خبر محلی.'
+order: 30
+published: true
