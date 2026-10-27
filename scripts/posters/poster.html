@@ -147,6 +147,29 @@
         font-size: 33px;
         line-height: 1.5;
       }
+      /* Lively, full-colour grounds (owner's request, Oct 27 2026: "more colour, more life"). */
+      body[data-poster='cafe'] {
+        background: var(--teal-deep);
+      }
+      body[data-poster='quartier'] {
+        background: var(--brick);
+      }
+      body[data-poster] .institute,
+      body[data-poster] h1 {
+        color: var(--paper);
+      }
+      body[data-poster='cafe'] .sub {
+        color: var(--gold);
+      }
+      body[data-poster='quartier'] .sub {
+        color: var(--cream);
+      }
+      body[data-poster] .logo {
+        box-shadow: 0 6px 18px rgba(0, 0, 0, 0.3);
+      }
+      body[data-poster] .card {
+        box-shadow: 0 12px 30px rgba(0, 0, 0, 0.28);
+      }
       .art {
         position: relative;
         flex: 1;
@@ -325,6 +348,7 @@
           },
         },
       };
+      document.body.dataset.poster = which;
       const rtl = lang === 'fa';
       document.documentElement.dir = rtl ? 'rtl' : 'ltr';
       document.documentElement.lang = lang;
@@ -337,7 +361,7 @@
       set('soon', T.soon[lang]);
       set('foot', T.foot[lang]);
       document.querySelector('.card').style.borderTopColor =
-        which === 'cafe' ? 'var(--teal)' : 'var(--coral)';
+        which === 'cafe' ? 'var(--gold)' : 'var(--gold)';
 
       // ---------- Illustration helpers (flat shapes only) ----------
       const C = {
@@ -490,10 +514,11 @@
       let svg = '';
       if (which === 'cafe') {
         // Warm room: cream wall, overlapping "dialogue" circles, a round table.
-        svg += `<rect width="${W}" height="${H}" fill="${C.cream}"/>`;
-        svg += `<circle cx="160" cy="${H * 0.36}" r="190" fill="${C.teal}" fill-opacity="0.22"/>`;
-        svg += `<circle cx="${W - 150}" cy="${H * 0.3}" r="170" fill="${C.coral}" fill-opacity="0.22"/>`;
-        svg += `<circle cx="${W / 2}" cy="${H * 0.18}" r="120" fill="${C.gold}" fill-opacity="0.25"/>`;
+        svg += `<clipPath id="wall"><rect x="30" y="0" width="${W - 60}" height="${H - 20}" rx="34"/></clipPath>`;
+        svg += `<g clip-path="url(#wall)"><rect width="${W}" height="${H}" fill="${C.gold}"/>`;
+        svg += `<circle cx="170" cy="${H * 0.36}" r="190" fill="${C.coral}" fill-opacity="0.85"/>`;
+        svg += `<circle cx="${W - 160}" cy="${H * 0.32}" r="175" fill="${C.teal}" fill-opacity="0.8"/>`;
+        svg += `<circle cx="${W / 2}" cy="${H * 0.2}" r="130" fill="${C.paper}" fill-opacity="0.55"/></g>`;
         // window with Montréal-ish rooftops
         svg += `<rect x="${W / 2 - 150}" y="18" width="300" height="150" rx="18" fill="${C.aqua}"/>`;
         svg += `<path d="M ${W / 2 - 150} 150 L ${W / 2 - 110} 112 L ${W / 2 - 70} 132 L ${W / 2 - 30} 96 L ${W / 2 + 10} 126 L ${W / 2 + 60} 84 L ${W / 2 + 100} 118 L ${W / 2 + 150} 100 L ${W / 2 + 150} 168 L ${W / 2 - 150} 168 Z" fill="${C.tealDeep}" fill-opacity="0.55"/>`;
@@ -518,7 +543,7 @@
           s: 0.95,
           skin: skins[0],
           hair: hairs[3],
-          top: C.gold,
+          top: C.paper,
           style: 'long',
           legs: false,
           scarf: C.coral,
@@ -552,12 +577,11 @@
           arm: 'down',
         });
         // speech bubbles
-        svg += bubble(150, base - 170, 150, 82, C.coral, 'right', 'heart');
+        svg += bubble(150, base - 170, 150, 82, C.paper, 'right', 'heart', C.coral);
         svg += bubble(W / 2 - 60, base - 215, 150, 82, C.tealDeep, 'left', 'globe');
-        svg += bubble(W - 360, base - 165, 150, 82, C.gold, 'left', 'dots', C.navy);
+        svg += bubble(W - 360, base - 165, 150, 82, C.navy, 'left', 'dots', C.gold);
       } else {
         // A neighbourhood map: blocks, streets, a park and a river, pins and people.
-        svg += `<rect width="${W}" height="${H}" fill="${C.cream}"/>`;
         const map = [];
         map.push(
           `<rect x="40" y="10" width="${W - 80}" height="${H - 60}" rx="30" fill="${C.paper}"/>`,
@@ -569,7 +593,7 @@
         // blocks
         const cols = [70, 250, 430, 610];
         const rows = [40, 170];
-        const fills = [C.cream, '#EED9C4', '#F3E3C3', '#E5EEEF'];
+        const fills = [C.coral, C.gold, C.teal, C.cream];
         rows.forEach((ry, i) =>
           cols.forEach((cx, j) =>
             map.push(
@@ -579,10 +603,10 @@
         );
         // park
         map.push(
-          `<rect x="430" y="40" width="160" height="110" rx="14" fill="${C.gold}" fill-opacity="0.45"/>`,
+          `<rect x="430" y="40" width="160" height="110" rx="14" fill="${C.tealDeep}"/>`,
         );
         map.push(
-          `<circle cx="480" cy="85" r="22" fill="${C.teal}" fill-opacity="0.7"/><circle cx="540" cy="105" r="18" fill="${C.teal}" fill-opacity="0.7"/>`,
+          `<circle cx="480" cy="85" r="22" fill="${C.gold}"/><circle cx="540" cy="105" r="18" fill="${C.gold}"/>`,
         );
         // streets
         map.push(`<path d="M 40 155 L ${W - 40} 155" stroke="${C.paper}" stroke-width="18"/>`);
@@ -653,7 +677,7 @@
         svg += `<rect x="178" y="${base - 120}" width="58" height="58" rx="8" fill="${C.gold}" transform="rotate(-8 207 ${base - 91})"/>`;
         svg += `<path d="M 190 ${base - 98} h 32 M 190 ${base - 84} h 24" stroke="${C.navy}" stroke-width="5" stroke-linecap="round" transform="rotate(-8 207 ${base - 91})"/>`;
         svg += bubble(380, base - 104, 130, 72, C.tealDeep, 'left', 'bulb');
-        svg += bubble(590, base - 118, 130, 72, C.coral, 'left', 'heart');
+        svg += bubble(590, base - 118, 130, 72, C.navy, 'left', 'heart', C.coral);
       }
       art.insertAdjacentHTML(
         'afterbegin',
