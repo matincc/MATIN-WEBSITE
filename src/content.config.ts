@@ -303,6 +303,51 @@ const comingSoon = defineCollection({
     }),
 });
 
+/**
+ * "Cultures on Screen" (Matin Alive, owner's brief Oct 27 2026): a curated video collection
+ * on the homepage. One YAML file per video; see src/content/screen/README.md. Only official
+ * embeds (YouTube via youtube-nocookie, Instagram as a link to the original post) or a file
+ * Matin may host, which requires documented written permission. Never a scraped or
+ * downloaded social-media video. Creator and original source are always shown.
+ */
+const screen = defineCollection({
+  loader: yaml('screen'),
+  schema: ({ image }) =>
+    z
+      .object({
+        kind: z.enum(['matin', 'partner', 'creator', 'documentary', 'community']),
+        title: bi,
+        summary: biOpt,
+        creator: z.object({ name: z.string().min(1), url: z.url().optional() }),
+        platform: z.enum(['youtube', 'instagram', 'file']),
+        /** YouTube link or ID (platform: youtube). */
+        youtube: youtube.optional(),
+        /** The original post or page: always required, always linked. */
+        sourceUrl: z.url(),
+        /** A video file in public/media/ (platform: file), only with documented rights. */
+        file: videoFile.optional(),
+        /** Still image stored on this site (never copied from the platform without rights). */
+        poster: image().optional(),
+        posterAlt: biOpt,
+        rights: z
+          .object({
+            /** Who gave permission, how (email, contract), and when (YYYY-MM-DD). */
+            holder: z.string().min(1),
+            permission: z.string().min(1),
+            date: isoDate,
+          })
+          .optional(),
+        order: z.number().default(100),
+        published: z.boolean().default(true),
+      })
+      .refine((v) => v.platform !== 'file' || (v.file && v.rights), {
+        message: 'A hosted video file needs `file` and documented `rights`.',
+      })
+      .refine((v) => v.platform !== 'youtube' || Boolean(v.youtube), {
+        message: 'A YouTube video needs its `youtube` link.',
+      }),
+});
+
 const settings = defineCollection({
   loader: yaml('settings'),
   schema: z.object({
@@ -744,6 +789,7 @@ export const collections = {
   notes,
   highlights,
   comingSoon,
+  screen,
   settings,
   team,
   about,

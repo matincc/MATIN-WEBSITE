@@ -11,6 +11,8 @@
 @import '@fontsource-variable/dm-sans/index.css';
 /* Brand wordmark only ("Matin" in the header, footer and 404 page). */
 @import '@fontsource/playfair-display/800.css';
+/* Cultural News headlines (owner's request, Oct 27 2026: news should look like news). */
+@import '@fontsource/playfair-display/700.css';
 /* Persian pages only: the browser fetches it just where Persian text appears. */
 @import '@fontsource-variable/vazirmatn/index.css';
 
@@ -33,6 +35,21 @@
   --matin-ink: #293442; /* body text */
   --matin-white: #ffffff; /* cards, text on navy */
   --matin-red: #b33b42; /* maple red: sparingly, only for the Canadian brand identity */
+}
+
+/*
+ * Matin Alive (owner's brief, Oct 27 2026): the proposed homepage palette, used only by the
+ * homepage preview (.alive and its components) while the owner reviews it. Not a
+ * replacement for the colours above. Contrast (checked): cream on green 10.2, gold on
+ * green 6.8, cream on blue 8.2, gold on blue 5.4, green on gold 6.8, green on cream 10.2.
+ * Coral is a shape colour (2.6 on cream; 4.0 on green, large text only).
+ */
+:root {
+  --alive-green: #183f3b; /* deep green: hero panel, Faces & Voices, buttons */
+  --alive-coral: #e47a59; /* warm coral: shapes, edges, dots */
+  --alive-gold: #f2bd69; /* soft gold: labels and buttons on dark bands */
+  --alive-cream: #f6f0e6; /* warm cream: light bands, text on dark */
+  --alive-blue: #294a68; /* cultural blue: Coming up, Cultures on Screen */
 }
 
 /*
@@ -96,6 +113,8 @@
   --font-sans: 'DM Sans Variable', system-ui, -apple-system, 'Segoe UI', sans-serif;
   /* The "Matin" wordmark keeps the logo's serif. */
   --font-brand: 'Playfair Display', 'Georgia', 'Times New Roman', serif;
+  /* Newspaper serif for Cultural News headlines (owner's request, Oct 27 2026). */
+  --font-news: 'Playfair Display', 'Georgia', 'Times New Roman', serif;
 
   /* Cards (owner's brief, Oct 24 2026): a very light warm shadow at rest so they stand
      out from the warm-white page; floating menus and dialogs get the stronger one. */
@@ -137,6 +156,7 @@
   html[lang='fa'] {
     --font-sans: 'Vazirmatn Variable', Tahoma, 'Segoe UI', sans-serif;
     --font-display: 'Vazirmatn Variable', Tahoma, 'Segoe UI', sans-serif;
+    --font-news: 'Vazirmatn Variable', Tahoma, 'Segoe UI', sans-serif;
   }
   /* Latin-script text inside Persian pages (e.g. the logo) keeps the Latin font. */
   html[lang='fa'] [lang^='fr'],
@@ -570,39 +590,72 @@
   background: var(--color-primary);
   color: var(--color-white);
 }
-/* Cultural News (owner's request, Oct 27 2026): no boxed panel, straight on the page.
-   Text tabs on a navy rule, the active one underlined in gold. */
+/* Cultural News tabs on the navy band: outlined white pills, the active one filled gold
+   (navy on gold 5.3:1), on a gold rule. */
 .news-wire .is-enhanced > .region-tabs__list {
   display: flex;
   width: 100%;
-  gap: 0.25rem;
-  margin-block-end: 0.5rem;
-  padding: 0;
+  gap: 0.5rem;
+  margin-block-end: 1.75rem;
+  padding: 0 0 1rem;
   border: 0;
-  border-block-end: 2px solid var(--color-primary);
+  border-block-end: 2px solid var(--color-gold);
   border-radius: 0;
   background: none;
   box-shadow: none;
 }
 .news-wire .region-tab {
   min-height: 2.75rem;
-  margin-block-end: -2px;
-  padding: 0.6rem 0.9rem 0.5rem;
-  border-radius: 0;
-  border-block-end: 4px solid transparent;
-  background: none;
-  color: var(--color-ink);
+  padding: 0.5rem 1.35rem;
+  border: 2px solid color-mix(in srgb, var(--color-white) 60%, transparent);
+  background: transparent;
+  color: var(--color-white);
   box-shadow: none;
 }
 .news-wire .region-tab:hover {
-  background: none;
+  border-color: var(--color-white);
+  background: var(--color-white);
   color: var(--color-primary);
 }
 .news-wire .region-tab[aria-selected='true'] {
-  background: none;
+  border-color: var(--color-gold);
+  background: var(--color-gold);
   color: var(--color-primary);
-  border-block-end-color: var(--color-gold);
   box-shadow: none;
+}
+
+/* News bands (owner's requests, Oct 27 2026: much more colour; the news must stand out
+   from the background as boxes): the homepage News section and Cultural News on a deep
+   navy band with a gold edge, the stories as white cards. White titles, gold links. */
+.news-band,
+.news-cultural {
+  border-block: 6px solid var(--color-gold);
+  background: var(--color-primary);
+  color: var(--color-white);
+}
+.news-band .section-title,
+.news-cultural .section-title,
+.news-band .news-panel__title,
+.news-band p.section-subtitle,
+.news-cultural p.section-subtitle,
+.news-band .lede,
+.news-cultural .region-panel__title {
+  color: var(--color-white);
+}
+.news-band .link-arrow,
+.news-cultural .link-arrow {
+  color: var(--color-gold);
+  text-decoration: underline;
+  text-decoration-thickness: 2px;
+  text-underline-offset: 0.25em;
+}
+.news-band .link-arrow svg,
+.news-cultural .link-arrow svg {
+  color: var(--color-gold);
+}
+.news-band .link-arrow:hover,
+.news-cultural .link-arrow:hover {
+  color: var(--color-white);
 }
 
 .region-panel__title {

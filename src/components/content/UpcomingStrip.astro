@@ -1,0 +1,321 @@
+---
+/**
+ * "Coming up" (Matin Alive, owner's brief Oct 27 2026): the next activities of the
+ * agenda in one horizontal strip right under the hero, so upcoming dates are visible at
+ * once. Same data as the Events page (src/content/events/): Matin's own events link to
+ * their page, selected events to the organizer, clearly labelled. Hidden when the agenda
+ * is empty; ExpireEvents hides any item that ends between two builds.
+ */
+import { ArrowRight, ChevronLeft, ChevronRight, ExternalLink } from '@lucide/astro';
+import { baseLang, href as link, type UiLang } from '@/i18n/routes';
+import { pick, useTranslations } from '@/i18n/ui';
+import { aliveStrings } from '@/i18n/alive';
+import { cityOf, forLang, getUpcomingEvents, isMatinEvent, slugOf } from '@/lib/content';
+import { dateBadge } from '@/lib/dates';
+
+interface Props {
+  lang: UiLang;
+  limit?: number;
+}
+const { lang, limit = 8 } = Astro.props;
+const t = useTranslations(lang);
+const a = aliveStrings(lang);
+const events = forLang(await getUpcomingEvents(), lang)
+  .filter((e) => e.data.status !== 'cancelled')
+  .slice(0, limit)
+  .map((e) => {
+    const ours = isMatinEvent(e);
+    return {
+      id: e.id,
+      ours,
+      end: e.endDate.toISOString(),
+      href: ours ? link('events', lang, slugOf(e, baseLang(lang))) : e.data.eventUrl,
+      title: pick(e.data.title, lang) ?? '',
+      city: cityOf(e, lang),
+      badge: dateBadge(e.startDate, lang, e.data.timeZone),
+      subject: e.data.subject,
+    };
+  });
+const accents = ['coral', 'gold', 'blue', 'green'] as const;
+---
+
+{events.length > 0 && (
+  <section class="upcoming" aria-labelledby="upcoming-title" data-upcoming>
+    <div class="container-site upcoming__inner">
+      <h2 id="upcoming-title" class="upcoming__title">
+        <span class="upcoming__pulse" aria-hidden="true"></span>
+        {a.upcomingTitle}
+      </h2>
+      <ul class="upcoming__track" data-upcoming-track>
+        {events.map((e, i) => (
+          <li class="upcoming__item" data-event-end={e.end} data-tone={accents[i % accents.length]}>
+            <a
+              href={e.href}
+              class="upcoming__link"
+              target={e.ours ? undefined : '_blank'}
+              rel={e.ours ? undefined : 'noopener noreferrer'}
+            >
+              <span class="upcoming__date" aria-hidden="true">
+                <span class="upcoming__day">{e.badge.day}</span>
+                <span class="upcoming__month">{e.badge.month}</span>
+              </span>
+              <span class="upcoming__body">
+                <span class:list={['upcoming__kind', e.ours && 'is-matin']}>
+                  {e.ours ? a.upcomingMatin : a.upcomingSelected}
+                </span>
+                <span class="upcoming__name">{e.title}</span>
+                <span class="upcoming__city">{e.city}</span>
+              </span>
+              {!e.ours && (
+                <>
+                  <ExternalLink size={16} class="upcoming__ext" aria-hidden="true" />
+                  <span class="sr-only">{t('a11y.externalLink')}</span>
+                </>
+              )}
+            </a>
+          </li>
+        ))}
+      </ul>
+      <div class="upcoming__side">
+        <div class="upcoming__nav">
+          <button type="button" class="upcoming__btn" data-upcoming-prev>
+            <ChevronLeft size={20} class="flip-rtl" aria-hidden="true" />
+            <span class="sr-only">{a.upcomingPrev}</span>
+          </button>
+          <button type="button" class="upcoming__btn" data-upcoming-next>
+            <ChevronRight size={20} class="flip-rtl" aria-hidden="true" />
+            <span class="sr-only">{a.upcomingNext}</span>
+          </button>
+        </div>
+        <a href={link('events', lang)} class="upcoming__all">
+          {t('home.eventsAll')}
+          <ArrowRight size={16} class="flip-rtl" aria-hidden="true" />
+        </a>
+      </div>
+    </div>
+  </section>
+)}
+
+<script>
+  for (const root of document.querySelectorAll<HTMLElement>('[data-upcoming]')) {
+    const track = root.querySelector<HTMLElement>('[data-upcoming-track]')!;
+    const rtl = getComputedStyle(root).direction === 'rtl';
+    const step = (dir: number) =>
+      track.scrollBy({ left: dir * track.clientWidth * 0.8 * (rtl ? -1 : 1), behavior: 'smooth' });
+    root.querySelector('[data-upcoming-prev]')!.addEventListener('click', () => step(-1));
+    root.querySelector('[data-upcoming-next]')!.addEventListener('click', () => step(1));
+  }
+</script>
+
+<style>
+  .upcoming {
+    background: var(--alive-blue);
+    color: var(--alive-cream);
+    border-block-start: 4px solid var(--alive-gold);
+  }
+  .upcoming__inner {
+    display: grid;
+    grid-template-columns: auto minmax(0, 1fr) auto;
+    align-items: center;
+    gap: 1.25rem 2rem;
+    padding-block: 1.25rem;
+  }
+  .upcoming__title {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.7rem;
+    font-family: var(--font-display);
+    font-size: 1rem;
+    font-weight: 800;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--alive-gold);
+    white-space: nowrap;
+  }
+  :global(html[lang='fa']) .upcoming__title {
+    letter-spacing: 0;
+    font-size: 1.1rem;
+  }
+  /* A soft pulse: the agenda is alive. Stops under reduced motion. */
+  .upcoming__pulse {
+    width: 0.65rem;
+    height: 0.65rem;
+    border-radius: 50%;
+    background: var(--alive-coral);
+    box-shadow: 0 0 0 0 color-mix(in srgb, var(--alive-coral) 60%, transparent);
+  }
+  @media (prefers-reduced-motion: no-preference) {
+    .upcoming__pulse {
+      animation: upcoming-pulse 2.4s ease-out 3;
+    }
+  }
+  @keyframes upcoming-pulse {
+    to {
+      box-shadow: 0 0 0 0.75rem transparent;
+    }
+  }
+  .upcoming__track {
+    display: grid;
+    grid-auto-flow: column;
+    grid-auto-columns: minmax(16rem, 19rem);
+    gap: 0.75rem;
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    scrollbar-width: none;
+    padding-block: 0.25rem;
+  }
+  .upcoming__track::-webkit-scrollbar {
+    display: none;
+  }
+  .upcoming__item {
+    scroll-snap-align: start;
+  }
+  .upcoming__link {
+    position: relative;
+    display: flex;
+    align-items: center;
+    gap: 0.9rem;
+    height: 100%;
+    padding: 0.7rem 1rem 0.7rem 0.7rem;
+    border-radius: 1rem;
+    background: color-mix(in srgb, var(--alive-cream) 9%, transparent);
+    border: 1px solid color-mix(in srgb, var(--alive-cream) 18%, transparent);
+    color: var(--alive-cream);
+    text-decoration: none;
+    transition:
+      background 0.3s ease,
+      transform 0.3s cubic-bezier(0.2, 0.7, 0.2, 1);
+  }
+  .upcoming__link:hover {
+    background: color-mix(in srgb, var(--alive-cream) 16%, transparent);
+    transform: translateY(-2px);
+  }
+  .upcoming__link:focus-visible {
+    outline: 3px solid var(--alive-gold);
+    outline-offset: 2px;
+  }
+  .upcoming__date {
+    display: grid;
+    flex-shrink: 0;
+    place-items: center;
+    width: 3.6rem;
+    height: 3.6rem;
+    border-radius: 0.8rem;
+    line-height: 1;
+    background: var(--tone);
+    color: var(--alive-green);
+  }
+  [data-tone='coral'] {
+    --tone: var(--alive-coral);
+  }
+  [data-tone='gold'] {
+    --tone: var(--alive-gold);
+  }
+  [data-tone='blue'] {
+    --tone: var(--alive-cream);
+  }
+  [data-tone='green'] {
+    --tone: color-mix(in srgb, var(--alive-gold) 55%, var(--alive-cream));
+  }
+  .upcoming__day {
+    font-family: var(--font-display);
+    font-size: 1.45rem;
+    font-weight: 900;
+  }
+  .upcoming__month {
+    font-size: 0.78rem;
+    font-weight: 700;
+    text-transform: uppercase;
+  }
+  .upcoming__body {
+    display: grid;
+    min-width: 0;
+    gap: 0.1rem;
+  }
+  .upcoming__kind {
+    font-size: 0.72rem;
+    font-weight: 800;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: color-mix(in srgb, var(--alive-cream) 80%, transparent);
+  }
+  .upcoming__kind.is-matin {
+    color: var(--alive-gold);
+  }
+  .upcoming__name {
+    overflow: hidden;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    font-family: var(--font-display);
+    font-weight: 800;
+    line-height: 1.25;
+  }
+  .upcoming__city {
+    font-size: 0.85rem;
+    color: color-mix(in srgb, var(--alive-cream) 85%, transparent);
+  }
+  .upcoming__link :global(.upcoming__ext) {
+    position: absolute;
+    inset-block-start: 0.6rem;
+    inset-inline-end: 0.6rem;
+    opacity: 0.7;
+  }
+  .upcoming__side {
+    display: grid;
+    justify-items: end;
+    gap: 0.6rem;
+  }
+  .upcoming__nav {
+    display: flex;
+    gap: 0.5rem;
+  }
+  .upcoming__btn {
+    display: grid;
+    place-items: center;
+    width: 2.5rem;
+    height: 2.5rem;
+    border-radius: 999px;
+    border: 1.5px solid color-mix(in srgb, var(--alive-cream) 55%, transparent);
+    color: var(--alive-cream);
+  }
+  .upcoming__btn:hover {
+    background: var(--alive-gold);
+    border-color: var(--alive-gold);
+    color: var(--alive-green);
+  }
+  .upcoming__btn:focus-visible,
+  .upcoming__all:focus-visible {
+    outline: 3px solid var(--alive-gold);
+    outline-offset: 2px;
+  }
+  .upcoming__all {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    font-family: var(--font-display);
+    font-weight: 800;
+    font-size: 0.95rem;
+    color: var(--alive-gold);
+    white-space: nowrap;
+  }
+  @media (max-width: 63.99rem) {
+    .upcoming__inner {
+      grid-template-columns: minmax(0, 1fr) auto;
+    }
+    .upcoming__track {
+      grid-column: 1 / -1;
+      grid-row: 2;
+    }
+    .upcoming__side {
+      grid-row: 1;
+      grid-column: 2;
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+    }
+    .upcoming__nav {
+      display: none;
+    }
+  }
+</style>

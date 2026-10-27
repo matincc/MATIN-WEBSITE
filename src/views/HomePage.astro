@@ -30,8 +30,11 @@ import MatinMoments from '@/components/content/MatinMoments.astro';
 import ResourcesTeaser from '@/components/content/ResourcesTeaser.astro';
 import ExpireEvents from '@/components/content/ExpireEvents.astro';
 import BaseLayout from '@/layouts/BaseLayout.astro';
-import HomeHero from '@/components/brand/HomeHero.astro';
-import CulturesRibbon from '@/components/brand/CulturesRibbon.astro';
+import AliveHero from '@/components/brand/AliveHero.astro';
+import UpcomingStrip from '@/components/content/UpcomingStrip.astro';
+import FacesVoices from '@/components/content/FacesVoices.astro';
+import MatinQuestion from '@/components/content/MatinQuestion.astro';
+import CulturesOnScreen from '@/components/content/CulturesOnScreen.astro';
 import SectionHeader from '@/components/ui/SectionHeader.astro';
 import AreasGrid from '@/components/content/AreasGrid.astro';
 import { href, newsAnchors, siteAlternates, type UiLang } from '@/i18n/routes';
@@ -92,6 +95,9 @@ const matinNews = news
   .slice(0, 3);
 // Notes from the President (owner's request, Oct 27 2026): the two latest, on a deep terracotta band.
 const notes = await getNotes(2);
+// Matin Alive (owner's brief, Oct 27 2026): the placeholder sections (Faces & Voices, The
+// Matin Question prototype) appear only on previews until the owner approves them live.
+const preview = process.env.CONTEXT !== 'production';
 ---
 
 <BaseLayout lang={lang} alternates={siteAlternates('home')} searchable={false}>
@@ -102,46 +108,122 @@ const notes = await getNotes(2);
     </p>
   </div>
 
-  <HomeHero lang={lang} />
-  <CulturesRibbon lang={lang} />
+  <div class="alive">
+    <AliveHero lang={lang} />
+    <UpcomingStrip lang={lang} />
 
-  <!-- Matin in Action: what Matin is doing now. The featured item (a highlight marked
+    <!-- Matin in Action: what Matin is doing now. The featured item (a highlight marked
        featured, else Matin's next event, else the latest article), then the latest items.
        Only Matin's own content; see src/content/highlights/README.md. -->
-  <section id="action" class="section-pad scroll-mt-24 bg-paper" aria-labelledby="action-title">
-    <div class="container-site">
-      <SectionHeader
-        id="action-title"
-        title={t('home.actionTitle')}
-        lede={t('home.actionLede')}
-        align="start"
-        class="mb-10"
-      />
-      {/* Matin in Action carousel (owner's brief, Oct 27 2026): the featured activity, then
+    <section
+      id="action"
+      class="section-pad scroll-mt-24 action-band"
+      aria-labelledby="action-title"
+    >
+      <div class="container-site">
+        <SectionHeader
+          id="action-title"
+          title={t('home.actionTitle')}
+          lede={t('home.actionLede')}
+          align="start"
+          class="mb-10"
+        />
+        {/* Matin in Action carousel (owner's brief, Oct 27 2026): the featured activity, then
           Matin's "coming soon" posters (src/content/coming-soon/). Every poster opens in the
           page's fullscreen viewer, as one group; three across on wide screens, swiped on
           smaller ones with the arrow buttons. */}
-      {featured || soon.length > 0 ? (
-        <div class="action-carousel" data-carousel>
-          <ul class="action-track" data-carousel-track>
-            {featured && (
-              <li class="action-slide">
-                <article class:list={['feature', featured.poster && 'feature--poster']} data-reveal>
-                  {posterLarge ? (
-                    /* A poster opens in the same fullscreen viewer as Gallery → Posters; the
+        {featured || soon.length > 0 ? (
+          <div class="action-carousel" data-carousel>
+            <ul class="action-track" data-carousel-track>
+              {featured && (
+                <li class="action-slide">
+                  <article
+                    class:list={['feature', featured.poster && 'feature--poster']}
+                    data-reveal
+                  >
+                    {posterLarge ? (
+                      /* A poster opens in the same fullscreen viewer as Gallery → Posters; the
                        button under it leads to the activity's page (the poster download stays
                        on that page and in the Gallery, not on the homepage: owner's request,
                        Oct 27 2026). */
-                    <a
-                      href={posterLarge}
-                      class="feature__zoom"
-                      data-lightbox="action-posters"
-                      data-alt={featured.imageAlt}
-                      data-caption={featured.title}
-                      aria-label={t('gallery.openPoster', { title: featured.title })}
-                    >
+                      <a
+                        href={posterLarge}
+                        class="feature__zoom"
+                        data-lightbox="action-posters"
+                        data-alt={featured.imageAlt}
+                        data-caption={featured.title}
+                        aria-label={t('gallery.openPoster', { title: featured.title })}
+                      >
+                        <MatinMedia
+                          item={featured}
+                          sizes={slideSizes}
+                          class="feature__media is-poster"
+                        />
+                        <span class="feature__zoom-icon" aria-hidden="true">
+                          <Plus size={24} />
+                        </span>
+                      </a>
+                    ) : (
                       <MatinMedia
                         item={featured}
+                        sizes={slideSizes}
+                        class:list={['feature__media', featured.poster && 'is-poster']}
+                      />
+                    )}
+                    {/* No side panel (owner's request, Oct 27 2026): a poster already carries
+                      its details, so only the title and the activity button sit under it. */}
+                    <div class="feature__caption">
+                      <h3 class="feature__title">{featured.title}</h3>
+                      {!featured.poster && (
+                        <>
+                          <p class="feature__when">
+                            <CalendarDays size={18} aria-hidden="true" />
+                            <time datetime={featured.datetime}>{featured.when}</time>
+                            {featured.location && (
+                              <>
+                                <MapPin size={18} aria-hidden="true" />
+                                <span>{featured.location}</span>
+                              </>
+                            )}
+                          </p>
+                          <p class="feature__summary">{featured.summary}</p>
+                        </>
+                      )}
+                      <div class="feature__actions">
+                        <a
+                          href={featured.url}
+                          class="btn btn-primary"
+                          target={featured.external ? '_blank' : undefined}
+                          rel={featured.external ? 'noopener noreferrer' : undefined}
+                        >
+                          {featured.ctaLabel ?? ctaFor(featured.type, t)}
+                          {featured.external ? (
+                            <ExternalLink size={18} aria-hidden="true" />
+                          ) : (
+                            <ArrowRight size={18} class="flip-rtl" aria-hidden="true" />
+                          )}
+                          {featured.external && (
+                            <span class="sr-only">{t('a11y.externalLink')}</span>
+                          )}
+                        </a>
+                      </div>
+                    </div>
+                  </article>
+                </li>
+              )}
+              {soon.map((p) => (
+                <li class="action-slide">
+                  <article class="feature feature--poster feature--soon" data-reveal>
+                    <a
+                      href={p.large}
+                      class="feature__zoom"
+                      data-lightbox="action-posters"
+                      data-alt={p.item.imageAlt}
+                      data-caption={`${p.item.title} · ${t('home.comingSoon')}`}
+                      aria-label={t('gallery.openPoster', { title: p.item.title })}
+                    >
+                      <MatinMedia
+                        item={p.item}
                         sizes={slideSizes}
                         class="feature__media is-poster"
                       />
@@ -149,220 +231,172 @@ const notes = await getNotes(2);
                         <Plus size={24} />
                       </span>
                     </a>
-                  ) : (
-                    <MatinMedia
-                      item={featured}
-                      sizes={slideSizes}
-                      class:list={['feature__media', featured.poster && 'is-poster']}
-                    />
-                  )}
-                  {/* No side panel (owner's request, Oct 27 2026): a poster already carries
-                      its details, so only the title and the activity button sit under it. */}
-                  <div class="feature__caption">
-                    <h3 class="feature__title">{featured.title}</h3>
-                    {!featured.poster && (
-                      <>
-                        <p class="feature__when">
-                          <CalendarDays size={18} aria-hidden="true" />
-                          <time datetime={featured.datetime}>{featured.when}</time>
-                          {featured.location && (
-                            <>
-                              <MapPin size={18} aria-hidden="true" />
-                              <span>{featured.location}</span>
-                            </>
-                          )}
-                        </p>
-                        <p class="feature__summary">{featured.summary}</p>
-                      </>
-                    )}
-                    <div class="feature__actions">
-                      <a
-                        href={featured.url}
-                        class="btn btn-primary"
-                        target={featured.external ? '_blank' : undefined}
-                        rel={featured.external ? 'noopener noreferrer' : undefined}
-                      >
-                        {featured.ctaLabel ?? ctaFor(featured.type, t)}
-                        {featured.external ? (
-                          <ExternalLink size={18} aria-hidden="true" />
-                        ) : (
-                          <ArrowRight size={18} class="flip-rtl" aria-hidden="true" />
-                        )}
-                        {featured.external && <span class="sr-only">{t('a11y.externalLink')}</span>}
-                      </a>
+                    <div class="feature__caption">
+                      <p class="feature__soon">
+                        <Clock size={16} aria-hidden="true" />
+                        {t('home.comingSoon')}
+                      </p>
+                      <h3 class="feature__title">{p.item.title}</h3>
+                      <p class="feature__subtitle">{p.item.summary}</p>
                     </div>
-                  </div>
-                </article>
-              </li>
-            )}
-            {soon.map((p) => (
-              <li class="action-slide">
-                <article class="feature feature--poster feature--soon" data-reveal>
-                  <a
-                    href={p.large}
-                    class="feature__zoom"
-                    data-lightbox="action-posters"
-                    data-alt={p.item.imageAlt}
-                    data-caption={`${p.item.title} · ${t('home.comingSoon')}`}
-                    aria-label={t('gallery.openPoster', { title: p.item.title })}
-                  >
-                    <MatinMedia item={p.item} sizes={slideSizes} class="feature__media is-poster" />
-                    <span class="feature__zoom-icon" aria-hidden="true">
-                      <Plus size={24} />
-                    </span>
-                  </a>
-                  <div class="feature__caption">
-                    <p class="feature__soon">
-                      <Clock size={16} aria-hidden="true" />
-                      {t('home.comingSoon')}
-                    </p>
-                    <h3 class="feature__title">{p.item.title}</h3>
-                    <p class="feature__subtitle">{p.item.summary}</p>
-                  </div>
-                </article>
-              </li>
-            ))}
-          </ul>
-          <div class="action-carousel__nav" data-carousel-nav hidden>
-            <button type="button" class="action-carousel__btn" data-carousel-prev>
-              <ChevronLeft size={22} class="flip-rtl" aria-hidden="true" />
-              <span class="sr-only">{t('home.carouselPrev')}</span>
-            </button>
-            <button type="button" class="action-carousel__btn" data-carousel-next>
-              <ChevronRight size={22} class="flip-rtl" aria-hidden="true" />
-              <span class="sr-only">{t('home.carouselNext')}</span>
-            </button>
+                  </article>
+                </li>
+              ))}
+            </ul>
+            <div class="action-carousel__nav" data-carousel-nav hidden>
+              <button type="button" class="action-carousel__btn" data-carousel-prev>
+                <ChevronLeft size={22} class="flip-rtl" aria-hidden="true" />
+                <span class="sr-only">{t('home.carouselPrev')}</span>
+              </button>
+              <button type="button" class="action-carousel__btn" data-carousel-next>
+                <ChevronRight size={22} class="flip-rtl" aria-hidden="true" />
+                <span class="sr-only">{t('home.carouselNext')}</span>
+              </button>
+            </div>
           </div>
-        </div>
-      ) : (
-        <div class="empty-state">
-          <p>{t('home.latestEmpty')}</p>
-          <a href="#newsletter" class="btn btn-primary">
-            {t('home.involvedSecondary')}
-            <ArrowRight size={18} class="flip-rtl" aria-hidden="true" />
-          </a>
-        </div>
-      )}
-    </div>
-  </section>
-
-  <!-- Matin's Picks: the same section and data as on the Events page -->
-  <PicksSection
-    lang={lang}
-    class="section-pad bg-tint"
-    link={{ href: href('events', lang), label: t('home.eventsAll') }}
-  />
-  <ExpireEvents />
-
-  <!-- News (owner's brief, Oct 25 2026): Cultural News in region tabs, then Matin News -->
-  <section
-    id="latest-news"
-    class="section-pad scroll-mt-24 border-y border-line bg-paper"
-    aria-labelledby="latest-news-title"
-  >
-    <div class="container-site">
-      <SectionHeader
-        align="start"
-        id="latest-news-title"
-        title={t('home.newsTitle')}
-        subtitle={t('news.lede')}
-        link={{ href: href('news', lang), label: t('home.newsAll') }}
-        class="mb-10"
-      />
-      <div class="news-wire">
-        <div class="news-panel__head">
-          <h3 class="news-panel__title">{t('news.culturalTitle')}</h3>
-          <a href={`${newsHref}#${newsAnchors.recommends}`} class="link-arrow">
-            {t('news.allCultural')}
-            <ArrowRight size={18} class="flip-rtl" aria-hidden="true" />
-          </a>
-        </div>
-        <NewsRegionTabs lang={lang} posts={culturalNews} perTab={3} id="home-cultural" level={4} />
-      </div>
-      {matinNews.length > 0 && (
-        <div class="matin-news">
-          <div class="news-panel__head">
-            <h3 class="news-panel__title">{t('news.matinTitle')}</h3>
-            <a href={`${newsHref}#${newsAnchors['matin-news']}`} class="link-arrow">
-              {t('news.allMatin')}
+        ) : (
+          <div class="empty-state">
+            <p>{t('home.latestEmpty')}</p>
+            <a href="#newsletter" class="btn btn-primary">
+              {t('home.involvedSecondary')}
               <ArrowRight size={18} class="flip-rtl" aria-hidden="true" />
             </a>
           </div>
-          {/* A single article takes the wide card, so no empty columns are left beside it. */}
-          <ul
-            class:list={[
-              'grid gap-6 lg:gap-8',
-              matinNews.length > 1 && 'md:grid-cols-2 lg:grid-cols-3',
-            ]}
-          >
-            {matinNews.map((post) => (
-              <li>
-                <PostCard
-                  post={post}
-                  lang={lang}
-                  headingLevel="h4"
-                  featured={matinNews.length === 1}
-                />
-              </li>
-            ))}
-          </ul>
-        </div>
-      )}
-    </div>
-  </section>
+        )}
+      </div>
+    </section>
 
-  <!-- Notes from the President: the latest LinkedIn notes, hidden while there are none -->
-  {notes.length > 0 && (
+    <!-- Matin's Picks: the same section and data as on the Events page -->
+    <PicksSection
+      lang={lang}
+      class="section-pad picks-band"
+      link={{ href: href('events', lang), label: t('home.eventsAll') }}
+    />
+    <ExpireEvents />
+
+    <!-- News (owner's brief, Oct 25 2026): Cultural News in region tabs, then Matin News -->
     <section
-      id="president-notes"
-      class="section-pad notes-home on-terracotta scroll-mt-24"
-      aria-labelledby="president-notes-title"
+      id="latest-news"
+      class="news-band on-dark section-pad scroll-mt-24"
+      aria-labelledby="latest-news-title"
     >
       <div class="container-site">
         <SectionHeader
           align="start"
-          id="president-notes-title"
-          title={t('notes.title')}
-          subtitle={t('notes.homeLede')}
-          link={{ href: href('notes', lang), label: t('notes.all') }}
+          id="latest-news-title"
+          title={t('home.newsTitle')}
+          subtitle={t('news.lede')}
+          link={{ href: href('news', lang), label: t('home.newsAll') }}
           class="mb-10"
         />
-        <ul class:list={['notes-home__list', notes.length > 1 && 'notes-home__list--two']}>
-          {notes.map((note) => (
-            <li>
-              <NoteCard note={note} lang={lang} headingLevel="h3" />
-            </li>
-          ))}
-        </ul>
+        <div class="news-wire">
+          <div class="news-panel__head">
+            <h3 class="news-panel__title">{t('news.culturalTitle')}</h3>
+            <a href={`${newsHref}#${newsAnchors.recommends}`} class="link-arrow">
+              {t('news.allCultural')}
+              <ArrowRight size={18} class="flip-rtl" aria-hidden="true" />
+            </a>
+          </div>
+          <NewsRegionTabs
+            lang={lang}
+            posts={culturalNews}
+            perTab={3}
+            id="home-cultural"
+            level={4}
+          />
+        </div>
+        {matinNews.length > 0 && (
+          <div class="matin-news">
+            <div class="news-panel__head">
+              <h3 class="news-panel__title">{t('news.matinTitle')}</h3>
+              <a href={`${newsHref}#${newsAnchors['matin-news']}`} class="link-arrow">
+                {t('news.allMatin')}
+                <ArrowRight size={18} class="flip-rtl" aria-hidden="true" />
+              </a>
+            </div>
+            {/* A single article takes the wide card, so no empty columns are left beside it. */}
+            <ul
+              class:list={[
+                'grid gap-6 lg:gap-8',
+                matinNews.length > 1 && 'md:grid-cols-2 lg:grid-cols-3',
+              ]}
+            >
+              {matinNews.map((post) => (
+                <li>
+                  <PostCard
+                    post={post}
+                    lang={lang}
+                    headingLevel="h4"
+                    featured={matinNews.length === 1}
+                  />
+                </li>
+              ))}
+            </ul>
+          </div>
+        )}
       </div>
     </section>
-  )}
 
-  <!-- Matin Moments: featured photos and videos from the gallery -->
-  <MatinMoments lang={lang} />
+    <!-- Faces & Voices of Matin, then The Matin Question (previews only for now) -->
+    {preview && <FacesVoices lang={lang} />}
+    {preview && <MatinQuestion lang={lang} />}
 
-  <!-- Areas of work: deep teal band (owner's brief, Oct 25 2026), the introduction set
+    <!-- Notes from the President: the latest LinkedIn notes, hidden while there are none -->
+    {notes.length > 0 && (
+      <section
+        id="president-notes"
+        class="section-pad notes-home on-terracotta scroll-mt-24"
+        aria-labelledby="president-notes-title"
+      >
+        <div class="container-site">
+          <SectionHeader
+            align="start"
+            id="president-notes-title"
+            title={t('notes.title')}
+            subtitle={t('notes.homeLede')}
+            link={{ href: href('notes', lang), label: t('notes.all') }}
+            class="mb-10"
+          />
+          <ul class:list={['notes-home__list', notes.length > 1 && 'notes-home__list--two']}>
+            {notes.map((note) => (
+              <li>
+                <NoteCard note={note} lang={lang} headingLevel="h3" />
+              </li>
+            ))}
+          </ul>
+        </div>
+      </section>
+    )}
+
+    <!-- Cultures on Screen: curated, licensed videos (placeholders on previews) -->
+    <CulturesOnScreen lang={lang} />
+
+    <!-- Matin Moments: featured photos and videos from the gallery -->
+    <MatinMoments lang={lang} />
+
+    <!-- Areas of work: deep teal band (owner's brief, Oct 25 2026), the introduction set
        large directly under the title, then the three photo cards -->
-  <section class="section-pad areas-band on-teal" aria-labelledby="areas-title">
-    <div class="container-site">
-      <div class="areas-head">
-        <SectionHeader
-          id="areas-title"
-          eyebrow={t('home.areasEyebrow')}
-          title={t('home.areasTitle')}
-          align="start"
-          class="mb-6"
-        />
-        <p class="areas-intro" data-reveal>
-          {t('home.areasLede')}
-        </p>
+    <section class="section-pad areas-band on-teal" aria-labelledby="areas-title">
+      <div class="container-site">
+        <div class="areas-head">
+          <SectionHeader
+            id="areas-title"
+            eyebrow={t('home.areasEyebrow')}
+            title={t('home.areasTitle')}
+            align="start"
+            class="mb-6"
+          />
+          <p class="areas-intro" data-reveal>
+            {t('home.areasLede')}
+          </p>
+        </div>
+        <AreasGrid lang={lang} />
       </div>
-      <AreasGrid lang={lang} />
-    </div>
-  </section>
+    </section>
 
-  <!-- Cultural Resources & Organizations: opens the directory -->
-  <ResourcesTeaser lang={lang} />
+    <!-- Cultural Resources & Organizations: opens the directory -->
+    <ResourcesTeaser lang={lang} />
+  </div>
 
   {/* One viewer for the page: the featured poster and the images of Matin's Picks. */}
   <Lightbox lang={lang} />
@@ -629,5 +663,78 @@ const notes = await getNotes(2);
   }
   .areas-band :global(.photo-credit a) {
     color: inherit;
+  }
+  /* ---------- Matin Alive (owner's brief, Oct 27 2026) ---------- */
+  /* Editorial titles: the logo's serif, larger, deep green on light bands (Latin scripts;
+     Persian keeps Vazirmatn). */
+  :global(html:not([lang='fa'])) .alive :global(.section-title) {
+    font-family: var(--font-brand);
+    font-weight: 800;
+    letter-spacing: -0.015em;
+  }
+  .alive :global(.section-title) {
+    font-size: clamp(2.4rem, 1.5rem + 3.4vw, 4.5rem);
+    line-height: 1.04;
+  }
+  .alive :global(.bg-paper .section-title),
+  .alive .action-band :global(.section-title),
+  .alive .picks-band :global(.section-title) {
+    color: var(--alive-green);
+  }
+  /* Rhythm: warm cream and paper alternate, with a flat coral block offset in a corner. */
+  .action-band {
+    position: relative;
+    background: var(--color-paper);
+  }
+  .alive :global(.picks-band) {
+    position: relative;
+    overflow: hidden;
+    background: var(--alive-cream);
+  }
+  .alive :global(.picks-band)::before {
+    content: '';
+    position: absolute;
+    inset-block-start: 0;
+    inset-inline-end: 0;
+    width: clamp(6rem, 14vw, 12rem);
+    height: clamp(3rem, 6vw, 5rem);
+    border-end-start-radius: 999px;
+    background: var(--alive-coral);
+    opacity: 0.9;
+  }
+  /* Featured event cards: a gentle lift and a slight turn under the pointer. */
+  @media (hover: hover) and (prefers-reduced-motion: no-preference) {
+    .alive :global(.agenda-card--pick) {
+      transition:
+        transform 0.45s cubic-bezier(0.2, 0.7, 0.2, 1),
+        box-shadow 0.45s ease;
+    }
+    .alive :global(.agenda-card--pick:hover) {
+      transform: translateY(-6px) rotate(-0.5deg);
+    }
+    :global([dir='rtl']) .alive :global(.agenda-card--pick:hover) {
+      transform: translateY(-6px) rotate(0.5deg);
+    }
+    /* Matin in Action posters: the next one tilts in a little as the pointer arrives. */
+    .alive .action-slide:hover .feature__zoom {
+      transform: translateY(-4px);
+    }
+    .alive .feature__zoom {
+      transition: transform 0.45s cubic-bezier(0.2, 0.7, 0.2, 1);
+    }
+  }
+  /* News: the lead story set like a magazine headline. */
+  :global(html:not([lang='fa'])) .alive :global(.news-wire .wire__title) {
+    font-family: var(--font-brand);
+    font-weight: 800;
+  }
+  /* Staggered reveals: children of revealed lists follow one another. */
+  @media (prefers-reduced-motion: no-preference) {
+    .alive :global(.reveal-ready .action-slide:nth-child(2) [data-reveal]) {
+      transition-delay: 120ms;
+    }
+    .alive :global(.reveal-ready .action-slide:nth-child(3) [data-reveal]) {
+      transition-delay: 240ms;
+    }
   }
 </style>
