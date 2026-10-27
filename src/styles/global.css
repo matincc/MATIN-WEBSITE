@@ -575,16 +575,16 @@
   background: var(--color-primary);
   color: var(--color-white);
 }
-/* Cultural News (owner's requests, Oct 27 2026): no boxed panel, straight on a warm
-   band. Pill tabs on a terracotta rule: the active one filled in deep terracotta. */
+/* Cultural News tabs on the navy band: outlined white pills, the active one filled gold
+   (navy on gold 5.3:1), on a gold rule. */
 .news-wire .is-enhanced > .region-tabs__list {
   display: flex;
   width: 100%;
   gap: 0.5rem;
-  margin-block-end: 0.75rem;
-  padding: 0 0 0.75rem;
+  margin-block-end: 1.75rem;
+  padding: 0 0 1rem;
   border: 0;
-  border-block-end: 3px solid var(--color-terracotta-deep);
+  border-block-end: 2px solid var(--color-gold);
   border-radius: 0;
   background: none;
   box-shadow: none;
@@ -592,39 +592,55 @@
 .news-wire .region-tab {
   min-height: 2.75rem;
   padding: 0.5rem 1.35rem;
-  border: 1px solid var(--color-card-edge);
-  background: var(--color-white);
-  color: var(--color-primary);
-  box-shadow: none;
-}
-.news-wire .region-tab:hover {
-  border-color: var(--color-terracotta-deep);
-  background: var(--color-white);
-  color: var(--color-terracotta-deep);
-}
-.news-wire .region-tab[aria-selected='true'] {
-  border-color: var(--color-terracotta-deep);
-  background: var(--color-terracotta-deep);
+  border: 2px solid color-mix(in srgb, var(--color-white) 60%, transparent);
+  background: transparent;
   color: var(--color-white);
   box-shadow: none;
 }
+.news-wire .region-tab:hover {
+  border-color: var(--color-white);
+  background: var(--color-white);
+  color: var(--color-primary);
+}
+.news-wire .region-tab[aria-selected='true'] {
+  border-color: var(--color-gold);
+  background: var(--color-gold);
+  color: var(--color-primary);
+  box-shadow: none;
+}
 
-/* Homepage News (owner's request, Oct 27 2026: less white, links that look like links):
-   a warm champagne band with a gold top edge; its « all news » links in deep terracotta,
-   underlined. */
-.news-band {
-  border-block: 4px solid var(--color-gold);
-  background: var(--color-champagne);
+/* News bands (owner's requests, Oct 27 2026: much more colour; the news must stand out
+   from the background as boxes): the homepage News section and Cultural News on a deep
+   navy band with a gold edge, the stories as white cards. White titles, gold links. */
+.news-band,
+.news-cultural {
+  border-block: 6px solid var(--color-gold);
+  background: var(--color-primary);
+  color: var(--color-white);
+}
+.news-band .section-title,
+.news-cultural .section-title,
+.news-band .news-panel__title,
+.news-band p.section-subtitle,
+.news-cultural p.section-subtitle,
+.news-band .lede,
+.news-cultural .region-panel__title {
+  color: var(--color-white);
 }
 .news-band .link-arrow,
 .news-cultural .link-arrow {
-  color: var(--color-terracotta-deep);
+  color: var(--color-gold);
   text-decoration: underline;
   text-decoration-thickness: 2px;
   text-underline-offset: 0.25em;
 }
-.news-band .link-arrow svg {
-  color: var(--color-terracotta-deep);
+.news-band .link-arrow svg,
+.news-cultural .link-arrow svg {
+  color: var(--color-gold);
+}
+.news-band .link-arrow:hover,
+.news-cultural .link-arrow:hover {
+  color: var(--color-white);
 }
 
 .region-panel__title {
