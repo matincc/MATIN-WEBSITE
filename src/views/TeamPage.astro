@@ -142,8 +142,10 @@ const groups = [
 
 <style>
   /* The two groups stacked (owner's brief, Oct 25 2026), each a full-width panel. */
+  /* A coloured ground behind the two panels (owner's brief, Oct 27 2026: no plain white). */
   .team-groups {
     padding-block: clamp(3rem, 2rem + 3vw, 5rem);
+    background: var(--team-ground, var(--color-teal-deep));
   }
   .team-groups__stack {
     display: grid;
