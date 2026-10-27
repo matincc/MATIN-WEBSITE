@@ -1,13 +1,16 @@
 ---
 /**
  * Cultural News in three region tabs: Montréal (default), Canada,
- * Around the World (owner's brief, Oct 25 2026). Only published entries reach this list;
+ * Around the World (owner's brief, Oct 25 2026). Editorial layout (owner's request,
+ * Oct 27 2026: no boxed panel, no cards): the newest story leads on the reading side,
+ * the next ones stack beside it, with thin gold rules between them. Only published entries reach this list;
  * proposed or rejected stories are never in the repository (see
  * src/content/news/README.md). Each card names its source and links to it.
  */
 import type { CollectionEntry } from 'astro:content';
-import { Newspaper } from '@lucide/astro';
-import PostCard from '@/components/content/PostCard.astro';
+import { ExternalLink, Newspaper } from '@lucide/astro';
+import { pick } from '@/i18n/ui';
+import { formatDate } from '@/lib/dates';
 import type { UiLang } from '@/i18n/routes';
 import { useTranslations } from '@/i18n/ui';
 import { newsRegions } from '@/lib/taxonomy';
@@ -55,12 +58,44 @@ const tabs = newsRegions.map((region) => {
     >
       <RegionHeading class="region-panel__title">{t(`newsRegions.${tab.region}`)}</RegionHeading>
       {tab.items.length > 0 ? (
-        <ul class="grid gap-6 md:grid-cols-2 lg:grid-cols-3 lg:gap-8">
-          {tab.items.map((post) => (
-            <li>
-              <PostCard post={post} lang={lang} headingLevel={cardLevel} />
-            </li>
-          ))}
+        <ul class:list={['wire', tab.items.length >= 3 && 'wire--lead']}>
+          {tab.items.map((post, i) => {
+            const d = post.data;
+            const src = d.source!;
+            const Heading = cardLevel;
+            return (
+              <li class:list={['wire__item', i === 0 && 'wire__item--lead']}>
+                <p class="wire__kicker">
+                  <span>{src.name}</span>
+                  <span class="wire__dot" aria-hidden="true" />
+                  <time datetime={d.date.toISOString().slice(0, 10)}>
+                    {formatDate(d.date, lang)}
+                  </time>
+                </p>
+                <Heading class="wire__title">
+                  <a href={src.url} target="_blank" rel="noopener noreferrer">
+                    {pick(d.title, lang)}
+                    <span class="sr-only">
+                      {' '}
+                      {t('news.sourceNamed', { name: src.name })} {t('a11y.externalLink')}
+                    </span>
+                  </a>
+                </Heading>
+                <p class="wire__excerpt">{pick(d.excerpt, lang)}</p>
+                <a
+                  class="wire__source"
+                  href={src.url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  tabindex="-1"
+                  aria-hidden="true"
+                >
+                  {t('news.readSource')}
+                  <ExternalLink size={15} />
+                </a>
+              </li>
+            );
+          })}
         </ul>
       ) : (
         <div class="region-empty">
@@ -80,6 +115,114 @@ const tabs = newsRegions.map((region) => {
 </script>
 
 <style>
+  /* Editorial list: lead story on the reading side, the others stacked beside it. */
+  .wire {
+    display: grid;
+    gap: 0 clamp(2rem, 1rem + 3vw, 3.5rem);
+  }
+  @media (min-width: 52rem) {
+    .wire {
+      grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    }
+    .wire--lead {
+      grid-template-columns: minmax(0, 1.35fr) minmax(0, 1fr);
+    }
+    .wire--lead .wire__item--lead {
+      grid-row: span 2;
+      padding-inline-end: clamp(2rem, 1rem + 3vw, 3.5rem);
+      border-inline-end: 1px solid var(--color-card-edge);
+    }
+  }
+  .wire__item {
+    min-width: 0;
+    padding-block: 1.75rem;
+    border-block-start: 1px solid var(--color-card-edge);
+  }
+  .wire > .wire__item:first-child {
+    border-block-start: 0;
+  }
+  @media (min-width: 52rem) {
+    .wire > .wire__item:nth-child(2) {
+      border-block-start: 0;
+    }
+  }
+  .wire__kicker {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.35rem 0.75rem;
+    font-size: 0.8125rem;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--color-teal-deep);
+  }
+  .wire__kicker time {
+    font-weight: 500;
+    letter-spacing: 0.02em;
+    text-transform: none;
+    color: var(--color-ink);
+  }
+  .wire__dot {
+    width: 0.3rem;
+    height: 0.3rem;
+    border-radius: 50%;
+    background: var(--color-gold);
+  }
+  .wire__title {
+    margin-block-start: 0.6rem;
+    font-family: var(--font-display);
+    font-weight: 800;
+    font-size: clamp(1.25rem, 1.1rem + 0.5vw, 1.5rem);
+    line-height: 1.22;
+    color: var(--color-primary);
+    text-wrap: balance;
+  }
+  .wire__item--lead .wire__title {
+    font-size: clamp(1.6rem, 1.2rem + 1.4vw, 2.25rem);
+    line-height: 1.15;
+  }
+  .wire__title a {
+    color: inherit;
+    text-decoration: none;
+    background-image: linear-gradient(var(--color-gold), var(--color-gold));
+    background-repeat: no-repeat;
+    background-position: 0 100%;
+    background-size: 0 2px;
+    transition: background-size 0.3s;
+  }
+  .wire__title a:hover,
+  .wire__title a:focus-visible {
+    background-size: 100% 2px;
+  }
+  .wire__excerpt {
+    margin-block-start: 0.75rem;
+    max-width: 62ch;
+  }
+  .wire__item--lead .wire__excerpt {
+    font-size: 1.125rem;
+  }
+  .wire__source {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    margin-block-start: 0.9rem;
+    padding-block-end: 1px;
+    border-block-end: 2px solid var(--color-gold);
+    font-weight: 700;
+    font-size: 0.9375rem;
+    color: var(--color-primary);
+    text-decoration: none;
+  }
+  .wire__source:hover {
+    color: var(--color-teal-deep);
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .wire__title a {
+      transition: none;
+    }
+  }
+
   /* No approved story yet: a short, finished panel, never sample content. */
   .region-empty {
     display: flex;

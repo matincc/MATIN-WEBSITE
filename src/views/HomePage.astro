@@ -188,7 +188,7 @@ const matinNews = news
         link={{ href: href('news', lang), label: t('home.newsAll') }}
         class="mb-10"
       />
-      <div class="news-panel news-teal">
+      <div class="news-wire">
         <div class="news-panel__head">
           <h3 class="news-panel__title">{t('news.culturalTitle')}</h3>
           <a href={`${newsHref}#${newsAnchors.recommends}`} class="link-arrow">
@@ -394,10 +394,7 @@ const matinNews = news
   }
 
   /* ---------- News & Insights ---------- */
-  /* Cultural News: the deep teal panel (.news-teal in global.css). */
-  .news-panel {
-    padding: clamp(1.5rem, 1rem + 2.5vw, 3rem);
-  }
+  /* Cultural News: editorial list straight on the page (.news-wire in global.css). */
   .news-panel__title {
     font-size: clamp(1.5rem, 1.3rem + 0.7vw, 2rem);
     font-weight: 800;

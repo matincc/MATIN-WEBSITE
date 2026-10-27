@@ -2,8 +2,8 @@
 /**
  * News (owner's brief, Oct 25 2026): one page, two sections that are never mixed.
  * 1. Cultural News (#cultural-news): external stories the President approved, in three
- *    region tabs (Montréal, Canada, Around the World) on the deep teal panel; each card
- *    names its source and links to it.
+ *    region tabs (Montréal, Canada, Around the World), laid out like a news page (no
+ *    panel, no cards, Oct 27 2026); each story names its source and links to it.
  * 2. Matin News (#matin-news): the institute's official news on a warm cream band, the
  *    newest as a wide lead card.
  * Only published entries reach this page: proposed or rejected stories never enter the
@@ -52,7 +52,7 @@ const alternates = siteAlternates('news');
 
   <section id="cultural-news" class="news-cultural scroll-mt-28" aria-labelledby="cultural-title">
     <div class="container-site">
-      <div class="news-teal news-cultural__panel">
+      <div class="news-wire">
         <SectionHeader
           align="start"
           id="cultural-title"
@@ -108,10 +108,7 @@ const alternates = siteAlternates('news');
   .news-cultural {
     padding-block: clamp(2.5rem, 2rem + 2vw, 4rem) clamp(3rem, 2rem + 3vw, 5rem);
   }
-  .news-cultural__panel {
-    padding: clamp(1.5rem, 1rem + 2.5vw, 3.5rem);
-  }
-  /* Matin News: warm cream band, a little lighter in feel than the teal panel above. */
+  /* Matin News: warm cream band under the Cultural News list. */
   .news-matin {
     padding-block: clamp(3rem, 2rem + 3vw, 5.5rem);
     border-block-start: 4px solid var(--color-gold);

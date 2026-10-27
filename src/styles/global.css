@@ -570,67 +570,39 @@
   background: var(--color-primary);
   color: var(--color-white);
 }
-/* Cultural News panel (owner's brief, Oct 25 2026: a richer teal identity, never pale
-   green): flat deep teal with soft turquoise circles, white title, light tabs with a gold
-   active tab (navy on mustard 5.3:1); the stories keep their own ivory cards. */
-.news-teal {
-  position: relative;
-  isolation: isolate;
-  overflow: hidden;
-  border-radius: calc(var(--radius-card) * 1.4);
-  background: var(--color-teal-deep);
-  color: var(--color-white);
-}
-.news-teal::before,
-.news-teal::after {
-  content: '';
-  position: absolute;
-  z-index: -1;
-  border-radius: 50%;
-  background: var(--color-teal);
-  opacity: 0.55;
-  pointer-events: none;
-}
-.news-teal::before {
-  inset-block-start: -9rem;
-  inset-inline-end: -6rem;
-  width: 24rem;
-  height: 24rem;
-}
-.news-teal::after {
-  inset-block-start: 4rem;
-  inset-inline-end: 9rem;
-  width: 11rem;
-  height: 11rem;
-  background: var(--color-primary);
-  opacity: 0.22;
-}
-.news-teal :is(h2, h3, .section-title, .section-subtitle, .link-arrow, .link-arrow svg) {
-  color: var(--color-white);
-}
-.news-teal :focus-visible {
-  outline-color: var(--color-white);
-}
-.news-teal .is-enhanced > .region-tabs__list {
-  border-color: color-mix(in srgb, var(--color-white) 35%, transparent);
-  background: color-mix(in srgb, var(--color-primary) 30%, transparent);
-  box-shadow: none;
-}
-.news-teal .region-tab {
-  color: var(--color-white);
-}
-.news-teal .region-tab:hover {
-  background: color-mix(in srgb, var(--color-white) 16%, transparent);
-}
-.news-teal .region-tab[aria-selected='true'] {
-  background: var(--color-gold);
-  color: var(--color-primary);
-  box-shadow: none;
-}
-.news-teal .region-panel .region-empty {
+/* Cultural News (owner's request, Oct 27 2026): no boxed panel, straight on the page.
+   Text tabs on a navy rule, the active one underlined in gold. */
+.news-wire .is-enhanced > .region-tabs__list {
+  display: flex;
+  width: 100%;
+  gap: 0.25rem;
+  margin-block-end: 0.5rem;
+  padding: 0;
   border: 0;
-  background: var(--color-ivory);
+  border-block-end: 2px solid var(--color-primary);
+  border-radius: 0;
+  background: none;
+  box-shadow: none;
+}
+.news-wire .region-tab {
+  min-height: 2.75rem;
+  margin-block-end: -2px;
+  padding: 0.6rem 0.9rem 0.5rem;
+  border-radius: 0;
+  border-block-end: 4px solid transparent;
+  background: none;
+  color: var(--color-ink);
+  box-shadow: none;
+}
+.news-wire .region-tab:hover {
+  background: none;
   color: var(--color-primary);
+}
+.news-wire .region-tab[aria-selected='true'] {
+  background: none;
+  color: var(--color-primary);
+  border-block-end-color: var(--color-gold);
+  box-shadow: none;
 }
 
 .region-panel__title {
