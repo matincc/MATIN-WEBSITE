@@ -1,8 +1,11 @@
 ---
 /**
- * Horizontal header lockup: "Matin" | maple-leaf rule | "Institut interculturel".
- * Built in HTML/CSS so it stays crisp at small sizes (the raster circle logo does not).
+ * Horizontal header lockup: round logo, "Matin" | maple-leaf rule | "Institut interculturel".
+ * The words are HTML/CSS so they stay crisp at small sizes; the round logo (owner's file,
+ * Oct 27 2026, assets/logo-matin-sun.jpg, only its white background removed) sits before them.
  */
+import { Image } from 'astro:assets';
+import logo from '@/assets/brand/logo-matin.png';
 import MapleLeaf from './MapleLeaf.astro';
 import { useTranslations } from '@/i18n/ui';
 import { href, type UiLang } from '@/i18n/routes';
@@ -31,6 +34,14 @@ const [line1, ...rest] = useTranslations(logoLang)('brand.institute').split(' ')
   ]}
   dir="ltr"
 >
+  <Image
+    src={logo}
+    alt=""
+    widths={[96, 160, 240]}
+    sizes="80px"
+    class="lockup__logo"
+    loading="eager"
+  />
   <span class="lockup__word" lang={logoLang} dir="ltr">
     Matin
   </span>
@@ -51,6 +62,11 @@ const [line1, ...rest] = useTranslations(logoLang)('brand.institute').split(' ')
     gap: 0.7rem;
     text-decoration: none;
     line-height: 1;
+  }
+  .lockup__logo {
+    flex: none;
+    width: 3rem;
+    height: auto;
   }
   .lockup__word {
     font-family: var(--font-brand);
@@ -102,6 +118,9 @@ const [line1, ...rest] = useTranslations(logoLang)('brand.institute').split(' ')
     }
     /* Phase 2 (owner's brief, Oct 24 2026): a more prominent "Matin" and a readable
        "Intercultural Institute". */
+    .lockup--large .lockup__logo {
+      width: 4.75rem;
+    }
     .lockup--large .lockup__word {
       font-size: 3rem;
     }
@@ -114,14 +133,29 @@ const [line1, ...rest] = useTranslations(logoLang)('brand.institute').split(' ')
   .lockup--tint {
     --lockup-bg: var(--color-tint);
   }
-  /* On the blue footer: white "Matin", cream institute name. */
+  /* On the deep terracotta footer: white "Matin", cream institute name. */
   .lockup--dark {
-    --lockup-bg: var(--color-primary);
+    --lockup-bg: var(--color-terracotta-deep);
   }
   .lockup--dark .lockup__word {
     color: var(--color-white);
   }
   .lockup--dark .lockup__inst {
     color: var(--color-cream);
+  }
+  /* Small phones: a smaller logo so the search and menu buttons stay on the same row. */
+  @media (max-width: 29.99rem) {
+    .lockup--large {
+      gap: 0.45rem;
+    }
+    .lockup--large .lockup__logo {
+      width: 2.5rem;
+    }
+    .lockup--large .lockup__word {
+      font-size: 2.05rem;
+    }
+    .lockup--large .lockup__inst {
+      font-size: 0.72rem;
+    }
   }
 </style>
