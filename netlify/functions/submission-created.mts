@@ -24,7 +24,7 @@ const SHEET_WEBHOOK_URL =
   'https://script.google.com/macros/s/AKfycbw-Tpom1Ejxw9H0fOnyzp7YjM9_yLqtwFWjUcokD9vgYjRMqOHI9NcQyqn5bQuKbZq4EQ/exec';
 
 /** Forms copied to the Sheet; anything else is ignored there. */
-const SHEET_FORMS = new Set(['benevolat', 'contact', 'newsletter']);
+const SHEET_FORMS = new Set(['benevolat', 'contact', 'newsletter', 'emplois']);
 
 /** Never sent to the Sheet: spam-filter internals and the visitor's network details. */
 const PRIVATE_FIELDS = new Set([
@@ -77,11 +77,46 @@ async function sheetSecret() {
   return secret;
 }
 
+/** An uploaded file as Netlify reports it: a link, or an object carrying one. */
+function fileLink(value: unknown) {
+  if (!value) return '';
+  if (typeof value === 'string') return value;
+  const file = value as { url?: string; filename?: string };
+  return [file.filename, file.url].filter(Boolean).join(' – ');
+}
+
+/**
+ * Job applications (Careers page, « emplois ») go to the Contact tab, marked as such, so
+ * the deployed web app needs no new tab: position in « Fonction », phone, CV and link
+ * above the message.
+ */
+function asContactRow(data: Record<string, unknown>) {
+  const position = String(data.position ?? '');
+  const lines = [
+    data.phone && `Téléphone · Phone · تلفن : ${data.phone}`,
+    data.cv && `CV : ${fileLink(data.cv)}`,
+    data.link && `Lien · Link · لینک : ${data.link}`,
+  ].filter(Boolean);
+  return {
+    requester_type: 'Candidature · Job application · درخواست شغل',
+    position,
+    name: data.name,
+    email: data.email,
+    subject: `Emploi · Job · شغل : ${position}`,
+    message: [...lines, lines.length ? '' : null, data.message]
+      .filter((l) => l !== null)
+      .join('\n'),
+    lang: data.lang,
+  };
+}
+
 async function copyToSheet(payload: Payload) {
   if (!SHEET_WEBHOOK_URL || !SHEET_FORMS.has(payload.form_name)) return;
-  const data = Object.fromEntries(
+  const fields = Object.fromEntries(
     Object.entries(payload.data ?? {}).filter(([key]) => !PRIVATE_FIELDS.has(key)),
   );
+  const job = payload.form_name === 'emplois';
+  const data = job ? asContactRow(fields) : fields;
   try {
     const res = await fetch(SHEET_WEBHOOK_URL, {
       method: 'POST',
@@ -89,7 +124,7 @@ async function copyToSheet(payload: Payload) {
       body: JSON.stringify({
         secret: await sheetSecret(),
         id: payload.id,
-        form: payload.form_name,
+        form: job ? 'contact' : payload.form_name,
         created_at: payload.created_at,
         data,
       }),

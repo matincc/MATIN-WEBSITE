@@ -50,6 +50,7 @@ const en: Dictionary = {
     getInvolved: 'Get Involved',
     resources: 'Resources',
     contact: 'Contact & Collaboration',
+    careers: 'Careers',
     faq: 'FAQ',
     privacy: 'Privacy Policy',
     terms: 'Terms of Use',
@@ -495,6 +496,8 @@ const en: Dictionary = {
     jurisdiction_international: 'International',
   },
   contact: {
+    careersNote: 'Looking for a paid position instead?',
+    careersLink: 'See our open positions',
     title: 'Contact & Collaboration',
     lede: 'A question, an idea, a wish to collaborate? Write to us: we read every message and will reply as soon as we can.',
     formTitle: 'Write to us',
@@ -581,6 +584,44 @@ const en: Dictionary = {
     any: 'No preference',
     errTooMany:
       'Too many messages were sent from this connection. Please try again in a few minutes.',
+  },
+  careers: {
+    title: 'Careers',
+    lede: 'Join the team of the Matin Intercultural Institute and help bring cultures into dialogue, in Montréal and beyond.',
+    metaDescription:
+      'Open positions at the Matin Intercultural Institute, a Montréal nonprofit, and the application form.',
+    openTitle: 'Open Positions',
+    openSubtitle: 'The positions currently available at Matin.',
+    empty:
+      'There are no open positions at the moment. You can still send us an open application below: we will keep it for future hiring.',
+    type: 'Position type',
+    location: 'Location',
+    pay: 'Pay',
+    deadline: 'Apply by',
+    details: 'Read the job description',
+    apply: 'Apply',
+    types: { 'full-time': 'Full-time', 'part-time': 'Part-time', contract: 'Contract' },
+    locations: { montreal: 'Montréal', remote: 'Remote', hybrid: 'Hybrid (Montréal and remote)' },
+    formTitle: 'Send Your Application',
+    formIntro:
+      'Fill in this form for an open position or for an open application. We read every application carefully.',
+    position: 'Position',
+    openApplication: 'Open application',
+    cv: 'Your CV (optional)',
+    cvHint: 'PDF or Word, 5 MB maximum.',
+    cvTooBig: 'The file is larger than 5 MB. Please send a smaller file.',
+    cvType: 'Please attach a PDF or Word file.',
+    link: 'Link to your LinkedIn profile or portfolio (optional)',
+    message: 'Why would you like to join Matin?',
+    consent:
+      'I agree that Matin will use this information only to review my application, in accordance with its',
+    success:
+      'Thank you! Your application has been sent. We will review it carefully and contact you by email.',
+    submit: 'Send my application',
+    volunteerTitle: 'Would you rather volunteer?',
+    volunteerText:
+      'Matin also welcomes volunteers who want to contribute to its cultural activities.',
+    volunteerCta: 'Join our volunteer team',
   },
   faq: {
     title: 'Frequently Asked Questions',

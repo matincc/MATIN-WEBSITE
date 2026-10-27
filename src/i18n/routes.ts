@@ -21,6 +21,7 @@ export const routes = {
   gallery: { fr: 'galerie', en: 'gallery' },
   resources: { fr: 'ressources', en: 'resources' },
   contact: { fr: 'contact', en: 'contact' },
+  careers: { fr: 'emplois', en: 'careers' },
   faq: { fr: 'faq', en: 'faq' },
   privacy: { fr: 'confidentialite', en: 'privacy' },
   terms: { fr: 'conditions-utilisation', en: 'terms-of-use' },
