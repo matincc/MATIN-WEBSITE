@@ -151,8 +151,8 @@ const details = [
           <SectionHeader
             align="start"
             id="volunteer-title"
-            title={t('involved.volunteer')}
-            lede={inv.volunteerIntro && pick(inv.volunteerIntro, lang)}
+            title={t('involved.volunteerTitle')}
+            subtitle={inv.volunteerIntro && pick(inv.volunteerIntro, lang)}
           />
           <ul class="space-y-4">
             {inv.roles.map((r, i) => (

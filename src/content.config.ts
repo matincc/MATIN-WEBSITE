@@ -283,6 +283,26 @@ const highlights = defineCollection({
       }),
 });
 
+/**
+ * Matin in Action, "coming soon" posters (owner's brief, Oct 27 2026): Matin's own
+ * activities announced before they are scheduled. One poster image per language, no date,
+ * place or registration details (none are confirmed). Remove the file, or set
+ * `published: false`, once the activity has a real event page.
+ */
+const comingSoon = defineCollection({
+  loader: yaml('coming-soon'),
+  schema: ({ image }) =>
+    z.object({
+      title: bi,
+      summary: bi,
+      /** The poster in each language (Persian falls back to English). */
+      poster: z.object({ fr: image(), en: image(), fa: image().optional() }),
+      posterAlt: bi,
+      order: z.number().int().default(0),
+      published: z.boolean().default(true),
+    }),
+});
+
 const settings = defineCollection({
   loader: yaml('settings'),
   schema: z.object({
@@ -659,6 +679,7 @@ export const collections = {
   events,
   news,
   highlights,
+  comingSoon,
   settings,
   team,
   about,
