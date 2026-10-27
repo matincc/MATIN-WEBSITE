@@ -1,0 +1,10 @@
+name: 'Hakan'
+nameFa: 'هاکان'
+role:
+  fr: 'Responsable des partenariats internationaux'
+  en: 'International Partnerships Lead'
+  fa: 'مسئول همکاری‌های بین‌المللی'
+group: executive
+photo: ../../assets/uploads/team/hakan.jpg
+order: 3
+faReviewed: true
