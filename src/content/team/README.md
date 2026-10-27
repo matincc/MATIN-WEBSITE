@@ -15,6 +15,7 @@ on the local preview (`npm run dev`).
 
 ```yaml
 name: 'Prénom Nom'
+# nameFa: '…'        (optional, the name in Persian script)
 role:
   fr: 'Titre officiel'
   en: 'Official title'

@@ -2,9 +2,9 @@
 # profiles). Remove `draft: true` to show it on the About page.
 name: 'Reza Moafi'
 role:
-  fr: 'Fondateur et président'
-  en: 'Founder and President'
-  fa: 'بنیان‌گذار و رئیس'
+  fr: 'Fondateur, président et directeur général'
+  en: 'Founder, President and Executive Director'
+  fa: 'بنیان‌گذار، رئیس و مدیر اجرایی'
 photo: ../../assets/brand/president.jpg
 linkedin: https://www.linkedin.com/in/rezamoafi/
 group: president # shown by the President section, not in the lists

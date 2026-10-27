@@ -354,6 +354,8 @@ const team = defineCollection({
   schema: ({ image }) =>
     z.object({
       name: z.string().min(1),
+      /** The name in Persian script, shown on the Persian page (optional). */
+      nameFa: z.string().optional(),
       /** Official position or role. */
       role: bi,
       /** Short professional biography (two or three sentences), shown on the card. */
