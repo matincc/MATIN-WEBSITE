@@ -20,7 +20,8 @@ import type { Handler } from '@netlify/functions';
 import { connectLambda, getStore } from '@netlify/blobs';
 
 /** The Apps Script web app (Deploy → Web app). Empty: the Sheet copy is off. */
-const SHEET_WEBHOOK_URL = '';
+const SHEET_WEBHOOK_URL =
+  'https://script.google.com/macros/s/AKfycbw-Tpom1Ejxw9H0fOnyzp7YjM9_yLqtwFWjUcokD9vgYjRMqOHI9NcQyqn5bQuKbZq4EQ/exec';
 
 /** Forms copied to the Sheet; anything else is ignored there. */
 const SHEET_FORMS = new Set(['benevolat', 'contact', 'newsletter']);
