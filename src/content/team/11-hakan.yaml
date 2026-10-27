@@ -1,9 +1,9 @@
 name: 'Hakan'
 nameFa: 'هاکان'
 role:
-  fr: 'Bénévole – Partenariats culturels, Türkiye'
-  en: 'Cultural Partnerships Volunteer – Türkiye'
-  fa: 'داوطلب همکاری‌های فرهنگی – ترکیه'
+  fr: 'Conseiller – Partenariats culturels, Türkiye'
+  en: 'Advisor – Cultural Partnerships, Türkiye'
+  fa: 'مشاور همکاری‌های فرهنگی – ترکیه'
 group: advisor
 photo: ../../assets/uploads/team/hakan.jpg
 order: 2
