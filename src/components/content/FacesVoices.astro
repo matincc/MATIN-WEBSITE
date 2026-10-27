@@ -1,0 +1,425 @@
+---
+/**
+ * "Faces & Voices of Matin" (owner's brief, Oct 27 2026): the future home of authentic
+ * portraits, personal reflections, community voices, cultural perspectives, volunteers
+ * and collaborators, and short audio or video stories.
+ *
+ * Nothing here is invented: until real, consented contributions exist, every place is a
+ * clearly labelled placeholder (dashed edge, « Espace réservé » badge, no name, no face,
+ * no quote). Shown only on previews (Netlify CONTEXT other than production) until the
+ * owner approves showing it on the live site.
+ */
+import { Mic, Play, Quote, Users, Eye } from '@lucide/astro';
+import AliveHeader from '@/components/ui/AliveHeader.astro';
+import PersonSilhouette from '@/components/content/PersonSilhouette.astro';
+import { href, type UiLang } from '@/i18n/routes';
+import { aliveStrings } from '@/i18n/alive';
+
+interface Props {
+  lang: UiLang;
+  index?: string;
+}
+const { lang, index } = Astro.props;
+const a = aliveStrings(lang);
+const bars = [18, 34, 52, 30, 64, 44, 26, 58, 40, 22, 48, 70, 36, 54, 28, 46, 62, 32, 20, 42];
+---
+
+<section class="faces section-pad" aria-labelledby="faces-title">
+  <div class="container-site">
+    <AliveHeader
+      id="faces-title"
+      index={index}
+      title={a.facesTitle}
+      lede={a.facesLede}
+      tone="dark"
+    />
+
+    <ul class="faces__grid">
+      <li class="ph ph--portrait" data-reveal>
+        <div class="ph__frame ph__frame--portrait" aria-hidden="true">
+          <span class="ph__blob"></span>
+          <PersonSilhouette figure="neutral" class="ph__person" />
+        </div>
+        <p class="ph__kind">{a.facesPortrait}</p>
+        <p class="ph__text">{a.facesPortraitText}</p>
+        <span class="ph__badge">{a.placeholder}</span>
+      </li>
+
+      <li class="ph ph--reflection" data-reveal style="--reveal-delay:90ms">
+        <Quote size={44} class="ph__quote" aria-hidden="true" />
+        <div class="ph__lines" aria-hidden="true">
+          <span style="--w:92%"></span>
+          <span style="--w:100%"></span>
+          <span style="--w:78%"></span>
+          <span style="--w:55%"></span>
+        </div>
+        <p class="ph__kind">{a.facesReflection}</p>
+        <p class="ph__text">{a.facesReflectionText}</p>
+        <span class="ph__badge">{a.placeholder}</span>
+      </li>
+
+      <li class="ph ph--voice" data-reveal style="--reveal-delay:180ms">
+        <div class="ph__player">
+          <button type="button" class="ph__play" disabled>
+            <Mic size={20} aria-hidden="true" />
+            <span class="sr-only">{a.facesListen}</span>
+          </button>
+          <span class="ph__wave" aria-hidden="true">
+            {bars.map((h, i) => (
+              <span style={`--h:${h}%;--i:${i}`}></span>
+            ))}
+          </span>
+        </div>
+        <p class="ph__kind">{a.facesVoice}</p>
+        <p class="ph__text">{a.facesVoiceText}</p>
+        <span class="ph__badge">{a.placeholder}</span>
+      </li>
+
+      <li class="ph ph--video" data-reveal style="--reveal-delay:120ms">
+        <div class="ph__frame ph__frame--video" aria-hidden="true">
+          <span class="ph__play-big">
+            <Play size={28} fill="currentColor" />
+          </span>
+          <span class="ph__subs">
+            <span>FR</span>
+            <span>EN</span>
+            <span>FA</span>
+          </span>
+        </div>
+        <p class="ph__kind">{a.facesVideo}</p>
+        <p class="ph__text">{a.facesVideoText}</p>
+        <span class="ph__badge">{a.placeholder}</span>
+      </li>
+
+      <li class="ph ph--perspective" data-reveal style="--reveal-delay:200ms">
+        <span class="ph__icon" aria-hidden="true">
+          <Eye size={22} />
+        </span>
+        <p class="ph__kind">{a.facesPerspective}</p>
+        <p class="ph__text">{a.facesPerspectiveText}</p>
+        <span class="ph__badge">{a.placeholder}</span>
+      </li>
+
+      <li class="ph ph--people" data-reveal style="--reveal-delay:260ms">
+        <span class="ph__faces" aria-hidden="true">
+          <span></span>
+          <span></span>
+          <span></span>
+          <span></span>
+        </span>
+        <span class="ph__icon" aria-hidden="true">
+          <Users size={22} />
+        </span>
+        <p class="ph__kind">{a.facesPeople}</p>
+        <p class="ph__text">{a.facesPeopleText}</p>
+        <span class="ph__badge">{a.placeholder}</span>
+      </li>
+    </ul>
+
+    <div class="faces__foot" data-reveal>
+      <p class="faces__consent">{a.facesConsent}</p>
+      <a href={`${href('contact', lang)}#write`} class="btn faces__cta">
+        {a.facesCta}
+      </a>
+    </div>
+  </div>
+</section>
+
+<style>
+  .faces {
+    position: relative;
+    overflow: hidden;
+    background: var(--alive-green);
+    color: var(--alive-cream);
+  }
+  /* Asymmetric mosaic: a tall portrait, a wide reflection, then smaller places. */
+  .faces__grid {
+    position: relative;
+    display: grid;
+    gap: clamp(1rem, 0.8rem + 1vw, 1.75rem);
+  }
+  @media (min-width: 48rem) {
+    .faces__grid {
+      grid-template-columns: repeat(6, minmax(0, 1fr));
+    }
+    .ph--portrait {
+      grid-column: span 3;
+      grid-row: span 2;
+    }
+    .ph--reflection {
+      grid-column: span 3;
+    }
+    .ph--voice {
+      grid-column: span 3;
+    }
+    .ph--video {
+      grid-column: span 6;
+    }
+    .ph--perspective,
+    .ph--people {
+      grid-column: span 3;
+    }
+  }
+  @media (min-width: 64rem) {
+    .faces__grid {
+      grid-template-columns: repeat(12, minmax(0, 1fr));
+    }
+    .ph--portrait {
+      grid-column: 1 / span 5;
+      grid-row: 1 / span 2;
+    }
+    .ph--reflection {
+      grid-column: 6 / span 7;
+    }
+    .ph--voice {
+      grid-column: 6 / span 3;
+    }
+    .ph--video {
+      grid-column: 9 / span 4;
+    }
+    .ph--perspective {
+      grid-column: 1 / span 4;
+    }
+    .ph--people {
+      grid-column: 5 / span 8;
+    }
+  }
+
+  .ph {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    padding: clamp(1.25rem, 1rem + 1vw, 1.75rem);
+    border-radius: 1.5rem;
+    border: 1.5px dashed color-mix(in srgb, var(--alive-gold) 65%, transparent);
+    background: color-mix(in srgb, var(--alive-cream) 6%, transparent);
+    transition:
+      background 0.35s ease,
+      transform 0.35s cubic-bezier(0.2, 0.7, 0.2, 1);
+  }
+  .ph:hover {
+    background: color-mix(in srgb, var(--alive-cream) 10%, transparent);
+  }
+  .ph__badge {
+    position: absolute;
+    inset-block-start: 1rem;
+    inset-inline-end: 1rem;
+    padding: 0.2rem 0.65rem;
+    border-radius: 999px;
+    border: 1px solid var(--alive-gold);
+    font-size: 0.72rem;
+    font-weight: 800;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--alive-gold);
+    background: var(--alive-green);
+  }
+  :global(html[lang='fa']) .ph__badge {
+    letter-spacing: 0;
+    font-size: 0.8rem;
+  }
+  .ph__kind {
+    margin-block-start: auto;
+    font-family: var(--font-display);
+    font-size: clamp(1.2rem, 1.05rem + 0.5vw, 1.5rem);
+    font-weight: 800;
+    color: var(--alive-cream);
+  }
+  .ph__text {
+    max-width: 34rem;
+    color: color-mix(in srgb, var(--alive-cream) 88%, transparent);
+    line-height: 1.55;
+  }
+  .ph__frame {
+    position: relative;
+    display: grid;
+    place-items: end center;
+    overflow: hidden;
+    border-radius: 1.1rem;
+    margin-block-end: 0.75rem;
+  }
+  .ph__frame--portrait {
+    flex: 1;
+    min-height: 18rem;
+    background: var(--alive-blue);
+  }
+  .ph__blob {
+    position: absolute;
+    inset-block-start: 12%;
+    inset-inline-start: 50%;
+    width: 70%;
+    aspect-ratio: 1;
+    translate: -50% 0;
+    border-radius: 50%;
+    background: var(--alive-coral);
+    opacity: 0.85;
+  }
+  :global([dir='rtl']) .ph__blob {
+    translate: 50% 0;
+  }
+  .ph__frame :global(.ph__person) {
+    position: relative;
+    width: 78%;
+    max-width: 22rem;
+  }
+  .ph__frame :global(.silhouette__head),
+  .ph__frame :global(.silhouette__body) {
+    fill: var(--alive-cream);
+    opacity: 0.92;
+  }
+  .ph__frame--video {
+    aspect-ratio: 16 / 9;
+    place-items: center;
+    background: var(--alive-blue);
+  }
+  .ph__play-big {
+    display: grid;
+    place-items: center;
+    width: 4rem;
+    height: 4rem;
+    border-radius: 50%;
+    background: var(--alive-gold);
+    color: var(--alive-green);
+    transition: transform 0.35s cubic-bezier(0.2, 0.7, 0.2, 1);
+  }
+  .ph--video:hover .ph__play-big {
+    transform: scale(1.08);
+  }
+  .ph__subs {
+    position: absolute;
+    inset-block-end: 0.75rem;
+    inset-inline-start: 0.75rem;
+    display: flex;
+    gap: 0.35rem;
+    direction: ltr;
+  }
+  .ph__subs span {
+    padding: 0.1rem 0.45rem;
+    border-radius: 0.35rem;
+    background: var(--alive-cream);
+    color: var(--alive-green);
+    font-size: 0.72rem;
+    font-weight: 800;
+  }
+  .ph__quote {
+    color: var(--alive-gold);
+  }
+  .ph__lines {
+    display: grid;
+    gap: 0.65rem;
+    margin-block: 0.75rem 1rem;
+  }
+  .ph__lines span {
+    display: block;
+    width: var(--w);
+    height: 0.65rem;
+    border-radius: 999px;
+    background: color-mix(in srgb, var(--alive-cream) 16%, transparent);
+  }
+  .ph__player {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin-block-end: 0.75rem;
+  }
+  .ph__play {
+    display: grid;
+    flex-shrink: 0;
+    place-items: center;
+    width: 3rem;
+    height: 3rem;
+    border-radius: 50%;
+    background: var(--alive-coral);
+    color: var(--alive-green);
+    cursor: not-allowed;
+  }
+  .ph__wave {
+    display: flex;
+    flex: 1;
+    align-items: center;
+    gap: 3px;
+    height: 3rem;
+    direction: ltr;
+  }
+  .ph__wave span {
+    flex: 1;
+    height: var(--h);
+    border-radius: 999px;
+    background: color-mix(in srgb, var(--alive-gold) 70%, transparent);
+    transform-origin: center;
+    transition: transform 0.4s ease;
+    transition-delay: calc(var(--i) * 18ms);
+  }
+  @media (prefers-reduced-motion: no-preference) {
+    .ph--voice:hover .ph__wave span {
+      transform: scaleY(1.25);
+    }
+  }
+  .ph__icon {
+    display: grid;
+    place-items: center;
+    width: 2.75rem;
+    height: 2.75rem;
+    border-radius: 0.8rem;
+    background: var(--alive-gold);
+    color: var(--alive-green);
+    margin-block-end: 0.5rem;
+  }
+  .ph__faces {
+    display: flex;
+    margin-block-end: 0.75rem;
+  }
+  .ph__faces span {
+    width: 3rem;
+    height: 3rem;
+    border-radius: 50%;
+    border: 3px solid var(--alive-green);
+    margin-inline-start: -0.6rem;
+  }
+  .ph__faces span:first-child {
+    margin-inline-start: 0;
+    background: var(--alive-coral);
+  }
+  .ph__faces span:nth-child(2) {
+    background: var(--alive-gold);
+  }
+  .ph__faces span:nth-child(3) {
+    background: var(--alive-blue);
+  }
+  .ph__faces span:nth-child(4) {
+    background: var(--alive-cream);
+  }
+  .ph--people .ph__icon {
+    display: none;
+  }
+
+  .faces__foot {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1.25rem 2rem;
+    margin-block-start: clamp(2rem, 1.5rem + 2vw, 3rem);
+    padding-block-start: 1.5rem;
+    border-block-start: 1px solid color-mix(in srgb, var(--alive-cream) 22%, transparent);
+  }
+  .faces__consent {
+    flex: 1 1 28rem;
+    max-width: 48rem;
+    font-size: 1.05rem;
+    line-height: 1.6;
+    color: var(--alive-cream);
+  }
+  .faces__cta {
+    background: var(--alive-gold);
+    color: var(--alive-green);
+  }
+  .faces__cta:hover {
+    background: var(--alive-cream);
+  }
+  .faces__cta:focus-visible {
+    outline: 3px solid var(--alive-gold);
+    outline-offset: 3px;
+  }
+</style>

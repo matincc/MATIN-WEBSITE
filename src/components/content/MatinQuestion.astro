@@ -1,0 +1,324 @@
+---
+/**
+ * "The Matin Question" (owner's brief, Oct 27 2026): one open cultural question that
+ * invites reflection. PROTOTYPE ONLY: there is no <form>, no network request and no
+ * storage; the answer stays in the visitor's browser tab and the page says so. Real
+ * collection waits for the owner's approval of moderation, privacy, consent and the
+ * technical set-up. Shown only on previews (Netlify CONTEXT other than production).
+ */
+import { ArrowRight } from '@lucide/astro';
+import AliveHeader from '@/components/ui/AliveHeader.astro';
+import type { UiLang } from '@/i18n/routes';
+import { aliveStrings } from '@/i18n/alive';
+
+interface Props {
+  lang: UiLang;
+  index?: string;
+}
+const { lang, index } = Astro.props;
+const a = aliveStrings(lang);
+---
+
+<section class="mq section-pad" aria-labelledby="mq-question" data-mq>
+  <div class="container-site mq__inner">
+    <div class="mq__ask">
+      <AliveHeader
+        id="mq-question"
+        index={index}
+        eyebrow={a.questionEyebrow}
+        title={a.question}
+        class="mq__head"
+      />
+      <p class="mq__intro" data-reveal>
+        {a.questionIntro}
+      </p>
+    </div>
+
+    <div class="mq__card" data-reveal style="--reveal-delay:120ms">
+      <span class="mq__proto">{a.questionPrototype}</span>
+      <p class="mq__chips-label" id="mq-chips-label">
+        {a.questionChipsLabel}
+      </p>
+      <div class="mq__chips" role="group" aria-labelledby="mq-chips-label">
+        {a.questionChips.map((c) => (
+          <button type="button" class="mq__chip" data-mq-chip aria-pressed="false">
+            {c}
+          </button>
+        ))}
+      </div>
+      <label for="mq-answer" class="mq__label">
+        {a.questionLabel}
+      </label>
+      <textarea
+        id="mq-answer"
+        class="mq__input"
+        rows="4"
+        maxlength="280"
+        placeholder={a.questionHint}
+        aria-describedby="mq-count"
+        data-mq-input
+      ></textarea>
+      <div class="mq__row">
+        <span class="mq__count" id="mq-count" aria-live="polite" data-mq-count>
+          0 / 280
+        </span>
+        <button type="button" class="btn mq__send" data-mq-send>
+          {a.questionSubmit}
+          <ArrowRight size={18} class="flip-rtl" aria-hidden="true" />
+        </button>
+      </div>
+      <p
+        class="mq__status"
+        role="status"
+        data-mq-status
+        data-empty={a.questionEmpty}
+        data-thanks={a.questionThanks}
+      ></p>
+    </div>
+
+    <div class="mq__wall" data-reveal style="--reveal-delay:200ms">
+      <p class="mq__wall-title">{a.questionWall}</p>
+      <ul class="mq__bubbles" aria-hidden="true">
+        <li></li>
+        <li></li>
+        <li></li>
+      </ul>
+      <p class="mq__wall-empty">{a.questionWallEmpty}</p>
+    </div>
+  </div>
+</section>
+
+<script>
+  for (const root of document.querySelectorAll<HTMLElement>('[data-mq]')) {
+    const input = root.querySelector<HTMLTextAreaElement>('[data-mq-input]')!;
+    const count = root.querySelector<HTMLElement>('[data-mq-count]')!;
+    const status = root.querySelector<HTMLElement>('[data-mq-status]')!;
+    const fa = document.documentElement.lang === 'fa';
+    // French puts a (non-breaking) space before the colon.
+    const sep = document.documentElement.lang.startsWith('fr') ? '\u00a0:' : ':';
+    const digits = (n: number) => (fa ? n.toLocaleString('fa-IR') : String(n));
+    const update = () => (count.textContent = `${digits(input.value.length)} / ${digits(280)}`);
+    input.addEventListener('input', update);
+    update();
+    // A chip starts the answer with its words (or removes them again).
+    for (const chip of root.querySelectorAll<HTMLButtonElement>('[data-mq-chip]')) {
+      chip.addEventListener('click', () => {
+        const word = chip.textContent!.trim();
+        const on = chip.getAttribute('aria-pressed') !== 'true';
+        chip.setAttribute('aria-pressed', String(on));
+        const lead = `${word}${sep} `;
+        if (on && !input.value.includes(word)) input.value = `${lead}${input.value}`.trim();
+        if (!on) input.value = input.value.replace(lead, '').replace(word, '').trim();
+        update();
+        input.focus();
+      });
+    }
+    // Prototype: nothing is sent or stored, the page only says thank you.
+    root.querySelector('[data-mq-send]')!.addEventListener('click', () => {
+      const empty = input.value.trim().length === 0;
+      status.textContent = empty ? status.dataset.empty! : status.dataset.thanks!;
+      status.classList.toggle('is-thanks', !empty);
+      if (!empty) {
+        input.value = '';
+        update();
+        root
+          .querySelectorAll('[data-mq-chip]')
+          .forEach((c) => c.setAttribute('aria-pressed', 'false'));
+      } else input.focus();
+    });
+  }
+</script>
+
+<style>
+  .mq {
+    position: relative;
+    overflow: hidden;
+    background: var(--alive-cream);
+  }
+  /* Flat shapes: a gold half-sun and a coral dot, quiet. */
+  .mq::before,
+  .mq::after {
+    content: '';
+    position: absolute;
+    border-radius: 50%;
+    pointer-events: none;
+  }
+  .mq::before {
+    inset-block-end: -10rem;
+    inset-inline-start: -8rem;
+    width: 22rem;
+    aspect-ratio: 1;
+    background: color-mix(in srgb, var(--alive-gold) 45%, transparent);
+  }
+  .mq::after {
+    inset-block-start: 3rem;
+    inset-inline-end: 6%;
+    width: 1.5rem;
+    aspect-ratio: 1;
+    background: var(--alive-coral);
+  }
+  .mq__inner {
+    position: relative;
+    display: grid;
+    gap: clamp(1.5rem, 1rem + 2vw, 3rem);
+  }
+  @media (min-width: 64rem) {
+    .mq__inner {
+      grid-template-columns: minmax(0, 1.1fr) minmax(0, 0.9fr);
+      align-items: start;
+    }
+    .mq__wall {
+      grid-column: 1 / -1;
+    }
+  }
+  .mq__ask :global(.mq__head) {
+    grid-template-columns: 1fr;
+    margin-block-end: 1rem;
+  }
+  .mq__intro {
+    max-width: 34rem;
+    font-size: clamp(1.15rem, 1rem + 0.5vw, 1.4rem);
+    line-height: 1.6;
+    color: var(--color-ink);
+  }
+  .mq__card {
+    position: relative;
+    display: grid;
+    gap: 0.9rem;
+    padding: clamp(1.5rem, 1rem + 2vw, 2.5rem);
+    border-radius: 2rem 2rem 2rem 0.5rem;
+    background: var(--color-white);
+    box-shadow: 0 30px 60px -36px color-mix(in srgb, var(--alive-green) 60%, transparent);
+    rotate: -0.6deg;
+    transition: rotate 0.5s cubic-bezier(0.2, 0.7, 0.2, 1);
+  }
+  :global([dir='rtl']) .mq__card {
+    rotate: 0.6deg;
+    border-radius: 2rem 2rem 0.5rem 2rem;
+  }
+  .mq__card:focus-within {
+    rotate: 0deg;
+  }
+  .mq__proto {
+    justify-self: start;
+    padding: 0.25rem 0.75rem;
+    border-radius: 999px;
+    border: 1px dashed var(--color-terracotta-deep);
+    color: var(--color-terracotta-deep);
+    font-size: 0.8rem;
+    font-weight: 800;
+  }
+  .mq__chips-label,
+  .mq__label {
+    font-family: var(--font-display);
+    font-weight: 800;
+    color: var(--alive-green);
+  }
+  .mq__chips {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+  }
+  .mq__chip {
+    padding: 0.45rem 1rem;
+    border-radius: 999px;
+    border: 1.5px solid color-mix(in srgb, var(--alive-green) 35%, transparent);
+    color: var(--alive-green);
+    font-weight: 600;
+    transition:
+      background 0.25s ease,
+      color 0.25s ease,
+      transform 0.25s ease;
+  }
+  .mq__chip:hover {
+    transform: translateY(-2px);
+    border-color: var(--alive-green);
+  }
+  .mq__chip[aria-pressed='true'] {
+    background: var(--alive-green);
+    color: var(--alive-cream);
+    border-color: var(--alive-green);
+  }
+  .mq__input {
+    width: 100%;
+    padding: 0.9rem 1rem;
+    border-radius: 1rem;
+    border: 1.5px solid color-mix(in srgb, var(--alive-green) 30%, transparent);
+    background: var(--color-ivory);
+    font-size: 1.1rem;
+    line-height: 1.5;
+    resize: vertical;
+  }
+  .mq__input:focus-visible,
+  .mq__chip:focus-visible,
+  .mq__send:focus-visible {
+    outline: 3px solid var(--color-primary);
+    outline-offset: 2px;
+  }
+  .mq__row {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.75rem;
+  }
+  .mq__count {
+    font-size: 0.9rem;
+    color: var(--color-ink);
+  }
+  .mq__send {
+    background: var(--alive-green);
+    color: var(--alive-cream);
+  }
+  .mq__send:hover {
+    background: var(--alive-blue);
+  }
+  .mq__status:empty {
+    display: none;
+  }
+  .mq__status {
+    padding: 0.8rem 1rem;
+    border-radius: 0.9rem;
+    background: var(--color-champagne);
+    color: var(--color-ink);
+    line-height: 1.55;
+  }
+  .mq__status.is-thanks {
+    border-inline-start: 4px solid var(--alive-coral);
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .mq__card {
+      rotate: none;
+    }
+  }
+
+  .mq__wall {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 1rem 1.5rem;
+    padding-block-start: 1.5rem;
+    border-block-start: 1px solid color-mix(in srgb, var(--alive-green) 18%, transparent);
+  }
+  .mq__wall-title {
+    font-family: var(--font-display);
+    font-weight: 800;
+    color: var(--alive-green);
+  }
+  .mq__bubbles {
+    display: flex;
+    gap: 0.5rem;
+  }
+  .mq__bubbles li {
+    width: 4.5rem;
+    height: 2rem;
+    border-radius: 1rem 1rem 1rem 0.25rem;
+    border: 1.5px dashed color-mix(in srgb, var(--alive-green) 40%, transparent);
+  }
+  .mq__bubbles li:nth-child(2) {
+    width: 6rem;
+  }
+  .mq__wall-empty {
+    color: var(--color-ink);
+  }
+</style>

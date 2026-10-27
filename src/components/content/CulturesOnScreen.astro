@@ -1,0 +1,482 @@
+---
+/**
+ * "Cultures on Screen" (Matin Alive, owner's brief Oct 27 2026): the architecture of a
+ * curated video collection (src/content/screen/, see its README). A large lead video and
+ * a list beside it, filterable by kind; creator and original source always shown.
+ * YouTube loads only on click (youtube-nocookie), Instagram is a link to the original
+ * post, a hosted file needs documented rights (the schema enforces it).
+ * Without entries, previews show labelled placeholders and the live site hides the
+ * section.
+ */
+import { getCollection } from 'astro:content';
+import { Picture } from 'astro:assets';
+import { BadgeCheck, ExternalLink, Play } from '@lucide/astro';
+import AliveHeader from '@/components/ui/AliveHeader.astro';
+import type { UiLang } from '@/i18n/routes';
+import { pick, useTranslations } from '@/i18n/ui';
+import { aliveStrings, fill, type ScreenKind } from '@/i18n/alive';
+import { youtubeId } from '@/lib/gallery';
+
+interface Props {
+  lang: UiLang;
+  index?: string;
+}
+const { lang, index } = Astro.props;
+const t = useTranslations(lang);
+const a = aliveStrings(lang);
+const preview = process.env.CONTEXT !== 'production';
+const colon = lang === 'fr' ? '\u00a0:' : ':';
+
+const entries = (await getCollection('screen', (v) => v.data.published)).sort(
+  (x, y) => x.data.order - y.data.order,
+);
+const platformName = { youtube: 'YouTube', instagram: 'Instagram', file: 'Matin' } as const;
+const items = entries.map((v) => ({
+  id: v.id,
+  kind: v.data.kind as ScreenKind,
+  title: pick(v.data.title, lang)!,
+  summary: pick(v.data.summary, lang),
+  creator: v.data.creator,
+  platform: v.data.platform,
+  yt: youtubeId(v.data.youtube),
+  file: v.data.file,
+  sourceUrl: v.data.sourceUrl,
+  poster: v.data.poster,
+  posterAlt: pick(v.data.posterAlt, lang) ?? '',
+  rights: Boolean(v.data.rights),
+  placeholder: false,
+}));
+// Placeholders (previews only): one of each kind, never a real title, creator or video.
+const kinds = Object.keys(a.screenKinds) as ScreenKind[];
+const list =
+  items.length > 0
+    ? items
+    : preview
+      ? kinds.map((kind) => ({
+          id: `ph-${kind}`,
+          kind,
+          title: a.screenKinds[kind],
+          summary: a.screenPlaceholder,
+          creator: { name: '—', url: undefined },
+          platform: 'youtube' as const,
+          yt: undefined,
+          file: undefined,
+          sourceUrl: undefined,
+          poster: undefined,
+          posterAlt: '',
+          rights: false,
+          placeholder: true,
+        }))
+      : [];
+const present = kinds.filter((k) => list.some((i) => i.kind === k));
+const tones = {
+  matin: 'coral',
+  partner: 'gold',
+  creator: 'cream',
+  documentary: 'blue',
+  community: 'coral',
+};
+---
+
+{list.length > 0 && (
+  <section class="screen section-pad" aria-labelledby="screen-title" data-screen>
+    <div class="container-site">
+      <AliveHeader
+        id="screen-title"
+        index={index}
+        title={a.screenTitle}
+        lede={a.screenLede}
+        tone="dark"
+      />
+
+      {present.length > 1 && (
+        <div class="screen__filters" role="group" aria-label={a.screenFilterLabel}>
+          <button type="button" class="screen__chip" aria-pressed="true" data-screen-filter="">
+            {a.screenAll}
+          </button>
+          {present.map((k) => (
+            <button type="button" class="screen__chip" aria-pressed="false" data-screen-filter={k}>
+              {a.screenKinds[k]}
+            </button>
+          ))}
+        </div>
+      )}
+
+      <ul class="screen__grid">
+        {list.map((v, i) => (
+          <li
+            class:list={[
+              'screen__item',
+              i === 0 && 'screen__item--lead',
+              v.placeholder && 'is-placeholder',
+            ]}
+            data-kind={v.kind}
+            data-tone={tones[v.kind]}
+            data-reveal
+            style={`--reveal-delay:${i * 80}ms`}
+          >
+            <div class="screen__frame">
+              {v.poster ? (
+                <Picture
+                  src={v.poster}
+                  alt={v.posterAlt}
+                  formats={['avif', 'webp']}
+                  widths={[480, 960]}
+                  sizes="(min-width: 64rem) 50vw, 100vw"
+                  class="screen__poster"
+                />
+              ) : (
+                <span class="screen__art" aria-hidden="true">
+                  <span></span>
+                  <span></span>
+                  <span></span>
+                </span>
+              )}
+              {v.placeholder ? (
+                <span class="screen__play is-static" aria-hidden="true">
+                  <Play size={i === 0 ? 30 : 20} fill="currentColor" />
+                </span>
+              ) : v.platform === 'youtube' && v.yt ? (
+                <button
+                  type="button"
+                  class="screen__play"
+                  data-screen-yt={v.yt}
+                  data-title={v.title}
+                >
+                  <Play size={i === 0 ? 30 : 20} fill="currentColor" aria-hidden="true" />
+                  <span class="sr-only">{fill(a.screenPlay, { title: v.title })}</span>
+                </button>
+              ) : v.platform === 'file' && v.file ? (
+                <video class="screen__video" controls preload="none" playsinline>
+                  <source
+                    src={v.file}
+                    type={v.file.endsWith('.webm') ? 'video/webm' : 'video/mp4'}
+                  />
+                </video>
+              ) : (
+                <a
+                  href={v.sourceUrl}
+                  class="screen__play"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  <ExternalLink size={20} aria-hidden="true" />
+                  <span class="sr-only">
+                    {fill(a.screenWatchOn, { platform: platformName[v.platform] })}
+                  </span>
+                </a>
+              )}
+              <span class="screen__kind">{a.screenKinds[v.kind]}</span>
+              {v.placeholder && <span class="screen__badge">{a.placeholder}</span>}
+            </div>
+            <div class="screen__body">
+              <h3 class="screen__title">{v.title}</h3>
+              {v.summary && <p class="screen__summary">{v.summary}</p>}
+              <p class="screen__credit">
+                <span>
+                  {a.screenCreator}
+                  {colon}{' '}
+                  {v.creator.url ? (
+                    <a href={v.creator.url} target="_blank" rel="noopener noreferrer">
+                      {v.creator.name}
+                    </a>
+                  ) : (
+                    v.creator.name
+                  )}
+                </span>
+                <span>
+                  {a.screenSource}
+                  {colon}{' '}
+                  {v.sourceUrl ? (
+                    <a href={v.sourceUrl} target="_blank" rel="noopener noreferrer">
+                      {platformName[v.platform]}
+                      <span class="sr-only">{t('a11y.externalLink')}</span>
+                    </a>
+                  ) : (
+                    '—'
+                  )}
+                </span>
+                {(v.platform === 'file' || v.placeholder) && (
+                  <span class:list={['screen__rights', v.rights && 'is-ok']}>
+                    <BadgeCheck size={15} aria-hidden="true" />
+                    {a.screenRights}
+                  </span>
+                )}
+              </p>
+            </div>
+          </li>
+        ))}
+      </ul>
+
+      <p class="screen__rules">{a.screenRules}</p>
+    </div>
+  </section>
+)}
+
+<script>
+  for (const root of document.querySelectorAll<HTMLElement>('[data-screen]')) {
+    // Filters by kind.
+    const chips = root.querySelectorAll<HTMLButtonElement>('[data-screen-filter]');
+    for (const chip of chips) {
+      chip.addEventListener('click', () => {
+        chips.forEach((c) => c.setAttribute('aria-pressed', String(c === chip)));
+        const kind = chip.dataset.screenFilter;
+        root.querySelectorAll<HTMLElement>('.screen__item').forEach((item) => {
+          item.hidden = Boolean(kind) && item.dataset.kind !== kind;
+        });
+      });
+    }
+    // YouTube: nothing is requested until the visitor clicks Play.
+    for (const btn of root.querySelectorAll<HTMLButtonElement>('[data-screen-yt]')) {
+      btn.addEventListener('click', () => {
+        const iframe = document.createElement('iframe');
+        iframe.src = `https://www.youtube-nocookie.com/embed/${btn.dataset.screenYt}?autoplay=1&rel=0`;
+        iframe.title = btn.dataset.title ?? 'YouTube';
+        iframe.allow = 'autoplay; encrypted-media; picture-in-picture; fullscreen';
+        iframe.allowFullscreen = true;
+        iframe.className = 'screen__iframe';
+        btn.parentElement!.replaceChildren(iframe);
+        iframe.focus();
+      });
+    }
+  }
+</script>
+
+<style>
+  .screen {
+    background: var(--alive-blue);
+    color: var(--alive-cream);
+  }
+  .screen__filters {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin-block-end: 1.75rem;
+  }
+  .screen__chip {
+    padding: 0.45rem 1rem;
+    border-radius: 999px;
+    border: 1.5px solid color-mix(in srgb, var(--alive-cream) 45%, transparent);
+    color: var(--alive-cream);
+    font-weight: 700;
+    transition: background 0.25s ease;
+  }
+  .screen__chip:hover {
+    border-color: var(--alive-cream);
+  }
+  .screen__chip[aria-pressed='true'] {
+    background: var(--alive-gold);
+    border-color: var(--alive-gold);
+    color: var(--alive-green);
+  }
+  .screen__chip:focus-visible,
+  .screen__play:focus-visible,
+  .screen__credit a:focus-visible {
+    outline: 3px solid var(--alive-gold);
+    outline-offset: 2px;
+  }
+
+  .screen__grid {
+    display: grid;
+    gap: 1.5rem;
+  }
+  @media (min-width: 48rem) {
+    .screen__grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+    .screen__item--lead {
+      grid-column: 1 / -1;
+    }
+  }
+  @media (min-width: 64rem) {
+    .screen__grid {
+      grid-template-columns: minmax(0, 1.5fr) minmax(0, 1fr);
+      grid-auto-flow: dense;
+    }
+    .screen__item--lead {
+      grid-column: 1;
+      grid-row: span 4;
+    }
+    .screen__item:not(.screen__item--lead) {
+      display: grid;
+      grid-template-columns: 11rem minmax(0, 1fr);
+      gap: 1rem;
+      align-items: center;
+    }
+  }
+  .screen__item[hidden] {
+    display: none !important;
+  }
+  .screen__frame {
+    position: relative;
+    display: grid;
+    place-items: center;
+    overflow: hidden;
+    aspect-ratio: 16 / 9;
+    border-radius: 1.1rem;
+    background: var(--alive-green);
+  }
+  .is-placeholder .screen__frame {
+    outline: 1.5px dashed color-mix(in srgb, var(--alive-gold) 70%, transparent);
+    outline-offset: -1.5px;
+  }
+  .screen__frame :global(.screen__poster),
+  .screen__frame :global(img),
+  .screen__video,
+  .screen__frame :global(.screen__iframe) {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border: 0;
+  }
+  /* Flat "screen" art: three overlapping shapes in the item's tone. */
+  .screen__art {
+    position: absolute;
+    inset: 0;
+  }
+  .screen__art span {
+    position: absolute;
+    border-radius: 50%;
+  }
+  .screen__art span:nth-child(1) {
+    inset-block-start: -20%;
+    inset-inline-start: -8%;
+    width: 55%;
+    aspect-ratio: 1;
+    background: var(--tone);
+    opacity: 0.85;
+  }
+  .screen__art span:nth-child(2) {
+    inset-block-end: -30%;
+    inset-inline-end: 8%;
+    width: 48%;
+    aspect-ratio: 1;
+    background: color-mix(in srgb, var(--alive-cream) 18%, transparent);
+  }
+  .screen__art span:nth-child(3) {
+    inset-block-start: 18%;
+    inset-inline-end: 22%;
+    width: 14%;
+    aspect-ratio: 1;
+    background: var(--alive-gold);
+  }
+  [data-tone='coral'] {
+    --tone: var(--alive-coral);
+  }
+  [data-tone='gold'] {
+    --tone: var(--alive-gold);
+  }
+  [data-tone='cream'] {
+    --tone: var(--alive-cream);
+  }
+  [data-tone='blue'] {
+    --tone: var(--alive-blue);
+  }
+  .screen__play {
+    position: relative;
+    display: grid;
+    place-items: center;
+    width: 3.25rem;
+    height: 3.25rem;
+    border-radius: 50%;
+    background: var(--alive-cream);
+    color: var(--alive-green);
+    box-shadow: 0 10px 30px -10px rgb(0 0 0 / 0.5);
+    transition: transform 0.35s cubic-bezier(0.2, 0.7, 0.2, 1);
+  }
+  .screen__item--lead .screen__play {
+    width: 5rem;
+    height: 5rem;
+  }
+  .screen__item:hover .screen__play {
+    transform: scale(1.08);
+  }
+  .screen__kind,
+  .screen__badge {
+    position: absolute;
+    inset-block-start: 0.75rem;
+    padding: 0.2rem 0.65rem;
+    border-radius: 999px;
+    font-size: 0.72rem;
+    font-weight: 800;
+  }
+  .screen__kind {
+    inset-inline-start: 0.75rem;
+    background: var(--alive-cream);
+    color: var(--alive-green);
+  }
+  .screen__badge {
+    inset-inline-end: 0.75rem;
+    border: 1px solid var(--alive-gold);
+    background: var(--alive-green);
+    color: var(--alive-gold);
+  }
+  .screen__item:not(.screen__item--lead) .screen__badge {
+    display: none;
+  }
+  @media (max-width: 63.99rem) {
+    .screen__item:not(.screen__item--lead) .screen__badge {
+      display: block;
+    }
+  }
+  .screen__body {
+    display: grid;
+    gap: 0.4rem;
+    padding-block-start: 0.9rem;
+  }
+  @media (min-width: 64rem) {
+    .screen__item:not(.screen__item--lead) .screen__body {
+      padding-block-start: 0;
+    }
+    .screen__item:not(.screen__item--lead) .screen__kind {
+      display: none;
+    }
+  }
+  .screen__title {
+    color: var(--alive-cream);
+    font-family: var(--font-display);
+    font-size: 1.2rem;
+    font-weight: 800;
+    line-height: 1.25;
+  }
+  .screen__item--lead .screen__title {
+    font-size: clamp(1.4rem, 1.2rem + 0.8vw, 1.9rem);
+  }
+  .screen__summary {
+    font-size: 0.98rem;
+    line-height: 1.5;
+    color: color-mix(in srgb, var(--alive-cream) 88%, transparent);
+  }
+  .screen__credit {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.25rem 1rem;
+    font-size: 0.85rem;
+    color: color-mix(in srgb, var(--alive-cream) 85%, transparent);
+  }
+  .screen__credit a {
+    color: var(--alive-gold);
+    text-decoration: underline;
+  }
+  .screen__rights {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.3rem;
+    opacity: 0.75;
+  }
+  .screen__rights.is-ok {
+    opacity: 1;
+    color: var(--alive-gold);
+  }
+  .screen__rules {
+    max-width: 52rem;
+    margin-block-start: 2rem;
+    padding-inline-start: 1rem;
+    border-inline-start: 3px solid var(--alive-coral);
+    font-size: 0.95rem;
+    line-height: 1.6;
+    color: color-mix(in srgb, var(--alive-cream) 90%, transparent);
+  }
+</style>

@@ -1,0 +1,138 @@
+---
+/**
+ * Editorial section heading of the Matin Alive homepage: a small numbered label, a large
+ * serif title on the reading side and the lede offset beside it (asymmetric, like an
+ * arts magazine). tone="dark" for the deep green and blue bands.
+ */
+import { ArrowRight } from '@lucide/astro';
+
+interface Props {
+  id: string;
+  index?: string;
+  eyebrow?: string;
+  title: string;
+  lede?: string;
+  link?: { href: string; label: string };
+  tone?: 'light' | 'dark';
+  class?: string;
+}
+const {
+  id,
+  index,
+  eyebrow,
+  title,
+  lede,
+  link,
+  tone = 'light',
+  class: className = '',
+} = Astro.props;
+---
+
+<div class:list={['ahead', `ahead--${tone}`, className]} data-reveal>
+  <div class="ahead__main">
+    {(index || eyebrow) && (
+      <p class="ahead__eyebrow">
+        {index && <span class="ahead__index">{index}</span>}
+        {eyebrow}
+      </p>
+    )}
+    <h2 id={id} class="ahead__title">
+      {title}
+    </h2>
+  </div>
+  {(lede || link) && (
+    <div class="ahead__side">
+      {lede && <p class="ahead__lede">{lede}</p>}
+      {link && (
+        <a href={link.href} class="ahead__link">
+          {link.label}
+          <ArrowRight size={18} class="flip-rtl" aria-hidden="true" />
+        </a>
+      )}
+    </div>
+  )}
+</div>
+
+<style>
+  .ahead {
+    display: grid;
+    gap: 1.25rem 4rem;
+    margin-block-end: clamp(2rem, 1.5rem + 2vw, 3.5rem);
+  }
+  @media (min-width: 64rem) {
+    .ahead {
+      grid-template-columns: minmax(0, 1.15fr) minmax(0, 0.85fr);
+      align-items: end;
+    }
+  }
+  .ahead__eyebrow {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    margin-block-end: 0.9rem;
+    font-family: var(--font-display);
+    font-size: 0.95rem;
+    font-weight: 800;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--color-terracotta-deep);
+  }
+  :global(html[lang='fa']) .ahead__eyebrow {
+    letter-spacing: 0;
+    font-size: 1.05rem;
+  }
+  .ahead__index {
+    display: inline-grid;
+    place-items: center;
+    min-width: 2.4rem;
+    height: 2.4rem;
+    padding-inline: 0.4rem;
+    border-radius: 999px;
+    background: var(--alive-coral);
+    color: var(--alive-green);
+    letter-spacing: 0;
+  }
+  .ahead__title {
+    font-family: var(--font-brand);
+    font-weight: 800;
+    font-size: clamp(2.4rem, 1.5rem + 3.4vw, 4.5rem);
+    line-height: 1.02;
+    letter-spacing: -0.015em;
+    color: var(--alive-green);
+    text-wrap: balance;
+  }
+  :global(html[lang='fa']) .ahead__title {
+    font-family: var(--font-display);
+    font-weight: 900;
+    line-height: 1.3;
+    letter-spacing: 0;
+  }
+  .ahead__side {
+    display: grid;
+    gap: 1rem;
+    justify-items: start;
+    padding-inline-start: 1.25rem;
+    border-inline-start: 3px solid var(--alive-gold);
+  }
+  .ahead__lede {
+    font-size: clamp(1.1rem, 1rem + 0.4vw, 1.3rem);
+    line-height: 1.6;
+    color: var(--color-ink);
+  }
+  .ahead__link {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    font-family: var(--font-display);
+    font-weight: 800;
+    color: var(--alive-green);
+  }
+  .ahead--dark .ahead__eyebrow {
+    color: var(--alive-gold);
+  }
+  .ahead--dark .ahead__title,
+  .ahead--dark .ahead__lede,
+  .ahead--dark .ahead__link {
+    color: var(--alive-cream);
+  }
+</style>

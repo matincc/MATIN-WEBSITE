@@ -36,6 +36,21 @@
 }
 
 /*
+ * Matin Alive (owner's brief, Oct 27 2026): the proposed homepage palette, used only by the
+ * homepage preview (.alive and its components) while the owner reviews it. Not a
+ * replacement for the colours above. Contrast (checked): cream on green 10.2, gold on
+ * green 6.8, cream on blue 8.2, gold on blue 5.4, green on gold 6.8, green on cream 10.2.
+ * Coral is a shape colour (2.6 on cream; 4.0 on green, large text only).
+ */
+:root {
+  --alive-green: #183f3b; /* deep green: hero panel, Faces & Voices, buttons */
+  --alive-coral: #e47a59; /* warm coral: shapes, edges, dots */
+  --alive-gold: #f2bd69; /* soft gold: labels and buttons on dark bands */
+  --alive-cream: #f6f0e6; /* warm cream: light bands, text on dark */
+  --alive-blue: #294a68; /* cultural blue: Coming up, Cultures on Screen */
+}
+
+/*
  * Tailwind tokens, all mapped onto the variables above.
  * Contrast (checked): ink on paper 11.8 / cream 10.7, navy on paper 11.1 / cream 10.1 /
  * white 11.9, white on navy 11.9, mustard on navy 5.3, navy on mustard 5.3,

@@ -1,0 +1,583 @@
+---
+/**
+ * "Matin Alive" homepage hero (owner's brief, Oct 27 2026): a cinematic, people-first
+ * opening. Full-width documentary photos of Montréal's public life cross-fade slowly
+ * behind an asymmetric deep-green panel carrying the institute's name, the headline
+ * « Cultures en dialogue », the word "dialogue" turning through several languages, the
+ * approved paragraph and two buttons.
+ *
+ * Media: src/lib/heroMedia.ts. Only the first photo is loaded with the page; the others
+ * (and a licensed video, once one exists) are added after load, only when the visitor
+ * allows motion and has not asked to save data. One button pauses all movement
+ * (WCAG 2.2.2); nothing moves under prefers-reduced-motion.
+ */
+import '@fontsource/playfair-display/700-italic.css';
+import { Picture } from 'astro:assets';
+import { ArrowRight, Pause, Play } from '@lucide/astro';
+import PhotoCredit from '@/components/media/PhotoCredit.astro';
+import { href, type UiLang } from '@/i18n/routes';
+import { useTranslations } from '@/i18n/ui';
+import { aliveStrings } from '@/i18n/alive';
+import { heroSlides, heroVideo } from '@/lib/heroMedia';
+
+interface Props {
+  lang: UiLang;
+}
+const { lang } = Astro.props;
+const t = useTranslations(lang);
+const a = aliveStrings(lang);
+const preview = process.env.CONTEXT !== 'production';
+const [first, ...more] = heroSlides;
+const credits = heroVideo
+  ? [heroVideo.credit, ...heroSlides.map((s) => s.credit)]
+  : heroSlides.map((s) => s.credit);
+
+// "Dialogue" in some of the languages spoken in Montréal (each with its own lang).
+const words = [
+  { text: 'Dialogue', lang: 'fr' },
+  { text: 'گفت‌وگو', lang: 'fa' },
+  { text: 'Diálogo', lang: 'es' },
+  { text: 'حوار', lang: 'ar' },
+  { text: '对话', lang: 'zh' },
+  { text: 'Diyalog', lang: 'tr' },
+  { text: 'संवाद', lang: 'hi' },
+  { text: 'Діалог', lang: 'uk' },
+];
+// Start with a word in another language than the headline's.
+if (lang !== 'fa') words.push(words.shift()!);
+const sizes = '100vw';
+---
+
+<section
+  class="ahero"
+  aria-labelledby="hero-title"
+  data-hero
+  data-video-mp4={heroVideo?.mp4}
+  data-video-webm={heroVideo?.webm}
+>
+  <div class="ahero__media" aria-hidden="true" data-hero-media>
+    <figure class="ahero__slide is-active" style={`--focus:${first.focus ?? '50% 50%'}`}>
+      <Picture
+        src={first.src}
+        formats={['avif', 'webp']}
+        fallbackFormat="jpg"
+        widths={[640, 960, 1280, 1600]}
+        sizes={sizes}
+        alt=""
+        loading="eager"
+        fetchpriority="high"
+      />
+    </figure>
+    <template data-hero-more>
+      {more.map((s) => (
+        <figure class="ahero__slide" style={`--focus:${s.focus ?? '50% 50%'}`}>
+          <Picture
+            src={s.src}
+            formats={['avif', 'webp']}
+            fallbackFormat="jpg"
+            widths={[640, 960, 1280, 1600]}
+            sizes={sizes}
+            alt=""
+            loading="lazy"
+          />
+        </figure>
+      ))}
+    </template>
+  </div>
+
+  <span class="ahero__shape ahero__shape--sun" aria-hidden="true"></span>
+  <span class="ahero__shape ahero__shape--leaf" aria-hidden="true"></span>
+
+  <div class="container-site ahero__inner">
+    <div class="ahero__panel">
+      <p class="ahero__place">
+        <span class="ahero__dot" aria-hidden="true"></span>
+        {a.heroPlace}
+      </p>
+      <h1 id="hero-title" class="ahero__title">
+        <span class="ahero__name">{t('home.heroEyebrow')}</span>
+        <span class="ahero__tagline">{t('home.heroTitle')}</span>
+      </h1>
+      <p class="ahero__words" role="img" aria-label={a.heroWordsLabel}>
+        <span class="ahero__words-rule" aria-hidden="true"></span>
+        <span class="ahero__words-stack" aria-hidden="true" data-hero-words>
+          {words.map((w, i) => (
+            <span lang={w.lang} class:list={['ahero__word', i === 0 && 'is-active']}>
+              {w.text}
+            </span>
+          ))}
+        </span>
+      </p>
+      <p class="ahero__text">{t('home.heroText')}</p>
+      <div class="ahero__actions">
+        <a href="#action" class="btn ahero__btn ahero__btn--primary">
+          {a.heroCtaPrimary}
+          <ArrowRight size={18} class="flip-rtl" aria-hidden="true" />
+        </a>
+        <a href={`${href('contact', lang)}#write`} class="btn ahero__btn ahero__btn--ghost">
+          {a.heroCtaSecondary}
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <div class="container-site ahero__foot">
+    <div class="ahero__credits">
+      {credits.map((c, i) => (
+        <span class:list={['ahero__credit', i === 0 && 'is-active']} data-hero-credit>
+          <PhotoCredit credit={c} />
+        </span>
+      ))}
+      {preview && <p class="ahero__note">{a.heroMediaNote}</p>}
+    </div>
+    <button
+      type="button"
+      class="ahero__pause"
+      data-hero-pause
+      data-label-pause={a.heroPause}
+      data-label-play={a.heroPlay}
+      hidden
+    >
+      <span class="ahero__icon" data-icon-pause>
+        <Pause size={18} aria-hidden="true" />
+      </span>
+      <span class="ahero__icon" data-icon-play hidden>
+        <Play size={18} aria-hidden="true" />
+      </span>
+      <span class="sr-only" data-hero-pause-label>
+        {a.heroPause}
+      </span>
+    </button>
+  </div>
+</section>
+
+<script>
+  const hero = document.querySelector<HTMLElement>('[data-hero]');
+  const media = hero?.querySelector<HTMLElement>('[data-hero-media]');
+  const motionOk = matchMedia('(prefers-reduced-motion: no-preference)').matches;
+  const saveData = Boolean(
+    (navigator as Navigator & { connection?: { saveData?: boolean } }).connection?.saveData,
+  );
+
+  if (hero && media && motionOk && !saveData) {
+    const pauseBtn = hero.querySelector<HTMLButtonElement>('[data-hero-pause]')!;
+    const words = [...hero.querySelectorAll<HTMLElement>('.ahero__word')];
+    const credits = [...hero.querySelectorAll<HTMLElement>('[data-hero-credit]')];
+    let slides: HTMLElement[] = [];
+    let video: HTMLVideoElement | null = null;
+    let slide = 0;
+    let word = 0;
+    let paused = false;
+    let inView = true;
+    const offset = hero.dataset.videoMp4 ? 1 : 0;
+
+    const show = (list: HTMLElement[], i: number) =>
+      list.forEach((el, j) => el.classList.toggle('is-active', i === j));
+
+    const start = () => {
+      const tpl = media.querySelector<HTMLTemplateElement>('[data-hero-more]');
+      if (tpl) media.append(tpl.content.cloneNode(true));
+      slides = [...media.querySelectorAll<HTMLElement>('.ahero__slide')];
+      // A licensed video replaces the photos on wide screens (see src/lib/heroMedia.ts).
+      if (hero.dataset.videoMp4 && matchMedia('(min-width: 64rem)').matches) {
+        video = document.createElement('video');
+        Object.assign(video, { muted: true, loop: true, playsInline: true, autoplay: true });
+        video.className = 'ahero__video';
+        video.setAttribute('aria-hidden', 'true');
+        for (const [src, type] of [
+          [hero.dataset.videoWebm, 'video/webm'],
+          [hero.dataset.videoMp4, 'video/mp4'],
+        ]) {
+          if (!src) continue;
+          const s = document.createElement('source');
+          Object.assign(s, { src, type });
+          video.append(s);
+        }
+        video.addEventListener('playing', () => hero.classList.add('has-video'), { once: true });
+        media.append(video);
+      } else if (offset) {
+        show(credits, 1);
+      }
+      pauseBtn.hidden = false;
+    };
+
+    const tick = () => {
+      if (paused || !inView || document.hidden) return;
+      word = (word + 1) % words.length;
+      show(words, word);
+    };
+    const turn = () => {
+      if (paused || !inView || document.hidden || video || slides.length < 2) return;
+      slide = (slide + 1) % slides.length;
+      show(slides, slide);
+      show(credits, slide + offset);
+    };
+
+    pauseBtn.addEventListener('click', () => {
+      paused = !paused;
+      hero.classList.toggle('is-paused', paused);
+      pauseBtn.querySelector('[data-icon-pause]')!.toggleAttribute('hidden', paused);
+      pauseBtn.querySelector('[data-icon-play]')!.toggleAttribute('hidden', !paused);
+      pauseBtn.querySelector('[data-hero-pause-label]')!.textContent = paused
+        ? pauseBtn.dataset.labelPlay!
+        : pauseBtn.dataset.labelPause!;
+      if (video) void (paused ? video.pause() : video.play());
+    });
+    new IntersectionObserver(([e]) => (inView = e.isIntersecting)).observe(hero);
+
+    if (document.readyState === 'complete') start();
+    else addEventListener('load', start, { once: true });
+    setInterval(tick, 2600);
+    setInterval(turn, 7000);
+  }
+</script>
+
+<style>
+  .ahero {
+    position: relative;
+    display: grid;
+    grid-template-rows: 1fr auto;
+    min-height: clamp(38rem, calc(100svh - 9rem), 52rem);
+    overflow: hidden;
+    isolation: isolate;
+    background: var(--alive-green);
+    color: var(--alive-cream);
+  }
+
+  /* ---------- Media: photos (and later a licensed video) ---------- */
+  .ahero__media {
+    position: absolute;
+    inset: 0;
+    z-index: -2;
+  }
+  .ahero__slide,
+  .ahero__media :global(.ahero__video) {
+    position: absolute;
+    inset: 0;
+    margin: 0;
+    opacity: 0;
+    transition: opacity 1.6s ease;
+  }
+  .ahero__slide.is-active,
+  .ahero.has-video :global(.ahero__video) {
+    opacity: 1;
+  }
+  .ahero__slide :global(img),
+  .ahero__media :global(.ahero__video) {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: var(--focus, 50% 50%);
+  }
+  /* A very slow push-in on the visible photo only (none under reduced motion). */
+  @media (prefers-reduced-motion: no-preference) {
+    .ahero__slide.is-active :global(img) {
+      animation: ahero-drift 9s ease-out both;
+    }
+    .ahero.is-paused .ahero__slide :global(img) {
+      animation-play-state: paused;
+    }
+  }
+  @keyframes ahero-drift {
+    from {
+      transform: scale(1);
+    }
+    to {
+      transform: scale(1.07);
+    }
+  }
+
+  /* ---------- Flat shapes: the dialogue motif, a sun and a leaf ---------- */
+  .ahero__shape {
+    position: absolute;
+    z-index: -1;
+    pointer-events: none;
+  }
+  .ahero__shape--sun {
+    inset-block-start: clamp(2rem, 6vw, 5rem);
+    inset-inline-end: clamp(-4rem, -2vw, -1rem);
+    width: clamp(8rem, 14vw, 13rem);
+    aspect-ratio: 1;
+    border-radius: 50%;
+    background: var(--alive-coral);
+  }
+  .ahero__shape--leaf {
+    inset-block-start: clamp(7rem, 15vw, 12rem);
+    inset-inline-end: clamp(4rem, 9vw, 9rem);
+    width: clamp(4rem, 7vw, 6.5rem);
+    aspect-ratio: 1;
+    border-radius: 0 100% 0 100%;
+    background: var(--alive-gold);
+    opacity: 0.92;
+  }
+
+  /* ---------- The panel ---------- */
+  .ahero__inner {
+    display: flex;
+    align-items: flex-end;
+    padding-block: clamp(3rem, 6vw, 5rem) 1.25rem;
+  }
+  .ahero__panel {
+    position: relative;
+    max-width: 44rem;
+    padding: clamp(1.75rem, 1.2rem + 1.8vw, 2.75rem);
+    padding-inline-end: clamp(1.75rem, 1rem + 4vw, 4.5rem);
+    border-radius: 0 2.75rem 0 0;
+    background: var(--alive-green);
+    box-shadow: 0 30px 60px -30px rgb(0 0 0 / 0.55);
+  }
+  :global([dir='rtl']) .ahero__panel {
+    border-radius: 2.75rem 0 0 0;
+  }
+  /* A coral edge on the reading side of the panel. */
+  .ahero__panel::before {
+    content: '';
+    position: absolute;
+    inset-block: clamp(1.75rem, 1.2rem + 1.8vw, 2.75rem);
+    inset-inline-start: 0;
+    width: 6px;
+    background: var(--alive-coral);
+  }
+  .ahero__place {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.6rem;
+    font-family: var(--font-display);
+    font-size: 0.95rem;
+    font-weight: 800;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--alive-gold);
+  }
+  :global(html[lang='fa']) .ahero__place {
+    letter-spacing: 0;
+    font-size: 1.05rem;
+  }
+  .ahero__dot {
+    width: 0.6rem;
+    height: 0.6rem;
+    border-radius: 50%;
+    background: var(--alive-coral);
+  }
+  .ahero__title {
+    display: grid;
+    gap: 0.35rem;
+    margin-block-start: 1rem;
+  }
+  .ahero__name {
+    font-family: var(--font-display);
+    font-size: clamp(1.15rem, 1rem + 0.6vw, 1.5rem);
+    font-weight: 700;
+    color: var(--alive-cream);
+  }
+  /* The headline, editorial: the logo's serif, large and italic. */
+  .ahero__tagline {
+    font-family: var(--font-brand);
+    font-style: italic;
+    font-weight: 700;
+    font-size: clamp(3rem, 1.8rem + 4.2vw, 5.5rem);
+    line-height: 0.98;
+    letter-spacing: -0.015em;
+    color: var(--alive-cream);
+    text-wrap: balance;
+  }
+  :global(html[lang='fa']) .ahero__tagline {
+    font-family: var(--font-display);
+    font-style: normal;
+    font-weight: 900;
+    line-height: 1.25;
+    letter-spacing: 0;
+    font-size: clamp(2.6rem, 1.6rem + 3.6vw, 4.75rem);
+  }
+  /* "Dialogue" turning through languages: one word at a time, fading. */
+  .ahero__words {
+    display: flex;
+    align-items: center;
+    gap: 0.9rem;
+    margin-block: 0.9rem 1rem;
+  }
+  .ahero__words-rule {
+    width: 3rem;
+    height: 2px;
+    background: var(--alive-gold);
+  }
+  .ahero__words-stack {
+    display: grid;
+    font-family: var(--font-display);
+    font-size: clamp(1.35rem, 1.1rem + 0.8vw, 1.75rem);
+    font-weight: 800;
+    color: var(--alive-gold);
+  }
+  .ahero__word {
+    grid-area: 1 / 1;
+    opacity: 0;
+    transform: translateY(0.4em);
+    transition:
+      opacity 0.6s ease,
+      transform 0.6s cubic-bezier(0.2, 0.7, 0.2, 1);
+  }
+  .ahero__word.is-active {
+    opacity: 1;
+    transform: none;
+  }
+  .ahero__text {
+    max-width: 36rem;
+    font-size: clamp(1.1rem, 1rem + 0.45vw, 1.35rem);
+    line-height: 1.6;
+    color: var(--alive-cream);
+  }
+  .ahero__actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem 1rem;
+    margin-block-start: 1.4rem;
+  }
+  .ahero__btn {
+    font-size: 1.05rem;
+  }
+  .ahero__btn--primary {
+    background: var(--alive-gold);
+    color: var(--alive-green);
+  }
+  .ahero__btn--primary:hover {
+    background: var(--alive-cream);
+  }
+  .ahero__btn--ghost {
+    border: 1.5px solid color-mix(in srgb, var(--alive-cream) 70%, transparent);
+    color: var(--alive-cream);
+  }
+  .ahero__btn--ghost:hover {
+    background: var(--alive-cream);
+    color: var(--alive-green);
+  }
+  .ahero :global(a:focus-visible),
+  .ahero button:focus-visible {
+    outline: 3px solid var(--alive-gold);
+    outline-offset: 3px;
+  }
+
+  /* Text rises in once, one line after the other. */
+  @media (prefers-reduced-motion: no-preference) {
+    .ahero__panel > * {
+      animation: ahero-rise 0.9s cubic-bezier(0.2, 0.7, 0.2, 1) both;
+    }
+    .ahero__panel > :nth-child(2) {
+      animation-delay: 0.12s;
+    }
+    .ahero__panel > :nth-child(3) {
+      animation-delay: 0.3s;
+    }
+    .ahero__panel > :nth-child(4) {
+      animation-delay: 0.42s;
+    }
+    .ahero__panel > :nth-child(5) {
+      animation-delay: 0.54s;
+    }
+  }
+  @keyframes ahero-rise {
+    from {
+      opacity: 0;
+      transform: translateY(20px);
+    }
+  }
+
+  /* ---------- Credits and the pause button ---------- */
+  .ahero__foot {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 1rem;
+    padding-block-end: 1rem;
+  }
+  .ahero__credits {
+    display: grid;
+    gap: 0.35rem;
+  }
+  .ahero__credit {
+    display: none;
+  }
+  .ahero__credit.is-active {
+    display: block;
+  }
+  .ahero__credit :global(.photo-credit),
+  .ahero__note {
+    display: inline-flex;
+    padding: 0.25rem 0.65rem;
+    border-radius: 999px;
+    background: color-mix(in srgb, var(--alive-green) 88%, transparent);
+    color: var(--alive-cream);
+    font-size: 0.78rem;
+  }
+  .ahero__credit :global(.photo-credit a) {
+    color: inherit;
+  }
+  .ahero__note {
+    border: 1px dashed var(--alive-gold);
+  }
+  .ahero__pause {
+    display: grid;
+    flex-shrink: 0;
+    place-items: center;
+    width: 2.75rem;
+    height: 2.75rem;
+    border-radius: 999px;
+    background: color-mix(in srgb, var(--alive-green) 88%, transparent);
+    border: 1.5px solid color-mix(in srgb, var(--alive-cream) 60%, transparent);
+    color: var(--alive-cream);
+  }
+  .ahero__icon {
+    display: grid;
+  }
+  .ahero__icon[hidden],
+  .ahero__pause[hidden] {
+    display: none;
+  }
+  .ahero__pause:hover {
+    background: var(--alive-gold);
+    color: var(--alive-green);
+  }
+
+  /* ---------- Phones: the photo on top, the panel under it, nothing over faces ---------- */
+  @media (max-width: 47.99rem) {
+    .ahero {
+      min-height: 0;
+      grid-template-rows: auto auto auto;
+    }
+    .ahero__media {
+      position: relative;
+      grid-row: 1;
+      height: 46svh;
+      min-height: 17rem;
+      z-index: 0;
+    }
+    .ahero__shape--sun {
+      inset-block-start: calc(46svh - 4.5rem);
+      inset-inline-end: 1.25rem;
+      width: 6.5rem;
+      z-index: 1;
+    }
+    .ahero__shape--leaf {
+      display: none;
+    }
+    .ahero__inner {
+      grid-row: 2;
+      padding: 0;
+      max-width: none;
+    }
+    .ahero__panel {
+      max-width: none;
+      width: 100%;
+      border-radius: 0;
+      box-shadow: none;
+      padding-block-start: 2rem;
+    }
+    :global([dir='rtl']) .ahero__panel {
+      border-radius: 0;
+    }
+    .ahero__foot {
+      grid-row: 3;
+      padding-block: 0 1.25rem;
+    }
+  }
+</style>
