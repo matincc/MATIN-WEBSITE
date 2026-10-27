@@ -259,15 +259,28 @@ const groups = [
     width: 100%;
     margin-block-start: 1.25rem;
   }
+  /* Name and title clearly apart (owner's brief, Oct 27 2026): a larger navy name, then a
+     smaller terracotta title under a short gold rule. */
   .team-card__name {
-    font-size: 1.3125rem;
+    font-size: clamp(1.3125rem, 1.2rem + 0.4vw, 1.5rem);
     font-weight: 800;
     line-height: 1.2;
+    color: var(--color-primary);
   }
   .team-card__role {
-    font-family: var(--font-display);
-    font-weight: 700;
-    color: var(--accent-ink);
+    font-size: 0.9375rem;
+    font-weight: 600;
+    line-height: 1.5;
+    color: var(--color-terracotta-deep);
+  }
+  .team-card__role::before {
+    content: '';
+    display: block;
+    width: 2rem;
+    height: 2px;
+    margin: 0.15rem auto 0.55rem;
+    border-radius: 1px;
+    background: var(--color-gold);
   }
   .team-card__bio {
     font-size: 1rem;
