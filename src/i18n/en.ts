@@ -135,11 +135,6 @@ const en: Dictionary = {
     resourcesLede:
       'A curated directory of major cultural institutions and organizations in Québec, Canada and around the world.',
     resourcesCta: 'Explore Resources',
-    orgsTitle: '{count} cultural organizations to discover',
-    orgsLede:
-      'Municipalities, public institutions and cultural networks from Québec, Canada and around the world, gathered in our directory.',
-    orgsNote:
-      'Listed for information only: no partnership, endorsement or affiliation with Matin Intercultural Institute.',
   },
   matinTypes: {
     initiative: 'Initiative',

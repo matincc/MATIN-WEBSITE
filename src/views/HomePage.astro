@@ -1,8 +1,8 @@
 ---
 /**
  * Homepage (French, English and Persian), in this order: Matin in Action (Matin's own
- * featured item, src/lib/matin.ts, and the "coming soon" posters in one carousel, then the
- * directory's organizations as text names), Matin's Picks (the same section as on the Events
+ * featured item, src/lib/matin.ts, and the "coming soon" posters in one carousel), Matin's
+ * Picks (the same section as on the Events
  * page), the latest news (without the featured article), Matin Moments (featured gallery
  * items), Get Involved, Who We Are, Areas of Work, Cultural Resources & Organizations,
  * newsletter.
@@ -39,7 +39,6 @@ import { getMatinFeed, type MatinItem } from '@/lib/matin';
 import { articleHref, forLang, getNews } from '@/lib/content';
 import { ctaFor } from '@/lib/matinLabels';
 import MatinMedia from '@/components/content/MatinMedia.astro';
-import OrgShowcase from '@/components/content/OrgShowcase.astro';
 
 interface Props {
   lang: UiLang;
@@ -242,10 +241,6 @@ const matinNews = news
         </div>
       )}
 
-      <!-- The organizations of the Resources directory, as text names (the homepage
-           volunteer form was removed, owner's request Oct 27 2026: it stays on Contact &
-           Collaboration only) -->
-      <OrgShowcase lang={lang} />
     </div>
   </section>
 
