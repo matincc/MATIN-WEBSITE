@@ -9,7 +9,7 @@ import { href, type UiLang } from '@/i18n/routes';
 import { pick, useTranslations } from '@/i18n/ui';
 import { getResources, orgName } from '@/lib/content';
 import { resourceCategories } from '@/lib/taxonomy';
-import { resourceAccents, resourceIcons } from '@/lib/resourceIcons';
+import { resourceIcons } from '@/lib/resourceIcons';
 
 interface Props {
   lang: UiLang;
@@ -21,12 +21,24 @@ const orgs = await getResources();
 const groups = resourceCategories
   .map((c) => ({ category: c, items: orgs.filter((r) => r.data.category === c) }))
   .filter((g) => g.items.length > 0);
+// Lively, autumn-warm heads on the navy panel (owner's request, Oct 27 2026: "too cold
+// and colourless next to the poster"). Each pairs a fill with a text colour that passes AA.
+const heads: Record<string, string> = {
+  municipal: 'terracotta',
+  quebec: 'teal',
+  federal: 'teal-bright',
+  community: 'gold',
+  international: 'brick',
+};
 ---
 
 {orgs.length > 0 && (
-  <div class="orgs" data-reveal>
+  <div class="orgs on-dark" data-reveal>
+    <span class="orgs__dot orgs__dot--gold" aria-hidden="true"></span>
+    <span class="orgs__dot orgs__dot--coral" aria-hidden="true"></span>
     <div class="orgs__head">
       <div>
+        <p class="orgs__eyebrow">{t('resources.title')}</p>
         <h3 class="orgs__title">
           {t('home.orgsTitle', { count: new Intl.NumberFormat(lang).format(orgs.length) })}
         </h3>
@@ -41,7 +53,7 @@ const groups = resourceCategories
       {groups.map(({ category, items }) => {
         const Icon = resourceIcons[category];
         return (
-          <section class="orgs__group" data-accent={resourceAccents[category]}>
+          <section class="orgs__group" data-head={heads[category]}>
             <h4 class="orgs__cat">
               <span class="orgs__icon" aria-hidden="true">
                 <Icon size={18} stroke-width={1.75} />
@@ -75,16 +87,48 @@ const groups = resourceCategories
 )}
 
 <style>
+  /* Deep navy panel with gold and coral shapes; each category a warm coloured head. */
   .orgs {
+    position: relative;
+    overflow: hidden;
     margin-block-start: clamp(3rem, 2.5rem + 2vw, 4.5rem);
     padding: clamp(1.5rem, 1rem + 2vw, 2.75rem);
-    border: 1px solid var(--color-card-edge);
     border-block-start: 6px solid var(--color-gold);
     border-radius: calc(var(--radius-card) * 1.4);
-    background: var(--color-ivory);
+    background: var(--color-primary);
+    color: var(--color-white);
     box-shadow: var(--shadow-card);
   }
+  .orgs__dot {
+    position: absolute;
+    border-radius: 999px;
+    pointer-events: none;
+  }
+  .orgs__dot--gold {
+    display: none;
+    inset-block-end: -4.5rem;
+    inset-inline-end: -3.5rem;
+    width: 9rem;
+    height: 9rem;
+    background: var(--color-gold);
+  }
+  @media (min-width: 48rem) {
+    .orgs__dot--gold {
+      display: block;
+    }
+    .orgs__note {
+      padding-inline-end: 6rem;
+    }
+  }
+  .orgs__dot--coral {
+    inset-block-start: -2.5rem;
+    inset-inline-end: -1.5rem;
+    width: 5rem;
+    height: 5rem;
+    background: var(--color-coral);
+  }
   .orgs__head {
+    position: relative;
     display: flex;
     flex-wrap: wrap;
     align-items: flex-end;
@@ -92,8 +136,18 @@ const groups = resourceCategories
     gap: 1rem 2rem;
     margin-block-end: 1.75rem;
   }
+  .orgs__eyebrow {
+    margin-block-end: 0.4rem;
+    color: var(--color-gold);
+    font-family: var(--font-display);
+    font-size: 0.95rem;
+    font-weight: 800;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+  }
   .orgs__title {
-    font-size: clamp(1.5rem, 1.3rem + 0.7vw, 2rem);
+    color: var(--color-white);
+    font-size: clamp(1.625rem, 1.35rem + 1vw, 2.25rem);
     font-weight: 800;
     line-height: 1.2;
   }
@@ -101,35 +155,53 @@ const groups = resourceCategories
     max-width: 44rem;
     margin-block-start: 0.4rem;
     font-size: 1.125rem;
+    color: var(--color-cream);
   }
   .orgs__groups {
+    position: relative;
     display: grid;
     gap: 1rem;
     grid-template-columns: repeat(auto-fit, minmax(min(100%, 19rem), 1fr));
   }
+  /* Heads: white on terracotta (5.2), terracotta-deep (6.4) and teal-deep (6.2); navy on
+     gold (5.3). */
   .orgs__group {
-    padding: 1rem 1.1rem 1.15rem;
-    border: 1px solid var(--color-card-edge);
-    border-block-start: 4px solid var(--accent);
+    --head: var(--color-terracotta);
+    --head-ink: var(--color-white);
+    overflow: hidden;
     border-radius: 1rem;
     background: var(--color-white);
+  }
+  .orgs__group[data-head='teal'] {
+    --head: var(--color-teal-deep);
+  }
+  .orgs__group[data-head='brick'] {
+    --head: var(--color-terracotta-deep);
+  }
+  .orgs__group[data-head='gold'] {
+    --head: var(--color-gold);
+    --head-ink: var(--color-primary);
+  }
+  /* Teal with white text: 4:1, allowed because the head text is large (19px, bold). */
+  .orgs__group[data-head='teal-bright'] {
+    --head: var(--color-teal);
   }
   .orgs__cat {
     display: flex;
     align-items: center;
     gap: 0.6rem;
-    margin-block-end: 0.8rem;
-    font-size: 1.0625rem;
+    padding: 0.8rem 1rem;
+    background: var(--head);
+    font-size: 1.1875rem;
     font-weight: 800;
     line-height: 1.3;
   }
   .orgs__cat a {
-    color: var(--color-primary);
+    color: var(--head-ink);
     text-decoration: none;
   }
   .orgs__cat a:hover {
     text-decoration: underline;
-    text-decoration-color: var(--color-gold);
   }
   .orgs__icon {
     display: grid;
@@ -138,20 +210,21 @@ const groups = resourceCategories
     width: 2.1rem;
     height: 2.1rem;
     border-radius: 0.6rem;
-    background: color-mix(in srgb, var(--accent) 22%, var(--color-white));
+    background: var(--color-white);
     color: var(--color-primary);
   }
   .orgs__list {
     display: flex;
     flex-wrap: wrap;
     gap: 0.45rem;
+    padding: 1rem;
   }
   .orgs__pill {
     display: inline-block;
     padding: 0.35rem 0.85rem;
-    border: 1px solid color-mix(in srgb, var(--accent) 45%, var(--color-white));
+    border: 1.5px solid var(--head);
     border-radius: 999px;
-    background: color-mix(in srgb, var(--accent) 10%, var(--color-white));
+    background: color-mix(in srgb, var(--head) 16%, var(--color-white));
     color: var(--color-primary);
     font-family: var(--font-display);
     font-size: 0.95rem;
@@ -163,12 +236,15 @@ const groups = resourceCategories
       color 0.2s;
   }
   .orgs__pill:hover {
+    border-color: var(--color-primary);
     background: var(--color-primary);
     color: var(--color-white);
   }
   .orgs__note {
+    position: relative;
     margin-block-start: 1.25rem;
     font-size: 0.95rem;
+    color: var(--color-cream);
   }
   @media (prefers-reduced-motion: reduce) {
     .orgs__pill {
