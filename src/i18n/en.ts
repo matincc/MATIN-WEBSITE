@@ -539,8 +539,25 @@ const en: Dictionary = {
       Portuguese: 'Portuguese',
       Hindi: 'Hindi',
       Urdu: 'Urdu',
+      Chinese: 'Chinese',
       Other: 'Other',
     },
+    country: 'Country of residence',
+    countryHint: 'Start typing, then pick your country from the list.',
+    city: 'City of residence (optional)',
+    collab: 'Preferred collaboration format (optional)',
+    collabRemote: 'Remote / Online',
+    collabInPerson: 'In person',
+    collabBoth: 'Both',
+    skills: 'Skills and areas of interest',
+    skillsHint:
+      'Tell us freely about your skills, professional experience, interests, ideas or how you would like to contribute.',
+    additional: 'Additional information (optional)',
+    consentVolunteer:
+      'I agree that Matin will use this information only to review a possible volunteer collaboration, in accordance with its',
+    volunteerSuccess:
+      'Thank you! Your application has been sent. We will review it and write to you by email.',
+    volunteerSubmit: 'Send my application',
     motivation: 'Why would you like to get involved?',
     any: 'No preference',
     errTooMany:

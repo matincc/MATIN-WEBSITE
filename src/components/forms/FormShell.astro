@@ -18,12 +18,23 @@ interface Props {
   submitLabel?: string;
   /** Consent sentence (ends right before the Privacy Policy link). */
   consentText?: string;
+  /** Message shown after a successful send (defaults to the general one). */
+  successMessage?: string;
   /** Where a no-JavaScript submission lands afterwards. */
   action?: string;
   /** Hide the form (kept in the HTML so Netlify can still detect it). */
   disabled?: boolean;
 }
-const { lang, name, id, submitLabel, consentText, action, disabled = false } = Astro.props;
+const {
+  lang,
+  name,
+  id,
+  submitLabel,
+  consentText,
+  successMessage,
+  action,
+  disabled = false,
+} = Astro.props;
 const t = useTranslations(lang);
 ---
 
@@ -42,7 +53,7 @@ const t = useTranslations(lang);
   data-msg-email={t('form.errEmail')}
   data-msg-consent={t('form.errConsent')}
   data-msg-intro={t('form.errorsIntro')}
-  data-msg-success={t('form.success')}
+  data-msg-success={successMessage ?? t('form.success')}
   data-msg-error={t('form.error')}
   data-msg-sending={t('form.sending')}
   data-msg-captcha={t('form.errCaptcha')}

@@ -1,14 +1,22 @@
 ---
+/**
+ * Volunteer application (owner's brief, Oct 27 2026): a short invitation to collaborate,
+ * not an employment form. Full name, email, country (required; a searchable list of
+ * countries in the page's language), city, languages (at least one; values sent in
+ * English, « Other » opens a text field), preferred collaboration format, skills and
+ * interests in the visitor's own words, and additional information. No roles, no
+ * availability, no file upload. Same Netlify form (« benevolat ») and notifications.
+ */
 import FormShell from './FormShell.astro';
 import Field from './Field.astro';
 import type { UiLang } from '@/i18n/routes';
 import { useTranslations } from '@/i18n/ui';
+import { countryNames } from '@/lib/countries';
 
 interface Props {
   lang: UiLang;
-  roles: string[];
 }
-const { lang, roles } = Astro.props;
+const { lang } = Astro.props;
 const t = useTranslations(lang);
 const LANGUAGES = [
   'French',
@@ -16,15 +24,25 @@ const LANGUAGES = [
   'Persian',
   'Arabic',
   'Spanish',
-  'Mandarin',
-  'Portuguese',
-  'Hindi',
-  'Urdu',
+  'Chinese',
   'Other',
 ] as const;
+const FORMATS = [
+  { value: 'Remote / Online', label: t('form.collabRemote') },
+  { value: 'In person', label: t('form.collabInPerson') },
+  { value: 'Both', label: t('form.collabBoth') },
+];
+const countries = countryNames(lang);
 ---
 
-<FormShell lang={lang} name="benevolat" id="volunteer" submitLabel={t('involved.volunteerForm')}>
+<FormShell
+  lang={lang}
+  name="benevolat"
+  id="volunteer"
+  submitLabel={t('form.volunteerSubmit')}
+  consentText={t('form.consentVolunteer')}
+  successMessage={t('form.volunteerSuccess')}
+>
   <div class="grid gap-5 sm:grid-cols-2">
     <Field
       lang={lang}
@@ -43,33 +61,48 @@ const LANGUAGES = [
       required
       autocomplete="email"
     />
+    {/* A text field with suggestions: compact on phones, searchable as one types. */}
+    <div class="field">
+      <label for="vol-country" class="field-label" data-short={t('form.country')}>
+        <span data-label-text>{t('form.country')}</span>
+        <span class="req"> ({t('form.required')})</span>
+      </label>
+      <input
+        id="vol-country"
+        name="country"
+        type="text"
+        class="input"
+        list="vol-country-list"
+        autocomplete="country-name"
+        required
+        aria-describedby="vol-country-hint vol-country-error"
+      />
+      <datalist id="vol-country-list">
+        {countries.map((c) => (
+          <option value={c} />
+        ))}
+      </datalist>
+      <p id="vol-country-hint" class="vol-hint">
+        {t('form.countryHint')}
+      </p>
+      <p id="vol-country-error" class="field-error" hidden></p>
+    </div>
     <Field
       lang={lang}
-      id="vol-phone"
-      name="phone"
-      type="tel"
-      label={t('form.phone')}
-      autocomplete="tel"
+      id="vol-city"
+      name="city"
+      label={t('form.city')}
+      autocomplete="address-level2"
     />
-    <Field
-      lang={lang}
-      id="vol-role"
-      name="role"
-      as="select"
-      label={t('form.roles')}
-      options={[t('form.any'), ...roles]}
-    />
-    <Field lang={lang} id="vol-availability" name="availability" label={t('form.availability')} />
   </div>
-  {/* Languages spoken: several choices (owner's brief, Oct 25 2026). Values are sent in
-      English so submissions read the same in every language; "Other" opens a text field. */}
-  <fieldset class="field lang-choices" aria-describedby="vol-languages-hint">
-    <legend class="field-label">{t('form.languages')}</legend>
-    <p id="vol-languages-hint" class="lang-choices__hint">
-      {t('form.languagesHint')}
-    </p>
-    <ul class="lang-choices__list">
-      {LANGUAGES.map((l) => (
+
+  {/* Languages spoken: at least one, several allowed. */}
+  <fieldset class="field vol-group" aria-describedby="vol-lang-french-error">
+    <legend class="field-label">
+      {t('form.languages')} <span class="req">({t('form.required')})</span>
+    </legend>
+    <ul class="vol-choices">
+      {LANGUAGES.map((l, i) => (
         <li>
           <input
             type="checkbox"
@@ -77,12 +110,14 @@ const LANGUAGES = [
             name="languages"
             value={l}
             class="size-5 accent-primary"
+            data-group-required={i === 0 ? '' : undefined}
           />
           <label for={`vol-lang-${l.toLowerCase()}`}>{t(`form.languageNames.${l}`)}</label>
         </li>
       ))}
     </ul>
-    <div data-show-when="languages=Other" class="mt-4">
+    <p id="vol-lang-french-error" class="field-error" hidden></p>
+    <div data-show-when="languages=Other" class="mt-3">
       <Field
         lang={lang}
         id="vol-languages-other"
@@ -91,42 +126,104 @@ const LANGUAGES = [
       />
     </div>
   </fieldset>
+
+  <fieldset class="field vol-group">
+    <legend class="field-label">{t('form.collab')}</legend>
+    <ul class="vol-choices vol-choices--three">
+      {FORMATS.map((f, i) => (
+        <li>
+          <input
+            type="radio"
+            id={`vol-format-${i}`}
+            name="collaboration"
+            value={f.value}
+            class="size-5 accent-primary"
+          />
+          <label for={`vol-format-${i}`}>{f.label}</label>
+        </li>
+      ))}
+    </ul>
+  </fieldset>
+
+  <div class="field">
+    <label for="vol-skills" class="field-label" data-short={t('form.skills')}>
+      {t('form.skills')}
+    </label>
+    <p id="vol-skills-hint" class="vol-hint">
+      {t('form.skillsHint')}
+    </p>
+    <textarea
+      id="vol-skills"
+      name="skills"
+      class="input vol-textarea"
+      aria-describedby="vol-skills-hint vol-skills-error"
+    ></textarea>
+    <p id="vol-skills-error" class="field-error" hidden></p>
+  </div>
   <Field
     lang={lang}
-    id="vol-motivation"
-    name="motivation"
+    id="vol-additional"
+    name="additional_info"
     as="textarea"
-    label={t('form.motivation')}
-    required
+    label={t('form.additional')}
+    class="vol-additional"
   />
 </FormShell>
 
 <style>
-  .lang-choices {
-    margin-block-start: 1.25rem;
-    padding: 1.1rem 1.25rem 1.25rem;
-    border: 1px solid var(--color-teal-edge);
-    border-radius: 1rem;
-    background: var(--color-white);
-  }
-  .lang-choices legend {
-    padding-inline: 0.35rem;
-  }
-  .lang-choices__hint {
-    margin-block-end: 0.85rem;
+  .vol-hint {
     font-size: 0.95rem;
+    color: var(--color-ink);
   }
-  .lang-choices__list {
-    display: grid;
-    gap: 0.6rem 1.25rem;
-    grid-template-columns: repeat(auto-fill, minmax(10.5rem, 1fr));
+  .vol-group {
+    margin: 0;
+    padding: 0;
+    border: 0;
   }
-  .lang-choices__list li {
+  .vol-group legend {
+    margin-block-end: 0.6rem;
+    padding: 0;
+  }
+  .vol-choices {
+    margin-block-end: 0.9rem;
     display: flex;
-    align-items: center;
-    gap: 0.6rem;
+    flex-wrap: wrap;
+    gap: 0.5rem;
   }
-  .lang-choices__list label {
+  .vol-choices li {
+    position: relative;
+  }
+  /* Compact choice chips: the native box stays visible and keyboard-usable. */
+  .vol-choices label {
+    display: inline-flex;
+    align-items: center;
+    min-height: 2.75rem;
+    padding-block: 0.45rem;
+    padding-inline: 2.4rem 1rem;
+    border: 1.5px solid color-mix(in srgb, var(--color-primary) 22%, transparent);
+    border-radius: 999px;
+    background: var(--color-white);
     cursor: pointer;
+  }
+  .vol-choices input {
+    position: absolute;
+    inset-block-start: 50%;
+    inset-inline-start: 0.85rem;
+    transform: translateY(-50%);
+  }
+  .vol-choices input:checked + label {
+    border-color: var(--color-primary);
+    background: color-mix(in srgb, var(--color-gold) 22%, var(--color-white));
+    font-weight: 600;
+  }
+  .vol-choices input:focus-visible + label {
+    outline: 2px solid var(--color-primary);
+    outline-offset: 2px;
+  }
+  .vol-textarea {
+    min-height: 8.5rem;
+  }
+  .vol-additional :global(textarea) {
+    min-height: 6rem;
   }
 </style>

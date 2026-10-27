@@ -2,8 +2,8 @@
 /**
  * Contact & Collaboration (owner's brief, Oct 24 2026: Get Involved merged here).
  * 1. Write to us: the smart contact form (individual or organization) beside the
- *    contact details, on a pale teal band. 2. Volunteer (French and English): the roles
- *    and the separate volunteer form. The "Three Ways to Connect" cards were removed
+ *    contact details, on a pale teal band. 2. Volunteer: the owner's invitation and a
+ *    compact volunteer form under it (role cards removed, owner's brief Oct 27 2026). The "Three Ways to Connect" cards were removed
  *    (owner's brief, Oct 25 2026). The newsletter stays in the footer
  *    (#stay-connected). Old Get Involved addresses redirect here (netlify.toml); the
  *    anchors #interest, #benevolat and #volunteer still work.
@@ -27,12 +27,9 @@ const { lang } = Astro.props;
 const t = useTranslations(lang);
 const s = await getSettings();
 const inv = await getSingleton('involvement');
-// The volunteer roles and form exist in all three languages.
+// The volunteer form exists in all three languages.
 const hasVolunteer = true;
 const volunteerId = lang === 'fr' ? 'benevolat' : 'volunteer';
-// Volunteer role cards: Welcome & Events, Communications (Language Buddy removed by the
-// owner, Oct 25 2026); each keeps its colour.
-const roleAccents = ['teal', 'navy'];
 // Each detail appears only once it is set in the site settings.
 const a = s.address;
 const address = a && `${a.street}, ${a.city} (${a.region}) ${a.postalCode}`;
@@ -145,27 +142,16 @@ const details = [
       class="volunteer-band scroll-mt-24 py-16 sm:py-20"
       aria-labelledby="volunteer-title"
     >
-      <div class="container-site grid gap-12 lg:grid-cols-[1fr_1.15fr]">
-        <!-- The two role cards stay in view beside the taller form on wide screens. -->
-        <div class="lg:sticky lg:top-28 lg:self-start">
-          <SectionHeader
-            align="start"
-            id="volunteer-title"
-            title={t('involved.volunteerTitle')}
-            subtitle={inv.volunteerIntro && pick(inv.volunteerIntro, lang)}
-          />
-          <ul class="space-y-4">
-            {inv.roles.map((r, i) => (
-              <li class="card role-card p-6" data-accent={roleAccents[i % roleAccents.length]}>
-                <h3 class="mb-1 text-xl font-bold">{pick(r.title, lang)}</h3>
-                <p class="text-muted">{pick(r.text, lang)}</p>
-              </li>
-            ))}
-          </ul>
-        </div>
-        <div class="card form-panel form-panel--volunteer self-start p-6 sm:p-10">
-          <h3 class="mb-6 text-2xl font-bold">{t('involved.volunteerForm')}</h3>
-          <VolunteerForm lang={lang} roles={inv.roles.map((r) => pick(r.title, lang)!)} />
+      <div class="container-site">
+        <SectionHeader
+          align="start"
+          id="volunteer-title"
+          title={t('involved.volunteerTitle')}
+          subtitle={inv.volunteerIntro && pick(inv.volunteerIntro, lang)}
+        />
+        <!-- A short, compact form right under the invitation (owner's brief, Oct 27 2026). -->
+        <div class="card form-panel form-panel--volunteer p-6 sm:p-10">
+          <VolunteerForm lang={lang} />
         </div>
       </div>
     </section>
@@ -209,11 +195,8 @@ const details = [
   .volunteer-band {
     background: var(--color-paper);
   }
-  .role-card {
-    border-inline-start: 6px solid var(--accent);
-    background: color-mix(in srgb, var(--accent) 9%, var(--color-white));
-  }
   .form-panel--volunteer {
+    max-width: 60rem;
     border: 1px solid var(--color-teal-edge);
     border-block-start: 6px solid var(--color-teal);
   }
