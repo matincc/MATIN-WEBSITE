@@ -132,9 +132,6 @@ const en: Dictionary = {
     resourcesLede:
       'A curated directory of major cultural institutions and organizations in Québec, Canada and around the world.',
     resourcesCta: 'Explore Resources',
-    volunteerTitle: 'Join Matin’s volunteer team',
-    volunteerLede:
-      'Would you like to welcome visitors at our activities or help with communications? Leave us your details and we will get back to you.',
     orgsTitle: '{count} cultural organizations to discover',
     orgsLede:
       'Municipalities, public institutions and cultural networks from Québec, Canada and around the world, gathered in our directory.',
@@ -418,6 +415,7 @@ const en: Dictionary = {
     title: 'Get Involved',
     lede: 'Whether you would like to take part, collaborate as an organization or simply follow our work, here is how to connect with Matin.',
     volunteer: 'Volunteer',
+    volunteerTitle: 'Join Matin’s Volunteer Team',
     volunteerForm: 'Apply to volunteer',
     pathsTitle: 'Three ways to connect',
     pathIndividualTitle: 'Individual participation',

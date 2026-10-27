@@ -136,9 +136,6 @@ const fr = {
     resourcesLede:
       'Un répertoire choisi de grandes institutions et organisations culturelles, au Québec, au Canada et dans le monde.',
     resourcesCta: 'Explorer les ressources',
-    volunteerTitle: 'Rejoignez l’équipe bénévole de Matin',
-    volunteerLede:
-      'Vous aimeriez accueillir le public lors de nos activités ou nous aider en communication ? Laissez-nous vos coordonnées : nous vous répondrons.',
     orgsTitle: '{count} organismes culturels à découvrir',
     orgsLede:
       'Des municipalités, des institutions publiques et des réseaux culturels du Québec, du Canada et du monde, réunis dans notre répertoire.',
@@ -423,6 +420,7 @@ const fr = {
     title: "S'impliquer",
     lede: "Que vous souhaitiez participer, collaborer au nom d'un organisme ou simplement suivre nos travaux, voici comment rejoindre Matin.",
     volunteer: 'Faire du bénévolat',
+    volunteerTitle: 'Rejoignez l’équipe de bénévoles de Matin',
     volunteerForm: 'Proposer ma candidature',
     pathsTitle: 'Trois façons de nous rejoindre',
     pathIndividualTitle: 'Participation individuelle',

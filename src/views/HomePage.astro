@@ -1,8 +1,8 @@
 ---
 /**
  * Homepage (French, English and Persian), in this order: Matin in Action (Matin's own
- * featured item, src/lib/matin.ts, beside the volunteer form, then the directory's
- * organizations as text names), Matin's Picks (the same section as on the Events
+ * featured item, src/lib/matin.ts, beside the directory's organizations as text names),
+ * Matin's Picks (the same section as on the Events
  * page), the latest news (without the featured article), Matin Moments (featured gallery
  * items), Get Involved, Who We Are, Areas of Work, Cultural Resources & Organizations,
  * newsletter.
@@ -24,13 +24,12 @@ import CulturesRibbon from '@/components/brand/CulturesRibbon.astro';
 import SectionHeader from '@/components/ui/SectionHeader.astro';
 import AreasGrid from '@/components/content/AreasGrid.astro';
 import { href, newsAnchors, siteAlternates, type UiLang } from '@/i18n/routes';
-import { pick, useTranslations } from '@/i18n/ui';
+import { useTranslations } from '@/i18n/ui';
 import { getMatinFeed } from '@/lib/matin';
-import { articleHref, forLang, getNews, getSingleton } from '@/lib/content';
+import { articleHref, forLang, getNews } from '@/lib/content';
 import { ctaFor } from '@/lib/matinLabels';
 import MatinMedia from '@/components/content/MatinMedia.astro';
 import OrgShowcase from '@/components/content/OrgShowcase.astro';
-import VolunteerForm from '@/components/forms/VolunteerForm.astro';
 
 interface Props {
   lang: UiLang;
@@ -50,9 +49,6 @@ const posterLarge =
         })
       ).src
     : undefined;
-// The volunteer roles of the form, as on Contact & Collaboration.
-const inv = await getSingleton('involvement');
-const volunteerRoles = inv.roles.map((r) => pick(r.title, lang)!);
 // News (owner's brief, Oct 25 2026): Cultural News approved by the President in three
 // region tabs, then Matin News, leaving out the article already featured in Matin in Action.
 const newsHref = href('news', lang);
@@ -164,24 +160,11 @@ const matinNews = news
           </div>
         )}
 
-        <!-- Volunteer sign-up (owner's request, Oct 27 2026): the same form and Netlify
-             form (« benevolat ») as on Contact & Collaboration, which keeps its own. -->
-        <div id="home-volunteer" class="volunteer-card scroll-mt-24" data-reveal>
-          <div class="volunteer-card__head">
-            <span class="volunteer-card__dot volunteer-card__dot--gold" aria-hidden="true"></span>
-            <span class="volunteer-card__dot volunteer-card__dot--coral" aria-hidden="true"></span>
-            <p class="volunteer-card__eyebrow">{t('involved.volunteer')}</p>
-            <h3 class="volunteer-card__title">{t('home.volunteerTitle')}</h3>
-            <p class="volunteer-card__lede">{t('home.volunteerLede')}</p>
-          </div>
-          <div class="volunteer-card__body">
-            <VolunteerForm lang={lang} roles={volunteerRoles} />
-          </div>
-        </div>
+        <!-- The organizations of the Resources directory, as text names, beside the
+             poster (the homepage volunteer form was removed, owner's request Oct 27 2026:
+             it stays on Contact & Collaboration only) -->
+        <OrgShowcase lang={lang} />
       </div>
-
-      <!-- The organizations of the Resources directory, as text names -->
-      <OrgShowcase lang={lang} />
     </div>
   </section>
 
@@ -289,8 +272,8 @@ const matinNews = news
 
 <style>
   /* ---------- Matin in Action ---------- */
-  /* The featured item and the volunteer form side by side on wide screens (owner's
-     request, Oct 27 2026: no extra panel beside the poster). */
+  /* The featured item and the organizations side by side on wide screens (owner's
+     requests, Oct 27 2026: no extra panel beside the poster, no volunteer form here). */
   .action-grid {
     display: grid;
     gap: clamp(2rem, 1.5rem + 2vw, 3.5rem);
@@ -300,7 +283,7 @@ const matinNews = news
     .action-grid {
       grid-template-columns: minmax(0, 1fr) minmax(0, 1.1fr);
     }
-    /* The poster stays in view beside the taller form. */
+    /* The poster stays in view beside the taller list. */
     .feature {
       position: sticky;
       inset-block-start: 9rem;
@@ -383,77 +366,6 @@ const matinNews = news
     display: flex;
     flex-wrap: wrap;
     gap: 0.75rem;
-  }
-
-  /* Volunteer sign-up (owner's request, Oct 27 2026: warm and lively beside the autumn
-     poster): a deep terracotta head with white text (6.4:1), gold and coral shapes, then
-     the form on pale gold (champagne) with navy labels and white fields. */
-  .volunteer-card {
-    overflow: hidden;
-    border: 1px solid color-mix(in srgb, var(--color-gold) 45%, var(--color-white));
-    border-radius: calc(var(--radius-card) * 1.4);
-    background: var(--color-champagne);
-    box-shadow: var(--shadow-card);
-  }
-  .volunteer-card__head {
-    position: relative;
-    overflow: hidden;
-    padding: clamp(1.5rem, 1rem + 2vw, 2.5rem);
-    padding-inline-end: clamp(5rem, 3rem + 6vw, 9rem);
-    border-block-end: 6px solid var(--color-gold);
-    background: var(--color-terracotta-deep);
-    color: var(--color-white);
-  }
-  .volunteer-card__dot {
-    position: absolute;
-    border-radius: 999px;
-    pointer-events: none;
-  }
-  .volunteer-card__dot--gold {
-    inset-block-start: -2.5rem;
-    inset-inline-end: -2.5rem;
-    width: 9rem;
-    height: 9rem;
-    background: var(--color-gold);
-  }
-  .volunteer-card__dot--coral {
-    inset-block-end: -1.5rem;
-    inset-inline-end: 3.5rem;
-    width: 4.5rem;
-    height: 4.5rem;
-    background: color-mix(in srgb, var(--color-coral) 85%, transparent);
-  }
-  .volunteer-card__eyebrow {
-    position: relative;
-    margin-block-end: 0.5rem;
-    color: var(--color-cream);
-    font-family: var(--font-display);
-    font-size: 0.95rem;
-    font-weight: 800;
-    letter-spacing: 0.1em;
-    text-transform: uppercase;
-  }
-  .volunteer-card__title {
-    position: relative;
-    color: var(--color-white);
-    font-size: clamp(1.625rem, 1.35rem + 1vw, 2.25rem);
-    font-weight: 800;
-    line-height: 1.15;
-  }
-  .volunteer-card__lede {
-    position: relative;
-    margin-block-start: 0.75rem;
-    font-size: 1.125rem;
-    line-height: 1.6;
-  }
-  .volunteer-card__body {
-    padding: clamp(1.5rem, 1rem + 2vw, 2.5rem);
-  }
-  .volunteer-card__body :global(.field-label) {
-    color: var(--color-primary);
-  }
-  .volunteer-card__body :global(.lang-choices) {
-    border-color: color-mix(in srgb, var(--color-gold) 55%, var(--color-white));
   }
 
   /* ---------- News & Insights ---------- */
