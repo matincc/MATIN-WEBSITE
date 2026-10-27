@@ -1,7 +1,8 @@
 ---
 /**
  * Homepage (French, English and Persian), in this order: Matin in Action (Matin's own
- * featured item, src/lib/matin.ts), Matin's Picks (the same section as on the Events
+ * featured item, src/lib/matin.ts, beside the volunteer form, then the directory's
+ * organizations as text names), Matin's Picks (the same section as on the Events
  * page), the latest news (without the featured article), Matin Moments (featured gallery
  * items), Get Involved, Who We Are, Areas of Work, Cultural Resources & Organizations,
  * newsletter.
@@ -23,11 +24,13 @@ import CulturesRibbon from '@/components/brand/CulturesRibbon.astro';
 import SectionHeader from '@/components/ui/SectionHeader.astro';
 import AreasGrid from '@/components/content/AreasGrid.astro';
 import { href, newsAnchors, siteAlternates, type UiLang } from '@/i18n/routes';
-import { useTranslations } from '@/i18n/ui';
+import { pick, useTranslations } from '@/i18n/ui';
 import { getMatinFeed } from '@/lib/matin';
-import { articleHref, forLang, getNews } from '@/lib/content';
+import { articleHref, forLang, getNews, getSingleton } from '@/lib/content';
 import { ctaFor } from '@/lib/matinLabels';
 import MatinMedia from '@/components/content/MatinMedia.astro';
+import OrgShowcase from '@/components/content/OrgShowcase.astro';
+import VolunteerForm from '@/components/forms/VolunteerForm.astro';
 
 interface Props {
   lang: UiLang;
@@ -47,6 +50,9 @@ const posterLarge =
         })
       ).src
     : undefined;
+// The volunteer roles of the form, as on Contact & Collaboration.
+const inv = await getSingleton('involvement');
+const volunteerRoles = inv.roles.map((r) => pick(r.title, lang)!);
 // News (owner's brief, Oct 25 2026): Cultural News approved by the President in three
 // region tabs, then Matin News, leaving out the article already featured in Matin in Action.
 const newsHref = href('news', lang);
@@ -80,88 +86,111 @@ const matinNews = news
         align="start"
         class="mb-10"
       />
-      {featured ? (
-        <article class="feature" data-reveal>
-          {posterLarge ? (
-            /* A poster opens in the same fullscreen viewer as Gallery → Posters; the
-               button beside it still leads to the activity's page. */
-            <a
-              href={posterLarge}
-              class="feature__zoom"
-              data-lightbox="feature-poster"
-              data-alt={featured.imageAlt}
-              data-caption={featured.title}
-              aria-label={t('gallery.openPoster', { title: featured.title })}
-            >
+      <div class="action-grid">
+        {featured ? (
+          <article class:list={['feature', featured.poster && 'feature--poster']} data-reveal>
+            {posterLarge ? (
+              /* A poster opens in the same fullscreen viewer as Gallery → Posters; the
+                 buttons under it still lead to the activity's page and the original file. */
+              <a
+                href={posterLarge}
+                class="feature__zoom"
+                data-lightbox="feature-poster"
+                data-alt={featured.imageAlt}
+                data-caption={featured.title}
+                aria-label={t('gallery.openPoster', { title: featured.title })}
+              >
+                <MatinMedia
+                  item={featured}
+                  sizes="(min-width: 64rem) 40rem, 92vw"
+                  class="feature__media is-poster"
+                />
+                <span class="feature__zoom-icon" aria-hidden="true">
+                  <ZoomIn size={22} />
+                </span>
+              </a>
+            ) : (
               <MatinMedia
                 item={featured}
-                sizes="(min-width: 64rem) 46rem, 92vw"
-                class="feature__media is-poster"
+                sizes="(min-width: 64rem) 40rem, 92vw"
+                class:list={['feature__media', featured.poster && 'is-poster']}
               />
-              <span class="feature__zoom-icon" aria-hidden="true">
-                <ZoomIn size={22} />
-              </span>
-            </a>
-          ) : (
-            <MatinMedia
-              item={featured}
-              sizes="(min-width: 64rem) 46rem, 92vw"
-              class:list={['feature__media', featured.poster && 'is-poster']}
-            />
-          )}
-          <div class="feature__body">
-            <p class="feature__type">{t(`matinTypes.${featured.type}`)}</p>
-            <h3 class="feature__title">{featured.title}</h3>
-            <ul class="feature__meta">
-              <li>
-                <CalendarDays size={20} aria-hidden="true" />
-                <time datetime={featured.datetime}>{featured.when}</time>
-              </li>
-              {featured.location && (
-                <li>
-                  <MapPin size={20} aria-hidden="true" />
-                  <span>{featured.location}</span>
-                </li>
+            )}
+            {/* No side panel any more (owner's request, Oct 27 2026): a poster already
+                carries its details, so only the title and the two buttons sit under it. */}
+            <div class="feature__caption">
+              <h3 class="feature__title">{featured.title}</h3>
+              {!featured.poster && (
+                <>
+                  <p class="feature__when">
+                    <CalendarDays size={18} aria-hidden="true" />
+                    <time datetime={featured.datetime}>{featured.when}</time>
+                    {featured.location && (
+                      <>
+                        <MapPin size={18} aria-hidden="true" />
+                        <span>{featured.location}</span>
+                      </>
+                    )}
+                  </p>
+                  <p class="feature__summary">{featured.summary}</p>
+                </>
               )}
-            </ul>
-            <p class="feature__summary">{featured.summary}</p>
-            <div class="feature__actions">
-              <a
-                href={featured.url}
-                class="btn btn-primary"
-                target={featured.external ? '_blank' : undefined}
-                rel={featured.external ? 'noopener noreferrer' : undefined}
-              >
-                {featured.ctaLabel ?? ctaFor(featured.type, t)}
-                {featured.external ? (
-                  <ExternalLink size={18} aria-hidden="true" />
-                ) : (
-                  <ArrowRight size={18} class="flip-rtl" aria-hidden="true" />
-                )}
-                {featured.external && <span class="sr-only">{t('a11y.externalLink')}</span>}
-              </a>
-              {featured.posterDownload && (
+              <div class="feature__actions">
                 <a
-                  href={featured.posterDownload.href}
-                  download={featured.posterDownload.filename}
-                  class="btn btn-outline"
+                  href={featured.url}
+                  class="btn btn-primary"
+                  target={featured.external ? '_blank' : undefined}
+                  rel={featured.external ? 'noopener noreferrer' : undefined}
                 >
-                  <Download size={18} aria-hidden="true" />
-                  {t('events.posterDownload', { format: featured.posterDownload.format })}
+                  {featured.ctaLabel ?? ctaFor(featured.type, t)}
+                  {featured.external ? (
+                    <ExternalLink size={18} aria-hidden="true" />
+                  ) : (
+                    <ArrowRight size={18} class="flip-rtl" aria-hidden="true" />
+                  )}
+                  {featured.external && <span class="sr-only">{t('a11y.externalLink')}</span>}
                 </a>
-              )}
+                {featured.posterDownload && (
+                  <a
+                    href={featured.posterDownload.href}
+                    download={featured.posterDownload.filename}
+                    class="btn btn-outline"
+                  >
+                    <Download size={18} aria-hidden="true" />
+                    {t('events.posterDownload', { format: featured.posterDownload.format })}
+                  </a>
+                )}
+              </div>
             </div>
+          </article>
+        ) : (
+          <div class="empty-state">
+            <p>{t('home.latestEmpty')}</p>
+            <a href="#newsletter" class="btn btn-primary">
+              {t('home.involvedSecondary')}
+              <ArrowRight size={18} class="flip-rtl" aria-hidden="true" />
+            </a>
           </div>
-        </article>
-      ) : (
-        <div class="empty-state">
-          <p>{t('home.latestEmpty')}</p>
-          <a href="#newsletter" class="btn btn-primary">
-            {t('home.involvedSecondary')}
-            <ArrowRight size={18} class="flip-rtl" aria-hidden="true" />
-          </a>
+        )}
+
+        <!-- Volunteer sign-up (owner's request, Oct 27 2026): the same form and Netlify
+             form (« benevolat ») as on Contact & Collaboration, which keeps its own. -->
+        <div id="home-volunteer" class="volunteer-card scroll-mt-24" data-reveal>
+          <div class="volunteer-card__head">
+            <span class="volunteer-card__dot volunteer-card__dot--gold" aria-hidden="true"></span>
+            <span class="volunteer-card__dot volunteer-card__dot--coral" aria-hidden="true"></span>
+            <p class="volunteer-card__eyebrow">{t('involved.volunteer')}</p>
+            <h3 class="volunteer-card__title">{t('home.volunteerTitle')}</h3>
+            <p class="volunteer-card__lede">{t('home.volunteerLede')}</p>
+          </div>
+          <div class="volunteer-card__body">
+            <VolunteerForm lang={lang} roles={volunteerRoles} />
+          </div>
         </div>
-      )}
+      </div>
+
+      <!-- The organizations of the Resources directory, as text names -->
+      <OrgShowcase lang={lang} />
     </div>
   </section>
 
@@ -269,23 +298,42 @@ const matinNews = news
 
 <style>
   /* ---------- Matin in Action ---------- */
-  /* The featured item: the visual on one side, the details on the other. */
+  /* The featured item and the volunteer form side by side on wide screens (owner's
+     request, Oct 27 2026: no extra panel beside the poster). */
+  .action-grid {
+    display: grid;
+    gap: clamp(2rem, 1.5rem + 2vw, 3.5rem);
+    align-items: start;
+  }
+  @media (min-width: 64rem) {
+    .action-grid {
+      grid-template-columns: minmax(0, 1fr) minmax(0, 1.1fr);
+    }
+    /* The poster stays in view beside the taller form. */
+    .feature {
+      position: sticky;
+      inset-block-start: 9rem;
+    }
+  }
   .feature {
     display: grid;
-    overflow: hidden;
-    border: 1px solid var(--color-card-edge);
-    border-radius: calc(var(--radius-card) * 1.4);
-    /* Warm ivory rather than white, with a soft shadow (owner's brief, Oct 25 2026). */
-    background: var(--color-ivory);
-    box-shadow: var(--shadow-card);
+    gap: 1.25rem;
   }
   .feature__zoom {
     position: relative;
     display: block;
+    overflow: hidden;
+    border-radius: calc(var(--radius-card) * 1.2);
+    box-shadow: var(--shadow-card);
     cursor: zoom-in;
   }
-  .feature__zoom :global(.feature__media) {
-    height: 100%;
+  .feature :global(.feature__media) {
+    overflow: hidden;
+    border-radius: calc(var(--radius-card) * 1.2);
+    aspect-ratio: 4 / 3;
+  }
+  .feature :global(.feature__media.is-poster) {
+    aspect-ratio: 4 / 5;
   }
   .feature__zoom :global(img) {
     transition: transform 0.5s ease;
@@ -315,82 +363,106 @@ const matinNews = news
       transform: none;
     }
   }
-  .feature :global(.feature__media) {
-    aspect-ratio: 4 / 3;
-  }
-  .feature :global(.feature__media.is-poster) {
-    aspect-ratio: 4 / 5;
-  }
-  .feature__body {
-    display: flex;
-    flex-direction: column;
-    gap: 1.1rem;
-    padding: clamp(1.75rem, 1.2rem + 2.5vw, 3.5rem);
-    border-block-start: 6px solid var(--color-teal);
-  }
-  @media (min-width: 64rem) {
-    .feature {
-      grid-template-columns: minmax(0, 1.15fr) minmax(0, 1fr);
-      align-items: stretch;
-    }
-    .feature :global(.feature__media) {
-      aspect-ratio: auto;
-      min-height: 26rem;
-    }
-    .feature :global(.feature__media.is-poster) {
-      min-height: 34rem;
-    }
-    .feature__body {
-      justify-content: center;
-      border-block-start: none;
-      border-inline-start: 6px solid var(--color-teal);
-    }
-  }
-  .feature__type {
-    align-self: flex-start;
-    padding: 0.3rem 0.9rem;
-    border-radius: 999px;
-    background: var(--color-primary);
-    color: var(--color-gold);
-    font-family: var(--font-display);
-    font-size: 0.9rem;
-    font-weight: 800;
-    letter-spacing: 0.1em;
-    text-transform: uppercase;
+  .feature__caption {
+    display: grid;
+    gap: 0.8rem;
   }
   .feature__title {
-    font-size: clamp(1.875rem, 1.4rem + 1.8vw, 3rem);
+    font-size: clamp(1.5rem, 1.25rem + 1vw, 2.125rem);
     font-weight: 800;
-    line-height: 1.1;
+    line-height: 1.15;
     text-wrap: balance;
   }
-  .feature__meta {
-    display: grid;
-    gap: 0.45rem;
-    font-size: 1.125rem;
+  .feature__when {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.4rem 0.6rem;
     font-weight: 700;
     color: var(--color-primary);
   }
-  .feature__meta li {
-    display: flex;
-    align-items: flex-start;
-    gap: 0.6rem;
-  }
-  .feature__meta :global(svg) {
-    flex-shrink: 0;
-    margin-top: 0.2rem;
+  .feature__when :global(svg) {
     color: var(--color-teal-deep);
   }
   .feature__summary {
-    max-width: 38rem;
-    font-size: clamp(1.125rem, 1.05rem + 0.35vw, 1.3125rem);
+    font-size: 1.125rem;
     line-height: 1.65;
   }
   .feature__actions {
     display: flex;
     flex-wrap: wrap;
     gap: 0.75rem;
-    margin-top: 0.5rem;
+  }
+
+  /* Volunteer sign-up (owner's request, Oct 27 2026: warm and lively beside the autumn
+     poster): a deep terracotta head with white text (6.4:1), gold and coral shapes, then
+     the form on pale gold (champagne) with navy labels and white fields. */
+  .volunteer-card {
+    overflow: hidden;
+    border: 1px solid color-mix(in srgb, var(--color-gold) 45%, var(--color-white));
+    border-radius: calc(var(--radius-card) * 1.4);
+    background: var(--color-champagne);
+    box-shadow: var(--shadow-card);
+  }
+  .volunteer-card__head {
+    position: relative;
+    overflow: hidden;
+    padding: clamp(1.5rem, 1rem + 2vw, 2.5rem);
+    padding-inline-end: clamp(5rem, 3rem + 6vw, 9rem);
+    border-block-end: 6px solid var(--color-gold);
+    background: var(--color-terracotta-deep);
+    color: var(--color-white);
+  }
+  .volunteer-card__dot {
+    position: absolute;
+    border-radius: 999px;
+    pointer-events: none;
+  }
+  .volunteer-card__dot--gold {
+    inset-block-start: -2.5rem;
+    inset-inline-end: -2.5rem;
+    width: 9rem;
+    height: 9rem;
+    background: var(--color-gold);
+  }
+  .volunteer-card__dot--coral {
+    inset-block-end: -1.5rem;
+    inset-inline-end: 3.5rem;
+    width: 4.5rem;
+    height: 4.5rem;
+    background: color-mix(in srgb, var(--color-coral) 85%, transparent);
+  }
+  .volunteer-card__eyebrow {
+    position: relative;
+    margin-block-end: 0.5rem;
+    color: var(--color-cream);
+    font-family: var(--font-display);
+    font-size: 0.95rem;
+    font-weight: 800;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+  }
+  .volunteer-card__title {
+    position: relative;
+    color: var(--color-white);
+    font-size: clamp(1.625rem, 1.35rem + 1vw, 2.25rem);
+    font-weight: 800;
+    line-height: 1.15;
+  }
+  .volunteer-card__lede {
+    position: relative;
+    margin-block-start: 0.75rem;
+    font-size: 1.125rem;
+    line-height: 1.6;
+  }
+  .volunteer-card__body {
+    padding: clamp(1.5rem, 1rem + 2vw, 2.5rem);
+  }
+  .volunteer-card__body :global(.field-label) {
+    color: var(--color-primary);
+  }
+  .volunteer-card__body :global(.lang-choices) {
+    border-color: color-mix(in srgb, var(--color-gold) 55%, var(--color-white));
   }
 
   /* ---------- News & Insights ---------- */

@@ -136,6 +136,14 @@ const fr = {
     resourcesLede:
       'Un répertoire choisi de grandes institutions et organisations culturelles, au Québec, au Canada et dans le monde.',
     resourcesCta: 'Explorer les ressources',
+    volunteerTitle: 'Rejoignez l’équipe bénévole de Matin',
+    volunteerLede:
+      'Vous aimeriez accueillir le public lors de nos activités ou nous aider en communication ? Laissez-nous vos coordonnées : nous vous répondrons.',
+    orgsTitle: '{count} organismes culturels à découvrir',
+    orgsLede:
+      'Des municipalités, des institutions publiques et des réseaux culturels du Québec, du Canada et du monde, réunis dans notre répertoire.',
+    orgsNote:
+      "Présentés à titre informatif : aucun partenariat, appui ni affiliation avec l'Institut interculturel Matin.",
   },
   matinTypes: {
     initiative: 'Initiative',
