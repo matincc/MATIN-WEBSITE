@@ -32,5 +32,5 @@ faReviewed: true
 ```
 
 Applications arrive through the Netlify form `emplois` (notification email as for the other
-forms) and as rows in the Contact tab of the forms Sheet, marked « Candidature · Job
-application · درخواست شغل ».
+forms) and in the forms Sheet's « Emplois · Jobs » tab, which lists the job rows of the
+Contact tab (marked « Candidature · Job application · درخواست شغل ») on their own.

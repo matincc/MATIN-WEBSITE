@@ -82,30 +82,26 @@ function fileLink(value: unknown) {
   if (!value) return '';
   if (typeof value === 'string') return value;
   const file = value as { url?: string; filename?: string };
-  return [file.filename, file.url].filter(Boolean).join(' – ');
+  return file.url ?? file.filename ?? '';
 }
 
 /**
- * Job applications (Careers page, « emplois ») go to the Contact tab, marked as such, so
- * the deployed web app needs no new tab: position in « Fonction », phone, CV and link
- * above the message.
+ * Job applications (Careers page, « emplois ») go through the web app's Contact form, so
+ * the deployed script needs no change, one field per column: phone in « Organisme »,
+ * position in « Fonction », CV link in « Objet », LinkedIn link above the message. The
+ * Sheet's « Emplois · Jobs » tab lists these rows on their own (FILTER on « Je suis »).
  */
 function asContactRow(data: Record<string, unknown>) {
-  const position = String(data.position ?? '');
-  const lines = [
-    data.phone && `Téléphone · Phone · تلفن : ${data.phone}`,
-    data.cv && `CV : ${fileLink(data.cv)}`,
-    data.link && `Lien · Link · لینک : ${data.link}`,
-  ].filter(Boolean);
+  const link = String(data.link ?? '').trim();
+  const message = String(data.message ?? '');
   return {
     requester_type: 'Candidature · Job application · درخواست شغل',
-    position,
+    organization: data.phone,
+    position: data.position,
     name: data.name,
     email: data.email,
-    subject: `Emploi · Job · شغل : ${position}`,
-    message: [...lines, lines.length ? '' : null, data.message]
-      .filter((l) => l !== null)
-      .join('\n'),
+    subject: fileLink(data.cv),
+    message: link ? `${link}\n\n${message}` : message,
     lang: data.lang,
   };
 }
