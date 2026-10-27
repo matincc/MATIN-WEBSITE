@@ -1,0 +1,33 @@
+# Matin's Pick approved by Matin on October 27, 2026 (same story as in Cultural News).
+kind: selected
+organizer:
+  name: 'Danse Danse'
+  url: https://www.dansedanse.ca
+title:
+  fr: 'Christos Papadopoulos : My Fierce Ignorant Step'
+  en: 'Christos Papadopoulos: My Fierce Ignorant Step'
+  fa: 'کریستوس پاپادوپولوس: My Fierce Ignorant Step'
+summary:
+  fr: 'Le chorégraphe grec Christos Papadopoulos revisite l’audace de la jeunesse sur une musique inspirée de l’Axion Esti de Mikis Theodorakis. Première compagnie grecque présentée par Danse Danse.'
+  en: 'Greek choreographer Christos Papadopoulos revisits the boldness of youth, set to music drawing on Mikis Theodorakis’s Axion Esti. The first Greek company presented by Danse Danse.'
+  fa: 'کریستوس پاپادوپولوس، طراح رقص یونانی، با موسیقی‌ای الهام‌گرفته از «اکسیون استی» تئودوراکیس به بی‌باکی جوانی می‌پردازد. نخستین گروه یونانی در برنامه دانس دانس.'
+whyItMatters:
+  fr: 'Une première rencontre entre la danse grecque contemporaine et le public montréalais.'
+  en: 'A first meeting between contemporary Greek dance and Montréal audiences.'
+  fa: 'نخستین دیدار رقص معاصر یونان با تماشاگران مونترال.'
+subject: arts
+region: montreal
+city: 'Montréal'
+format: in-person
+start: '2026-10-28T00:00'
+end: '2026-10-31T23:59'
+allDay: true
+location:
+  name: 'Théâtre Maisonneuve, Place des Arts'
+  address: '175, rue Sainte-Catherine Ouest, Montréal, QC'
+price:
+  type: paid
+eventUrl: https://www.dansedanse.ca/en/shows/christos-papadopoulos-my-fierce-ignorant-step
+sourceUrl: https://www.dansedanse.ca/en/shows/christos-papadopoulos-my-fierce-ignorant-step
+lastVerified: '2026-10-27'
+featuredUntil: '2026-10-31'

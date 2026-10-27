@@ -1,0 +1,33 @@
+# Matin's Pick approved by Matin on October 27, 2026 (same story as in Cultural News).
+kind: selected
+organizer:
+  name: 'Art Toronto'
+  url: https://arttoronto.ca
+title:
+  fr: 'Art Toronto 2026'
+  en: 'Art Toronto 2026'
+  fa: 'آرت تورنتو ۲۰۲۶'
+summary:
+  fr: 'La foire d’art du Canada réunit plus de 100 galeries, installations et espaces de projets canadiens et internationaux.'
+  en: 'Canada’s art fair brings together more than 100 galleries, installations and project spaces from Canada and abroad.'
+  fa: 'نمایشگاه هنری کانادا بیش از ۱۰۰ گالری، چیدمان و فضای هنری کانادایی و بین‌المللی را گرد هم می‌آورد.'
+whyItMatters:
+  fr: 'Un panorama de l’art contemporain d’ici et d’ailleurs en un seul lieu.'
+  en: 'A survey of contemporary art from Canada and abroad in one place.'
+  fa: 'نمایی از هنر معاصر کانادا و جهان در یک مکان.'
+subject: arts
+region: canada
+city: 'Toronto'
+format: in-person
+start: '2026-10-29T00:00'
+end: '2026-11-01T23:59'
+allDay: true
+location:
+  name: 'Metro Toronto Convention Centre, North Building'
+  address: '255 Front Street West, Toronto, ON'
+price:
+  type: paid
+eventUrl: https://arttoronto.ca/home/
+sourceUrl: https://arttoronto.ca/home/
+lastVerified: '2026-10-27'
+featuredUntil: '2026-11-01'

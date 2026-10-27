@@ -1,0 +1,34 @@
+# Matin's Pick approved by Matin on October 27, 2026 (same story as in Cultural News).
+kind: selected
+organizer:
+  name: 'UNESCO'
+  url: https://www.unesco.org
+title:
+  fr: 'Congrès international : créativité humaine et diversité des expressions culturelles dans l’environnement numérique'
+  en: 'International Congress: Promoting Human Creativity and the Diversity of Cultural Expressions in the Digital Environment'
+  fa: 'کنگره بین‌المللی: خلاقیت انسانی و تنوع بیان‌های فرهنگی در محیط دیجیتال'
+summary:
+  fr: 'Au siège de l’UNESCO, artistes et experts examinent comment l’intelligence artificielle transforme la création, avec Jean-Michel Jarre parmi les intervenants. Diffusion en direct.'
+  en: 'At UNESCO Headquarters, artists and experts examine how artificial intelligence is changing creative work, with Jean-Michel Jarre among the speakers. Live webcast.'
+  fa: 'در مقر یونسکو، هنرمندان و کارشناسان بررسی می‌کنند که هوش مصنوعی چگونه آفرینش هنری را دگرگون می‌کند؛ از جمله با سخنرانی ژان-میشل ژار. پخش زنده.'
+whyItMatters:
+  fr: 'L’avenir de la diversité culturelle à l’ère de l’IA.'
+  en: 'The future of cultural diversity in the age of AI.'
+  fa: 'آینده تنوع فرهنگی در عصر هوش مصنوعی.'
+subject: policy
+region: international
+city: 'Paris'
+country: 'France'
+format: hybrid
+start: '2026-10-27T10:00'
+end: '2026-10-27T17:00'
+timeZone: Europe/Paris
+location:
+  name: 'UNESCO Headquarters'
+  address: '7 place de Fontenoy, Paris'
+price:
+  type: unknown
+eventUrl: https://www.unesco.org/en/articles/international-congress-promoting-human-creativity-and-diversity-cultural-expressions-digital
+sourceUrl: https://www.unesco.org/en/articles/international-congress-promoting-human-creativity-and-diversity-cultural-expressions-digital
+lastVerified: '2026-10-27'
+featuredUntil: '2026-10-27'

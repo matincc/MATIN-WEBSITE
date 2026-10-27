@@ -1,0 +1,32 @@
+# Matin's Pick approved by Matin on October 27, 2026 (same story as in Cultural News).
+kind: selected
+organizer:
+  name: 'Toronto International Festival of Authors'
+  url: https://festivalofauthors.ca
+title:
+  fr: 'Toronto International Festival of Authors, 47e édition'
+  en: 'Toronto International Festival of Authors, 47th edition'
+  fa: 'جشنواره بین‌المللی نویسندگان تورنتو، دوره چهل‌وهفتم'
+summary:
+  fr: 'Lectures et rencontres avec des auteurs canadiens et internationaux à l’Université Victoria (Université de Toronto).'
+  en: 'Readings and conversations with writers from Canada and around the world at Victoria University, University of Toronto.'
+  fa: 'کتاب‌خوانی و گفت‌وگو با نویسندگان کانادایی و بین‌المللی در دانشگاه ویکتوریا، دانشگاه تورنتو.'
+whyItMatters:
+  fr: 'La littérature comme lieu de rencontre entre les voix du Canada et du monde.'
+  en: 'Literature as a meeting place for voices from Canada and the world.'
+  fa: 'ادبیات به‌عنوان محل دیدار صداهای کانادا و جهان.'
+subject: arts
+region: canada
+city: 'Toronto'
+format: in-person
+start: '2026-10-27T00:00'
+end: '2026-11-01T23:59'
+allDay: true
+location:
+  name: 'Victoria University, University of Toronto'
+price:
+  type: paid
+eventUrl: https://festivalofauthors.ca/2026/03/05/2026-festival-dates/
+sourceUrl: https://festivalofauthors.ca/2026/03/05/2026-festival-dates/
+lastVerified: '2026-10-27'
+featuredUntil: '2026-11-01'

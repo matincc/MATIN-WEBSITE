@@ -1,0 +1,33 @@
+# Matin's Pick approved by Matin on October 27, 2026 (same story as in Cultural News).
+kind: selected
+organizer:
+  name: 'Day of the Dead Festival'
+  url: https://www.dayofthedeadfestival.ca
+title:
+  fr: 'Festival du Jour des Morts d’Ottawa, 10e anniversaire'
+  en: 'Day of the Dead Festival Ottawa, 10th anniversary'
+  fa: 'جشنواره روز مردگان اتاوا، دهمین سالگرد'
+summary:
+  fr: 'Une fête gratuite et familiale du patrimoine mexicain au marché By : musique, danse folklorique, marché d’artisans, procession et exposition d’ofrendas.'
+  en: 'A free, family-friendly celebration of Mexican heritage in the ByWard Market: music, folk dance, an artisan market, a procession and an exhibition of ofrendas.'
+  fa: 'جشنی رایگان و خانوادگی برای میراث مکزیکی در بازار بای‌وارد: موسیقی، رقص محلی، بازارچه صنایع دستی، راهپیمایی و نمایشگاه اوفرنداها.'
+whyItMatters:
+  fr: 'Une tradition mexicaine partagée avec toute la communauté d’Ottawa.'
+  en: 'A Mexican tradition shared with the whole Ottawa community.'
+  fa: 'سنتی مکزیکی که با همه مردم اتاوا به اشتراک گذاشته می‌شود.'
+subject: community
+region: canada
+city: 'Ottawa'
+format: in-person
+start: '2026-10-31T12:00'
+end: '2026-11-01T23:59'
+allDay: true
+location:
+  name: 'ByWard Market'
+  address: '55 ByWard Market Square, Ottawa, ON K1N 9C3'
+price:
+  type: free
+eventUrl: https://www.dayofthedeadfestival.ca/
+sourceUrl: https://www.dayofthedeadfestival.ca/
+lastVerified: '2026-10-27'
+featuredUntil: '2026-11-01'

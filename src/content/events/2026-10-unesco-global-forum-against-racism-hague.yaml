@@ -1,0 +1,37 @@
+# Matin's Pick approved by Matin on October 27, 2026 (same story as in Cultural News).
+kind: selected
+organizer:
+  name: 'UNESCO'
+  url: https://www.unesco.org
+title:
+  fr: '5e Forum mondial de l’UNESCO contre le racisme et les discriminations'
+  en: '5th UNESCO Global Forum against Racism and Discrimination'
+  fa: 'پنجمین مجمع جهانی یونسکو علیه نژادپرستی و تبعیض'
+summary:
+  fr: 'Gouvernements, organisations internationales, société civile et chercheurs se réunissent à La Haye sous le thème « De l’engagement à la responsabilité : changer le système, changer l’avenir ».'
+  en: 'Governments, international organizations, civil society and researchers meet in The Hague under the theme “From commitment to accountability: change the system, change the future.”'
+  fa: 'دولت‌ها، سازمان‌های بین‌المللی، جامعه مدنی و پژوهشگران با شعار «از تعهد تا پاسخ‌گویی» در لاهه گرد هم می‌آیند.'
+whyItMatters:
+  fr: 'Le grand rendez-vous international de la lutte contre le racisme, au cœur de la mission de Matin.'
+  en: 'The leading international gathering against racism, at the heart of Matin’s mission.'
+  fa: 'مهم‌ترین گردهمایی بین‌المللی علیه نژادپرستی، در قلب مأموریت متین.'
+subject: policy
+region: international
+city:
+  fr: 'La Haye'
+  en: 'The Hague'
+  fa: 'لاهه'
+country: 'Netherlands'
+format: in-person
+start: '2026-10-29T00:00'
+end: '2026-10-30T23:59'
+allDay: true
+timeZone: Europe/Amsterdam
+location:
+  name: 'World Forum The Hague'
+price:
+  type: unknown
+eventUrl: https://www.unesco.org/en/articles/5th-unesco-global-forum-against-racism-and-discrimination
+sourceUrl: https://www.unesco.org/en/articles/5th-unesco-global-forum-against-racism-and-discrimination
+lastVerified: '2026-10-27'
+featuredUntil: '2026-10-30'

@@ -1,0 +1,32 @@
+# Matin's Pick approved by Matin on October 27, 2026 (same story as in Cultural News).
+kind: selected
+organizer:
+  name: 'Tokyo International Film Festival'
+  url: https://www.tiff-jp.net
+title:
+  fr: '39e Festival international du film de Tokyo'
+  en: '39th Tokyo International Film Festival'
+  fa: 'سی‌ونهمین جشنواره بین‌المللی فیلم توکیو'
+summary:
+  fr: 'Le plus grand festival de cinéma du Japon présente 15 films en compétition, dont sept premières mondiales, et une rétrospective Kenji Mizoguchi.'
+  en: 'Japan’s largest film festival presents 15 films in competition, seven of them world premieres, and a Kenji Mizoguchi retrospective.'
+  fa: 'بزرگ‌ترین جشنواره سینمایی ژاپن با ۱۵ فیلم در بخش مسابقه، از جمله هفت نمایش جهانی نخست، و مروری بر آثار کنجی میزوگوچی.'
+whyItMatters:
+  fr: 'Une fenêtre sur le cinéma d’Asie et du monde.'
+  en: 'A window on cinema from Asia and the world.'
+  fa: 'پنجره‌ای به سینمای آسیا و جهان.'
+subject: arts
+region: international
+city: 'Tokyo'
+country: 'Japan'
+format: in-person
+start: '2026-10-26T00:00'
+end: '2026-11-04T23:59'
+allDay: true
+timeZone: Asia/Tokyo
+price:
+  type: paid
+eventUrl: https://2026.tiff-jp.net/en/
+sourceUrl: https://www.outlookindia.com/art-entertainment/tokyo-film-festival-full-2026-lineup-revealed
+lastVerified: '2026-10-27'
+featuredUntil: '2026-11-01'
