@@ -545,8 +545,25 @@ const fr = {
       Portuguese: 'Portugais',
       Hindi: 'Hindi',
       Urdu: 'Ourdou',
+      Chinese: 'Chinois',
       Other: 'Autre',
     },
+    country: 'Pays de résidence',
+    countryHint: 'Commencez à taper, puis choisissez votre pays dans la liste.',
+    city: 'Ville de résidence (facultatif)',
+    collab: 'Mode de collaboration souhaité (facultatif)',
+    collabRemote: 'À distance / en ligne',
+    collabInPerson: 'En personne',
+    collabBoth: 'Les deux',
+    skills: 'Compétences et centres d’intérêt',
+    skillsHint:
+      'Parlez-nous librement de vos compétences, de votre expérience professionnelle, de vos intérêts, de vos idées ou de la façon dont vous aimeriez contribuer.',
+    additional: 'Renseignements complémentaires (facultatif)',
+    consentVolunteer:
+      "J'accepte que Matin utilise ces renseignements uniquement pour examiner une possible collaboration bénévole, conformément à sa",
+    volunteerSuccess:
+      'Merci! Votre candidature a bien été envoyée. Nous l’examinerons et vous écrirons par courriel.',
+    volunteerSubmit: 'Envoyer ma candidature',
     motivation: 'Pourquoi souhaitez-vous vous impliquer?',
     any: 'Peu importe',
     errTooMany:

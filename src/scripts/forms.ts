@@ -41,6 +41,11 @@ function validate(field: HTMLInputElement | HTMLTextAreaElement | HTMLSelectElem
     return field.required && !checked ? m.required : '';
   }
   if (field instanceof HTMLInputElement && field.type === 'checkbox') {
+    // A checklist where at least one box is needed: the first box carries data-group-required.
+    if (field.dataset.groupRequired !== undefined) {
+      const checked = field.form?.querySelector(`input[name="${field.name}"]:checked`);
+      return checked ? '' : m.required;
+    }
     return field.required && !field.checked ? m.consent : '';
   }
   const value = field.value.trim();
@@ -49,6 +54,14 @@ function validate(field: HTMLInputElement | HTMLTextAreaElement | HTMLSelectElem
     return m.email;
   }
   return '';
+}
+
+/** Form values with several ticked boxes of one name (e.g. languages) joined into one line. */
+function joinRepeated(form: HTMLFormElement) {
+  return [...new FormData(form)].reduce<Record<string, string>>((o, [k, v]) => {
+    o[k] = o[k] ? `${o[k]}, ${v}` : String(v);
+    return o;
+  }, {});
 }
 
 function setError(field: HTMLElement, message: string) {
@@ -261,7 +274,7 @@ export function enhanceForms() {
           if (res.status === 429) throw new Error('too-many');
           if (!res.ok || !result.ok) throw new Error(String(res.status));
         } else {
-          const body = new URLSearchParams(new FormData(form) as unknown as Record<string, string>);
+          const body = new URLSearchParams(joinRepeated(form));
           res = await fetch(form.getAttribute('action') || '/', {
             method: 'POST',
             headers: { 'Content-Type': 'application/x-www-form-urlencoded' },

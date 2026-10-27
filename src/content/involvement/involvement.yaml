@@ -1,9 +1,9 @@
 # Volunteer introduction on Contact & Collaboration: the owner's text of Oct 27 2026
 # (English and Persian as written by the owner; French translation by Claude).
 volunteerIntro:
-  fr: 'Où que vous soyez dans le monde, mettez vos compétences, vos idées et votre passion au service de Matin. Contribuez à des projets porteurs de sens, collaborez au-delà des cultures et aidez-nous à faire la différence.'
-  en: 'Wherever you are in the world, bring your skills, ideas, and passion to Matin. Contribute to meaningful projects, collaborate across cultures, and help us make a difference.'
-  fa: 'در هر کجای جهان که هستید، مهارت‌ها، ایده‌ها و علاقه‌تان را با متین به اشتراک بگذارید. در پروژه‌های معنادار مشارکت کنید، در همکاری‌های میان‌فرهنگی سهیم شوید و به ایجاد تغییرات مثبت کمک کنید.'
+  fr: 'Où que vous soyez dans le monde, vous pouvez contribuer aux activités de Matin. Mettez vos compétences, votre expérience et vos idées au service de projets culturels, de recherche et de dialogue interculturel, et participez à des changements positifs.'
+  en: 'Wherever you are in the world, you can be part of Matin. Contribute your skills, experience, and ideas to cultural, research, and intercultural projects, and help create positive change.'
+  fa: 'هر کجای جهان که هستید، می‌توانید بخشی از متین باشید. با مهارت‌ها، تجربه‌ها و ایده‌های خود در پروژه‌های فرهنگی، پژوهشی و میان‌فرهنگی مشارکت کنید و در ایجاد تغییرات مثبت سهیم شوید.'
 roles:
   - title: { fr: 'Accueil et événements', en: 'Welcome & events', fa: 'استقبال و رویدادها' }
     text:
