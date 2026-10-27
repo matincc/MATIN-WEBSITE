@@ -17,6 +17,7 @@ export const routes = {
   events: { fr: 'evenements', en: 'events' },
   eventsArchive: { fr: 'evenements/archives', en: 'events/past' },
   news: { fr: 'actualites', en: 'news' },
+  notes: { fr: 'notes-du-president', en: 'president-notes' },
   gallery: { fr: 'galerie', en: 'gallery' },
   resources: { fr: 'ressources', en: 'resources' },
   contact: { fr: 'contact', en: 'contact' },

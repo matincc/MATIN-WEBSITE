@@ -66,6 +66,7 @@ const fr = {
     resourcesDirectory: 'Répertoire des organismes',
     president: 'Un mot personnel de notre président',
     ourPresident: 'Notre président',
+    notes: 'Notes du président',
   },
   search: {
     title: 'Rechercher',
@@ -316,6 +317,24 @@ const fr = {
     montreal: 'Montréal',
     canada: 'Canada',
     international: 'Ailleurs dans le monde',
+  },
+  notes: {
+    title: 'Notes du président',
+    lede: "Réflexions, rencontres et idées de Reza Moafi, président de l'Institut interculturel Matin, partagées d'abord sur LinkedIn.",
+    homeLede: 'Les dernières réflexions de notre président, partagées sur LinkedIn.',
+    all: 'Toutes les notes du président',
+    readMore: 'Voir plus',
+    readLess: 'Voir moins',
+    onLinkedin: 'Lire sur LinkedIn',
+    follow: 'Suivre sur LinkedIn',
+    author: 'Auteur',
+    originalLanguage: 'Note publiée en {language}',
+    languageNames: { fr: 'français', en: 'anglais', fa: 'persan' },
+    empty: 'Les prochaines notes du président paraîtront ici.',
+    sample: 'Exemple',
+    sampleNote:
+      "Aperçu : les notes marquées « Exemple » montrent seulement la mise en page. Elles seront remplacées par les vraies publications LinkedIn du président et n'apparaîtront jamais sur le site public.",
+    noteOf: 'Note du {date}',
   },
   pagination: {
     label: 'Pagination',

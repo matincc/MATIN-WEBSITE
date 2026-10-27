@@ -65,6 +65,7 @@ const en: Dictionary = {
     resourcesDirectory: 'Directory of Organizations',
     president: 'A Personal Note from Our President',
     ourPresident: 'Our President',
+    notes: 'Notes from the President',
   },
   search: {
     title: 'Search',
@@ -311,6 +312,24 @@ const en: Dictionary = {
     montreal: 'Montréal',
     canada: 'Canada',
     international: 'Around the World',
+  },
+  notes: {
+    title: 'Notes from the President',
+    lede: 'Reflections, encounters and ideas from Reza Moafi, President of Matin Intercultural Institute, first shared on LinkedIn.',
+    homeLede: 'The latest reflections from our President, shared on LinkedIn.',
+    all: 'All notes from the President',
+    readMore: 'See more',
+    readLess: 'See less',
+    onLinkedin: 'Read on LinkedIn',
+    follow: 'Follow on LinkedIn',
+    author: 'Author',
+    originalLanguage: 'Note published in {language}',
+    languageNames: { fr: 'French', en: 'English', fa: 'Persian' },
+    empty: 'The President’s next notes will appear here.',
+    sample: 'Sample',
+    sampleNote:
+      'Preview: the notes marked “Sample” only show the layout. They will be replaced by the President’s real LinkedIn posts and will never appear on the public site.',
+    noteOf: 'Note of {date}',
   },
   pagination: {
     label: 'Pagination',
