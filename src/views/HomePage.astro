@@ -25,6 +25,7 @@ import Lightbox from '@/components/ui/Lightbox.astro';
 import NewsRegionTabs from '@/components/content/NewsRegionTabs.astro';
 import PicksSection from '@/components/content/PicksSection.astro';
 import PostCard from '@/components/content/PostCard.astro';
+import NoteCard from '@/components/content/NoteCard.astro';
 import MatinMoments from '@/components/content/MatinMoments.astro';
 import ResourcesTeaser from '@/components/content/ResourcesTeaser.astro';
 import ExpireEvents from '@/components/content/ExpireEvents.astro';
@@ -36,7 +37,7 @@ import AreasGrid from '@/components/content/AreasGrid.astro';
 import { href, newsAnchors, siteAlternates, type UiLang } from '@/i18n/routes';
 import { pick, useTranslations } from '@/i18n/ui';
 import { getMatinFeed, type MatinItem } from '@/lib/matin';
-import { articleHref, forLang, getNews } from '@/lib/content';
+import { articleHref, forLang, getNews, getNotes } from '@/lib/content';
 import { ctaFor } from '@/lib/matinLabels';
 import MatinMedia from '@/components/content/MatinMedia.astro';
 
@@ -89,6 +90,8 @@ const culturalNews = news.filter((p) => p.data.category === 'recommends');
 const matinNews = news
   .filter((p) => p.data.category === 'matin-news' && articleHref(p, lang) !== featured?.url)
   .slice(0, 3);
+// Notes from the President (owner's request, Oct 27 2026): the two latest, on a deep terracotta band.
+const notes = await getNotes(2);
 ---
 
 <BaseLayout lang={lang} alternates={siteAlternates('home')} searchable={false}>
@@ -240,7 +243,6 @@ const matinNews = news
           </a>
         </div>
       )}
-
     </div>
   </section>
 
@@ -308,6 +310,33 @@ const matinNews = news
       )}
     </div>
   </section>
+
+  <!-- Notes from the President: the latest LinkedIn notes, hidden while there are none -->
+  {notes.length > 0 && (
+    <section
+      id="president-notes"
+      class="section-pad notes-home on-terracotta scroll-mt-24"
+      aria-labelledby="president-notes-title"
+    >
+      <div class="container-site">
+        <SectionHeader
+          align="start"
+          id="president-notes-title"
+          title={t('notes.title')}
+          subtitle={t('notes.homeLede')}
+          link={{ href: href('notes', lang), label: t('notes.all') }}
+          class="mb-10"
+        />
+        <ul class:list={['notes-home__list', notes.length > 1 && 'notes-home__list--two']}>
+          {notes.map((note) => (
+            <li>
+              <NoteCard note={note} lang={lang} headingLevel="h3" />
+            </li>
+          ))}
+        </ul>
+      </div>
+    </section>
+  )}
 
   <!-- Matin Moments: featured photos and videos from the gallery -->
   <MatinMoments lang={lang} />
@@ -545,6 +574,29 @@ const matinNews = news
   /* The deep teal of the former Get Involved band (white text 6.2:1). */
   .areas-band {
     background: var(--color-teal-deep);
+  }
+  /* Notes from the President: white LinkedIn-style cards on deep terracotta. */
+  .notes-home {
+    background: var(--color-terracotta-deep);
+  }
+  .notes-home :global(.section-subtitle),
+  .notes-home :global(.section-head__link) {
+    color: var(--color-white);
+  }
+  .notes-home :global(.section-head__link svg) {
+    color: var(--color-cream);
+  }
+  .notes-home__list {
+    display: grid;
+    gap: 1.75rem;
+    max-width: 50rem;
+  }
+  @media (min-width: 64rem) {
+    .notes-home__list--two {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      align-items: start;
+      max-width: none;
+    }
   }
   .areas-head {
     max-width: 56rem;

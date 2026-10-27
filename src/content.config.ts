@@ -663,6 +663,42 @@ const involvement = defineCollection({
   }),
 });
 
+/**
+ * Notes from the President: short posts Reza Moafi first published on LinkedIn, shown as
+ * LinkedIn-style cards (owner's request, Oct 27 2026). Written once, in the language he
+ * posted in (`original`); a translation may be added for the other languages. No title.
+ */
+const notes = defineCollection({
+  loader: yaml('notes'),
+  schema: ({ image }) =>
+    z
+      .object({
+        /** The day the note was published on LinkedIn. */
+        date: z.coerce.date(),
+        /** Language the President wrote the note in. */
+        original: z.enum(['fr', 'en', 'fa']),
+        /** The note's text, exactly as published (blank lines separate paragraphs). */
+        text: z.object({
+          fr: z.string().optional(),
+          en: z.string().optional(),
+          fa: z.string().optional(),
+        }),
+        image: image().optional(),
+        imageAlt: biOpt,
+        /** Credit shown with the image when it is not Matin's own photo. */
+        imageCredit: z.string().optional(),
+        /** Link to the post on LinkedIn. */
+        linkedin: z.url().optional(),
+        /** Layout examples: shown on local and deploy previews, never on the live site. */
+        sample: z.boolean().default(false),
+        archived: z.boolean().default(false),
+      })
+      .refine((n) => !!n.text[n.original], {
+        message: 'Write the note in its original language (text.<original>)',
+        path: ['text'],
+      }),
+});
+
 /** Legal pages: privacy, terms, accessibility. Body is Markdown. */
 const legal = defineCollection({
   loader: yaml('legal'),
@@ -678,6 +714,7 @@ export const collections = {
   programs,
   events,
   news,
+  notes,
   highlights,
   comingSoon,
   settings,

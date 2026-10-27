@@ -114,6 +114,18 @@ export async function getNews(limit?: number) {
   return limit ? list.slice(0, limit) : list;
 }
 
+/**
+ * Notes from the President, newest first. Layout examples (`sample: true`) appear on local
+ * and Netlify deploy previews only, never in a production build.
+ */
+export async function getNotes(limit?: number) {
+  const live = process.env.CONTEXT === 'production';
+  const list = (
+    await getCollection('notes', (n) => !n.data.archived && !(live && n.data.sample))
+  ).sort((a, b) => b.data.date.getTime() - a.data.date.getTime());
+  return limit ? list.slice(0, limit) : list;
+}
+
 /** An article has a Persian page once its Persian text is written and reviewed. */
 export const hasPersian = (post: CollectionEntry<'news'>) =>
   post.data.faReviewed && !!post.data.body.fa;

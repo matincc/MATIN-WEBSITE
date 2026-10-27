@@ -1,0 +1,10 @@
+# LAYOUT EXAMPLE (sample: true): shown only on previews, never on the live site.
+# Delete this file once the President's real notes are added.
+# Written in Persian only: the French and English pages show it in Persian, with a label.
+sample: true
+date: 2026-10-12
+original: fa
+text:
+  fa: |
+    نمونهٔ یادداشتی که فقط به فارسی نوشته شده است. در صفحه‌های فرانسوی و انگلیسی همین متن فارسی، راست‌چین و با برچسب زبان، نمایش داده می‌شود.
+linkedin: https://www.linkedin.com/in/rezamoafi/

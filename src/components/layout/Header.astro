@@ -58,13 +58,17 @@ const eventsLinks = [
   { id: 'upcoming', label: t('events.upcoming') },
 ].map((l) => ({ ...l, href: `${eventsHref}#${l.id}` }));
 eventsLinks.push({ id: 'past', label: t('nav.eventsArchive'), href: href('eventsArchive', lang) });
-// Sub-links of "News": its two sections (owner's brief, Oct 25 2026).
+// Sub-links of "News": its two sections (owner's brief, Oct 25 2026), then the President's notes.
 const newsHref = href('news', lang);
-const newsLinks = (Object.keys(newsAnchors) as (keyof typeof newsAnchors)[]).map((c) => ({
-  id: newsAnchors[c],
+const newsLinks: { id: string; label: string; href: string }[] = (
+  Object.keys(newsAnchors) as (keyof typeof newsAnchors)[]
+).map((c) => ({
+  id: newsAnchors[c] as string,
   label: t(`newsCategories.${c}`),
   href: anchor(newsHref, newsAnchors[c]),
 }));
+// Notes from the President (owner's request, Oct 27 2026): their own page, under News.
+newsLinks.push({ id: 'president-notes', label: t('nav.notes'), href: href('notes', lang) });
 // Sub-links of "Gallery" and "Resources": sections of those pages.
 const galleryHref = href('gallery', lang);
 const galleryLinks = [

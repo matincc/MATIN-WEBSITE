@@ -1,0 +1,13 @@
+# LAYOUT EXAMPLE (sample: true): shown only on previews, never on the live site.
+# Delete this file once the President's real notes are added.
+sample: true
+date: 2026-10-20
+original: en
+text:
+  fr: |
+    Exemple de note courte, sans image : quelques lignes, affichées en entier.
+  en: |
+    Sample short note, without a picture: a few lines, shown in full.
+  fa: |
+    نمونهٔ یادداشت کوتاه و بدون تصویر: چند خط که کامل نمایش داده می‌شود.
+linkedin: https://www.linkedin.com/in/rezamoafi/
