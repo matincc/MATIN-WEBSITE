@@ -1,0 +1,21 @@
+# Matin in Action: a "coming soon" poster (see the comingSoon collection in
+# src/content.config.ts). Owner's brief of Oct 27 2026: English title, subtitle and text as
+# written by the owner; French title « Mon quartier, nos cultures » given by the owner.
+# Posters made with scripts/posters/ (node scripts/posters/render.mjs).
+title:
+  fr: 'Mon quartier, nos cultures'
+  en: 'My Neighbourhood, Our Cultures'
+  fa: 'محلهٔ من، فرهنگ‌های ما'
+summary:
+  fr: 'Votre voix. Votre communauté.'
+  en: 'Your Voice. Your Community.'
+  fa: 'صدای شما. جامعهٔ شما.'
+poster:
+  fr: ../../assets/uploads/highlights/quartier/fr.jpg
+  en: ../../assets/uploads/highlights/quartier/en.jpg
+  fa: ../../assets/uploads/highlights/quartier/fa.jpg
+posterAlt:
+  fr: 'Affiche de Mon quartier, nos cultures, bientôt : une carte de quartier et des habitants qui partagent leurs idées.'
+  en: 'Poster for My Neighbourhood, Our Cultures, coming soon: a neighbourhood map and residents sharing ideas.'
+  fa: 'پوستر «محلهٔ من، فرهنگ‌های ما»، به‌زودی: نقشهٔ یک محله و ساکنانی که ایده‌هایشان را به اشتراک می‌گذارند.'
+order: 2

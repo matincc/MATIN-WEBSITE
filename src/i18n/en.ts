@@ -74,6 +74,9 @@ const en: Dictionary = {
   home: {
     actionTitle: 'Matin in Action',
     actionLede: 'What Matin is doing now: our initiatives, activities and news.',
+    comingSoon: 'Coming soon',
+    carouselPrev: 'Previous poster',
+    carouselNext: 'Next poster',
     latestTitle: 'Latest From Matin',
     latestEmpty:
       "Matin's first activities will be announced here. Subscribe to our newsletter to be among the first to know.",

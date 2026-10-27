@@ -76,6 +76,9 @@ const fr = {
   home: {
     actionTitle: 'Matin en action',
     actionLede: 'Ce que Matin fait en ce moment : nos initiatives, nos activités et nos nouvelles.',
+    comingSoon: 'Bientôt',
+    carouselPrev: 'Affiche précédente',
+    carouselNext: 'Affiche suivante',
     latestTitle: 'Les nouvelles de Matin',
     latestEmpty:
       "Les premières activités de Matin seront annoncées ici. Abonnez-vous à l'infolettre pour être parmi les premiers informés.",

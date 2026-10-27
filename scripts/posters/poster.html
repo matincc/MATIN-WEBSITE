@@ -1,0 +1,665 @@
+<!doctype html>
+<!--
+  "Coming soon" posters for Matin in Action (owner's brief, Oct 27 2026), rendered to JPEG
+  by scripts/posters/render.mjs in French, English and Persian. Flat illustrations in the
+  Matin palette, the same size as the Walking Conversation poster (906 × 1280, rendered at
+  2×). No dates, places or registration details: these activities are not scheduled yet.
+-->
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <style>
+      @font-face {
+        font-family: 'Playfair';
+        src: url('../../node_modules/@fontsource/playfair-display/files/playfair-display-latin-700-normal.woff2');
+        font-weight: 700;
+      }
+      @font-face {
+        font-family: 'Playfair';
+        src: url('../../node_modules/@fontsource/playfair-display/files/playfair-display-latin-700-italic.woff2');
+        font-weight: 700;
+        font-style: italic;
+      }
+      @font-face {
+        font-family: 'Nunito';
+        src: url('../../node_modules/@fontsource-variable/nunito/files/nunito-latin-wght-normal.woff2');
+        font-weight: 200 1000;
+      }
+      @font-face {
+        font-family: 'DM Sans';
+        src: url('../../node_modules/@fontsource-variable/dm-sans/files/dm-sans-latin-wght-normal.woff2');
+        font-weight: 100 1000;
+      }
+      @font-face {
+        font-family: 'Vazirmatn';
+        src: url('../../node_modules/@fontsource-variable/vazirmatn/files/vazirmatn-arabic-wght-normal.woff2');
+        font-weight: 100 900;
+      }
+      @font-face {
+        font-family: 'Vazirmatn';
+        src: url('../../node_modules/@fontsource-variable/vazirmatn/files/vazirmatn-latin-wght-normal.woff2');
+        font-weight: 100 900;
+        unicode-range: U+0000-00FF;
+      }
+      :root {
+        --navy: #193a53;
+        --cream: #f5ebdd;
+        --paper: #fffcf7;
+        --gold: #d8a548;
+        --coral: #d86c58;
+        --teal: #408c8d;
+        --terracotta: #a95542;
+        --teal-deep: #2c6a6b;
+        --brick: #9a4636;
+        --ink: #293442;
+      }
+      * {
+        box-sizing: border-box;
+        margin: 0;
+      }
+      html,
+      body {
+        width: 906px;
+        height: 1280px;
+        overflow: hidden;
+      }
+      body {
+        position: relative;
+        background: var(--paper);
+        color: var(--navy);
+        font-family: 'DM Sans', sans-serif;
+      }
+      [dir='rtl'] body,
+      body[dir='rtl'] {
+        font-family: 'Vazirmatn', sans-serif;
+      }
+      .frame {
+        position: absolute;
+        inset: 0;
+        display: flex;
+        flex-direction: column;
+      }
+      .top {
+        position: relative;
+        z-index: 2;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        padding: 44px 60px 0;
+        text-align: center;
+      }
+      .logo {
+        width: 112px;
+        height: 112px;
+        border-radius: 50%;
+        border: 4px solid var(--paper);
+        box-shadow: 0 6px 18px rgba(25, 58, 83, 0.25);
+        object-fit: cover;
+      }
+      .institute {
+        margin-top: 10px;
+        font-family: 'Playfair', serif;
+        font-weight: 700;
+        font-size: 26px;
+        letter-spacing: 0.01em;
+      }
+      [dir='rtl'] .institute {
+        font-family: 'Vazirmatn';
+        font-weight: 700;
+        font-size: 25px;
+      }
+      .rule {
+        width: 280px;
+        height: 4px;
+        margin: 14px auto 0;
+        border-radius: 4px;
+        background: var(--gold);
+      }
+      h1 {
+        margin-top: 22px;
+        font-family: 'Playfair', serif;
+        font-weight: 700;
+        font-size: 84px;
+        line-height: 0.98;
+        letter-spacing: -0.01em;
+        color: var(--navy);
+        text-wrap: balance;
+      }
+      [dir='rtl'] h1 {
+        font-family: 'Vazirmatn';
+        font-weight: 900;
+        font-size: 76px;
+        line-height: 1.25;
+        letter-spacing: 0;
+      }
+      .sub {
+        margin-top: 16px;
+        font-family: 'Playfair', serif;
+        font-style: italic;
+        font-size: 36px;
+        line-height: 1.2;
+        color: var(--brick);
+      }
+      [dir='rtl'] .sub {
+        font-family: 'Vazirmatn';
+        font-style: normal;
+        font-weight: 700;
+        font-size: 33px;
+        line-height: 1.5;
+      }
+      .art {
+        position: relative;
+        flex: 1;
+        min-height: 0;
+      }
+      .art svg {
+        position: absolute;
+        inset: 0;
+        width: 100%;
+        height: 100%;
+      }
+      .soon {
+        position: absolute;
+        z-index: 3;
+        inset-block-start: 14px;
+        inset-inline-end: 30px;
+        display: grid;
+        place-items: center;
+        width: 170px;
+        height: 170px;
+        padding: 18px;
+        border: 6px solid var(--paper);
+        border-radius: 50%;
+        background: var(--gold);
+        color: var(--navy);
+        box-shadow: 0 10px 22px rgba(25, 58, 83, 0.28);
+        font-family: 'Nunito', sans-serif;
+        font-weight: 900;
+        font-size: 27px;
+        line-height: 1.1;
+        letter-spacing: 0.08em;
+        text-align: center;
+        text-transform: uppercase;
+        transform: rotate(-8deg);
+      }
+      [dir='rtl'] .soon {
+        font-family: 'Vazirmatn';
+        font-size: 32px;
+        letter-spacing: 0;
+        transform: rotate(8deg);
+      }
+      .card {
+        position: relative;
+        z-index: 2;
+        margin: 0 60px;
+        padding: 26px 34px 28px;
+        border-radius: 26px;
+        background: var(--paper);
+        box-shadow: 0 10px 30px rgba(25, 58, 83, 0.18);
+        border-top: 8px solid var(--teal);
+        text-align: center;
+      }
+      .pill {
+        display: inline-block;
+        padding: 8px 26px;
+        border-radius: 999px;
+        background: var(--navy);
+        color: var(--gold);
+        font-family: 'Nunito', sans-serif;
+        font-weight: 900;
+        font-size: 24px;
+        letter-spacing: 0.18em;
+        text-transform: uppercase;
+      }
+      [dir='rtl'] .pill {
+        font-family: 'Vazirmatn';
+        letter-spacing: 0;
+        font-size: 26px;
+      }
+      .desc {
+        margin-top: 16px;
+        font-size: 25px;
+        line-height: 1.5;
+        color: var(--ink);
+      }
+      [dir='rtl'] .desc {
+        font-size: 24px;
+        line-height: 1.8;
+      }
+      .foot {
+        position: relative;
+        z-index: 2;
+        margin-top: 28px;
+        padding: 22px 40px 26px;
+        background: var(--navy);
+        color: var(--paper);
+        text-align: center;
+        font-family: 'Playfair', serif;
+        font-size: 24px;
+      }
+      [dir='rtl'] .foot {
+        font-family: 'Vazirmatn';
+        font-size: 23px;
+      }
+      .foot b {
+        color: var(--gold);
+        font-family: 'Nunito', sans-serif;
+        font-weight: 800;
+        letter-spacing: 0.04em;
+      }
+      .mosaic {
+        display: flex;
+        height: 10px;
+      }
+      .mosaic i {
+        flex: 1;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="frame">
+      <div class="top">
+        <img class="logo" src="../../assets/logo-circle.jpg" alt="" />
+        <p class="institute" id="institute"></p>
+        <div class="rule"></div>
+        <h1 id="title"></h1>
+        <p class="sub" id="sub"></p>
+      </div>
+      <div class="art" id="art"><div class="soon" id="soon"></div></div>
+      <div class="card">
+        <span class="pill" id="pill"></span>
+        <p class="desc" id="desc"></p>
+      </div>
+      <div class="foot">
+        <div id="foot"></div>
+      </div>
+      <div class="mosaic">
+        <i style="background: var(--coral)"></i><i style="background: var(--gold)"></i
+        ><i style="background: var(--teal)"></i><i style="background: var(--terracotta)"></i>
+      </div>
+    </div>
+    <script>
+      const P = new URLSearchParams(location.search);
+      const lang = P.get('lang') || 'fr';
+      const which = P.get('poster') || 'cafe';
+      const T = {
+        institute: {
+          fr: 'Institut interculturel Matin',
+          en: 'Matin Intercultural Institute',
+          fa: 'مؤسسه میان‌فرهنگی متین',
+        },
+        soon: { fr: 'Bientôt', en: 'Coming soon', fa: 'به‌زودی' },
+        foot: {
+          fr: 'Une initiative de l’Institut interculturel Matin · <b>matincc.ca</b>',
+          en: 'An initiative of Matin Intercultural Institute · <b>matincc.ca</b>',
+          fa: 'ابتکاری از مؤسسه میان‌فرهنگی متین · <b>matincc.ca</b>',
+        },
+        cafe: {
+          title: { fr: 'Café des cultures', en: 'Matin Cultural Café', fa: 'کافه فرهنگی متین' },
+          sub: {
+            fr: 'Des conversations qui relient les cultures',
+            en: 'Conversations That Connect Cultures',
+            fa: 'گفت‌وگوهایی که فرهنگ‌ها را به هم پیوند می‌دهد',
+          },
+          desc: {
+            fr: 'Un espace accueillant pour échanger des idées, partager des expériences culturelles et explorer ce qui nous rapproche, au-delà de nos origines.',
+            en: 'A welcoming space to exchange ideas, share cultural experiences, and explore what connects us across different backgrounds.',
+            fa: 'فضایی صمیمی برای تبادل ایده‌ها، به اشتراک گذاشتن تجربه‌های فرهنگی و کشف آنچه ما را با پیشینه‌های گوناگون به هم پیوند می‌دهد.',
+          },
+        },
+        quartier: {
+          title: {
+            fr: 'Mon quartier, nos cultures',
+            en: 'My Neighbourhood, Our Cultures',
+            fa: 'محلهٔ من، فرهنگ‌های ما',
+          },
+          sub: {
+            fr: 'Votre voix. Votre communauté.',
+            en: 'Your Voice. Your Community.',
+            fa: 'صدای شما. جامعهٔ شما.',
+          },
+          desc: {
+            fr: 'Une activité participative qui invite les citoyennes et les citoyens à partager leurs idées, à repérer des occasions culturelles et à contribuer à façonner la vie culturelle de leur quartier.',
+            en: 'A participatory activity inviting citizens to share ideas, identify cultural opportunities, and help shape the cultural life of their neighbourhood.',
+            fa: 'فعالیتی مشارکتی که از شهروندان دعوت می‌کند ایده‌هایشان را به اشتراک بگذارند، فرصت‌های فرهنگی را شناسایی کنند و در شکل دادن به زندگی فرهنگی محلهٔ خود سهیم شوند.',
+          },
+        },
+      };
+      const rtl = lang === 'fa';
+      document.documentElement.dir = rtl ? 'rtl' : 'ltr';
+      document.documentElement.lang = lang;
+      const set = (id, html) => (document.getElementById(id).innerHTML = html);
+      set('institute', T.institute[lang]);
+      set('title', T[which].title[lang]);
+      set('sub', T[which].sub[lang]);
+      set('desc', T[which].desc[lang]);
+      set('pill', T.soon[lang]);
+      set('soon', T.soon[lang]);
+      set('foot', T.foot[lang]);
+      document.querySelector('.card').style.borderTopColor =
+        which === 'cafe' ? 'var(--teal)' : 'var(--coral)';
+
+      // ---------- Illustration helpers (flat shapes only) ----------
+      const C = {
+        navy: '#193A53',
+        cream: '#F5EBDD',
+        paper: '#FFFCF7',
+        gold: '#D8A548',
+        coral: '#D86C58',
+        teal: '#408C8D',
+        terracotta: '#A95542',
+        tealDeep: '#2C6A6B',
+        brick: '#9A4636',
+        aqua: '#CFE3E6',
+      };
+      const skins = ['#F2D0B5', '#C68A62', '#8D5A3B', '#E8B892', '#5E3B28', '#D9A27C'];
+      const hairs = ['#2B1D16', '#4A2F21', '#1B1B1B', '#7A4A2A', '#3A2A20', '#9C9A96'];
+
+      /** A seated or standing person, seen from the front, centred on x; y = top of head. */
+      function person({
+        x,
+        y,
+        s = 1,
+        skin,
+        hair,
+        top,
+        style = 'short',
+        arm = 'down',
+        legs = true,
+        scarf,
+      }) {
+        const g = [];
+        const r = 34 * s;
+        const bodyW = 104 * s;
+        const bodyH = 130 * s;
+        const by = y + 2 * r - 6 * s;
+        if (legs) {
+          g.push(
+            `<rect x="${x - 34 * s}" y="${by + bodyH - 20 * s}" width="${28 * s}" height="${120 * s}" rx="${12 * s}" fill="${C.navy}"/>`,
+          );
+          g.push(
+            `<rect x="${x + 6 * s}" y="${by + bodyH - 20 * s}" width="${28 * s}" height="${120 * s}" rx="${12 * s}" fill="${C.navy}"/>`,
+          );
+          g.push(
+            `<ellipse cx="${x - 22 * s}" cy="${by + bodyH + 100 * s}" rx="${22 * s}" ry="${10 * s}" fill="#293442"/>`,
+          );
+          g.push(
+            `<ellipse cx="${x + 22 * s}" cy="${by + bodyH + 100 * s}" rx="${22 * s}" ry="${10 * s}" fill="#293442"/>`,
+          );
+        }
+        // arms
+        if (arm === 'up') {
+          g.push(
+            `<path d="M ${x + bodyW / 2 - 10 * s} ${by + 20 * s} q ${40 * s} ${-30 * s} ${46 * s} ${-90 * s}" stroke="${top}" stroke-width="${24 * s}" stroke-linecap="round" fill="none"/>`,
+          );
+          g.push(
+            `<circle cx="${x + bodyW / 2 + 36 * s}" cy="${by - 74 * s}" r="${13 * s}" fill="${skin}"/>`,
+          );
+          g.push(
+            `<path d="M ${x - bodyW / 2 + 10 * s} ${by + 20 * s} q ${-18 * s} ${50 * s} ${-6 * s} ${100 * s}" stroke="${top}" stroke-width="${24 * s}" stroke-linecap="round" fill="none"/>`,
+          );
+        } else if (arm === 'gesture') {
+          g.push(
+            `<path d="M ${x + bodyW / 2 - 10 * s} ${by + 20 * s} q ${40 * s} ${30 * s} ${54 * s} ${10 * s}" stroke="${top}" stroke-width="${24 * s}" stroke-linecap="round" fill="none"/>`,
+          );
+          g.push(
+            `<circle cx="${x + bodyW / 2 + 48 * s}" cy="${by + 28 * s}" r="${13 * s}" fill="${skin}"/>`,
+          );
+          g.push(
+            `<path d="M ${x - bodyW / 2 + 10 * s} ${by + 20 * s} q ${-18 * s} ${50 * s} ${-6 * s} ${100 * s}" stroke="${top}" stroke-width="${24 * s}" stroke-linecap="round" fill="none"/>`,
+          );
+        } else {
+          g.push(
+            `<path d="M ${x + bodyW / 2 - 10 * s} ${by + 20 * s} q ${18 * s} ${50 * s} ${6 * s} ${100 * s}" stroke="${top}" stroke-width="${24 * s}" stroke-linecap="round" fill="none"/>`,
+          );
+          g.push(
+            `<path d="M ${x - bodyW / 2 + 10 * s} ${by + 20 * s} q ${-18 * s} ${50 * s} ${-6 * s} ${100 * s}" stroke="${top}" stroke-width="${24 * s}" stroke-linecap="round" fill="none"/>`,
+          );
+        }
+        if (style === 'long')
+          g.push(
+            `<rect x="${x - r - 8 * s}" y="${y + r - 6 * s}" width="${22 * s}" height="${r + 46 * s}" rx="${11 * s}" fill="${hair}"/><rect x="${x + r - 14 * s}" y="${y + r - 6 * s}" width="${22 * s}" height="${r + 46 * s}" rx="${11 * s}" fill="${hair}"/>`,
+          );
+        // torso
+        g.push(
+          `<path d="M ${x - bodyW / 2} ${by + bodyH} L ${x - bodyW / 2} ${by + 34 * s} Q ${x - bodyW / 2} ${by} ${x - bodyW / 2 + 34 * s} ${by} L ${x + bodyW / 2 - 34 * s} ${by} Q ${x + bodyW / 2} ${by} ${x + bodyW / 2} ${by + 34 * s} L ${x + bodyW / 2} ${by + bodyH} Z" fill="${top}"/>`,
+        );
+        if (scarf)
+          g.push(
+            `<path d="M ${x - 26 * s} ${by + 2 * s} Q ${x} ${by + 26 * s} ${x + 26 * s} ${by + 2 * s} L ${x + 14 * s} ${by + 70 * s} L ${x + 2 * s} ${by + 70 * s} Z" fill="${scarf}"/>`,
+          );
+        // neck + head
+        g.push(
+          `<rect x="${x - 11 * s}" y="${y + 2 * r - 18 * s}" width="${22 * s}" height="${20 * s}" fill="${skin}"/>`,
+        );
+        if (style === 'scarf')
+          g.push(
+            `<circle cx="${x}" cy="${y + r + 2 * s}" r="${r + 10 * s}" fill="${hair}"/><path d="M ${x - r - 10 * s} ${y + r + 4 * s} L ${x - r + 4 * s} ${y + 2 * r + 26 * s} L ${x + r - 4 * s} ${y + 2 * r + 26 * s} L ${x + r + 10 * s} ${y + r + 4 * s} Z" fill="${hair}"/>`,
+          );
+        g.push(`<circle cx="${x}" cy="${y + r}" r="${r}" fill="${skin}"/>`);
+        if (style === 'short' || style === 'long')
+          g.push(
+            `<path d="M ${x - r - 2 * s} ${y + r + 2 * s} Q ${x - r} ${y - 6 * s} ${x} ${y - 4 * s} Q ${x + r} ${y - 6 * s} ${x + r + 2 * s} ${y + r + 2 * s} Q ${x + r - 6 * s} ${y + 12 * s} ${x} ${y + 14 * s} Q ${x - r + 4 * s} ${y + 14 * s} ${x - r - 2 * s} ${y + r + 2 * s} Z" fill="${hair}"/>`,
+          );
+        if (style === 'bun')
+          g.push(
+            `<circle cx="${x}" cy="${y - 8 * s}" r="${18 * s}" fill="${hair}"/><path d="M ${x - r - 2 * s} ${y + r} Q ${x - r} ${y - 4 * s} ${x} ${y - 2 * s} Q ${x + r} ${y - 4 * s} ${x + r + 2 * s} ${y + r} Q ${x} ${y + 8 * s} ${x - r - 2 * s} ${y + r} Z" fill="${hair}"/>`,
+          );
+        if (style === 'curly')
+          for (let i = 0; i < 7; i++) {
+            const a = Math.PI + (i / 6) * Math.PI;
+            g.push(
+              `<circle cx="${x + Math.cos(a) * r * 0.9}" cy="${y + r + Math.sin(a) * r * 0.9}" r="${14 * s}" fill="${hair}"/>`,
+            );
+          }
+        // a gentle smile
+        g.push(
+          `<path d="M ${x - 10 * s} ${y + r + 12 * s} Q ${x} ${y + r + 20 * s} ${x + 10 * s} ${y + r + 12 * s}" stroke="${C.navy}" stroke-opacity="0.55" stroke-width="${3 * s}" fill="none" stroke-linecap="round"/>`,
+        );
+        return g.join('');
+      }
+
+      /** A speech bubble with three dots or a small symbol inside. */
+      function bubble(x, y, w, h, fill, tail = 'left', inner = 'dots', ink = C.paper) {
+        const t =
+          tail === 'left'
+            ? `M ${x + 26} ${y + h - 4} L ${x + 10} ${y + h + 26} L ${x + 54} ${y + h - 4} Z`
+            : `M ${x + w - 26} ${y + h - 4} L ${x + w - 10} ${y + h + 26} L ${x + w - 54} ${y + h - 4} Z`;
+        let content = '';
+        if (inner === 'dots')
+          content = [0, 1, 2]
+            .map(
+              (i) =>
+                `<circle cx="${x + w / 2 + (i - 1) * 24}" cy="${y + h / 2}" r="7" fill="${ink}"/>`,
+            )
+            .join('');
+        if (inner === 'heart')
+          content = `<path d="M ${x + w / 2} ${y + h / 2 + 16} C ${x + w / 2 - 34} ${y + h / 2 - 8}, ${x + w / 2 - 14} ${y + h / 2 - 30}, ${x + w / 2} ${y + h / 2 - 12} C ${x + w / 2 + 14} ${y + h / 2 - 30}, ${x + w / 2 + 34} ${y + h / 2 - 8}, ${x + w / 2} ${y + h / 2 + 16} Z" fill="${ink}"/>`;
+        if (inner === 'globe')
+          content = `<circle cx="${x + w / 2}" cy="${y + h / 2}" r="20" fill="none" stroke="${ink}" stroke-width="5"/><ellipse cx="${x + w / 2}" cy="${y + h / 2}" rx="9" ry="20" fill="none" stroke="${ink}" stroke-width="4"/><line x1="${x + w / 2 - 20}" y1="${y + h / 2}" x2="${x + w / 2 + 20}" y2="${y + h / 2}" stroke="${ink}" stroke-width="4"/>`;
+        if (inner === 'bulb')
+          content = `<circle cx="${x + w / 2}" cy="${y + h / 2 - 4}" r="14" fill="${ink}"/><rect x="${x + w / 2 - 7}" y="${y + h / 2 + 9}" width="14" height="9" rx="3" fill="${ink}"/><path d="M ${x + w / 2 - 30} ${y + h / 2 - 4} h -10 M ${x + w / 2 + 30} ${y + h / 2 - 4} h 10 M ${x + w / 2 - 22} ${y + h / 2 - 26} l -7 -7 M ${x + w / 2 + 22} ${y + h / 2 - 26} l 7 -7" stroke="${ink}" stroke-width="5" stroke-linecap="round"/>`;
+        if (inner === 'note')
+          content = `<path d="M ${x + w / 2 - 6} ${y + h / 2 + 12} a 8 8 0 1 1 0 -0.1 M ${x + w / 2 + 2} ${y + h / 2 + 12} L ${x + w / 2 + 2} ${y + h / 2 - 18} L ${x + w / 2 + 18} ${y + h / 2 - 12}" stroke="${ink}" stroke-width="5" fill="${ink}"/>`;
+        return `<path d="${t}" fill="${fill}"/><rect x="${x}" y="${y}" width="${w}" height="${h}" rx="${h / 2}" fill="${fill}"/>${content}`;
+      }
+
+      const W = 906;
+      const art = document.getElementById('art');
+      const H = art.clientHeight;
+      let svg = '';
+      if (which === 'cafe') {
+        // Warm room: cream wall, overlapping "dialogue" circles, a round table.
+        svg += `<rect width="${W}" height="${H}" fill="${C.cream}"/>`;
+        svg += `<circle cx="160" cy="${H * 0.36}" r="190" fill="${C.teal}" fill-opacity="0.22"/>`;
+        svg += `<circle cx="${W - 150}" cy="${H * 0.3}" r="170" fill="${C.coral}" fill-opacity="0.22"/>`;
+        svg += `<circle cx="${W / 2}" cy="${H * 0.18}" r="120" fill="${C.gold}" fill-opacity="0.25"/>`;
+        // window with Montréal-ish rooftops
+        svg += `<rect x="${W / 2 - 150}" y="18" width="300" height="150" rx="18" fill="${C.aqua}"/>`;
+        svg += `<path d="M ${W / 2 - 150} 150 L ${W / 2 - 110} 112 L ${W / 2 - 70} 132 L ${W / 2 - 30} 96 L ${W / 2 + 10} 126 L ${W / 2 + 60} 84 L ${W / 2 + 100} 118 L ${W / 2 + 150} 100 L ${W / 2 + 150} 168 L ${W / 2 - 150} 168 Z" fill="${C.tealDeep}" fill-opacity="0.55"/>`;
+        svg += `<rect x="${W / 2 - 4}" y="18" width="8" height="150" fill="${C.paper}"/><rect x="${W / 2 - 150}" y="88" width="300" height="8" fill="${C.paper}"/>`;
+        svg += `<rect x="${W / 2 - 162}" y="168" width="324" height="12" rx="6" fill="${C.terracotta}"/>`;
+        // people (back row), then the table in front of them, then front people at sides
+        const base = H - 330;
+        svg += person({
+          x: 300,
+          y: base - 70,
+          s: 0.95,
+          skin: skins[1],
+          hair: hairs[0],
+          top: C.teal,
+          style: 'curly',
+          arm: 'gesture',
+          legs: false,
+        });
+        svg += person({
+          x: 606,
+          y: base - 80,
+          s: 0.95,
+          skin: skins[0],
+          hair: hairs[3],
+          top: C.gold,
+          style: 'long',
+          legs: false,
+          scarf: C.coral,
+        });
+        // table
+        svg += `<ellipse cx="${W / 2}" cy="${base + 150}" rx="280" ry="60" fill="${C.navy}"/>`;
+        svg += `<ellipse cx="${W / 2}" cy="${base + 140}" rx="280" ry="56" fill="${C.terracotta}"/>`;
+        svg += `<rect x="${W / 2 - 14}" y="${base + 190}" width="28" height="140" fill="${C.navy}"/>`;
+        svg += `<ellipse cx="${W / 2}" cy="${base + 328}" rx="110" ry="16" fill="${C.navy}"/>`;
+        // small map/book on the table instead of food: a notebook and a flag-like card
+        svg += `<rect x="${W / 2 - 70}" y="${base + 118}" width="80" height="44" rx="6" fill="${C.paper}" transform="rotate(-8 ${W / 2 - 30} ${base + 140})"/>`;
+        svg += `<rect x="${W / 2 + 30}" y="${base + 120}" width="60" height="40" rx="6" fill="${C.gold}" transform="rotate(10 ${W / 2 + 60} ${base + 140})"/>`;
+        svg += person({
+          x: 120,
+          y: base - 20,
+          s: 1.05,
+          skin: skins[2],
+          hair: hairs[2],
+          top: C.navy,
+          style: 'short',
+          arm: 'gesture',
+        });
+        svg += person({
+          x: W - 120,
+          y: base - 30,
+          s: 1.05,
+          skin: skins[3],
+          hair: hairs[1],
+          top: C.brick,
+          style: 'scarf',
+          arm: 'down',
+        });
+        // speech bubbles
+        svg += bubble(150, base - 170, 150, 82, C.coral, 'right', 'heart');
+        svg += bubble(W / 2 - 60, base - 215, 150, 82, C.tealDeep, 'left', 'globe');
+        svg += bubble(W - 360, base - 165, 150, 82, C.gold, 'left', 'dots', C.navy);
+      } else {
+        // A neighbourhood map: blocks, streets, a park and a river, pins and people.
+        svg += `<rect width="${W}" height="${H}" fill="${C.cream}"/>`;
+        const map = [];
+        map.push(
+          `<rect x="40" y="10" width="${W - 80}" height="${H - 60}" rx="30" fill="${C.paper}"/>`,
+        );
+        // river
+        map.push(
+          `<path d="M 40 ${H * 0.62} C 220 ${H * 0.5}, 380 ${H * 0.78}, 560 ${H * 0.62} S ${W - 40} ${H * 0.5}, ${W - 40} ${H * 0.58} L ${W - 40} ${H * 0.7} C ${W - 200} ${H * 0.62}, 700 ${H * 0.82}, 540 ${H * 0.74} S 220 ${H * 0.64}, 40 ${H * 0.74} Z" fill="${C.aqua}"/>`,
+        );
+        // blocks
+        const cols = [70, 250, 430, 610];
+        const rows = [40, 170];
+        const fills = [C.cream, '#EED9C4', '#F3E3C3', '#E5EEEF'];
+        rows.forEach((ry, i) =>
+          cols.forEach((cx, j) =>
+            map.push(
+              `<rect x="${cx}" y="${ry}" width="160" height="110" rx="14" fill="${fills[(i + j) % 4]}"/>`,
+            ),
+          ),
+        );
+        // park
+        map.push(
+          `<rect x="430" y="40" width="160" height="110" rx="14" fill="${C.gold}" fill-opacity="0.45"/>`,
+        );
+        map.push(
+          `<circle cx="480" cy="85" r="22" fill="${C.teal}" fill-opacity="0.7"/><circle cx="540" cy="105" r="18" fill="${C.teal}" fill-opacity="0.7"/>`,
+        );
+        // streets
+        map.push(`<path d="M 40 155 L ${W - 40} 155" stroke="${C.paper}" stroke-width="18"/>`);
+        map.push(
+          `<path d="M 240 10 L 240 ${H * 0.6} M 420 10 L 420 ${H * 0.6} M 600 10 L 600 ${H * 0.6}" stroke="${C.paper}" stroke-width="16"/>`,
+        );
+        map.push(
+          `<path d="M 40 155 L ${W - 40} 155" stroke="${C.gold}" stroke-width="3" stroke-dasharray="14 12"/>`,
+        );
+        // pins
+        const pin = (x, y, f) =>
+          `<path d="M ${x} ${y + 46} C ${x - 30} ${y + 10}, ${x - 26} ${y - 22}, ${x} ${y - 22} C ${x + 26} ${y - 22}, ${x + 30} ${y + 10}, ${x} ${y + 46} Z" fill="${f}"/><circle cx="${x}" cy="${y}" r="10" fill="${C.paper}"/>`;
+        map.push(
+          pin(150, 80, C.coral),
+          pin(330, 210, C.tealDeep),
+          pin(690, 90, C.terracotta),
+          pin(520, 220, C.navy),
+        );
+        // dotted route between pins
+        map.push(
+          `<path d="M 150 126 C 220 190, 280 190, 330 256 M 330 256 C 420 300, 470 290, 520 266 M 520 266 C 600 220, 650 170, 690 136" stroke="${C.coral}" stroke-width="5" stroke-dasharray="2 14" stroke-linecap="round" fill="none"/>`,
+        );
+        svg += map.join('');
+        // people in front sharing ideas
+        const base = H - 262;
+        svg += person({
+          x: 150,
+          y: base,
+          s: 0.78,
+          skin: skins[4],
+          hair: hairs[2],
+          top: C.teal,
+          style: 'short',
+          arm: 'up',
+        });
+        svg += person({
+          x: 345,
+          y: base + 8,
+          s: 0.76,
+          skin: skins[0],
+          hair: hairs[5],
+          top: C.terracotta,
+          style: 'bun',
+          arm: 'gesture',
+        });
+        svg += person({
+          x: 555,
+          y: base,
+          s: 0.78,
+          skin: skins[5],
+          hair: hairs[0],
+          top: C.navy,
+          style: 'scarf',
+          arm: 'down',
+          scarf: C.gold,
+        });
+        svg += person({
+          x: 750,
+          y: base + 6,
+          s: 0.76,
+          skin: skins[1],
+          hair: hairs[1],
+          top: C.gold,
+          style: 'curly',
+          arm: 'gesture',
+        });
+        // idea notes and bubbles
+        svg += `<rect x="178" y="${base - 120}" width="58" height="58" rx="8" fill="${C.gold}" transform="rotate(-8 207 ${base - 91})"/>`;
+        svg += `<path d="M 190 ${base - 98} h 32 M 190 ${base - 84} h 24" stroke="${C.navy}" stroke-width="5" stroke-linecap="round" transform="rotate(-8 207 ${base - 91})"/>`;
+        svg += bubble(380, base - 104, 130, 72, C.tealDeep, 'left', 'bulb');
+        svg += bubble(590, base - 118, 130, 72, C.coral, 'left', 'heart');
+      }
+      art.insertAdjacentHTML(
+        'afterbegin',
+        `<svg viewBox="0 0 ${W} ${H}" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid slice">${svg}</svg>`,
+      );
+      document.fonts.ready.then(() => (document.body.dataset.ready = '1'));
+    </script>
+  </body>
+</html>

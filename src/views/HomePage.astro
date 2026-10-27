@@ -1,15 +1,25 @@
 ---
 /**
  * Homepage (French, English and Persian), in this order: Matin in Action (Matin's own
- * featured item, src/lib/matin.ts, beside the directory's organizations as text names),
- * Matin's Picks (the same section as on the Events
+ * featured item, src/lib/matin.ts, and the "coming soon" posters in one carousel, then the
+ * directory's organizations as text names), Matin's Picks (the same section as on the Events
  * page), the latest news (without the featured article), Matin Moments (featured gallery
  * items), Get Involved, Who We Are, Areas of Work, Cultural Resources & Organizations,
  * newsletter.
  * The photographs are openly licensed views of Montréal (see src/lib/photos.ts), shown
  * with their credits; they illustrate the themes, they do not document Matin activities.
  */
-import { ArrowRight, CalendarDays, ExternalLink, MapPin, ZoomIn } from '@lucide/astro';
+import {
+  ArrowRight,
+  CalendarDays,
+  ChevronLeft,
+  ChevronRight,
+  Clock,
+  ExternalLink,
+  MapPin,
+  Plus,
+} from '@lucide/astro';
+import { getCollection } from 'astro:content';
 import { getImage } from 'astro:assets';
 import Lightbox from '@/components/ui/Lightbox.astro';
 import NewsRegionTabs from '@/components/content/NewsRegionTabs.astro';
@@ -24,8 +34,8 @@ import CulturesRibbon from '@/components/brand/CulturesRibbon.astro';
 import SectionHeader from '@/components/ui/SectionHeader.astro';
 import AreasGrid from '@/components/content/AreasGrid.astro';
 import { href, newsAnchors, siteAlternates, type UiLang } from '@/i18n/routes';
-import { useTranslations } from '@/i18n/ui';
-import { getMatinFeed } from '@/lib/matin';
+import { pick, useTranslations } from '@/i18n/ui';
+import { getMatinFeed, type MatinItem } from '@/lib/matin';
 import { articleHref, forLang, getNews } from '@/lib/content';
 import { ctaFor } from '@/lib/matinLabels';
 import MatinMedia from '@/components/content/MatinMedia.astro';
@@ -49,6 +59,29 @@ const posterLarge =
         })
       ).src
     : undefined;
+// "Coming soon" posters (owner's brief, Oct 27 2026): one image per language, no dates.
+const soon = await Promise.all(
+  (await getCollection('comingSoon', (c) => c.data.published))
+    .sort((a, b) => a.data.order - b.data.order)
+    .map(async (c) => {
+      const image =
+        (lang === 'fa' && c.data.poster.fa) || c.data.poster[lang === 'fa' ? 'en' : lang];
+      const item = {
+        id: `soon-${c.id}`,
+        type: 'poster',
+        title: pick(c.data.title, lang)!,
+        summary: pick(c.data.summary, lang)!,
+        image,
+        imageAlt: pick(c.data.posterAlt, lang)!,
+        poster: true,
+      } as MatinItem;
+      const large = (
+        await getImage({ src: image, width: Math.min(2000, image.width), format: 'webp' })
+      ).src;
+      return { item, large };
+    }),
+);
+const slideSizes = '(min-width: 64rem) 28rem, (min-width: 48rem) 46vw, 85vw';
 // News (owner's brief, Oct 25 2026): Cultural News approved by the President in three
 // region tabs, then Matin News, leaving out the article already featured in Matin in Action.
 const newsHref = href('news', lang);
@@ -82,89 +115,137 @@ const matinNews = news
         align="start"
         class="mb-10"
       />
-      <div class="action-grid">
-        {featured ? (
-          <article class:list={['feature', featured.poster && 'feature--poster']} data-reveal>
-            {posterLarge ? (
-              /* A poster opens in the same fullscreen viewer as Gallery → Posters; the
-                 button under it leads to the activity's page (the poster download stays on
-                that page and in the Gallery, not on the homepage: owner's request, Oct 27 2026). */
-              <a
-                href={posterLarge}
-                class="feature__zoom"
-                data-lightbox="feature-poster"
-                data-alt={featured.imageAlt}
-                data-caption={featured.title}
-                aria-label={t('gallery.openPoster', { title: featured.title })}
-              >
-                <MatinMedia
-                  item={featured}
-                  sizes="(min-width: 64rem) 40rem, 92vw"
-                  class="feature__media is-poster"
-                />
-                <span class="feature__zoom-icon" aria-hidden="true">
-                  <ZoomIn size={22} />
-                </span>
-              </a>
-            ) : (
-              <MatinMedia
-                item={featured}
-                sizes="(min-width: 64rem) 40rem, 92vw"
-                class:list={['feature__media', featured.poster && 'is-poster']}
-              />
-            )}
-            {/* No side panel any more (owner's request, Oct 27 2026): a poster already
-                carries its details, so only the title and the activity button sit under it. */}
-            <div class="feature__caption">
-              <h3 class="feature__title">{featured.title}</h3>
-              {!featured.poster && (
-                <>
-                  <p class="feature__when">
-                    <CalendarDays size={18} aria-hidden="true" />
-                    <time datetime={featured.datetime}>{featured.when}</time>
-                    {featured.location && (
+      {/* Matin in Action carousel (owner's brief, Oct 27 2026): the featured activity, then
+          Matin's "coming soon" posters (src/content/coming-soon/). Every poster opens in the
+          page's fullscreen viewer, as one group; three across on wide screens, swiped on
+          smaller ones with the arrow buttons. */}
+      {featured || soon.length > 0 ? (
+        <div class="action-carousel" data-carousel>
+          <ul class="action-track" data-carousel-track>
+            {featured && (
+              <li class="action-slide">
+                <article class:list={['feature', featured.poster && 'feature--poster']} data-reveal>
+                  {posterLarge ? (
+                    /* A poster opens in the same fullscreen viewer as Gallery → Posters; the
+                       button under it leads to the activity's page (the poster download stays
+                       on that page and in the Gallery, not on the homepage: owner's request,
+                       Oct 27 2026). */
+                    <a
+                      href={posterLarge}
+                      class="feature__zoom"
+                      data-lightbox="action-posters"
+                      data-alt={featured.imageAlt}
+                      data-caption={featured.title}
+                      aria-label={t('gallery.openPoster', { title: featured.title })}
+                    >
+                      <MatinMedia
+                        item={featured}
+                        sizes={slideSizes}
+                        class="feature__media is-poster"
+                      />
+                      <span class="feature__zoom-icon" aria-hidden="true">
+                        <Plus size={24} />
+                      </span>
+                    </a>
+                  ) : (
+                    <MatinMedia
+                      item={featured}
+                      sizes={slideSizes}
+                      class:list={['feature__media', featured.poster && 'is-poster']}
+                    />
+                  )}
+                  {/* No side panel (owner's request, Oct 27 2026): a poster already carries
+                      its details, so only the title and the activity button sit under it. */}
+                  <div class="feature__caption">
+                    <h3 class="feature__title">{featured.title}</h3>
+                    {!featured.poster && (
                       <>
-                        <MapPin size={18} aria-hidden="true" />
-                        <span>{featured.location}</span>
+                        <p class="feature__when">
+                          <CalendarDays size={18} aria-hidden="true" />
+                          <time datetime={featured.datetime}>{featured.when}</time>
+                          {featured.location && (
+                            <>
+                              <MapPin size={18} aria-hidden="true" />
+                              <span>{featured.location}</span>
+                            </>
+                          )}
+                        </p>
+                        <p class="feature__summary">{featured.summary}</p>
                       </>
                     )}
-                  </p>
-                  <p class="feature__summary">{featured.summary}</p>
-                </>
-              )}
-              <div class="feature__actions">
-                <a
-                  href={featured.url}
-                  class="btn btn-primary"
-                  target={featured.external ? '_blank' : undefined}
-                  rel={featured.external ? 'noopener noreferrer' : undefined}
-                >
-                  {featured.ctaLabel ?? ctaFor(featured.type, t)}
-                  {featured.external ? (
-                    <ExternalLink size={18} aria-hidden="true" />
-                  ) : (
-                    <ArrowRight size={18} class="flip-rtl" aria-hidden="true" />
-                  )}
-                  {featured.external && <span class="sr-only">{t('a11y.externalLink')}</span>}
-                </a>
-              </div>
-            </div>
-          </article>
-        ) : (
-          <div class="empty-state">
-            <p>{t('home.latestEmpty')}</p>
-            <a href="#newsletter" class="btn btn-primary">
-              {t('home.involvedSecondary')}
-              <ArrowRight size={18} class="flip-rtl" aria-hidden="true" />
-            </a>
+                    <div class="feature__actions">
+                      <a
+                        href={featured.url}
+                        class="btn btn-primary"
+                        target={featured.external ? '_blank' : undefined}
+                        rel={featured.external ? 'noopener noreferrer' : undefined}
+                      >
+                        {featured.ctaLabel ?? ctaFor(featured.type, t)}
+                        {featured.external ? (
+                          <ExternalLink size={18} aria-hidden="true" />
+                        ) : (
+                          <ArrowRight size={18} class="flip-rtl" aria-hidden="true" />
+                        )}
+                        {featured.external && <span class="sr-only">{t('a11y.externalLink')}</span>}
+                      </a>
+                    </div>
+                  </div>
+                </article>
+              </li>
+            )}
+            {soon.map((p) => (
+              <li class="action-slide">
+                <article class="feature feature--poster feature--soon" data-reveal>
+                  <a
+                    href={p.large}
+                    class="feature__zoom"
+                    data-lightbox="action-posters"
+                    data-alt={p.item.imageAlt}
+                    data-caption={`${p.item.title} · ${t('home.comingSoon')}`}
+                    aria-label={t('gallery.openPoster', { title: p.item.title })}
+                  >
+                    <MatinMedia item={p.item} sizes={slideSizes} class="feature__media is-poster" />
+                    <span class="feature__zoom-icon" aria-hidden="true">
+                      <Plus size={24} />
+                    </span>
+                  </a>
+                  <div class="feature__caption">
+                    <p class="feature__soon">
+                      <Clock size={16} aria-hidden="true" />
+                      {t('home.comingSoon')}
+                    </p>
+                    <h3 class="feature__title">{p.item.title}</h3>
+                    <p class="feature__subtitle">{p.item.summary}</p>
+                  </div>
+                </article>
+              </li>
+            ))}
+          </ul>
+          <div class="action-carousel__nav" data-carousel-nav hidden>
+            <button type="button" class="action-carousel__btn" data-carousel-prev>
+              <ChevronLeft size={22} class="flip-rtl" aria-hidden="true" />
+              <span class="sr-only">{t('home.carouselPrev')}</span>
+            </button>
+            <button type="button" class="action-carousel__btn" data-carousel-next>
+              <ChevronRight size={22} class="flip-rtl" aria-hidden="true" />
+              <span class="sr-only">{t('home.carouselNext')}</span>
+            </button>
           </div>
-        )}
+        </div>
+      ) : (
+        <div class="empty-state">
+          <p>{t('home.latestEmpty')}</p>
+          <a href="#newsletter" class="btn btn-primary">
+            {t('home.involvedSecondary')}
+            <ArrowRight size={18} class="flip-rtl" aria-hidden="true" />
+          </a>
+        </div>
+      )}
 
-        <!-- The organizations of the Resources directory, as text names, beside the
-             poster (the homepage volunteer form was removed, owner's request Oct 27 2026:
-             it stays on Contact & Collaboration only) -->
-        <OrgShowcase lang={lang} />
-      </div>
+      <!-- The organizations of the Resources directory, as text names (the homepage
+           volunteer form was removed, owner's request Oct 27 2026: it stays on Contact &
+           Collaboration only) -->
+      <OrgShowcase lang={lang} />
     </div>
   </section>
 
@@ -264,6 +345,23 @@ const matinNews = news
 </BaseLayout>
 
 <script>
+  // Matin in Action carousel: the arrow buttons appear only when the posters overflow.
+  for (const root of document.querySelectorAll<HTMLElement>('[data-carousel]')) {
+    const track = root.querySelector<HTMLElement>('[data-carousel-track]')!;
+    const nav = root.querySelector<HTMLElement>('[data-carousel-nav]')!;
+    const rtl = getComputedStyle(root).direction === 'rtl';
+    const step = (dir: number) => {
+      const slide = track.querySelector<HTMLElement>('.action-slide');
+      const width = slide ? slide.offsetWidth + parseFloat(getComputedStyle(track).columnGap) : 300;
+      track.scrollBy({ left: dir * width * (rtl ? -1 : 1), behavior: 'smooth' });
+    };
+    root.querySelector('[data-carousel-prev]')!.addEventListener('click', () => step(-1));
+    root.querySelector('[data-carousel-next]')!.addEventListener('click', () => step(1));
+    const update = () => (nav.hidden = track.scrollWidth <= track.clientWidth + 2);
+    new ResizeObserver(update).observe(track);
+    update();
+  }
+
   if (new URL(location.href).searchParams.get('infolettre') === 'confirmee') {
     const note = document.querySelector<HTMLElement>('[data-newsletter-confirmed]');
     if (note) note.hidden = false;
@@ -272,22 +370,55 @@ const matinNews = news
 
 <style>
   /* ---------- Matin in Action ---------- */
-  /* The featured item and the organizations side by side on wide screens (owner's
-     requests, Oct 27 2026: no extra panel beside the poster, no volunteer form here). */
-  .action-grid {
+  /* Carousel: one poster and a peek of the next on phones, two on tablets, three
+     across on wide screens (owner's brief, Oct 27 2026). */
+  .action-track {
     display: grid;
-    gap: clamp(2rem, 1.5rem + 2vw, 3.5rem);
-    align-items: start;
+    grid-auto-flow: column;
+    grid-auto-columns: 85%;
+    gap: clamp(1.25rem, 1rem + 1.5vw, 2.25rem);
+    overflow-x: auto;
+    overscroll-behavior-x: contain;
+    scroll-snap-type: x mandatory;
+    scrollbar-width: thin;
+    padding-block: 0.5rem 1rem;
+    padding-inline: 0.25rem;
+  }
+  @media (min-width: 48rem) {
+    .action-track {
+      grid-auto-columns: calc((100% - clamp(1.25rem, 1rem + 1.5vw, 2.25rem)) / 2);
+    }
   }
   @media (min-width: 64rem) {
-    .action-grid {
-      grid-template-columns: minmax(0, 1fr) minmax(0, 1.1fr);
+    .action-track {
+      grid-auto-columns: calc((100% - 2 * clamp(1.25rem, 1rem + 1.5vw, 2.25rem)) / 3);
     }
-    /* The poster stays in view beside the taller list. */
-    .feature {
-      position: sticky;
-      inset-block-start: 9rem;
-    }
+  }
+  .action-slide {
+    scroll-snap-align: start;
+  }
+  .action-carousel__nav {
+    display: flex;
+    justify-content: flex-end;
+    gap: 0.75rem;
+    margin-block-start: 0.5rem;
+  }
+  .action-carousel__nav[hidden] {
+    display: none;
+  }
+  .action-carousel__btn {
+    display: grid;
+    place-items: center;
+    width: 3rem;
+    height: 3rem;
+    border-radius: 999px;
+    background: var(--color-primary);
+    color: var(--color-white);
+    box-shadow: var(--shadow-card);
+  }
+  .action-carousel__btn:hover {
+    background: var(--color-gold);
+    color: var(--color-primary);
   }
   .feature {
     display: grid;
@@ -314,6 +445,10 @@ const matinNews = news
   }
   .feature__zoom:hover :global(img) {
     transform: scale(1.03);
+  }
+  .feature__zoom:hover .feature__zoom-icon {
+    background: var(--color-gold);
+    color: var(--color-primary);
   }
   /* Same zoom badge as the Gallery posters and event pages. */
   .feature__zoom-icon {
@@ -346,6 +481,28 @@ const matinNews = news
     font-weight: 800;
     line-height: 1.15;
     text-wrap: balance;
+  }
+  /* "Coming soon": a clear gold label on the posters not yet scheduled. */
+  .feature__soon {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.45rem;
+    justify-self: start;
+    padding: 0.35rem 0.95rem;
+    border-radius: 999px;
+    background: var(--color-gold);
+    color: var(--color-primary);
+    font-family: var(--font-display);
+    font-size: 0.9rem;
+    font-weight: 800;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+  }
+  .feature__subtitle {
+    font-family: var(--font-display);
+    font-size: 1.125rem;
+    font-weight: 700;
+    color: var(--color-terracotta-deep);
   }
   .feature__when {
     display: flex;

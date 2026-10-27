@@ -1,0 +1,21 @@
+# Matin in Action: a "coming soon" poster (see the comingSoon collection in
+# src/content.config.ts). Owner's brief of Oct 27 2026: English title, subtitle and text as
+# written by the owner; French title « Café des cultures » given by the owner.
+# Posters made with scripts/posters/ (node scripts/posters/render.mjs).
+title:
+  fr: 'Café des cultures'
+  en: 'Matin Cultural Café'
+  fa: 'کافه فرهنگی متین'
+summary:
+  fr: 'Des conversations qui relient les cultures'
+  en: 'Conversations That Connect Cultures'
+  fa: 'گفت‌وگوهایی که فرهنگ‌ها را به هم پیوند می‌دهد'
+poster:
+  fr: ../../assets/uploads/highlights/cafe/fr.jpg
+  en: ../../assets/uploads/highlights/cafe/en.jpg
+  fa: ../../assets/uploads/highlights/cafe/fa.jpg
+posterAlt:
+  fr: 'Affiche du Café des cultures de Matin, bientôt : des personnes de diverses origines conversent autour d’une table.'
+  en: 'Poster for the Matin Cultural Café, coming soon: people of diverse backgrounds talking around a table.'
+  fa: 'پوستر کافه فرهنگی متین، به‌زودی: گروهی از آدم‌هایی با پیشینه‌های گوناگون دور یک میز گفت‌وگو می‌کنند.'
+order: 1

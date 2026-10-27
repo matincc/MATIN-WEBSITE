@@ -75,6 +75,9 @@ const fa: DeepPartial<Dictionary> = {
   home: {
     actionTitle: 'متین در عمل',
     actionLede: 'آنچه متین این روزها انجام می‌دهد: ابتکارها، برنامه‌ها و خبرهای ما.',
+    comingSoon: 'به‌زودی',
+    carouselPrev: 'پوستر قبلی',
+    carouselNext: 'پوستر بعدی',
     latestTitle: 'تازه‌های متین',
     latestEmpty:
       'نخستین فعالیت‌های متین همین‌جا اعلام می‌شوند. در خبرنامه عضو شوید تا جزو نخستین کسانی باشید که باخبر می‌شوند.',

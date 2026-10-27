@@ -91,6 +91,7 @@ const heads: Record<string, string> = {
   .orgs {
     position: relative;
     overflow: hidden;
+    margin-block-start: clamp(2.5rem, 2rem + 2vw, 4rem);
     padding: clamp(1.5rem, 1rem + 2vw, 2.75rem);
     border-block-start: 6px solid var(--color-gold);
     border-radius: calc(var(--radius-card) * 1.4);
@@ -160,7 +161,7 @@ const heads: Record<string, string> = {
     position: relative;
     display: grid;
     gap: 1rem;
-    grid-template-columns: repeat(auto-fit, minmax(min(100%, 17rem), 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 19rem), 1fr));
   }
   /* Heads: white on terracotta (5.2), terracotta-deep (6.4) and teal-deep (6.2); navy on
      gold (5.3). */
