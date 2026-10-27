@@ -3,8 +3,9 @@
  * One organization in the Cultural Resources directory (owner's brief, Oct 25 2026): the
  * official logo on the start side, then the official name, an optional kind (e.g. "Municipal
  * public body"), a short description and a short clickable name that opens the official
- * website in a new tab. Without a verified logo, the tile shows the organization's short
- * name as plain text (never an invented logo or a generic icon).
+ * website in a new tab. Without a verified logo, the organization's short name sits inside a
+ * flat geometric shape in the category colour (owner's request, Oct 26 2026), with a coloured
+ * link pill: never an invented logo or a generic icon.
  */
 import type { ImageMetadata } from 'astro';
 import { Image } from 'astro:assets';
@@ -26,10 +27,12 @@ interface Props {
 }
 const { lang, name, label, url, logo, description, kind, status = 'listed', accent } = Astro.props;
 const t = useTranslations(lang);
+/* Long short-names (e.g. « Ministère de la Culture ») get a smaller size inside the shape. */
+const long = label.length > 12;
 ---
 
 <li class="org" data-accent={accent}>
-  <div class="org__logo">
+  <div class:list={['org__logo', !logo && 'org__logo--shape']}>
     {logo ? (
       <Image
         src={logo}
@@ -39,8 +42,11 @@ const t = useTranslations(lang);
         loading="lazy"
       />
     ) : (
-      <span class="org__wordmark" aria-hidden="true">
-        <bdi>{label}</bdi>
+      <span class="org__shape" aria-hidden="true">
+        <span class="org__echo"></span>
+        <span class:list={['org__wordmark', long && 'org__wordmark--long']}>
+          <bdi>{label}</bdi>
+        </span>
       </span>
     )}
   </div>
@@ -117,17 +123,126 @@ const t = useTranslations(lang);
     height: auto;
     object-fit: contain;
   }
-  /* No verified logo yet: the short name, as text. */
+  /* Shape colours per accent (owner's request, Oct 26 2026: more colour, geometric shapes
+     instead of plain squares). Text-safe pairs only: white on the deep tones, navy on gold. */
+  .org {
+    --shape-bg: var(--color-primary);
+    --shape-ink: var(--color-white);
+    --shape-echo: var(--color-gold);
+  }
+  .org[data-accent='terracotta'] {
+    --shape-bg: var(--color-terracotta-deep);
+    --shape-echo: var(--color-gold);
+  }
+  .org[data-accent='teal'] {
+    --shape-bg: var(--color-teal-deep);
+    --shape-echo: var(--color-coral);
+  }
+  .org[data-accent='mustard'] {
+    --shape-bg: var(--color-gold);
+    --shape-ink: var(--color-primary);
+    --shape-echo: var(--color-teal);
+  }
+  .org[data-accent='navy'] {
+    --shape-echo: var(--color-coral);
+  }
+  /* No verified logo yet: the short name inside a flat geometric shape, with a second,
+     translucent shape behind it (the "dialogue" motif of overlapping forms). */
+  .org__logo--shape {
+    padding: 0;
+    border: 0;
+    background: transparent;
+    justify-items: start;
+  }
+  @media (min-width: 40rem) {
+    .org__logo--shape {
+      justify-items: center;
+    }
+  }
+  .org__shape {
+    position: relative;
+    display: grid;
+    place-items: center;
+    width: 5.5rem;
+    aspect-ratio: 1;
+  }
+  @media (min-width: 40rem) {
+    .org__shape {
+      width: 8.25rem;
+    }
+  }
+  .org__shape::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: var(--shape-bg);
+    border-radius: 50%;
+    transition: transform 0.5s;
+  }
+  .org__echo {
+    position: absolute;
+    inset-block-start: -8%;
+    inset-inline-end: -10%;
+    width: 42%;
+    aspect-ratio: 1;
+    border-radius: 50%;
+    background: var(--shape-echo);
+    opacity: 0.55;
+    transition: transform 0.5s;
+  }
+  /* Shapes alternate along each list: circle, hexagon, rounded diamond, soft square. */
+  .org:nth-child(4n + 2) .org__shape::before {
+    border-radius: 0;
+    clip-path: polygon(25% 5%, 75% 5%, 100% 50%, 75% 95%, 25% 95%, 0 50%);
+  }
+  .org:nth-child(4n + 3) .org__shape::before {
+    inset: 9%;
+    border-radius: 1.4rem;
+    transform: rotate(45deg);
+  }
+  .org:nth-child(4n + 4) .org__shape::before {
+    border-radius: 38% 12% 38% 12%;
+  }
+  .org:nth-child(4n + 2) .org__echo {
+    inset-block-start: auto;
+    inset-block-end: -6%;
+    border-radius: 0.5rem;
+    transform: rotate(20deg);
+  }
+  .org:nth-child(4n + 3) .org__echo {
+    inset-inline-end: auto;
+    inset-inline-start: -8%;
+  }
+  .org:hover .org__echo,
+  .org:focus-within .org__echo {
+    transform: translate(-10%, 10%) scale(1.1);
+  }
+  .org:nth-child(4n + 3):hover .org__shape::before {
+    transform: rotate(135deg);
+  }
   .org__wordmark {
-    padding-block-end: 0.45rem;
-    border-block-end: 3px solid var(--color-gold);
+    position: relative;
+    max-width: 82%;
     font-family: var(--font-display);
-    font-size: 1.15rem;
+    font-size: 1.05rem;
     font-weight: 800;
-    line-height: 1.25;
+    line-height: 1.15;
     text-align: center;
-    color: var(--color-primary);
+    color: var(--shape-ink);
     overflow-wrap: anywhere;
+  }
+  @media (min-width: 40rem) {
+    .org__wordmark {
+      font-size: 1.25rem;
+    }
+  }
+  .org__wordmark--long {
+    font-size: 0.8125rem;
+  }
+  @media (min-width: 40rem) {
+    .org__wordmark--long {
+      font-size: 0.95rem;
+    }
   }
   .org__body {
     display: flex;
@@ -149,9 +264,9 @@ const t = useTranslations(lang);
     font-weight: 800;
   }
   .org__kind {
-    border: 1px solid var(--color-aqua-edge);
-    background: var(--color-aqua);
-    color: var(--color-primary);
+    border: 1px solid color-mix(in srgb, var(--accent) 45%, transparent);
+    background: color-mix(in srgb, var(--accent) 16%, var(--color-white));
+    color: var(--accent-ink);
   }
   .org__status {
     background: var(--color-teal-deep);
@@ -176,13 +291,13 @@ const t = useTranslations(lang);
     margin-block-start: auto;
     min-height: 2.5rem;
     padding: 0.35rem 1rem;
-    border: 1.5px solid var(--color-primary);
+    border: 1.5px solid var(--shape-bg);
     border-radius: 999px;
-    background: var(--color-white);
+    background: var(--shape-bg);
     font-family: var(--font-display);
     font-size: 1rem;
     font-weight: 800;
-    color: var(--color-primary);
+    color: var(--shape-ink);
     text-align: start;
     text-decoration: none;
     transition:
@@ -191,22 +306,38 @@ const t = useTranslations(lang);
   }
   .org__link :global(svg) {
     flex-shrink: 0;
-    color: var(--color-teal-deep);
+    color: currentColor;
   }
   .org__link:hover {
+    border-color: var(--color-primary);
     background: var(--color-primary);
     color: var(--color-white);
+  }
+  .org[data-accent='navy'] .org__link:hover {
+    border-color: var(--color-gold);
+    background: var(--color-gold);
+    color: var(--color-primary);
   }
   .org__link:hover :global(svg) {
     color: var(--color-gold);
   }
+  .org[data-accent='navy'] .org__link:hover :global(svg) {
+    color: var(--color-primary);
+  }
   @media (prefers-reduced-motion: reduce) {
-    .org {
+    .org,
+    .org__shape::before,
+    .org__echo {
       transition: none;
     }
     .org:hover,
-    .org:focus-within {
+    .org:focus-within,
+    .org:hover .org__echo,
+    .org:focus-within .org__echo {
       transform: none;
+    }
+    .org:nth-child(4n + 3):hover .org__shape::before {
+      transform: rotate(45deg);
     }
   }
 </style>
