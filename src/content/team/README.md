@@ -5,7 +5,9 @@ The Our Team page (`/fr/equipe/`, `/en/team/`, `/fa/team/`) has three parts (own
 Oct 24 2026): the President (portrait and biography from `src/content/about/about.yaml`),
 the **Executive Team** (`group: executive`, people who coordinate and manage day-to-day
 operations) and the **Advisors & Friends of Matin** (`group: advisor`, voluntary
-contributors, never presented as staff or officers). `group: board` (governance) is kept
+contributors, never presented as staff or officers). Their titles never contain the word
+« volunteer » / « bénévole » / «داوطلب» (owner's decision, Oct 27 2026): e.g. « مشاور امور مالی و بانکی »,
+"Advisor – Finance & Banking". `group: board` (governance) is kept
 apart and not shown yet. A part without published members shows one short line, never
 empty cards.
 
