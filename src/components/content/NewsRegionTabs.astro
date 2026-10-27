@@ -32,8 +32,12 @@ const RegionHeading = `h${level}` as 'h3' | 'h4';
 const cardLevel = `h${level + 1}` as 'h4' | 'h5';
 const t = useTranslations(lang);
 const tabs = newsRegions.map((region) => {
-  const items = posts.filter((p) => (p.data.region ?? 'international') === region);
-  return { region, items: perTab ? items.slice(0, perTab) : items };
+  const all = posts.filter((p) => (p.data.region ?? 'international') === region);
+  const items = perTab ? all.slice(0, perTab) : all;
+  // An odd number of stories (3, 5…) gets a large lead spanning two rows; an even number
+  // (2, 4…) sits in equal cards, two by two (owner's request, Oct 27 2026: four stories
+  // per region in balanced boxes, without the empty space around a lone large lead).
+  return { region, items, lead: items.length >= 3 && items.length % 2 === 1 };
 });
 ---
 
@@ -61,13 +65,13 @@ const tabs = newsRegions.map((region) => {
     >
       <RegionHeading class="region-panel__title">{t(`newsRegions.${tab.region}`)}</RegionHeading>
       {tab.items.length > 0 ? (
-        <ul class:list={['wire', tab.items.length >= 3 && 'wire--lead']}>
+        <ul class:list={['wire', tab.lead && 'wire--lead']}>
           {tab.items.map((post, i) => {
             const d = post.data;
             const src = d.source!;
             const Heading = cardLevel;
             return (
-              <li class:list={['wire__item', i === 0 && 'wire__item--lead']}>
+              <li class:list={['wire__item', tab.lead && i === 0 && 'wire__item--lead']}>
                 <p class="wire__kicker">
                   <span class="wire__source-name">{src.name}</span>
                   <span class="wire__dot" aria-hidden="true" />
@@ -120,7 +124,7 @@ const tabs = newsRegions.map((region) => {
 
 <style>
   /* Stories as white cards on the navy band, each with a thick coloured top edge
-     (terracotta, teal, gold); the lead story spans two rows on the reading side. */
+     (terracotta, teal, gold); the lead story spans two rows on the reading side when there is an odd number. */
   .wire {
     display: grid;
     gap: clamp(1.25rem, 1rem + 1vw, 1.75rem);
@@ -141,6 +145,9 @@ const tabs = newsRegions.map((region) => {
     }
   }
   .wire__item {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
     min-width: 0;
     padding: clamp(1.35rem, 1rem + 1vw, 2rem);
     border-radius: var(--radius-card);
@@ -149,11 +156,21 @@ const tabs = newsRegions.map((region) => {
     color: var(--color-ink);
     box-shadow: 0 18px 40px -22px color-mix(in srgb, black 60%, transparent);
   }
-  .wire__item:nth-child(3n + 2) {
+  .wire__item:nth-child(4n + 2) {
     border-block-start-color: var(--color-teal);
   }
-  .wire__item:nth-child(3n + 3) {
+  .wire__item:nth-child(4n + 3) {
     border-block-start-color: var(--color-gold);
+  }
+  .wire__item:nth-child(4n + 4) {
+    border-block-start-color: var(--color-coral);
+  }
+  /* Equal cards: the « read at source » button lines up at the bottom of each row. */
+  .wire:not(.wire--lead) .wire__source {
+    margin-block-start: auto;
+  }
+  .wire:not(.wire--lead) .wire__excerpt {
+    margin-block-end: 1.1rem;
   }
   /* The lead story: a warm ivory card, so it reads first. */
   .wire__item--lead {
