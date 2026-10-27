@@ -1,0 +1,10 @@
+name: 'Amin Moafi'
+nameFa: 'امین معافی'
+role:
+  fr: 'Conseiller bénévole – Finances et services bancaires'
+  en: 'Volunteer Advisor – Finance & Banking'
+  fa: 'مشاور داوطلب – امور مالی و بانکی'
+group: advisor
+photo: ../../assets/uploads/team/amin-moafi.jpg
+order: 1
+faReviewed: true
