@@ -9,7 +9,7 @@
  * The photographs are openly licensed views of Montréal (see src/lib/photos.ts), shown
  * with their credits; they illustrate the themes, they do not document Matin activities.
  */
-import { ArrowRight, CalendarDays, Download, ExternalLink, MapPin, ZoomIn } from '@lucide/astro';
+import { ArrowRight, CalendarDays, ExternalLink, MapPin, ZoomIn } from '@lucide/astro';
 import { getImage } from 'astro:assets';
 import Lightbox from '@/components/ui/Lightbox.astro';
 import NewsRegionTabs from '@/components/content/NewsRegionTabs.astro';
@@ -91,7 +91,8 @@ const matinNews = news
           <article class:list={['feature', featured.poster && 'feature--poster']} data-reveal>
             {posterLarge ? (
               /* A poster opens in the same fullscreen viewer as Gallery → Posters; the
-                 buttons under it still lead to the activity's page and the original file. */
+                 button under it leads to the activity's page (the poster download stays on
+                that page and in the Gallery, not on the homepage: owner's request, Oct 27 2026). */
               <a
                 href={posterLarge}
                 class="feature__zoom"
@@ -117,7 +118,7 @@ const matinNews = news
               />
             )}
             {/* No side panel any more (owner's request, Oct 27 2026): a poster already
-                carries its details, so only the title and the two buttons sit under it. */}
+                carries its details, so only the title and the activity button sit under it. */}
             <div class="feature__caption">
               <h3 class="feature__title">{featured.title}</h3>
               {!featured.poster && (
@@ -150,16 +151,6 @@ const matinNews = news
                   )}
                   {featured.external && <span class="sr-only">{t('a11y.externalLink')}</span>}
                 </a>
-                {featured.posterDownload && (
-                  <a
-                    href={featured.posterDownload.href}
-                    download={featured.posterDownload.filename}
-                    class="btn btn-outline"
-                  >
-                    <Download size={18} aria-hidden="true" />
-                    {t('events.posterDownload', { format: featured.posterDownload.format })}
-                  </a>
-                )}
               </div>
             </div>
           </article>
