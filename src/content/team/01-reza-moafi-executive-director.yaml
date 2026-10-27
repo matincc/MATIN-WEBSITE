@@ -1,0 +1,11 @@
+name: 'Reza Moafi'
+nameFa: 'رضا معافی'
+role:
+  fr: 'Directeur général'
+  en: 'Executive Director'
+  fa: 'مدیر اجرایی'
+group: executive
+photo: ../../assets/uploads/team/reza-moafi-executive-director.png
+linkedin: https://www.linkedin.com/in/rezamoafi/
+order: 1
+faReviewed: true
