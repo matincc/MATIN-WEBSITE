@@ -35,7 +35,8 @@ const credits = heroVideo
 // "Dialogue" in some of the languages spoken in Montréal (each with its own lang).
 const words = [
   { text: 'Dialogue', lang: 'fr' },
-  { text: 'گفت‌وگو', lang: 'fa' },
+  // The owner's spelling on the homepage (Oct 27 2026): with a space, « گفت و گو ».
+  { text: 'گفت و گو', lang: 'fa' },
   { text: 'Diálogo', lang: 'es' },
   { text: 'حوار', lang: 'ar' },
   { text: '对话', lang: 'zh' },
@@ -294,9 +295,12 @@ const sizes = '100vw';
     z-index: -1;
     pointer-events: none;
   }
+  /* The panel sits on the right in every language and the shapes on the left, so the
+     monument in the Tam-Tams photo (left of centre) stays fully visible (owner's request,
+     Oct 27 2026). */
   .ahero__shape--sun {
     inset-block-start: clamp(2rem, 6vw, 5rem);
-    inset-inline-end: clamp(-4rem, -2vw, -1rem);
+    left: clamp(-4rem, -2vw, -1rem);
     width: clamp(8rem, 14vw, 13rem);
     aspect-ratio: 1;
     border-radius: 50%;
@@ -304,7 +308,7 @@ const sizes = '100vw';
   }
   .ahero__shape--leaf {
     inset-block-start: clamp(7rem, 15vw, 12rem);
-    inset-inline-end: clamp(4rem, 9vw, 9rem);
+    left: clamp(4rem, 9vw, 9rem);
     width: clamp(4rem, 7vw, 6.5rem);
     aspect-ratio: 1;
     border-radius: 0 100% 0 100%;
@@ -316,19 +320,20 @@ const sizes = '100vw';
   .ahero__inner {
     display: flex;
     align-items: flex-end;
+    justify-content: flex-end;
     padding-block: clamp(3rem, 6vw, 5rem) 1.25rem;
+  }
+  :global([dir='rtl']) .ahero__inner {
+    justify-content: flex-start;
   }
   .ahero__panel {
     position: relative;
-    max-width: 44rem;
+    max-width: min(44rem, 54%);
     padding: clamp(1.75rem, 1.2rem + 1.8vw, 2.75rem);
-    padding-inline-end: clamp(1.75rem, 1rem + 4vw, 4.5rem);
-    border-radius: 0 2.75rem 0 0;
+    padding-inline-end: clamp(1.75rem, 1rem + 3vw, 3.5rem);
+    border-radius: 2.75rem 0 0 0;
     background: var(--alive-green);
     box-shadow: 0 30px 60px -30px rgb(0 0 0 / 0.55);
-  }
-  :global([dir='rtl']) .ahero__panel {
-    border-radius: 2.75rem 0 0 0;
   }
   /* A coral edge on the reading side of the panel. */
   .ahero__panel::before {
@@ -416,6 +421,10 @@ const sizes = '100vw';
     transition:
       opacity 0.6s ease,
       transform 0.6s cubic-bezier(0.2, 0.7, 0.2, 1);
+  }
+  /* Persian words keep a Persian typeface on the French and English pages too. */
+  .ahero__word:lang(fa) {
+    font-family: 'Vazirmatn Variable', Tahoma, sans-serif;
   }
   .ahero__word.is-active {
     opacity: 1;
@@ -539,7 +548,7 @@ const sizes = '100vw';
   }
 
   /* ---------- Phones: the photo on top, the panel under it, nothing over faces ---------- */
-  @media (max-width: 47.99rem) {
+  @media (max-width: 63.99rem) {
     .ahero {
       min-height: 0;
       grid-template-rows: auto auto auto;
@@ -553,6 +562,7 @@ const sizes = '100vw';
     }
     .ahero__shape--sun {
       inset-block-start: calc(46svh - 4.5rem);
+      left: auto;
       inset-inline-end: 1.25rem;
       width: 6.5rem;
       z-index: 1;
