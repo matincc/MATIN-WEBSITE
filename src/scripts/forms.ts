@@ -40,6 +40,14 @@ function validate(field: HTMLInputElement | HTMLTextAreaElement | HTMLSelectElem
     const checked = field.form?.querySelector(`input[name="${field.name}"]:checked`);
     return field.required && !checked ? m.required : '';
   }
+  // A file field (job application CV): size and type checked before sending.
+  if (field instanceof HTMLInputElement && field.type === 'file') {
+    const file = field.files?.[0];
+    if (!file) return field.required ? m.required : '';
+    if (!/\.(pdf|docx?)$/i.test(file.name)) return field.dataset.msgType ?? '';
+    const max = Number(field.dataset.maxBytes || 0);
+    return max && file.size > max ? (field.dataset.msgTooBig ?? '') : '';
+  }
   if (field instanceof HTMLInputElement && field.type === 'checkbox') {
     // A checklist where at least one box is needed: the first box carries data-group-required.
     if (field.dataset.groupRequired !== undefined) {
@@ -273,6 +281,13 @@ export function enhanceForms() {
           const result = (await res.json().catch(() => ({}))) as { ok?: boolean };
           if (res.status === 429) throw new Error('too-many');
           if (!res.ok || !result.ok) throw new Error(String(res.status));
+        } else if (form.enctype === 'multipart/form-data') {
+          // With a file: sent as is, the browser sets the multipart boundary.
+          res = await fetch(form.getAttribute('action') || '/', {
+            method: 'POST',
+            body: new FormData(form),
+          });
+          if (!res.ok) throw new Error(String(res.status));
         } else {
           const body = new URLSearchParams(joinRepeated(form));
           res = await fetch(form.getAttribute('action') || '/', {

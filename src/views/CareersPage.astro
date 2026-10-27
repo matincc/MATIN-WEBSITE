@@ -1,0 +1,264 @@
+---
+/**
+ * Careers (owner's request, Oct 27 2026): paid positions at Matin, kept apart from
+ * volunteering. 1. Open positions from src/content/jobs/ (cards with type, location, pay,
+ * deadline, an expandable description and an Apply link that preselects the position),
+ * or a short note that none is open. 2. The application form (Netlify form « emplois »)
+ * beside a card pointing volunteers to Contact & Collaboration. Linked from the footer
+ * and the Contact page, not from the header menu.
+ */
+import { ArrowRight, Briefcase, CalendarClock, HandHeart, MapPin, Wallet } from '@lucide/astro';
+import PageLayout from '@/layouts/PageLayout.astro';
+import SectionHeader from '@/components/ui/SectionHeader.astro';
+import Prose from '@/components/ui/Prose.astro';
+import JobForm from '@/components/forms/JobForm.astro';
+import { href, siteAlternates, type UiLang } from '@/i18n/routes';
+import { useTranslations, pick } from '@/i18n/ui';
+import { getJobs, renderMarkdown } from '@/lib/content';
+import { formatDate } from '@/lib/dates';
+
+interface Props {
+  lang: UiLang;
+}
+const { lang } = Astro.props;
+const t = useTranslations(lang);
+const jobs = await getJobs();
+const site = (Astro.site ?? new URL(Astro.url.origin)).href;
+const volunteerHref = `${href('contact', lang)}#${lang === 'fr' ? 'benevolat' : 'volunteer'}`;
+
+const positions = jobs.map((j) => ({ value: j.data.title.fr, label: pick(j.data.title, lang)! }));
+
+// Google can list open positions (schema.org JobPosting).
+const employment = { 'full-time': 'FULL_TIME', 'part-time': 'PART_TIME', contract: 'CONTRACTOR' };
+const jsonLd = jobs.map((j) => ({
+  '@context': 'https://schema.org',
+  '@type': 'JobPosting',
+  title: pick(j.data.title, lang),
+  description: pick(j.data.description, lang) || pick(j.data.summary, lang),
+  datePosted: j.data.posted,
+  ...(j.data.deadline && { validThrough: `${j.data.deadline}T23:59:59-05:00` }),
+  employmentType: employment[j.data.type],
+  hiringOrganization: { '@type': 'Organization', name: t('meta.siteName'), sameAs: site },
+  ...(j.data.location === 'remote'
+    ? {
+        jobLocationType: 'TELECOMMUTE',
+        applicantLocationRequirements: { '@type': 'Country', name: 'Canada' },
+      }
+    : {
+        jobLocation: {
+          '@type': 'Place',
+          address: {
+            '@type': 'PostalAddress',
+            addressLocality: 'Montréal',
+            addressRegion: 'QC',
+            addressCountry: 'CA',
+          },
+        },
+      }),
+}));
+---
+
+<PageLayout
+  lang={lang}
+  title={t('careers.title')}
+  description={t('careers.metaDescription')}
+  lede={t('careers.lede')}
+  ledeStrong
+  alternates={siteAlternates('careers')}
+  jsonLd={jsonLd}
+>
+  <section
+    id="positions"
+    class="positions-band scroll-mt-24 py-16 sm:py-20"
+    aria-labelledby="positions-title"
+  >
+    <div class="container-site">
+      <SectionHeader
+        align="start"
+        id="positions-title"
+        title={t('careers.openTitle')}
+        subtitle={jobs.length ? t('careers.openSubtitle') : undefined}
+      />
+      {jobs.length ? (
+        <ul class="job-grid">
+          {jobs.map((j) => {
+            const d = j.data;
+            const description = pick(d.description, lang);
+            const facts = [
+              { icon: Briefcase, label: t('careers.type'), value: t(`careers.types.${d.type}`) },
+              {
+                icon: MapPin,
+                label: t('careers.location'),
+                value: t(`careers.locations.${d.location}`),
+              },
+              d.pay && { icon: Wallet, label: t('careers.pay'), value: pick(d.pay, lang) },
+              d.deadline && {
+                icon: CalendarClock,
+                label: t('careers.deadline'),
+                value: formatDate(new Date(`${d.deadline}T00:00:00Z`), lang),
+              },
+            ].filter((f) => !!f) as { icon: typeof MapPin; label: string; value: string }[];
+            return (
+              <li class="card job-card">
+                <h3 class="job-card__title">{pick(d.title, lang)}</h3>
+                <dl class="job-card__facts">
+                  {facts.map((f) => (
+                    <div>
+                      <dt>
+                        <f.icon size={18} aria-hidden="true" />
+                        <span class="sr-only">{f.label}</span>
+                      </dt>
+                      <dd>{f.value}</dd>
+                    </div>
+                  ))}
+                </dl>
+                <p class="job-card__summary">{pick(d.summary, lang)}</p>
+                {description && (
+                  <details class="job-card__details">
+                    <summary>{t('careers.details')}</summary>
+                    <Prose html={renderMarkdown(description, lang)} />
+                  </details>
+                )}
+                <a href="#apply" class="btn btn-primary job-card__apply" data-position={d.title.fr}>
+                  {t('careers.apply')}
+                  <ArrowRight size={18} class="rtl:-scale-x-100" aria-hidden="true" />
+                </a>
+              </li>
+            );
+          })}
+        </ul>
+      ) : (
+        <div class="card empty-panel">
+          <Briefcase size={30} class="empty-panel__icon" aria-hidden="true" />
+          <p>{t('careers.empty')}</p>
+        </div>
+      )}
+    </div>
+  </section>
+
+  <section id="apply" class="apply-band scroll-mt-24 py-16 sm:py-20" aria-labelledby="apply-title">
+    <div class="container-site grid gap-10 lg:grid-cols-[1.6fr_1fr] lg:items-start">
+      <div class="card form-panel p-6 sm:p-10">
+        <h2 id="apply-title" class="mb-3 text-3xl font-bold">
+          {t('careers.formTitle')}
+        </h2>
+        <p class="mb-8 text-lg">{t('careers.formIntro')}</p>
+        <JobForm lang={lang} positions={positions} />
+      </div>
+      <aside class="card volunteer-card p-8" aria-labelledby="careers-volunteer-title">
+        <span class="volunteer-card__icon" aria-hidden="true">
+          <HandHeart size={26} />
+        </span>
+        <h2 id="careers-volunteer-title" class="mb-3 text-2xl font-bold">
+          {t('careers.volunteerTitle')}
+        </h2>
+        <p class="mb-6">{t('careers.volunteerText')}</p>
+        <a href={volunteerHref} class="btn btn-outline">
+          {t('careers.volunteerCta')}
+          <ArrowRight size={18} class="rtl:-scale-x-100" aria-hidden="true" />
+        </a>
+      </aside>
+    </div>
+  </section>
+</PageLayout>
+
+<script>
+  // « Apply » on a position card preselects it in the form.
+  document.querySelectorAll<HTMLAnchorElement>('[data-position]').forEach((a) => {
+    a.addEventListener('click', () => {
+      const select = document.querySelector<HTMLSelectElement>('#job-position');
+      if (select) select.value = a.dataset.position ?? '';
+    });
+  });
+</script>
+
+<style>
+  .positions-band {
+    background: var(--color-paper);
+  }
+  .job-grid {
+    display: grid;
+    gap: 1.5rem;
+    grid-template-columns: repeat(auto-fill, minmax(min(100%, 22rem), 1fr));
+  }
+  .job-card {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    padding: 1.75rem;
+    background: var(--color-ivory);
+    border-block-start: 6px solid var(--color-gold);
+  }
+  .job-card__title {
+    font-size: clamp(1.3rem, 1.15rem + 0.5vw, 1.6rem);
+    font-weight: 800;
+    color: var(--color-primary);
+  }
+  .job-card__facts {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem 1.25rem;
+    font-weight: 600;
+    color: var(--color-terracotta-deep);
+  }
+  .job-card__facts div {
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+  }
+  .job-card__facts dt {
+    color: var(--color-teal-deep);
+  }
+  .job-card__details summary {
+    cursor: pointer;
+    font-family: var(--font-display);
+    font-weight: 700;
+    color: var(--color-primary);
+  }
+  .job-card__details[open] summary {
+    margin-block-end: 0.75rem;
+  }
+  .job-card__apply {
+    margin-block-start: auto;
+    align-self: flex-start;
+  }
+  .empty-panel {
+    display: flex;
+    align-items: flex-start;
+    gap: 1.25rem;
+    max-width: 52rem;
+    padding: 1.75rem 2rem;
+    background: var(--color-aqua);
+    border: 1px solid var(--color-aqua-edge);
+    border-block-start: 6px solid var(--color-teal-deep);
+    font-size: 1.15rem;
+    line-height: 1.7;
+  }
+  .empty-panel :global(.empty-panel__icon) {
+    flex-shrink: 0;
+    margin-block-start: 0.2rem;
+    color: var(--color-teal-deep);
+  }
+  .apply-band {
+    background: var(--color-teal-pale);
+    border-block: 1px solid var(--color-teal-edge);
+  }
+  .form-panel {
+    background: var(--color-ivory);
+    border-block-start: 6px solid var(--color-gold);
+  }
+  .volunteer-card {
+    background: var(--color-white);
+    border-block-start: 6px solid var(--color-teal);
+  }
+  .volunteer-card__icon {
+    display: inline-grid;
+    place-items: center;
+    width: 3.25rem;
+    height: 3.25rem;
+    margin-block-end: 1rem;
+    border-radius: 999px;
+    background: var(--color-champagne);
+    color: var(--color-primary);
+  }
+</style>

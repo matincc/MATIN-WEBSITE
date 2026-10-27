@@ -1,0 +1,128 @@
+---
+/**
+ * Job application (Careers page, owner's request Oct 27 2026). Netlify form « emplois »:
+ * full name, email, phone, position (open positions plus an open application), CV file
+ * (optional, PDF or Word, 5 MB at most), LinkedIn or portfolio link, and why the person
+ * wants to join. Kept apart from the volunteer form (« benevolat »).
+ */
+import FormShell from './FormShell.astro';
+import Field from './Field.astro';
+import { href, type UiLang } from '@/i18n/routes';
+import { useTranslations } from '@/i18n/ui';
+
+interface Props {
+  lang: UiLang;
+  /** Open positions: value sent (French title) and label in the page's language. */
+  positions: { value: string; label: string }[];
+}
+const { lang, positions } = Astro.props;
+const t = useTranslations(lang);
+const OPEN = 'Candidature spontanée · Open application';
+---
+
+<FormShell
+  lang={lang}
+  name="emplois"
+  id="job"
+  action={`${href('careers', lang)}?sent=1`}
+  submitLabel={t('careers.submit')}
+  consentText={t('careers.consent')}
+  successMessage={t('careers.success')}
+  multipart
+>
+  <div class="grid gap-5 sm:grid-cols-2">
+    <Field
+      lang={lang}
+      id="job-name"
+      name="name"
+      label={t('form.name')}
+      required
+      autocomplete="name"
+    />
+    <Field
+      lang={lang}
+      id="job-email"
+      name="email"
+      type="email"
+      label={t('form.email')}
+      required
+      autocomplete="email"
+    />
+    <Field
+      lang={lang}
+      id="job-phone"
+      name="phone"
+      type="tel"
+      label={t('form.phone')}
+      autocomplete="tel"
+    />
+    <div class="field">
+      <label for="job-position" class="field-label" data-short={t('careers.position')}>
+        <span data-label-text>{t('careers.position')}</span>
+        <span class="req"> ({t('form.required')})</span>
+      </label>
+      <select
+        id="job-position"
+        name="position"
+        class="input"
+        required
+        aria-describedby="job-position-error"
+      >
+        {positions.map((p) => (
+          <option value={p.value}>{p.label}</option>
+        ))}
+        <option value={OPEN} selected={positions.length === 0}>
+          {t('careers.openApplication')}
+        </option>
+      </select>
+      <p id="job-position-error" class="field-error" hidden></p>
+    </div>
+  </div>
+
+  <div class="field">
+    <label for="job-cv" class="field-label" data-short={t('careers.cv')}>
+      {t('careers.cv')}
+    </label>
+    <p id="job-cv-hint" class="job-hint">
+      {t('careers.cvHint')}
+    </p>
+    <input
+      id="job-cv"
+      name="cv"
+      type="file"
+      class="input job-file"
+      accept=".pdf,.doc,.docx,application/pdf,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document"
+      data-max-bytes="5242880"
+      data-msg-too-big={t('careers.cvTooBig')}
+      data-msg-type={t('careers.cvType')}
+      aria-describedby="job-cv-hint job-cv-error"
+    />
+    <p id="job-cv-error" class="field-error" hidden></p>
+  </div>
+
+  <Field lang={lang} id="job-link" name="link" type="url" label={t('careers.link')} />
+  <Field
+    lang={lang}
+    id="job-message"
+    name="message"
+    as="textarea"
+    label={t('careers.message')}
+    required
+    class="job-message"
+  />
+</FormShell>
+
+<style>
+  .job-hint {
+    margin-block-end: 0.4rem;
+    font-size: 0.95rem;
+    color: var(--color-ink);
+  }
+  .job-file {
+    padding-block: 0.6rem;
+    cursor: pointer;
+  }
+  .job-message :global(textarea) {
+    min-height: 9rem;
+  }
+</style>

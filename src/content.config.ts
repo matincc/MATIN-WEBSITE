@@ -699,6 +699,33 @@ const notes = defineCollection({
       }),
 });
 
+/**
+ * Careers page (owner's request, Oct 27 2026): paid positions at Matin, one YAML file per
+ * position in src/content/jobs/ (see its README). Volunteering stays on Contact.
+ */
+const jobs = defineCollection({
+  loader: yaml('jobs'),
+  schema: z.object({
+    title: bi,
+    type: z.enum(['full-time', 'part-time', 'contract']),
+    location: z.enum(['montreal', 'remote', 'hybrid']),
+    /** Pay as it should read, e.g. « 22 $ de l'heure » / "$22 an hour". */
+    pay: biOpt,
+    /** Day the position was posted (YYYY-MM-DD). */
+    posted: isoDate,
+    /** Last day to apply (YYYY-MM-DD); the position leaves the page at the next build after it. */
+    deadline: isoDate.optional(),
+    /** One or two sentences shown on the card. */
+    summary: bi,
+    /** Full description (Markdown), shown when the visitor opens the card. */
+    description: biOpt,
+    order: z.number().default(100),
+    /** Shown only when true. */
+    published: z.boolean().default(false),
+    faReviewed,
+  }),
+});
+
 /** Legal pages: privacy, terms, accessibility. Body is Markdown. */
 const legal = defineCollection({
   loader: yaml('legal'),
@@ -728,5 +755,6 @@ export const collections = {
   networks,
   policies,
   involvement,
+  jobs,
   legal,
 };

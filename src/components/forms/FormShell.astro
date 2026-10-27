@@ -24,6 +24,8 @@ interface Props {
   action?: string;
   /** Hide the form (kept in the HTML so Netlify can still detect it). */
   disabled?: boolean;
+  /** The form has a file field (sent as multipart/form-data). */
+  multipart?: boolean;
 }
 const {
   lang,
@@ -34,6 +36,7 @@ const {
   successMessage,
   action,
   disabled = false,
+  multipart = false,
 } = Astro.props;
 const t = useTranslations(lang);
 ---
@@ -41,6 +44,7 @@ const t = useTranslations(lang);
 <form
   name={name}
   method="post"
+  enctype={multipart ? 'multipart/form-data' : undefined}
   action={action ?? `${href('contact', lang)}?sent=1`}
   hidden={disabled}
   inert={disabled}

@@ -222,6 +222,18 @@ export const orgName = (r: CollectionEntry<'resources'>, lang: UiLang) =>
   (baseLang(lang) === 'en' && r.data.nameEn) || r.data.name;
 
 /** Matin's introductory video, once its YouTube link or file has been added. */
+/** Published positions whose deadline (Montréal day) has not passed, in `order`. */
+export async function getJobs(now = new Date()) {
+  const today = now.toLocaleDateString('en-CA', { timeZone: 'America/Toronto' });
+  return (
+    await getCollection(
+      'jobs',
+      (j) =>
+        (import.meta.env.DEV || j.data.published) && (!j.data.deadline || j.data.deadline >= today),
+    )
+  ).sort((a, b) => a.data.order - b.data.order);
+}
+
 export async function getIntroVideo() {
   const entry = await getEntry('introVideo', 'matin-is-born');
   return entry && (entry.data.youtube || entry.data.file) ? entry.data : undefined;

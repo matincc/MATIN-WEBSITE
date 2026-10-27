@@ -51,6 +51,7 @@ const fr = {
     getInvolved: "S'impliquer",
     resources: 'Ressources',
     contact: 'Contact et collaboration',
+    careers: 'Emplois',
     faq: 'FAQ',
     privacy: 'Politique de confidentialité',
     terms: "Conditions d'utilisation",
@@ -500,6 +501,8 @@ const fr = {
     jurisdiction_international: 'International',
   },
   contact: {
+    careersNote: 'Vous cherchez plutôt un emploi rémunéré?',
+    careersLink: 'Voir les postes ouverts',
     title: 'Contact et collaboration',
     lede: 'Une question, une idée, une envie de collaborer ? Écrivez-nous : nous lisons chaque message et vous répondrons dès que possible.',
     formTitle: 'Écrivez-nous',
@@ -587,6 +590,48 @@ const fr = {
     any: 'Peu importe',
     errTooMany:
       'Trop de messages ont été envoyés depuis cette connexion. Veuillez réessayer dans quelques minutes.',
+  },
+  careers: {
+    title: 'Emplois',
+    lede: 'Rejoignez l’équipe de l’Institut interculturel Matin et contribuez au dialogue entre les cultures, à Montréal et au-delà.',
+    metaDescription:
+      'Postes ouverts à l’Institut interculturel Matin, organisme sans but lucratif montréalais, et formulaire de candidature.',
+    openTitle: 'Postes ouverts',
+    openSubtitle: 'Les postes actuellement offerts chez Matin.',
+    empty:
+      'Aucun poste n’est ouvert pour le moment. Vous pouvez tout de même nous envoyer une candidature spontanée ci-dessous : nous la conserverons pour nos prochains recrutements.',
+    type: 'Type de poste',
+    location: 'Lieu',
+    pay: 'Rémunération',
+    deadline: 'Date limite',
+    details: 'Voir la description du poste',
+    apply: 'Postuler',
+    types: { 'full-time': 'Temps plein', 'part-time': 'Temps partiel', contract: 'Contrat' },
+    locations: {
+      montreal: 'Montréal',
+      remote: 'Télétravail',
+      hybrid: 'Hybride (Montréal et télétravail)',
+    },
+    formTitle: 'Envoyer votre candidature',
+    formIntro:
+      'Remplissez ce formulaire pour un poste ouvert ou pour une candidature spontanée. Nous lisons chaque candidature avec attention.',
+    position: 'Poste visé',
+    openApplication: 'Candidature spontanée',
+    cv: 'Votre CV (facultatif)',
+    cvHint: 'PDF ou Word, 5 Mo maximum.',
+    cvTooBig: 'Le fichier dépasse 5 Mo. Veuillez envoyer un fichier plus léger.',
+    cvType: 'Veuillez joindre un fichier PDF ou Word.',
+    link: 'Lien vers votre profil LinkedIn ou votre portfolio (facultatif)',
+    message: 'Pourquoi souhaitez-vous rejoindre Matin?',
+    consent:
+      "J'accepte que Matin utilise ces renseignements uniquement pour étudier ma candidature, conformément à sa",
+    success:
+      'Merci! Votre candidature a bien été envoyée. Nous l’étudierons avec attention et communiquerons avec vous par courriel.',
+    submit: 'Envoyer ma candidature',
+    volunteerTitle: 'Vous souhaitez plutôt vous engager bénévolement?',
+    volunteerText:
+      'Matin accueille aussi des bénévoles qui veulent contribuer à ses activités culturelles.',
+    volunteerCta: 'Rejoindre l’équipe de bénévoles',
   },
   faq: {
     title: 'Foire aux questions',

@@ -153,6 +153,9 @@ const details = [
         <div class="card form-panel form-panel--volunteer p-6 sm:p-10">
           <VolunteerForm lang={lang} />
         </div>
+        <p class="careers-note">
+          {t('contact.careersNote')} <a href={href('careers', lang)}>{t('contact.careersLink')}</a>
+        </p>
       </div>
     </section>
   )}
@@ -194,6 +197,13 @@ const details = [
   }
   .volunteer-band {
     background: var(--color-paper);
+  }
+  .careers-note {
+    margin-block-start: 1.5rem;
+    font-size: 1.05rem;
+  }
+  .careers-note a {
+    font-weight: 700;
   }
   .form-panel--volunteer {
     max-width: 60rem;
