@@ -6,20 +6,27 @@
  * Advisors & Friends of Matin (voluntary contributors, never presented as staff).
  * Members are the published entries in src/content/team/, placed by their `group`.
  * Board members (governance) are kept apart and not shown here yet.
- * Layout (owner's brief, Oct 25 2026): the two groups stacked, Executive Team first on a soft
- * turquoise panel, then Advisors on warm cream. Advisors show five places: published members
- * first, then neutral "Profile coming soon" places (never invented people); the Executive
- * Team shows only its members (owner's request, Oct 28 2026). Adding a member
- * is one YAML file in src/content/team/ (name, role, photo, bio, LinkedIn); it takes the
- * next place, and a group with more than five members simply grows.
+ * Layout: the Executive Team on a soft turquoise panel showing only its members (owner's
+ * request, Oct 28 2026), then, in place of the former Advisors & Friends list, one invitation
+ * to share one's expertise as a volunteer or advisor, linked to the volunteer form on the
+ * contact page (owner's request, Oct 28 2026; `#advisors` kept for the menu and older links).
+ * Adding a member is one YAML file in src/content/team/ (name, role, photo, bio, LinkedIn).
  */
 import { Image } from 'astro:assets';
-import { ChevronDown, ExternalLink } from '@lucide/astro';
+import {
+  ArrowRight,
+  ChevronDown,
+  ExternalLink,
+  Globe,
+  HandHeart,
+  Lightbulb,
+  MapPin,
+} from '@lucide/astro';
 import PageLayout from '@/layouts/PageLayout.astro';
 import PresidentSection from '@/components/content/PresidentSection.astro';
-import PersonSilhouette from '@/components/content/PersonSilhouette.astro';
+import CommunityIllustration from '@/components/brand/CommunityIllustration.astro';
 import Prose from '@/components/ui/Prose.astro';
-import { siteAlternates, type UiLang } from '@/i18n/routes';
+import { href, siteAlternates, type UiLang } from '@/i18n/routes';
 import { useTranslations, pick } from '@/i18n/ui';
 import { forLang, getTeam, initials, renderMarkdown } from '@/lib/content';
 
@@ -29,7 +36,6 @@ interface Props {
 const { lang } = Astro.props;
 const t = useTranslations(lang);
 const team = forLang(await getTeam(), lang);
-const SLOTS = 5;
 const groups = [
   {
     id: 'executive-team',
@@ -37,21 +43,16 @@ const groups = [
     lede: t('team.executiveLede'),
     empty: t('team.executiveEmpty'),
     members: team.filter((m) => m.data.group === 'executive' || m.data.group === 'staff'),
-    // No "Profile coming soon" places here (owner's request, Oct 28 2026).
-    slots: 0,
     accent: 'teal',
     accents: ['navy', 'teal', 'mustard'],
   },
-  {
-    id: 'advisors',
-    title: t('nav.teamAdvisors'),
-    lede: t('team.advisorsLede'),
-    empty: t('team.advisorsEmpty'),
-    members: team.filter((m) => m.data.group === 'advisor'),
-    slots: SLOTS,
-    accent: 'mustard',
-    accents: ['teal', 'mustard', 'navy'],
-  },
+];
+const volunteerHref = `${href('contact', lang)}#${lang === 'fr' ? 'benevolat' : 'volunteer'}`;
+const joinWays = [
+  { icon: MapPin, label: t('team.joinWayInPerson') },
+  { icon: Globe, label: t('team.joinWayOnline') },
+  { icon: HandHeart, label: t('team.joinWayVolunteer') },
+  { icon: Lightbulb, label: t('team.joinWayAdvisor') },
 ];
 ---
 
@@ -126,20 +127,34 @@ const groups = [
                 </li>
               );
             })}
-            {Array.from({ length: Math.max(0, g.slots - g.members.length) }, () => (
-              <li class="team-card team-card--soon">
-                <span class="team-card__avatar team-card__silhouette" aria-hidden="true">
-                  <PersonSilhouette figure="neutral" />
-                </span>
-                <div class="team-card__body">
-                  <p class="team-card__soon">{t('team.comingSoon')}</p>
-                  <p class="team-card__group">{g.title}</p>
-                </div>
-              </li>
-            ))}
           </ul>
         </section>
       ))}
+
+      <section id="advisors" class="team-join scroll-mt-24" aria-labelledby="advisors-title">
+        <div class="team-join__text">
+          <h2 id="advisors-title" class="team-group__title">
+            {t('team.joinTitle')}
+          </h2>
+          <p class="team-join__lede">{t('team.joinText')}</p>
+          <ul class="team-join__ways">
+            {joinWays.map((w) => (
+              <li>
+                <w.icon size={18} aria-hidden="true" />
+                {w.label}
+              </li>
+            ))}
+          </ul>
+          <a href={volunteerHref} class="btn btn-primary team-join__cta">
+            {t('team.joinCta')}
+            <ArrowRight size={18} aria-hidden="true" class="rtl:-scale-x-100" />
+          </a>
+        </div>
+        <figure class="team-join__art" aria-hidden="true">
+          <CommunityIllustration class="team-join__img" />
+          <span class="team-join__block"></span>
+        </figure>
+      </section>
     </div>
   </section>
 </PageLayout>
@@ -165,11 +180,71 @@ const groups = [
     border-block-start: 5px solid var(--color-gold);
     background: var(--color-aqua);
   }
-  /* Advisors & Friends: warm cream, teal accents. */
-  .team-group--advisors {
+  /* The invitation to collaborate (owner's request, Oct 28 2026): warm cream, a teal top
+     edge, the text beside the community illustration on a mustard block. */
+  .team-join {
+    display: grid;
+    align-items: center;
+    gap: clamp(2rem, 1.5rem + 2vw, 3.5rem);
+    padding: clamp(1.5rem, 0.75rem + 3vw, 3.5rem);
     border: 1px solid var(--color-card-edge);
     border-block-start: 5px solid var(--color-teal);
+    border-radius: calc(var(--radius-card) * 1.4);
     background: var(--color-cream);
+  }
+  @media (min-width: 56rem) {
+    .team-join {
+      grid-template-columns: minmax(0, 1.25fr) minmax(0, 1fr);
+    }
+  }
+  .team-join__lede {
+    max-width: 44rem;
+    margin-block-start: 1rem;
+    font-size: clamp(1.0625rem, 1rem + 0.3vw, 1.25rem);
+    line-height: 1.8;
+    color: var(--color-ink);
+  }
+  .team-join__ways {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.6rem;
+    margin-block-start: 1.5rem;
+  }
+  .team-join__ways li {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.45rem;
+    padding: 0.45rem 0.95rem;
+    border: 1px solid var(--color-teal-edge);
+    border-radius: 999px;
+    font-family: var(--font-display);
+    font-size: 0.9375rem;
+    font-weight: 700;
+    color: var(--color-teal-deep);
+    background: var(--color-paper);
+  }
+  .team-join__cta {
+    margin-block-start: 1.75rem;
+  }
+  .team-join__art {
+    position: relative;
+    width: 100%;
+    max-width: 28rem;
+    justify-self: center;
+    padding-block-end: 1rem;
+  }
+  .team-join__art :global(.team-join__img) {
+    position: relative;
+    z-index: 1;
+  }
+  .team-join__block {
+    position: absolute;
+    inset-block-end: 0;
+    inset-inline-end: -1rem;
+    width: 45%;
+    height: 55%;
+    border-radius: var(--radius-card);
+    background: var(--color-gold);
   }
   .team-group__head {
     max-width: 48rem;
@@ -249,13 +324,6 @@ const groups = [
     color: var(--color-primary);
     background: var(--color-cream);
   }
-  .team-card__silhouette {
-    overflow: hidden;
-    background: var(--color-ivory);
-  }
-  .team-group--executive-team .team-card__silhouette {
-    background: var(--color-aqua);
-  }
   .team-card__body {
     display: flex;
     flex: 1;
@@ -292,27 +360,6 @@ const groups = [
     font-size: 1rem;
     line-height: 1.65;
     text-align: start;
-  }
-  /* A place not filled yet: same card, quieter text, no invented details. */
-  .team-card--soon {
-    border-style: dashed;
-    border-block-start-style: solid;
-    border-block-start-color: var(--color-gold);
-    box-shadow: none;
-    background: color-mix(in srgb, var(--color-paper) 70%, transparent);
-  }
-  .team-group--advisors .team-card--soon {
-    border-block-start-color: var(--color-teal);
-  }
-  .team-card__soon {
-    font-family: var(--font-display);
-    font-size: clamp(1rem, 0.95rem + 0.3vw, 1.125rem);
-    font-weight: 800;
-    color: var(--color-primary);
-  }
-  .team-card__group {
-    font-size: 0.9375rem;
-    color: var(--color-ink);
   }
   /* "Read the full biography": a native disclosure, keyboard accessible. */
   .team-card__more {

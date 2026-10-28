@@ -115,7 +115,11 @@ const sizes = '100vw';
           {a.heroCtaPrimary}
           <ArrowRight size={18} class="flip-rtl" aria-hidden="true" />
         </a>
-        <a href={`${href('contact', lang)}#write`} class="btn ahero__btn ahero__btn--ghost">
+        {/* Straight to the volunteer form (owner's request, Oct 28 2026). */}
+        <a
+          href={`${href('contact', lang)}#${lang === 'fr' ? 'benevolat' : 'volunteer'}`}
+          class="btn ahero__btn ahero__btn--ghost"
+        >
           {a.heroCtaSecondary}
         </a>
       </div>
