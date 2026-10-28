@@ -657,7 +657,7 @@ const fr = {
       'Élus et élues des paliers municipal, provincial ou fédéral qui souhaitent appuyer le dialogue interculturel.',
     electedRights:
       'Participent aux activités et aux assemblées, sans droit de vote. Matin est non partisan : une adhésion n’est l’appui d’aucune personne ni d’aucun parti.',
-    feeNote: 'L’adhésion est gratuite pour la première année.',
+    feeNote: 'L’adhésion est gratuite jusqu’au 31 décembre 2027.',
     stepsTitle: 'Comment ça fonctionne',
     step1: 'Vous remplissez le formulaire d’adhésion.',
     step2: 'Le conseil d’administration étudie votre demande.',
