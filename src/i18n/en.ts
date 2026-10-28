@@ -646,13 +646,12 @@ const en: Dictionary = {
       'Municipal, provincial or federal elected officials who wish to support intercultural dialogue.',
     electedRights:
       'Take part in activities and meetings, without voting rights. Matin is non-partisan: membership is not an endorsement of any person or party.',
-    feeNote:
-      'The annual membership fee is set by the board of directors. We will confirm it when your application is accepted.',
+    feeNote: 'Membership is free for the first year.',
     stepsTitle: 'How It Works',
     step1: 'You fill in the membership application.',
     step2: 'The board of directors reviews your application.',
     step3:
-      'We write to you to confirm your membership and the fee. Membership is valid for one year and renewable.',
+      'We write to you to confirm your membership. Membership is valid for one year and renewable.',
     questions: 'Questions about membership?',
     formTitle: 'Membership Application',
     formIntro: 'Fill in this form to apply to become a member of Matin.',

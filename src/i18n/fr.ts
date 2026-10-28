@@ -657,13 +657,12 @@ const fr = {
       'Élus et élues des paliers municipal, provincial ou fédéral qui souhaitent appuyer le dialogue interculturel.',
     electedRights:
       'Participent aux activités et aux assemblées, sans droit de vote. Matin est non partisan : une adhésion n’est l’appui d’aucune personne ni d’aucun parti.',
-    feeNote:
-      'La cotisation annuelle est fixée par le conseil d’administration. Nous vous la confirmerons avec l’acceptation de votre demande.',
+    feeNote: 'L’adhésion est gratuite pour la première année.',
     stepsTitle: 'Comment ça fonctionne',
     step1: 'Vous remplissez le formulaire d’adhésion.',
     step2: 'Le conseil d’administration étudie votre demande.',
     step3:
-      'Nous vous écrivons pour confirmer votre adhésion et la cotisation. L’adhésion est valide un an et renouvelable.',
+      'Nous vous écrivons pour confirmer votre adhésion. L’adhésion est valide un an et renouvelable.',
     questions: 'Des questions sur l’adhésion?',
     formTitle: 'Formulaire d’adhésion',
     formIntro: 'Remplissez ce formulaire pour demander à devenir membre de Matin.',
