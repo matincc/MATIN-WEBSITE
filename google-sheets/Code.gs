@@ -95,7 +95,7 @@ function doPost(e) {
  * columns are written: row 1 holds array formulas that fill End Date, Status and Days Left,
  * so the row is the first one whose column B is empty (never appendRow). Start Date stays
  * empty: the row shows as pending until an admin types the date the board accepted it.
- * Membership is free for the first year, so Fee Paid is 0. Consent is required by the form,
+ * Membership is free until December 31, 2027, so Fee Paid is 0. Consent is required by the form,
  * so the submission date is also the Law 25 consent date.
  */
 const REGISTRY_ID = '13DqFVQzSBlSPtlIU-a41dCn3WsYe6VquDCwAhIXS4Y8';
