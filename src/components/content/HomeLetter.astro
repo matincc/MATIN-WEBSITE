@@ -4,7 +4,7 @@
  * more human homepage, a real voice instead of institutional copy). The President's
  * approved message from about.yaml, word for word, set as a letter on paper beside his
  * portrait pinned like a printed photo; his name in a handwriting typeface (Caveat for
- * French and English, Aref Ruqaa for Persian). It is typeset, never an imitation of his
+ * French and English; Persian uses Vazirmatn bold). It is typeset, never an imitation of his
  * real signature. Hidden if the message is empty.
  */
 import { ArrowRight } from '@lucide/astro';
@@ -142,10 +142,12 @@ const role = pick(p.signature, lang) || pick(p.title, lang);
     text-align: center;
     padding-block-start: 0.45rem;
   }
+  /* Persian: Vazirmatn bold, the site's Persian face (owner's request, Oct 28 2026: the
+     Ruqaa handwriting face was not readable for Persian readers). */
   :global([lang='fa']) .letter-hand {
-    font-family: 'Aref Ruqaa', var(--font-sans);
-    font-weight: 700;
-    font-size: 1.75rem;
+    font-family: var(--font-sans);
+    font-weight: 800;
+    font-size: 1.5rem;
   }
 
   /* The letter: warm paper, slightly off-straight, a ruled margin on the reading side. */
@@ -200,7 +202,8 @@ const role = pick(p.signature, lang) || pick(p.title, lang);
     padding: 0;
   }
   :global([lang='fa']) .letter-hand--sign {
-    font-size: 2.2rem;
+    font-size: 1.85rem;
+    rotate: none;
   }
   .letter-role {
     font-size: 0.98rem;
