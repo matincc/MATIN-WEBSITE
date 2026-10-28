@@ -11,6 +11,7 @@
  * allows motion and has not asked to save data. One button pauses all movement
  * (WCAG 2.2.2); nothing moves under prefers-reduced-motion.
  */
+import Scribble from '@/components/ui/Scribble.astro';
 import '@fontsource/playfair-display/700-italic.css';
 import { Picture } from 'astro:assets';
 import { ArrowRight, Pause, Play } from '@lucide/astro';
@@ -98,6 +99,7 @@ const sizes = '100vw';
       <h1 id="hero-title" class="ahero__title">
         <span class="ahero__name">{t('home.heroEyebrow')}</span>
         <span class="ahero__tagline">{t('home.heroTitle')}</span>
+        <Scribble class="ahero__scribble scribble--load" />
       </h1>
       <p class="ahero__words" role="img" aria-label={a.heroWordsLabel}>
         <span class="ahero__words-rule" aria-hidden="true"></span>
@@ -386,6 +388,11 @@ const sizes = '100vw';
     letter-spacing: -0.015em;
     color: var(--alive-cream);
     text-wrap: balance;
+  }
+  /* Hand-drawn underline under the headline (owner's request, Oct 28 2026). */
+  .ahero__title :global(.ahero__scribble) {
+    width: min(17rem, 68%);
+    margin-block: 0.55rem 0.1rem;
   }
   :global(html[lang='fa']) .ahero__tagline {
     font-family: var(--font-display);

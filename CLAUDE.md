@@ -116,6 +116,13 @@ The owner asked for a livelier, more human homepage ("Matin Alive"). This replac
 - Strings: `src/i18n/alive.ts` (FR, EN, FA).
 - **Logo (owner's file, Oct 27 2026):** the round sun logo `assets/logo-matin-sun.jpg` (transparent copy `src/assets/brand/logo-matin.png`, white background removed only) sits before the text lockup in the header and footer (`Lockup.astro`). The wave version he also sent is not used.
 
+## 4c. Human touches on the homepage (owner's request, Oct 28 2026: less uniform, less "AI-made")
+
+- **Letter from the President** (`HomeLetter.astro`, after Matin in Action): the approved `president.message` from `about.yaml`, word for word, as a letter on warm paper (slight tilt, coral margin rule), beside his portrait pinned like a printed photo (white border, gold tape). His name is set in a handwriting typeface (Caveat; Aref Ruqaa in Persian): typeset, never an imitation of his real signature.
+- **Hand-drawn underline** (`Scribble.astro`): one uneven pen stroke, under the hero headline and the letter title only; drawn in once, still under reduced motion.
+- Matin in Action posters and the homepage Areas of Work cards sit slightly off-straight (about 1 degree) and straighten on hover; the 01/02/03 numbers on the area cards were removed.
+- Coming up shows four dates; Matin Moments is hidden on the homepage until real photos or videos exist.
+
 ## 5. Accessibility and responsiveness
 
 - Real heading hierarchy: one `h1` per page, then `h2`/`h3` in order.

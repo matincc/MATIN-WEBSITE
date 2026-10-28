@@ -37,6 +37,7 @@ import MatinQuestion from '@/components/content/MatinQuestion.astro';
 import CulturesOnScreen from '@/components/content/CulturesOnScreen.astro';
 import SectionHeader from '@/components/ui/SectionHeader.astro';
 import AreasGrid from '@/components/content/AreasGrid.astro';
+import HomeLetter from '@/components/content/HomeLetter.astro';
 import { href, newsAnchors, siteAlternates, type UiLang } from '@/i18n/routes';
 import { pick, useTranslations } from '@/i18n/ui';
 import { getMatinFeed, type MatinItem } from '@/lib/matin';
@@ -110,7 +111,8 @@ const preview = process.env.CONTEXT !== 'production';
 
   <div class="alive">
     <AliveHero lang={lang} />
-    <UpcomingStrip lang={lang} />
+    {/* Four dates only (owner's request, Oct 28 2026: fewer identical cards). */}
+    <UpcomingStrip lang={lang} limit={4} />
 
     <!-- Matin in Action: what Matin is doing now. The featured item (a highlight marked
        featured, else Matin's next event, else the latest article), then the latest items.
@@ -265,6 +267,10 @@ const preview = process.env.CONTEXT !== 'production';
         )}
       </div>
     </section>
+
+    <!-- A Personal Note from Our President: his approved message as a letter, beside his
+       portrait (owner's request, Oct 28 2026: a human voice on the homepage) -->
+    <HomeLetter lang={lang} />
 
     <!-- Matin's Picks: the same section and data as on the Events page -->
     <PicksSection
@@ -439,8 +445,8 @@ const preview = process.env.CONTEXT !== 'production';
     overscroll-behavior-x: contain;
     scroll-snap-type: x mandatory;
     scrollbar-width: thin;
-    padding-block: 0.5rem 1rem;
-    padding-inline: 0.25rem;
+    padding-block: 1rem 1.25rem;
+    padding-inline: 0.75rem;
   }
   @media (min-width: 48rem) {
     .action-track {
@@ -482,7 +488,22 @@ const preview = process.env.CONTEXT !== 'production';
     display: grid;
     gap: 1.25rem;
   }
+  /* Posters pinned slightly off-straight, alternating (owner's request, Oct 28 2026). */
+  .action-slide:nth-child(3n + 1) .feature__zoom {
+    rotate: -1.4deg;
+  }
+  .action-slide:nth-child(3n + 2) .feature__zoom {
+    rotate: 1deg;
+  }
+  .action-slide:nth-child(3n) .feature__zoom {
+    rotate: -0.6deg;
+  }
+  .feature__zoom:hover,
+  .feature__zoom:focus-visible {
+    rotate: 0deg;
+  }
   .feature__zoom {
+    transition: rotate 0.45s ease;
     position: relative;
     display: block;
     overflow: hidden;

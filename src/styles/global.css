@@ -15,6 +15,11 @@
 @import '@fontsource/playfair-display/700.css';
 /* Persian pages only: the browser fetches it just where Persian text appears. */
 @import '@fontsource-variable/vazirmatn/index.css';
+/* Handwriting touches on the homepage (owner's request, Oct 28 2026: a more human site):
+   Caveat for Latin pages, Aref Ruqaa for Persian. Only the President's name and short
+   notes use them, never reading text. */
+@import '@fontsource/caveat/600.css';
+@import '@fontsource/aref-ruqaa/700.css';
 
 /*
  * Matin colour system. These variables are the ONLY colours on the site (see

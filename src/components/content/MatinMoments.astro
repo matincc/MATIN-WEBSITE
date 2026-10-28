@@ -3,7 +3,7 @@
  * "Matin Moments" on the homepage: one large item (Matin's introductory video once it is
  * set, otherwise the first featured photo or video) and four smaller ones, chosen in the
  * gallery admin with `featured`. Until real photos and videos are published, the places
- * are shown as quiet "coming soon" tiles in the dialogue motif, never sample pictures.
+ * the section is hidden on the homepage (owner, Oct 28 2026); never sample pictures.
  */
 import { Picture } from 'astro:assets';
 import { ArrowRight, Play } from '@lucide/astro';
@@ -27,6 +27,9 @@ const accents = ['coral', 'mustard', 'teal', 'terracotta'] as const;
 const galleryHref = href('gallery', lang);
 ---
 
+{/* Hidden until real photos or videos exist (owner's request, Oct 28 2026: no
+   "coming soon" placeholders on the homepage). */}
+{lead && (
 <section class="section-pad bg-paper" aria-labelledby="moments-title">
   <div class="container-site">
     <SectionHeader
@@ -111,6 +114,7 @@ const galleryHref = href('gallery', lang);
     </a>
   </div>
 </section>
+)}
 
 <style>
   /* Editorial layout: the large item on the reading side, four tiles beside it. */
