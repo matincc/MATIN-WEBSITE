@@ -62,7 +62,7 @@ const en: Dictionary = {
     teamPresident: 'President',
     teamMembers: 'Team',
     teamExecutive: 'Executive Team',
-    teamAdvisors: 'Advisors & Friends of Matin',
+    teamAdvisors: "Collaborate with Matin",
     resourcesDirectory: 'Directory of Organizations',
     president: 'A Personal Note from Our President',
     ourPresident: 'Our President',
@@ -354,6 +354,14 @@ const en: Dictionary = {
       'People who voluntarily share their knowledge, advice and support, without being employees or officers of Matin.',
     advisorsEmpty:
       'Matin gratefully welcomes those who share their knowledge and support its work. Their profiles will appear here, with their consent.',
+    joinTitle: "Share Your Expertise with Matin",
+    joinText:
+      "Matin Intercultural Institute warmly welcomes everyone who would like to share their knowledge, experience and talents with us. Whether you join us as a volunteer or as an advisor on some of our projects, in person in Montréal or online from anywhere in the world, your contribution helps build bridges between cultures, communities and ideas. Every skill counts, and every voice enriches the dialogue.",
+    joinWayInPerson: "In person",
+    joinWayOnline: "Online",
+    joinWayVolunteer: "Volunteering",
+    joinWayAdvisor: "Advising on projects",
+    joinCta: "Offer your collaboration",
     readMore: 'Read the full biography',
     comingSoon: 'Profile coming soon',
     photoAlt: 'Portrait of {name}',

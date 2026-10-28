@@ -63,7 +63,7 @@ const fr = {
     teamPresident: 'Président',
     teamMembers: 'Équipe',
     teamExecutive: 'Équipe de direction',
-    teamAdvisors: 'Conseillers et amis de Matin',
+    teamAdvisors: "Collaborer avec Matin",
     resourcesDirectory: 'Répertoire des organismes',
     president: 'Un mot personnel de notre président',
     ourPresident: 'Notre président',
@@ -359,6 +359,14 @@ const fr = {
       'Des personnes qui partagent bénévolement leurs connaissances, leurs conseils et leur soutien, sans être employées ni dirigeantes de Matin.',
     advisorsEmpty:
       'Matin accueille avec reconnaissance celles et ceux qui partagent leur savoir et soutiennent son travail. Leurs profils paraîtront ici, avec leur accord.',
+    joinTitle: "Partagez votre savoir-faire avec Matin",
+    joinText:
+      "L'Institut interculturel Matin accueille chaleureusement toutes les personnes qui souhaitent partager avec nous leurs connaissances, leur expérience et leurs talents. Que vous vous joigniez à nous comme bénévole ou comme conseillère ou conseiller sur certains de nos projets, en personne à Montréal ou en ligne, où que vous soyez dans le monde, votre contribution aide à bâtir des ponts entre les cultures, les communautés et les idées. Chaque compétence compte, et chaque voix enrichit le dialogue.",
+    joinWayInPerson: "En personne",
+    joinWayOnline: "En ligne",
+    joinWayVolunteer: "Bénévolat",
+    joinWayAdvisor: "Conseil sur des projets",
+    joinCta: "Proposer ma collaboration",
     readMore: 'Lire la biographie complète',
     comingSoon: 'Profil à venir',
     photoAlt: 'Portrait de {name}',
