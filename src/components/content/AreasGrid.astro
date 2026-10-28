@@ -34,10 +34,9 @@ const areas = [
   },
   { title: t('home.area3Title'), text: t('home.area3Text'), photo: photos.library, accent: 'teal' },
 ];
-const num = new Intl.NumberFormat(lang === 'fa' ? 'fa-IR' : 'en-CA', { minimumIntegerDigits: 2 });
 ---
 
-<ul class="areas-grid">
+<ul class:list={['areas-grid', linked && 'areas-grid--loose']}>
   {areas.map((a, i) => (
     <li data-reveal style={`--reveal-delay:${i * 130}ms`}>
       <article class:list={['area-card', linked && 'card-lift']} data-accent={a.accent}>
@@ -50,9 +49,6 @@ const num = new Intl.NumberFormat(lang === 'fa' ? 'fa-IR' : 'en-CA', { minimumIn
             sizes="(min-width: 64rem) 28rem, (min-width: 48rem) 45vw, 92vw"
             style={`object-position:${a.photo.focus}`}
           />
-          <span class="area-card__num" aria-hidden="true">
-            {num.format(i + 1)}
-          </span>
           <PhotoCredit credit={a.photo.credit} variant="overlay" />
         </div>
         <div class="area-card__body">
@@ -102,6 +98,26 @@ const num = new Intl.NumberFormat(lang === 'fa' ? 'fa-IR' : 'en-CA', { minimumIn
       margin-block-start: 3rem;
     }
   }
+  /* Homepage (owner's request, Oct 28 2026: less uniform): the cards sit slightly
+     off-straight, like prints laid on a table, and straighten on hover. */
+  @media (min-width: 48rem) {
+    .areas-grid--loose > li:nth-child(1) .area-card {
+      rotate: -1.1deg;
+    }
+    .areas-grid--loose > li:nth-child(2) .area-card {
+      rotate: 0.8deg;
+    }
+    .areas-grid--loose > li:nth-child(3) .area-card {
+      rotate: -0.5deg;
+    }
+    .areas-grid--loose .area-card {
+      transition: rotate 0.45s ease;
+    }
+    .areas-grid--loose .area-card:hover,
+    .areas-grid--loose .area-card:focus-within {
+      rotate: 0deg;
+    }
+  }
   .area-card {
     position: relative;
     display: flex;
@@ -128,31 +144,6 @@ const num = new Intl.NumberFormat(lang === 'fa' ? 'fa-IR' : 'en-CA', { minimumIn
   }
   .area-card:hover .area-card__media :global(img) {
     transform: scale(1.05);
-  }
-  /* Large number on an accent tile (navy on mustard is large text: 5.3:1; mustard on navy 5.3:1;
-     on teal the number is white, 3.9:1, also large text). */
-  .area-card__num {
-    position: absolute;
-    inset-block-start: 1rem;
-    inset-inline-start: 1rem;
-    display: grid;
-    place-items: center;
-    min-width: 3.5rem;
-    height: 3.5rem;
-    padding-inline: 0.5rem;
-    border-radius: 0.9rem;
-    background: var(--accent);
-    color: var(--color-primary);
-    font-size: 1.5rem;
-    font-weight: 800;
-    line-height: 1;
-  }
-  [data-accent='teal'] .area-card__num {
-    color: var(--color-white);
-  }
-  /* On navy the number is mustard (5.3:1). */
-  [data-accent='navy'] .area-card__num {
-    color: var(--color-gold);
   }
   .area-card__body {
     display: flex;

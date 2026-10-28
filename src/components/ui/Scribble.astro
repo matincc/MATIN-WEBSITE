@@ -1,0 +1,74 @@
+---
+/**
+ * A hand-drawn underline (owner's request, Oct 28 2026: a more human, less "template"
+ * homepage). One uneven pen stroke in the palette, drawn in once when it scrolls into view;
+ * still under reduced motion. Decorative only.
+ */
+interface Props {
+  class?: string;
+  /** Stroke colour: a palette variable. */
+  color?: string;
+}
+const { class: className, color = 'var(--alive-gold)' } = Astro.props;
+---
+
+<svg
+  class:list={['scribble', className]}
+  viewBox="0 0 200 16"
+  preserveAspectRatio="none"
+  aria-hidden="true"
+  focusable="false"
+  style={`--scribble:${color}`}
+>
+  <path d="M3 10.5c22-4.6 47-6.4 74-5.2 21 .9 33 3.4 55 2.8 21-.6 39-3.1 65-2.2" pathLength="1" />
+  <path d="M28 13.2c35-2.3 70-2.6 108-1.1" pathLength="1" class="scribble__second" />
+</svg>
+
+<style>
+  .scribble {
+    display: block;
+    width: 100%;
+    height: 0.6em;
+    overflow: visible;
+  }
+  .scribble path {
+    fill: none;
+    stroke: var(--scribble);
+    stroke-width: 2.4;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+    stroke-dasharray: 1;
+    stroke-dashoffset: 0;
+  }
+  .scribble__second {
+    stroke-width: 1.6;
+    opacity: 0.75;
+  }
+  /* Inside a [data-reveal] block the stroke draws itself when the block comes into view;
+     elsewhere (the hero) it draws once on load. */
+  @media (prefers-reduced-motion: no-preference) {
+    .scribble path {
+      transition: stroke-dashoffset 1.1s 0.45s cubic-bezier(0.6, 0, 0.3, 1);
+    }
+    .scribble .scribble__second {
+      transition-delay: 1.1s;
+    }
+    :global(.reveal-ready [data-reveal]:not(.is-visible)) .scribble path {
+      stroke-dashoffset: 1;
+    }
+    .scribble--load path {
+      animation: scribble-draw 1.1s 0.6s cubic-bezier(0.6, 0, 0.3, 1) both;
+    }
+    .scribble--load .scribble__second {
+      animation-delay: 1.3s;
+    }
+  }
+  @keyframes scribble-draw {
+    from {
+      stroke-dashoffset: 1;
+    }
+  }
+  :global([dir='rtl']) .scribble {
+    transform: scaleX(-1);
+  }
+</style>
