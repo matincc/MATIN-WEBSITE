@@ -13,7 +13,15 @@
  * Adding a member is one YAML file in src/content/team/ (name, role, photo, bio, LinkedIn).
  */
 import { Image } from 'astro:assets';
-import { ArrowRight, ChevronDown, ExternalLink, Globe, HandHeart, Lightbulb, MapPin } from '@lucide/astro';
+import {
+  ArrowRight,
+  ChevronDown,
+  ExternalLink,
+  Globe,
+  HandHeart,
+  Lightbulb,
+  MapPin,
+} from '@lucide/astro';
 import PageLayout from '@/layouts/PageLayout.astro';
 import PresidentSection from '@/components/content/PresidentSection.astro';
 import CommunityIllustration from '@/components/brand/CommunityIllustration.astro';
@@ -125,7 +133,9 @@ const joinWays = [
 
       <section id="advisors" class="team-join scroll-mt-24" aria-labelledby="advisors-title">
         <div class="team-join__text">
-          <h2 id="advisors-title" class="team-group__title">{t('team.joinTitle')}</h2>
+          <h2 id="advisors-title" class="team-group__title">
+            {t('team.joinTitle')}
+          </h2>
           <p class="team-join__lede">{t('team.joinText')}</p>
           <ul class="team-join__ways">
             {joinWays.map((w) => (
