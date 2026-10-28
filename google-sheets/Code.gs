@@ -28,9 +28,8 @@ const FORMS = {
     tab: 'Infolettre · Newsletter',
     fields: ['email'],
   },
-  // Membership applications (Oct 28 2026): the intake queue; accepted members are then
-  // copied by hand into the registry « Members - اعضا ». Consent is required by the form,
-  // so « Reçu le » is also the Law 25 consent date.
+  // Membership applications (Oct 28 2026): kept here as a log, and also written straight
+  // into the category tab of the registry « Members - اعضا » (see addToRegistry below).
   adhesion: {
     tab: 'Adhésions · Membership · عضویت',
     fields: [
@@ -80,6 +79,7 @@ function doPost(e) {
       '',
       id,
     ]);
+    if (body.form === 'adhesion') addToRegistry(data, received);
     return reply('ok');
   } catch (err) {
     console.error(err);
@@ -87,6 +87,87 @@ function doPost(e) {
   } finally {
     lock.releaseLock();
   }
+}
+
+/*
+ * Membership registry (owner's request, Oct 28 2026): each website application lands
+ * directly in its category tab, one row per member, with a new Member ID. Only the data
+ * columns are written: row 1 holds array formulas that fill End Date, Status and Days Left,
+ * so the row is the first one whose column B is empty (never appendRow). Start Date stays
+ * empty: the row shows as pending until an admin types the date the board accepted it.
+ * Membership is free for the first year, so Fee Paid is 0. Consent is required by the form,
+ * so the submission date is also the Law 25 consent date.
+ */
+const REGISTRY_ID = '13DqFVQzSBlSPtlIU-a41dCn3WsYe6VquDCwAhIXS4Y8';
+const SOURCE_WEBSITE = 'Website form';
+
+const REGISTRY = {
+  individual: {
+    tab: 'Individual',
+    prefix: 'IND-',
+    // A..L, then P..S, then U (M, N, O and T are formulas or admin checkboxes).
+    blocks: (d, date) => [
+      ['A', [null, d.first_name, d.last_name, d.occupation, d.email, d.phone, d.address,
+        d.city, d.province, d.postal_code, d.language, '']],
+      ['P', [0, true, date, SOURCE_WEBSITE]],
+      ['U', [d.message]],
+    ],
+  },
+  organization: {
+    tab: 'Organizational',
+    prefix: 'ORG-',
+    blocks: (d, date) => [
+      ['A', [null, d.organization, d.org_type, d.first_name, d.last_name, d.position, d.email,
+        d.phone, d.address, d.city, d.province, d.postal_code, d.language, '']],
+      ['R', [0, true, date, SOURCE_WEBSITE]],
+      ['W', [d.message]],
+    ],
+  },
+  elected: {
+    tab: 'Elected Officials',
+    prefix: 'ELU-',
+    blocks: (d, date) => [
+      ['A', [null, d.first_name, d.last_name, d.office, d.government_level, d.district, d.email,
+        d.phone, d.address, d.city, d.province, d.postal_code, d.language, '']],
+      ['R', [0, true, date, SOURCE_WEBSITE]],
+      ['W', [d.message]],
+    ],
+  },
+};
+
+function addToRegistry(data, received) {
+  const type = REGISTRY[clean(data.member_type)];
+  if (!type) return;
+  const sheet = SpreadsheetApp.openById(REGISTRY_ID).getSheetByName(type.tab);
+  const last = Math.max(sheet.getLastRow(), 1);
+  const ids = sheet.getRange(1, 1, last, 2).getValues();
+  // First row (after the header) whose column B is empty; the highest ID so far.
+  let row = 0;
+  let max = 0;
+  ids.forEach(([id, b], i) => {
+    if (i === 0) return;
+    if (!row && String(b).trim() === '') row = i + 1;
+    const n = String(id).startsWith(type.prefix) ? parseInt(String(id).slice(type.prefix.length), 10) : 0;
+    if (n > max) max = n;
+  });
+  if (!row) row = last + 1;
+
+  const langs = clean(data.languages);
+  const d = {};
+  Object.keys(data).forEach((k) => (d[k] = clean(data[k])));
+  d.language = /French/.test(langs) && /English/.test(langs)
+    ? 'French & English'
+    : /French/.test(langs) ? 'French' : /English/.test(langs) ? 'English' : '';
+
+  type.blocks(d, received).forEach(([col, values]) => {
+    if (col === 'A') values[0] = type.prefix + String(max + 1).padStart(4, '0');
+    const cells = values.map((v) => (v === undefined || v === null ? '' : v));
+    sheet.getRange(row, columnNumber(col), 1, cells.length).setValues([cells]);
+  });
+}
+
+function columnNumber(letter) {
+  return letter.charCodeAt(0) - 64;
 }
 
 /** Plain text only: lists joined, length capped, no formulas (=, +, -, @). */
