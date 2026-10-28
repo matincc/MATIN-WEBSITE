@@ -662,7 +662,7 @@ const fr = {
     step1: 'Vous remplissez le formulaire d’adhésion.',
     step2: 'Le conseil d’administration étudie votre demande.',
     step3:
-      'Nous vous écrivons pour confirmer votre adhésion. L’adhésion est valide un an et renouvelable.',
+      'Nous vous écrivons pour confirmer votre adhésion. Elle est valide 365 jours à partir de cette date et renouvelable.',
     questions: 'Des questions sur l’adhésion?',
     formTitle: 'Formulaire d’adhésion',
     formIntro: 'Remplissez ce formulaire pour demander à devenir membre de Matin.',

@@ -651,7 +651,7 @@ const en: Dictionary = {
     step1: 'You fill in the membership application.',
     step2: 'The board of directors reviews your application.',
     step3:
-      'We write to you to confirm your membership. Membership is valid for one year and renewable.',
+      'We write to you to confirm your membership. It is valid for 365 days from that date and renewable.',
     questions: 'Questions about membership?',
     formTitle: 'Membership Application',
     formIntro: 'Fill in this form to apply to become a member of Matin.',
