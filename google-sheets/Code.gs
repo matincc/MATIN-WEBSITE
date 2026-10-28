@@ -206,7 +206,7 @@ function sendReceipt(data) {
       '',
       'Institut interculturel Matin · Matin Intercultural Institute',
     ].join('\n');
-    GmailApp.sendEmail(email, "Demande d'adhésion reçue · Membership application received", text, {
+    GmailApp.sendEmail(email, "Votre demande d'adhésion a été reçue · Your membership application has been received", text, {
       from: MEMBERS_FROM,
       name: 'Institut interculturel Matin',
       replyTo: MEMBERS_FROM,
