@@ -13,6 +13,7 @@ import Scribble from '@/components/ui/Scribble.astro';
 import { href, type UiLang } from '@/i18n/routes';
 import { pick, useTranslations } from '@/i18n/ui';
 import { getSingleton } from '@/lib/content';
+import portrait from '@/assets/photos/president-casual.jpg';
 
 interface Props {
   lang: UiLang;
@@ -25,11 +26,9 @@ const paragraphs = message
   .split(/\n\s*\n/)
   .map((s) => s.trim())
   .filter(Boolean);
-const portraits = import.meta.glob<ImageMetadata>(
-  '/src/assets/brand/president.{jpg,jpeg,png,webp}',
-  { eager: true, import: 'default' },
-);
-const photo = Object.values(portraits)[0];
+// A relaxed autumn portrait for the letter (owner's photo and choice, Oct 28 2026: less
+// formal than the suit portrait used on Our Team).
+const photo = portrait;
 const name = pick(p.displayName, lang) || p.name;
 const role = pick(p.signature, lang) || pick(p.title, lang);
 ---
@@ -119,7 +118,7 @@ const role = pick(p.signature, lang) || pick(p.title, lang);
     width: 100%;
     aspect-ratio: 4 / 5;
     object-fit: cover;
-    object-position: 50% 25%;
+    object-position: 50% 40%;
   }
   .letter-photo__tape {
     position: absolute;
