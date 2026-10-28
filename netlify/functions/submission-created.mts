@@ -24,7 +24,7 @@ const SHEET_WEBHOOK_URL =
   'https://script.google.com/macros/s/AKfycbw-Tpom1Ejxw9H0fOnyzp7YjM9_yLqtwFWjUcokD9vgYjRMqOHI9NcQyqn5bQuKbZq4EQ/exec';
 
 /** Forms copied to the Sheet; anything else is ignored there. */
-const SHEET_FORMS = new Set(['benevolat', 'contact', 'newsletter', 'emplois']);
+const SHEET_FORMS = new Set(['benevolat', 'contact', 'newsletter', 'emplois', 'adhesion']);
 
 /** Never sent to the Sheet: spam-filter internals and the visitor's network details. */
 const PRIVATE_FIELDS = new Set([
@@ -35,6 +35,10 @@ const PRIVATE_FIELDS = new Set([
   'user_agent',
   'referrer',
   'consent',
+  'confirm_age',
+  'confirm_authorized',
+  'confirm_nonpartisan',
+  'confirm_bylaws',
 ]);
 
 interface Payload {

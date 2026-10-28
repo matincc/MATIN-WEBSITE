@@ -1,0 +1,485 @@
+---
+/**
+ * Membership application (Become a Member page, owner's request Oct 28 2026). Netlify form
+ * « adhesion ». The applicant first chooses a category: individual (active member, 18 or
+ * over), organization (represented by a delegate) or elected official; the matching fields
+ * and commitments appear with it (data-show-when). Values are sent in English so the rows
+ * in the Sheet stay the same whatever the page's language. Membership dates and the fee are
+ * set by the board afterwards, never by the applicant.
+ */
+import FormShell from './FormShell.astro';
+import Field from './Field.astro';
+import { href, type UiLang } from '@/i18n/routes';
+import { useTranslations } from '@/i18n/ui';
+
+interface Props {
+  lang: UiLang;
+}
+const { lang } = Astro.props;
+const t = useTranslations(lang);
+
+const TYPES = [
+  { value: 'individual', label: t('membership.individualTitle') },
+  { value: 'organization', label: t('membership.organizationTitle') },
+  { value: 'elected', label: t('membership.electedTitle') },
+];
+const ORG_TYPES = ['nonprofit', 'cultural', 'community', 'public', 'business', 'other'] as const;
+const ORG_VALUES: Record<(typeof ORG_TYPES)[number], string> = {
+  nonprofit: 'Non-profit',
+  cultural: 'Cultural organization',
+  community: 'Community organization',
+  public: 'Public institution',
+  business: 'Business',
+  other: 'Other',
+};
+const GOV_LEVELS = ['Municipal', 'Provincial', 'Federal', 'Other'] as const;
+const LANGUAGES = [
+  'French',
+  'English',
+  'Persian',
+  'Arabic',
+  'Spanish',
+  'Chinese',
+  'Other',
+] as const;
+const INTERESTS = [
+  'events',
+  'dialogue',
+  'research',
+  'communications',
+  'partnerships',
+  'volunteering',
+] as const;
+const INTEREST_VALUES: Record<(typeof INTERESTS)[number], string> = {
+  events: 'Cultural events',
+  dialogue: 'Intercultural dialogue',
+  research: 'Cultural research and planning',
+  communications: 'Communications',
+  partnerships: 'Partnerships',
+  volunteering: 'Volunteering',
+};
+---
+
+<FormShell
+  lang={lang}
+  name="adhesion"
+  id="member"
+  action={`${href('membership', lang)}?sent=1`}
+  submitLabel={t('membership.submit')}
+  consentText={t('membership.consent')}
+  successMessage={t('membership.success')}
+>
+  <fieldset class="field mem-group">
+    <legend class="field-label">
+      {t('membership.typeQuestion')}
+      <span class="req"> ({t('form.required')})</span>
+    </legend>
+    <div class="mem-types">
+      {TYPES.map((type, i) => (
+        <label class="mem-type">
+          <input
+            id={i === 0 ? 'member-type' : `member-type-${type.value}`}
+            type="radio"
+            name="member_type"
+            value={type.value}
+            required={i === 0}
+            aria-describedby={i === 0 ? 'member-type-error' : undefined}
+          />
+          <span>{type.label}</span>
+        </label>
+      ))}
+    </div>
+    <p id="member-type-error" class="field-error" hidden></p>
+  </fieldset>
+
+  {/* Organization: its name and type, then the delegate below. */}
+  <div class="grid gap-5 sm:grid-cols-2" data-show-when="member_type=organization">
+    <Field
+      lang={lang}
+      id="member-organization"
+      name="organization"
+      label={t('membership.organization')}
+      autocomplete="organization"
+      requiredWhen="member_type=organization"
+    />
+    <div class="field">
+      <label for="member-org-type" class="field-label" data-short={t('membership.orgType')}>
+        <span data-label-text>{t('membership.orgType')}</span>
+      </label>
+      <select id="member-org-type" name="org_type" class="input">
+        <option value="">—</option>
+        {ORG_TYPES.map((o) => (
+          <option value={ORG_VALUES[o]}>{t(`membership.orgTypes.${o}`)}</option>
+        ))}
+      </select>
+    </div>
+  </div>
+
+  <div class="grid gap-5 sm:grid-cols-2">
+    <Field
+      lang={lang}
+      id="member-first-name"
+      name="first_name"
+      label={t('membership.firstName')}
+      required
+      autocomplete="given-name"
+      labelWhen={{ when: 'member_type=organization', label: t('membership.delegateFirstName') }}
+    />
+    <Field
+      lang={lang}
+      id="member-last-name"
+      name="last_name"
+      label={t('membership.lastName')}
+      required
+      autocomplete="family-name"
+      labelWhen={{ when: 'member_type=organization', label: t('membership.delegateLastName') }}
+    />
+  </div>
+
+  <div data-show-when="member_type=individual">
+    <Field
+      lang={lang}
+      id="member-occupation"
+      name="occupation"
+      label={t('membership.occupation')}
+      autocomplete="organization-title"
+    />
+  </div>
+  <div data-show-when="member_type=organization">
+    <Field
+      lang={lang}
+      id="member-position"
+      name="position"
+      label={t('membership.position')}
+      autocomplete="organization-title"
+    />
+  </div>
+
+  {/* Elected officials: office, level of government and district. */}
+  <div class="grid gap-5 sm:grid-cols-2" data-show-when="member_type=elected">
+    <Field
+      lang={lang}
+      id="member-office"
+      name="office"
+      label={t('membership.office')}
+      requiredWhen="member_type=elected"
+      class="sm:col-span-2"
+    />
+    <div class="field">
+      <label for="member-gov-level" class="field-label" data-short={t('membership.govLevel')}>
+        <span data-label-text>{t('membership.govLevel')}</span>
+      </label>
+      <select id="member-gov-level" name="government_level" class="input">
+        <option value="">—</option>
+        {GOV_LEVELS.map((g) => (
+          <option value={g}>{t(`membership.govLevels.${g}`)}</option>
+        ))}
+      </select>
+    </div>
+    <Field lang={lang} id="member-district" name="district" label={t('membership.district')} />
+  </div>
+
+  <div class="grid gap-5 sm:grid-cols-2">
+    <Field
+      lang={lang}
+      id="member-email"
+      name="email"
+      type="email"
+      label={t('form.email')}
+      required
+      autocomplete="email"
+    />
+    <Field
+      lang={lang}
+      id="member-phone"
+      name="phone"
+      type="tel"
+      label={t('form.phone')}
+      autocomplete="tel"
+    />
+  </div>
+
+  <fieldset class="field mem-group">
+    <legend class="field-label">{t('membership.addressTitle')}</legend>
+    <div class="grid gap-5 sm:grid-cols-2">
+      <Field
+        lang={lang}
+        id="member-address"
+        name="address"
+        label={t('membership.address')}
+        required
+        autocomplete="street-address"
+        class="sm:col-span-2"
+      />
+      <Field
+        lang={lang}
+        id="member-city"
+        name="city"
+        label={t('membership.city')}
+        required
+        autocomplete="address-level2"
+      />
+      <div class="field">
+        <label for="member-province" class="field-label" data-short={t('membership.province')}>
+          <span data-label-text>{t('membership.province')}</span>
+          <span class="req"> ({t('form.required')})</span>
+        </label>
+        <input
+          id="member-province"
+          name="province"
+          type="text"
+          class="input"
+          value="Québec"
+          required
+          autocomplete="address-level1"
+          aria-describedby="member-province-error"
+        />
+        <p id="member-province-error" class="field-error" hidden></p>
+      </div>
+      <Field
+        lang={lang}
+        id="member-postal-code"
+        name="postal_code"
+        label={t('membership.postalCode')}
+        required
+        autocomplete="postal-code"
+      />
+      <div class="field">
+        <label for="member-country" class="field-label" data-short={t('membership.country')}>
+          <span data-label-text>{t('membership.country')}</span>
+          <span class="req"> ({t('form.required')})</span>
+        </label>
+        <input
+          id="member-country"
+          name="country"
+          type="text"
+          class="input"
+          value="Canada"
+          required
+          autocomplete="country-name"
+          aria-describedby="member-country-error"
+        />
+        <p id="member-country-error" class="field-error" hidden></p>
+      </div>
+    </div>
+  </fieldset>
+
+  <fieldset class="field mem-group">
+    <legend class="field-label">{t('form.languages')}</legend>
+    <ul class="mem-choices">
+      {LANGUAGES.map((l) => (
+        <li>
+          <input
+            type="checkbox"
+            id={`member-lang-${l.toLowerCase()}`}
+            name="languages"
+            value={l}
+            class="size-5 accent-primary"
+          />
+          <label for={`member-lang-${l.toLowerCase()}`}>{t(`form.languageNames.${l}`)}</label>
+        </li>
+      ))}
+    </ul>
+  </fieldset>
+
+  <fieldset class="field mem-group">
+    <legend class="field-label">{t('membership.interests')}</legend>
+    <ul class="mem-choices">
+      {INTERESTS.map((i) => (
+        <li>
+          <input
+            type="checkbox"
+            id={`member-interest-${i}`}
+            name="interests"
+            value={INTEREST_VALUES[i]}
+            class="size-5 accent-primary"
+          />
+          <label for={`member-interest-${i}`}>{t(`membership.interestNames.${i}`)}</label>
+        </li>
+      ))}
+    </ul>
+  </fieldset>
+
+  <Field
+    lang={lang}
+    id="member-message"
+    name="message"
+    as="textarea"
+    label={t('membership.message')}
+  />
+
+  {/* Commitments: the one for the chosen category, then the bylaws for everyone. */}
+  <div class="mem-commitments">
+    <div class="field" data-show-when="member_type=individual">
+      <div class="flex items-start gap-3">
+        <input
+          id="member-age"
+          type="checkbox"
+          name="confirm_age"
+          value="yes"
+          data-required-when="member_type=individual"
+          class="mt-1 size-5 shrink-0 accent-primary"
+          aria-describedby="member-age-error"
+        />
+        <label
+          for="member-age"
+          class="text-sm leading-relaxed"
+          data-short={t('membership.ageConfirm')}
+        >
+          {t('membership.ageConfirm')} <span class="text-muted">({t('form.required')})</span>
+        </label>
+      </div>
+      <p id="member-age-error" class="field-error" hidden></p>
+    </div>
+    <div class="field" data-show-when="member_type=organization">
+      <div class="flex items-start gap-3">
+        <input
+          id="member-authorized"
+          type="checkbox"
+          name="confirm_authorized"
+          value="yes"
+          data-required-when="member_type=organization"
+          class="mt-1 size-5 shrink-0 accent-primary"
+          aria-describedby="member-authorized-error"
+        />
+        <label
+          for="member-authorized"
+          class="text-sm leading-relaxed"
+          data-short={t('membership.authorizedConfirm')}
+        >
+          {t('membership.authorizedConfirm')} <span class="text-muted">({t('form.required')})</span>
+        </label>
+      </div>
+      <p id="member-authorized-error" class="field-error" hidden></p>
+    </div>
+    <div class="field" data-show-when="member_type=elected">
+      <div class="flex items-start gap-3">
+        <input
+          id="member-nonpartisan"
+          type="checkbox"
+          name="confirm_nonpartisan"
+          value="yes"
+          data-required-when="member_type=elected"
+          class="mt-1 size-5 shrink-0 accent-primary"
+          aria-describedby="member-nonpartisan-error"
+        />
+        <label
+          for="member-nonpartisan"
+          class="text-sm leading-relaxed"
+          data-short={t('membership.nonPartisanConfirm')}
+        >
+          {t('membership.nonPartisanConfirm')}
+          <span class="text-muted">({t('form.required')})</span>
+        </label>
+      </div>
+      <p id="member-nonpartisan-error" class="field-error" hidden></p>
+    </div>
+    <div class="field">
+      <div class="flex items-start gap-3">
+        <input
+          id="member-bylaws"
+          type="checkbox"
+          name="confirm_bylaws"
+          value="yes"
+          required
+          class="mt-1 size-5 shrink-0 accent-primary"
+          aria-describedby="member-bylaws-error"
+        />
+        <label
+          for="member-bylaws"
+          class="text-sm leading-relaxed"
+          data-short={t('membership.bylawsConfirm')}
+        >
+          {t('membership.bylawsConfirm')} <span class="text-muted">({t('form.required')})</span>
+        </label>
+      </div>
+      <p id="member-bylaws-error" class="field-error" hidden></p>
+    </div>
+  </div>
+</FormShell>
+
+<style>
+  .mem-group {
+    margin: 0;
+    padding: 0;
+    border: 0;
+  }
+  .mem-group > legend {
+    margin-block-end: 0.6rem;
+    padding: 0;
+  }
+  .mem-types {
+    display: grid;
+    gap: 0.75rem;
+  }
+  @media (min-width: 40rem) {
+    .mem-types {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+  }
+  /* Large, card-like choices: navy edge when selected (same as the contact form). */
+  .mem-type {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    min-height: 3.25rem;
+    padding: 0.75rem 1rem;
+    border: 1.5px solid color-mix(in srgb, var(--color-primary) 22%, transparent);
+    border-radius: 0.85rem;
+    background: var(--color-white);
+    font-weight: 600;
+    cursor: pointer;
+  }
+  .mem-type input {
+    width: 1.25rem;
+    height: 1.25rem;
+    flex-shrink: 0;
+    accent-color: var(--color-primary);
+  }
+  .mem-type:has(input:checked) {
+    border-color: var(--color-primary);
+    background: color-mix(in srgb, var(--color-gold) 22%, var(--color-white));
+  }
+  .mem-type:has(input:focus-visible) {
+    outline: 2px solid var(--color-primary);
+    outline-offset: 2px;
+  }
+  .mem-choices {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+  }
+  .mem-choices li {
+    position: relative;
+  }
+  .mem-choices label {
+    display: inline-flex;
+    align-items: center;
+    min-height: 2.75rem;
+    padding-block: 0.45rem;
+    padding-inline: 2.4rem 1rem;
+    border: 1.5px solid color-mix(in srgb, var(--color-primary) 22%, transparent);
+    border-radius: 999px;
+    background: var(--color-white);
+    cursor: pointer;
+  }
+  .mem-choices input {
+    position: absolute;
+    inset-block-start: 50%;
+    inset-inline-start: 0.85rem;
+    transform: translateY(-50%);
+  }
+  .mem-choices input:checked + label {
+    border-color: var(--color-primary);
+    background: color-mix(in srgb, var(--color-gold) 22%, var(--color-white));
+    font-weight: 600;
+  }
+  .mem-choices input:focus-visible + label {
+    outline: 2px solid var(--color-primary);
+    outline-offset: 2px;
+  }
+  .mem-commitments {
+    display: grid;
+    gap: 1rem;
+  }
+</style>

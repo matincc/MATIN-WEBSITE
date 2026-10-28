@@ -1,5 +1,7 @@
 /**
- * Matin – website form entries → Google Sheet (owner's request, Oct 27 2026).
+ * Matin – website form entries → Google Sheet (owner's request, Oct 27 2026; membership
+ * applications added Oct 28 2026: after changing this file, paste it into the Apps Script
+ * editor and Deploy → Manage deployments → Edit → New version, keeping the same URL).
  *
  * Web app (Execute as: Me, Who has access: Anyone). The site's Netlify function
  * « submission-created » posts every verified form submission here; each one becomes
@@ -25,6 +27,17 @@ const FORMS = {
   newsletter: {
     tab: 'Infolettre · Newsletter',
     fields: ['email'],
+  },
+  // Membership applications (Oct 28 2026): the intake queue; accepted members are then
+  // copied by hand into the registry « Members - اعضا ». Consent is required by the form,
+  // so « Reçu le » is also the Law 25 consent date.
+  adhesion: {
+    tab: 'Adhésions · Membership · عضویت',
+    fields: [
+      'member_type', 'first_name', 'last_name', 'occupation', 'organization', 'org_type',
+      'position', 'office', 'government_level', 'district', 'email', 'phone', 'address',
+      'city', 'province', 'postal_code', 'country', 'languages', 'interests', 'message',
+    ],
   },
 };
 

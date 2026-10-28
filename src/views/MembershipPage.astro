@@ -1,0 +1,201 @@
+---
+/**
+ * Become a Member (owner's request, Oct 28 2026). 1. The three membership categories
+ * (individual, organization, elected officials) as accent cards, with the fee note (the
+ * fee is set by the board, Bylaws art. 6). 2. The application form (Netlify form
+ * « adhesion ») beside the three steps of the process. Linked from the footer and the
+ * Contact page, not from the header menu.
+ */
+import { ArrowRight, Building, Landmark, User } from '@lucide/astro';
+import PageLayout from '@/layouts/PageLayout.astro';
+import SectionHeader from '@/components/ui/SectionHeader.astro';
+import MembershipForm from '@/components/forms/MembershipForm.astro';
+import { href, siteAlternates, type UiLang } from '@/i18n/routes';
+import { useTranslations } from '@/i18n/ui';
+
+interface Props {
+  lang: UiLang;
+}
+const { lang } = Astro.props;
+const t = useTranslations(lang);
+
+const categories = [
+  {
+    id: 'individual',
+    icon: User,
+    accent: 'navy',
+    title: t('membership.individualTitle'),
+    who: t('membership.individualWho'),
+    rights: t('membership.individualRights'),
+  },
+  {
+    id: 'organization',
+    icon: Building,
+    accent: 'mustard',
+    title: t('membership.organizationTitle'),
+    who: t('membership.organizationWho'),
+    rights: t('membership.organizationRights'),
+  },
+  {
+    id: 'elected',
+    icon: Landmark,
+    accent: 'teal',
+    title: t('membership.electedTitle'),
+    who: t('membership.electedWho'),
+    rights: t('membership.electedRights'),
+  },
+];
+const steps = [t('membership.step1'), t('membership.step2'), t('membership.step3')];
+const nf = new Intl.NumberFormat(lang === 'fa' ? 'fa-IR' : 'en-CA');
+---
+
+<PageLayout
+  lang={lang}
+  title={t('membership.title')}
+  description={t('membership.metaDescription')}
+  lede={t('membership.lede')}
+  ledeStrong
+  alternates={siteAlternates('membership')}
+>
+  <section
+    id="categories"
+    class="categories-band scroll-mt-24 py-16 sm:py-20"
+    aria-labelledby="categories-title"
+  >
+    <div class="container-site">
+      <SectionHeader
+        align="start"
+        id="categories-title"
+        title={t('membership.typesTitle')}
+        subtitle={t('membership.typesSubtitle')}
+      />
+      <ul class="category-grid">
+        {categories.map((c) => (
+          <li class="card category-card" data-accent={c.accent} data-reveal>
+            <span class="category-card__icon" aria-hidden="true">
+              <c.icon size={26} />
+            </span>
+            <h3 class="category-card__title">{c.title}</h3>
+            <p>{c.who}</p>
+            <p class="category-card__rights">{c.rights}</p>
+          </li>
+        ))}
+      </ul>
+      <p class="fee-note">{t('membership.feeNote')}</p>
+    </div>
+  </section>
+
+  <section id="apply" class="apply-band scroll-mt-24 py-16 sm:py-20" aria-labelledby="apply-title">
+    <div class="container-site grid gap-10 lg:grid-cols-[1.6fr_1fr] lg:items-start">
+      <div class="card form-panel p-6 sm:p-10">
+        <h2 id="apply-title" class="mb-3 text-3xl font-bold">
+          {t('membership.formTitle')}
+        </h2>
+        <p class="mb-8 text-lg">{t('membership.formIntro')}</p>
+        <MembershipForm lang={lang} />
+      </div>
+      <aside class="card steps-card p-8" aria-labelledby="steps-title">
+        <h2 id="steps-title" class="mb-6 text-2xl font-bold">
+          {t('membership.stepsTitle')}
+        </h2>
+        <ol class="steps">
+          {steps.map((s, i) => (
+            <li>
+              <span class="steps__n" aria-hidden="true">
+                {nf.format(i + 1)}
+              </span>
+              <span>{s}</span>
+            </li>
+          ))}
+        </ol>
+        <p class="mt-8 mb-4 font-semibold">{t('membership.questions')}</p>
+        <a href={`${href('contact', lang)}#write`} class="btn btn-outline">
+          {t('nav.contact')}
+          <ArrowRight size={18} class="rtl:-scale-x-100" aria-hidden="true" />
+        </a>
+      </aside>
+    </div>
+  </section>
+</PageLayout>
+
+<style>
+  .categories-band {
+    background: var(--color-paper);
+  }
+  .category-grid {
+    display: grid;
+    gap: 1.5rem;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 20rem), 1fr));
+  }
+  .category-card {
+    display: flex;
+    flex-direction: column;
+    gap: 0.9rem;
+    padding: 1.75rem;
+    background: var(--color-ivory);
+    border-block-start: 6px solid var(--accent);
+    font-size: 1.1rem;
+    line-height: 1.7;
+  }
+  .category-card__icon {
+    display: inline-grid;
+    place-items: center;
+    width: 3.25rem;
+    height: 3.25rem;
+    border-radius: 999px;
+    background: var(--color-champagne);
+    color: var(--accent-ink);
+  }
+  .category-card__title {
+    font-size: clamp(1.3rem, 1.15rem + 0.5vw, 1.6rem);
+    font-weight: 800;
+    color: var(--color-primary);
+  }
+  .category-card__rights {
+    margin-block-start: auto;
+    padding-block-start: 0.9rem;
+    border-block-start: 1px solid var(--color-card-edge);
+    font-weight: 500;
+    color: var(--accent-ink);
+  }
+  .fee-note {
+    max-width: 46rem;
+    margin-block-start: 2rem;
+    font-size: 1.15rem;
+    line-height: 1.7;
+  }
+  .apply-band {
+    background: var(--color-teal-pale);
+    border-block: 1px solid var(--color-teal-edge);
+  }
+  .form-panel {
+    background: var(--color-ivory);
+    border-block-start: 6px solid var(--color-gold);
+  }
+  .steps-card {
+    background: var(--color-white);
+    border-block-start: 6px solid var(--color-teal);
+  }
+  .steps {
+    display: grid;
+    gap: 1.1rem;
+  }
+  .steps li {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.9rem;
+    line-height: 1.6;
+  }
+  .steps__n {
+    display: inline-grid;
+    flex-shrink: 0;
+    place-items: center;
+    width: 2.25rem;
+    height: 2.25rem;
+    border-radius: 999px;
+    background: var(--color-primary);
+    color: var(--color-white);
+    font-family: var(--font-display);
+    font-weight: 800;
+  }
+</style>

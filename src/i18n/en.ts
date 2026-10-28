@@ -51,6 +51,7 @@ const en: Dictionary = {
     resources: 'Resources',
     contact: 'Contact & Collaboration',
     careers: 'Careers',
+    membership: 'Become a Member',
     faq: 'FAQ',
     privacy: 'Privacy Policy',
     terms: 'Terms of Use',
@@ -498,6 +499,8 @@ const en: Dictionary = {
   contact: {
     careersNote: 'Looking for a paid position instead?',
     careersLink: 'See our open positions',
+    membershipNote: 'Would you like to become a member of Matin?',
+    membershipLink: 'Fill in the membership application',
     title: 'Contact & Collaboration',
     lede: 'A question, an idea, a wish to collaborate? Write to us: we read every message and will reply as soon as we can.',
     formTitle: 'Write to us',
@@ -622,6 +625,90 @@ const en: Dictionary = {
     volunteerText:
       'Matin also welcomes volunteers who want to contribute to its cultural activities.',
     volunteerCta: 'Join our volunteer team',
+  },
+  membership: {
+    title: 'Become a Member',
+    lede: 'Join the Matin Intercultural Institute and support dialogue between cultures, in Montréal and beyond.',
+    metaDescription:
+      'Membership at the Matin Intercultural Institute: individuals, organizations and elected officials, with the online membership application.',
+    typesTitle: 'Three Ways to Join',
+    typesSubtitle: 'Choose the category that fits you.',
+    individualTitle: 'Individual Member',
+    individualWho: 'Anyone aged 18 or over who shares Matin’s mission.',
+    individualRights: 'Votes at the general meeting and may be elected to the board of directors.',
+    organizationTitle: 'Organizational Member',
+    organizationWho:
+      'Non-profits, cultural and community organizations, institutions and other organizations that share our mission.',
+    organizationRights:
+      'Represented by a delegate; takes part in activities and meetings, without voting rights.',
+    electedTitle: 'Elected Officials',
+    electedWho:
+      'Municipal, provincial or federal elected officials who wish to support intercultural dialogue.',
+    electedRights:
+      'Take part in activities and meetings, without voting rights. Matin is non-partisan: membership is not an endorsement of any person or party.',
+    feeNote:
+      'The annual membership fee is set by the board of directors. We will confirm it when your application is accepted.',
+    stepsTitle: 'How It Works',
+    step1: 'You fill in the membership application.',
+    step2: 'The board of directors reviews your application.',
+    step3:
+      'We write to you to confirm your membership and the fee. Membership is valid for one year and renewable.',
+    questions: 'Questions about membership?',
+    formTitle: 'Membership Application',
+    formIntro: 'Fill in this form to apply to become a member of Matin.',
+    typeQuestion: 'I am applying as:',
+    firstName: 'First name',
+    lastName: 'Last name',
+    delegateFirstName: 'Delegate’s first name',
+    delegateLastName: 'Delegate’s last name',
+    occupation: 'Occupation (optional)',
+    organization: 'Organization name',
+    orgType: 'Type of organization (optional)',
+    orgTypes: {
+      nonprofit: 'Non-profit organization',
+      cultural: 'Cultural organization',
+      community: 'Community organization',
+      public: 'Public institution',
+      business: 'Business',
+      other: 'Other',
+    },
+    position: 'Position in the organization (optional)',
+    office: 'Elected office (for example: city councillor)',
+    govLevel: 'Level of government',
+    govLevels: {
+      Municipal: 'Municipal',
+      Provincial: 'Provincial',
+      Federal: 'Federal',
+      Other: 'Other',
+    },
+    district: 'Riding, district or borough (optional)',
+    addressTitle: 'Address',
+    address: 'Street address (number, street, apartment)',
+    city: 'City',
+    province: 'Province or territory',
+    postalCode: 'Postal code',
+    country: 'Country',
+    interests: 'Areas of interest (optional)',
+    interestNames: {
+      events: 'Cultural events',
+      dialogue: 'Intercultural dialogue',
+      research: 'Cultural research and planning',
+      communications: 'Communications',
+      partnerships: 'Partnerships',
+      volunteering: 'Volunteering',
+    },
+    message: 'A few words about you or your organization (optional)',
+    ageConfirm: 'I declare that I am 18 or older.',
+    authorizedConfirm:
+      'I confirm that I am authorized to submit this application on behalf of the organization.',
+    nonPartisanConfirm:
+      'I understand that Matin is non-partisan and that my membership may not be used for electoral or partisan purposes.',
+    bylawsConfirm: 'I support Matin’s mission and agree to abide by its bylaws.',
+    consent:
+      'I agree that Matin will use this information only to manage my membership and its register of members, in accordance with its',
+    success:
+      'Thank you! Your membership application has been sent. We will review it and reply by email.',
+    submit: 'Send my membership application',
   },
   faq: {
     title: 'Frequently Asked Questions',
