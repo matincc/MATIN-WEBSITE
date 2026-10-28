@@ -7,8 +7,9 @@
  * Members are the published entries in src/content/team/, placed by their `group`.
  * Board members (governance) are kept apart and not shown here yet.
  * Layout (owner's brief, Oct 25 2026): the two groups stacked, Executive Team first on a soft
- * turquoise panel, then Advisors on warm cream; each shows five places: published members
- * first, then neutral "Profile coming soon" places (never invented people). Adding a member
+ * turquoise panel, then Advisors on warm cream. Advisors show five places: published members
+ * first, then neutral "Profile coming soon" places (never invented people); the Executive
+ * Team shows only its members (owner's request, Oct 28 2026). Adding a member
  * is one YAML file in src/content/team/ (name, role, photo, bio, LinkedIn); it takes the
  * next place, and a group with more than five members simply grows.
  */
@@ -36,6 +37,8 @@ const groups = [
     lede: t('team.executiveLede'),
     empty: t('team.executiveEmpty'),
     members: team.filter((m) => m.data.group === 'executive' || m.data.group === 'staff'),
+    // No "Profile coming soon" places here (owner's request, Oct 28 2026).
+    slots: 0,
     accent: 'teal',
     accents: ['navy', 'teal', 'mustard'],
   },
@@ -45,6 +48,7 @@ const groups = [
     lede: t('team.advisorsLede'),
     empty: t('team.advisorsEmpty'),
     members: team.filter((m) => m.data.group === 'advisor'),
+    slots: SLOTS,
     accent: 'mustard',
     accents: ['teal', 'mustard', 'navy'],
   },
@@ -122,7 +126,7 @@ const groups = [
                 </li>
               );
             })}
-            {Array.from({ length: Math.max(0, SLOTS - g.members.length) }, () => (
+            {Array.from({ length: Math.max(0, g.slots - g.members.length) }, () => (
               <li class="team-card team-card--soon">
                 <span class="team-card__avatar team-card__silhouette" aria-hidden="true">
                   <PersonSilhouette figure="neutral" />
