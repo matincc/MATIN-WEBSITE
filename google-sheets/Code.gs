@@ -79,7 +79,10 @@ function doPost(e) {
       '',
       id,
     ]);
-    if (body.form === 'adhesion') addToRegistry(data, received);
+    if (body.form === 'adhesion') {
+      addToRegistry(data, received);
+      sendReceipt(data);
+    }
     return reply('ok');
   } catch (err) {
     console.error(err);
@@ -96,7 +99,9 @@ function doPost(e) {
  * so the row is the first one whose column B is empty (never appendRow). Start Date stays
  * empty: the row shows as pending until an admin types the date the board accepted it.
  * Membership is free until December 31, 2027, so Fee Paid is 0. Consent is required by the form,
- * so the submission date is also the Law 25 consent date.
+ * so the submission date is also the Law 25 consent date. The Approve and Welcome Email Sent
+ * columns at the end of each tab (V–W, or X–Y) belong to the registry's own script: never
+ * written here.
  */
 const REGISTRY_ID = '13DqFVQzSBlSPtlIU-a41dCn3WsYe6VquDCwAhIXS4Y8';
 const SOURCE_WEBSITE = 'Website form';
@@ -164,6 +169,51 @@ function addToRegistry(data, received) {
     const cells = values.map((v) => (v === undefined || v === null ? '' : v));
     sheet.getRange(row, columnNumber(col), 1, cells.length).setValues([cells]);
   });
+}
+
+/*
+ * Receipt email (owner's decision, Oct 28 2026): each membership applicant gets an
+ * immediate « we received your application » email, in French then English. No fees,
+ * no voting, no promise of acceptance: the welcome email is sent later, when an admin
+ * ticks Approve in the registry. Sent only from members@matincc.ca once that address is
+ * a Gmail "send as" alias of this account; otherwise skipped and logged, never blocking.
+ */
+const MEMBERS_FROM = 'members@matincc.ca';
+
+function sendReceipt(data) {
+  try {
+    const email = clean(data.email);
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) return;
+    if (GmailApp.getAliases().indexOf(MEMBERS_FROM) === -1) {
+      console.warn('Receipt not sent: ' + MEMBERS_FROM + ' is not a send-as alias yet.');
+      return;
+    }
+    const first = clean(data.first_name);
+    const text = [
+      'Bonjour' + (first ? ' ' + first : '') + ',',
+      '',
+      "Nous avons bien reçu votre demande d'adhésion à l'Institut interculturel Matin. " +
+        'Notre équipe l\'examinera et vous recevrez une confirmation par courriel. ' +
+        'Merci de votre intérêt!',
+      '',
+      '———',
+      '',
+      'Hello' + (first ? ' ' + first : '') + ',',
+      '',
+      'We have received your membership application to the Matin Intercultural Institute. ' +
+        'Our team will review it and you will receive a confirmation by email. ' +
+        'Thank you for your interest!',
+      '',
+      'Institut interculturel Matin · Matin Intercultural Institute',
+    ].join('\n');
+    GmailApp.sendEmail(email, "Demande d'adhésion reçue · Membership application received", text, {
+      from: MEMBERS_FROM,
+      name: 'Institut interculturel Matin',
+      replyTo: MEMBERS_FROM,
+    });
+  } catch (err) {
+    console.error('Receipt not sent: ' + err);
+  }
 }
 
 function columnNumber(letter) {
