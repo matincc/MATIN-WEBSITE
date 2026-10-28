@@ -1,8 +1,7 @@
 /**
  * Matin – website form entries → Google Sheet (owner's request, Oct 27 2026; membership
  * applications added Oct 28 2026: after changing this file, paste it into the Apps Script
- * editor and Deploy → Manage deployments → Edit → New version, keeping the same URL; then
- * select setupAutoSend, click Run once and Allow, for the registry's Approve tick).
+ * editor and Deploy → Manage deployments → Edit → New version, keeping the same URL).
  *
  * Web app (Execute as: Me, Who has access: Anyone). The site's Netlify function
  * « submission-created » posts every verified form submission here; each one becomes
@@ -98,7 +97,8 @@ function doPost(e) {
  * directly in its category tab, one row per member, with a new Member ID. Only the data
  * columns are written: row 1 holds array formulas that fill End Date, Status and Days Left,
  * so the row is the first one whose column B is empty (never appendRow). Start Date stays
- * empty: the row shows as pending until an admin ticks Approve (see onApproveEdit below).
+ * empty: the row shows as pending until an admin ticks Approve (the registry's own
+ * approval script, a separate Apps Script project, then sends the welcome email).
  * Membership is free until December 31, 2027, so Fee Paid is 0. Consent is required by the form,
  * so the submission date is also the Law 25 consent date. The Approve and Welcome Email Sent
  * columns at the end of each tab (V–W, or X–Y) belong to the registry's own script: never
@@ -230,197 +230,4 @@ function clean(value) {
 
 function reply(text) {
   return ContentService.createTextOutput(text);
-}
-
-// ---------------------------------------------------------------------------------------
-
-/**
- * Matin – Members registry: approve tick + automatic welcome email.
- *
- * Works from any Apps Script project running as admin@ (bound or standalone, e.g. the
- * website forms Code.gs project): it opens the registry by ID. After deploying, run
- * setupAutoSend() once from the editor and accept the permissions.
- *
- * How it works: tick "Approve" on a member's row. The script fills Start Date with today
- * (if empty), gives the row a Member ID (if empty), and emails the welcome message from
- * members@matincc.ca. It then writes the send time in "Welcome Email Sent", so nobody is
- * emailed twice. If members@ is not ready yet, it writes an error there instead and sends
- * nothing; an hourly trigger retries it once members@ works.
- */
-
-var FROM = 'members@matincc.ca';
-var SENDER_NAME = 'Institut interculturel Matin';
-// REGISTRY_ID is declared once, above (same registry).
-
-// Column numbers are 1-based (A = 1).
-var TABS = {
-  'Individual':        { prefix: 'IND', id: 1, first: 2, last: 3, org: 0, email: 5, start: 12, approve: 22, sent: 23 },
-  'Organizational':    { prefix: 'ORG', id: 1, first: 4, last: 5, org: 2, email: 7, start: 14, approve: 24, sent: 25 },
-  'Elected Officials': { prefix: 'ELU', id: 1, first: 2, last: 3, org: 0, email: 7, start: 14, approve: 24, sent: 25 }
-};
-
-var SOCIAL = [
-  ['Instagram', 'https://www.instagram.com/matincc.ca/'],
-  ['LinkedIn', 'https://www.linkedin.com/company/matin-intercultural-institute/'],
-  ['YouTube', 'https://www.youtube.com/@matin.institute']
-];
-
-/** Installs the edit trigger. Sending email needs an installable trigger, not a simple onEdit. */
-function setupAutoSend() {
-  ScriptApp.getProjectTriggers().forEach(function (t) {
-    var fn = t.getHandlerFunction();
-    if (fn === 'onApproveEdit' || fn === 'sendPendingWelcomes') ScriptApp.deleteTrigger(t);
-  });
-  ScriptApp.newTrigger('onApproveEdit').forSpreadsheet(REGISTRY_ID).onEdit().create();
-  // Safety net: retries anything the edit trigger missed (e.g. members@ not ready yet).
-  ScriptApp.newTrigger('sendPendingWelcomes').timeBased().everyHours(1).create();
-}
-
-function onApproveEdit(e) {
-  if (!e || !e.range) return;
-  var sheet = e.range.getSheet();
-  var cfg = TABS[sheet.getName()];
-  if (!cfg) return;
-  var r = e.range;
-  if (r.getColumn() > cfg.approve || r.getLastColumn() < cfg.approve) return;
-  for (var row = Math.max(r.getRow(), 2); row <= r.getLastRow(); row++) {
-    if (sheet.getRange(row, cfg.approve).getValue() === true) processRow_(sheet, cfg, row);
-  }
-}
-
-/** Retries every approved row that has no successful send yet (hourly, or run by hand). */
-function sendPendingWelcomes() {
-  var count = 0;
-  var ss = SpreadsheetApp.openById(REGISTRY_ID);
-  Object.keys(TABS).forEach(function (name) {
-    var sheet = ss.getSheetByName(name);
-    var cfg = TABS[name];
-    var last = sheet.getLastRow();
-    for (var row = 2; row <= last; row++) {
-      if (sheet.getRange(row, cfg.approve).getValue() === true && processRow_(sheet, cfg, row)) count++;
-    }
-  });
-  Logger.log(count + ' welcome email(s) sent.');
-}
-
-/** Returns true when an email was sent. */
-function processRow_(sheet, cfg, row) {
-  var lock = LockService.getScriptLock(); // no document lock in a standalone project
-  lock.waitLock(20000);
-  try {
-    var sentCell = sheet.getRange(row, cfg.sent);
-    var sentValue = sentCell.getValue();
-    if (sentValue instanceof Date || (sentValue && String(sentValue).indexOf('Error') !== 0)) return false;
-
-    var values = sheet.getRange(row, 1, 1, cfg.sent).getValues()[0];
-    var email = String(values[cfg.email - 1] || '').trim();
-    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
-      sentCell.setValue('Error: no valid email');
-      return false;
-    }
-
-    var start = values[cfg.start - 1];
-    if (!(start instanceof Date)) {
-      start = new Date();
-      start.setHours(0, 0, 0, 0);
-      sheet.getRange(row, cfg.start).setValue(start);
-    }
-    var end = new Date(start.getFullYear() + 1, start.getMonth(), start.getDate() - 1);
-
-    var id = String(values[cfg.id - 1] || '').trim();
-    if (!id) {
-      id = nextId_(sheet, cfg);
-      sheet.getRange(row, cfg.id).setValue(id);
-    }
-
-    if (GmailApp.getAliases().indexOf(FROM) === -1 && Session.getEffectiveUser().getEmail() !== FROM) {
-      sentCell.setValue('Error: ' + FROM + ' not set up yet; retried automatically every hour');
-      return false;
-    }
-
-    var tz = sheet.getParent().getSpreadsheetTimeZone();
-    var member = {
-      first: String(values[cfg.first - 1] || '').trim(),
-      org: cfg.org ? String(values[cfg.org - 1] || '').trim() : '',
-      id: id,
-      start: Utilities.formatDate(start, tz, 'yyyy-MM-dd'),
-      end: Utilities.formatDate(end, tz, 'yyyy-MM-dd')
-    };
-    var msg = welcomeMessage_(member);
-    GmailApp.sendEmail(email, msg.subject, msg.text, {
-      htmlBody: msg.html, from: FROM, name: SENDER_NAME, replyTo: FROM
-    });
-    sentCell.setValue(new Date()).setNumberFormat('yyyy-mm-dd hh:mm');
-    return true;
-  } catch (err) {
-    sheet.getRange(row, cfg.sent).setValue('Error: ' + err.message);
-    return false;
-  } finally {
-    lock.releaseLock();
-  }
-}
-
-function nextId_(sheet, cfg) {
-  var last = sheet.getLastRow();
-  var max = 0;
-  if (last >= 2) {
-    sheet.getRange(2, cfg.id, last - 1, 1).getValues().forEach(function (r) {
-      var m = String(r[0]).match(new RegExp('^' + cfg.prefix + '-(\\d+)$'));
-      if (m) max = Math.max(max, Number(m[1]));
-    });
-  }
-  return cfg.prefix + '-' + ('000' + (max + 1)).slice(-4);
-}
-
-function welcomeMessage_(m) {
-  var hiFr = m.first ? 'Bonjour ' + m.first + ',' : 'Bonjour,';
-  var hiEn = m.first ? 'Hello ' + m.first + ',' : 'Hello,';
-  var whoFr = m.org ? "l'adhésion de " + m.org : 'votre adhésion';
-  var whoEn = m.org ? m.org + "'s membership" : 'your membership';
-  var socialText = SOCIAL.map(function (s) { return '- ' + s[0] + ' : ' + s[1]; }).join('\n');
-  var socialHtml = SOCIAL.map(function (s) { return '<a href="' + s[1] + '">' + s[0] + '</a>'; }).join(' · ');
-
-  var fr = [
-    hiFr, '',
-    'Nous avons le plaisir de vous confirmer que ' + whoFr + " à l'Institut interculturel Matin a été acceptée. Bienvenue parmi nous!", '',
-    'Numéro de membre : ' + m.id,
-    "Début de l'adhésion : " + m.start,
-    "Fin de l'adhésion : " + m.end, '',
-    "L'adhésion est valide pendant un an et pourra ensuite être renouvelée.", '',
-    'Merci de votre confiance et de votre soutien. Pour suivre nos activités et nos nouvelles, rejoignez-nous sur les réseaux sociaux :',
-    socialText, '',
-    'Au plaisir de vous voir bientôt,',
-    "L'équipe de l'Institut interculturel Matin",
-    FROM + ' · https://matincc.ca'
-  ].join('\n');
-
-  var en = [
-    hiEn, '',
-    'We are pleased to confirm that ' + whoEn + ' in the Matin Intercultural Institute has been approved. Welcome aboard!', '',
-    'Member number: ' + m.id,
-    'Membership start: ' + m.start,
-    'Membership end: ' + m.end, '',
-    'The membership is valid for one year and can then be renewed.', '',
-    'Thank you for your trust and support. To follow our activities and news, join us on social media:',
-    socialText.replace(/ : /g, ': '), '',
-    'We look forward to seeing you soon,',
-    'The Matin Intercultural Institute team',
-    FROM + ' · https://matincc.ca'
-  ].join('\n');
-
-  var text = fr + '\n\n———\n\n' + en;
-  var html = '<div style="font-family:Arial,sans-serif;font-size:15px;line-height:1.5;color:#222;max-width:600px">' +
-    toHtml_(fr).replace(toHtml_(socialText), socialHtml) +
-    '<hr style="border:none;border-top:1px solid #ddd;margin:24px 0">' +
-    toHtml_(en).replace(toHtml_(socialText.replace(/ : /g, ': ')), socialHtml) +
-    '</div>';
-  return {
-    subject: "Bienvenue à l'Institut interculturel Matin · Welcome to the Matin Intercultural Institute",
-    text: text,
-    html: html
-  };
-}
-
-function toHtml_(s) {
-  return s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/\n/g, '<br>');
 }
