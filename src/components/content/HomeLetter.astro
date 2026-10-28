@@ -3,13 +3,15 @@
  * "A Personal Note from Our President" on the homepage (owner's request, Oct 28 2026: a
  * more human homepage, a real voice instead of institutional copy). The President's
  * approved message from about.yaml, word for word, set as a letter on paper beside his
- * portrait pinned like a printed photo; his name in a handwriting typeface (Caveat for
+ * portrait pinned like a printed photo, signed with his name, his position and a decorative
+ * «رضا» mark (SignatureMark.astro); the caption under the photo uses a handwriting typeface (Caveat for
  * French and English; Persian uses Vazirmatn bold). It is typeset, never an imitation of his
  * real signature. Hidden if the message is empty.
  */
 import { ArrowRight } from '@lucide/astro';
 import { Picture } from 'astro:assets';
 import Scribble from '@/components/ui/Scribble.astro';
+import SignatureMark from '@/components/ui/SignatureMark.astro';
 import { href, type UiLang } from '@/i18n/routes';
 import { pick, useTranslations } from '@/i18n/ui';
 import { getSingleton } from '@/lib/content';
@@ -65,8 +67,9 @@ const role = pick(p.signature, lang) || pick(p.title, lang);
             ))}
           </blockquote>
           <footer class="letter-sign">
-            <span class="letter-hand letter-hand--sign">{name}</span>
+            <span class="letter-name">{name}</span>
             {role && <span class="letter-role">{role}</span>}
+            <SignatureMark lang={lang} class="letter-sigmark" />
           </footer>
         </article>
         <a href={`${href('team', lang)}#our-president`} class="link-arrow letter-more">
@@ -195,15 +198,17 @@ const role = pick(p.signature, lang) || pick(p.title, lang);
     justify-items: start;
     margin-block-start: 2rem;
   }
-  .letter-hand--sign {
-    font-size: 2.6rem;
-    text-align: start;
-    rotate: -3deg;
-    padding: 0;
+  /* Sign-off (owner's request, Oct 28 2026): his name and position in text, then a
+     decorative signature-style «رضا» (SignatureMark.astro) under them. */
+  .letter-name {
+    font-family: var(--font-display);
+    font-weight: 800;
+    font-size: 1.35rem;
+    color: var(--color-primary);
   }
-  :global([lang='fa']) .letter-hand--sign {
-    font-size: 1.85rem;
-    rotate: none;
+  .letter-sign :global(.letter-sigmark) {
+    margin-block-start: 0.6rem;
+    margin-inline-start: 0.5rem;
   }
   .letter-role {
     font-size: 0.98rem;
