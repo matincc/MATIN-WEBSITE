@@ -698,15 +698,6 @@ const fr = {
     province: 'Province ou territoire',
     postalCode: 'Code postal',
     country: 'Pays',
-    interests: 'Centres d’intérêt (facultatif)',
-    interestNames: {
-      events: 'Événements culturels',
-      dialogue: 'Dialogue interculturel',
-      research: 'Recherche et planification culturelle',
-      communications: 'Communications',
-      partnerships: 'Partenariats',
-      volunteering: 'Bénévolat',
-    },
     message: 'Quelques mots sur vous ou sur votre organisme (facultatif)',
     ageConfirm: 'Je déclare avoir 18 ans ou plus.',
     authorizedConfirm:

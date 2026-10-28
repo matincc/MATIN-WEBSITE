@@ -35,22 +35,6 @@ const ORG_VALUES: Record<(typeof ORG_TYPES)[number], string> = {
 const GOV_LEVELS = ['Municipal', 'Provincial', 'Federal', 'Other'] as const;
 // Only the two official languages of the institute (owner's request, Oct 28 2026).
 const LANGUAGES = ['French', 'English'] as const;
-const INTERESTS = [
-  'events',
-  'dialogue',
-  'research',
-  'communications',
-  'partnerships',
-  'volunteering',
-] as const;
-const INTEREST_VALUES: Record<(typeof INTERESTS)[number], string> = {
-  events: 'Cultural events',
-  dialogue: 'Intercultural dialogue',
-  research: 'Cultural research and planning',
-  communications: 'Communications',
-  partnerships: 'Partnerships',
-  volunteering: 'Volunteering',
-};
 ---
 
 <FormShell
@@ -270,24 +254,6 @@ const INTEREST_VALUES: Record<(typeof INTERESTS)[number], string> = {
             class="size-5 accent-primary"
           />
           <label for={`member-lang-${l.toLowerCase()}`}>{t(`form.languageNames.${l}`)}</label>
-        </li>
-      ))}
-    </ul>
-  </fieldset>
-
-  <fieldset class="field mem-group">
-    <legend class="field-label">{t('membership.interests')}</legend>
-    <ul class="mem-choices">
-      {INTERESTS.map((i) => (
-        <li>
-          <input
-            type="checkbox"
-            id={`member-interest-${i}`}
-            name="interests"
-            value={INTEREST_VALUES[i]}
-            class="size-5 accent-primary"
-          />
-          <label for={`member-interest-${i}`}>{t(`membership.interestNames.${i}`)}</label>
         </li>
       ))}
     </ul>

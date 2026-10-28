@@ -687,15 +687,6 @@ const en: Dictionary = {
     province: 'Province or territory',
     postalCode: 'Postal code',
     country: 'Country',
-    interests: 'Areas of interest (optional)',
-    interestNames: {
-      events: 'Cultural events',
-      dialogue: 'Intercultural dialogue',
-      research: 'Cultural research and planning',
-      communications: 'Communications',
-      partnerships: 'Partnerships',
-      volunteering: 'Volunteering',
-    },
     message: 'A few words about you or your organization (optional)',
     ageConfirm: 'I declare that I am 18 or older.',
     authorizedConfirm:

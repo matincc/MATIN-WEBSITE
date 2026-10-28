@@ -36,7 +36,7 @@ const FORMS = {
     fields: [
       'member_type', 'first_name', 'last_name', 'occupation', 'organization', 'org_type',
       'position', 'office', 'government_level', 'district', 'email', 'phone', 'address',
-      'city', 'province', 'postal_code', 'country', 'languages', 'interests', 'message',
+      'city', 'province', 'postal_code', 'country', 'languages', 'message',
     ],
   },
 };

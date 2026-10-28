@@ -132,7 +132,6 @@ const FORMS: Record<string, FormDef> = {
       { name: 'postal_code', label: 'Code postal / Postal code', required: true },
       { name: 'country', label: 'Pays / Country', required: true },
       { name: 'languages', label: 'Langues / Languages' },
-      { name: 'interests', label: 'Intérêts / Interests' },
       { name: 'message', label: 'Message', long: true },
       { name: 'confirm_bylaws', label: 'Règlements / Bylaws', checkbox: true, required: true },
       consentField,
