@@ -11,7 +11,7 @@ each place crops the photo to its own shape (arch, circle, rounded rectangle, wi
 | --- | --- | --- | --- | --- |
 | `introConversation` | Who we are, large photo of the collage | arch, 4:5 | Young friends of different origins sitting together (photo chosen by Matin, Oct 29 2026) | temporary, local file `who-friends-group.jpg`, source to confirm |
 | `introMaking` | Who we are, round photo | circle | Women making pottery (Sander Breneman) | temporary, Unsplash |
-| `introGallery` | Who we are, third photo | rounded, 3:2 | Visitors before a painting (Jessica Pamp) | temporary, Unsplash |
+| `introGallery` | Who we are, third photo | rounded, 3:2 | Three people at the CDN-NDG participatory budget board (photo chosen by Matin, Oct 29 2026) | local file `intro-participatory-budget.jpg`, source to confirm |
 | `montrealWide` | Full-width pause before Programs | 21:9 (4:3 on phones) | Mont-Royal bench over Montréal (Marion Lhn) | temporary, Unsplash |
 | `areaDialogue` | Programs, area 1 | rounded, 5:4 | Friends laughing and talking (Priscilla Du Preez) | temporary, Unsplash |
 | `areaCommunities` | Programs, area 2 | circle | Community garden (Haberdoedas) | temporary, Unsplash |
@@ -54,7 +54,6 @@ Not in the registry (they are Matin's own and stay where they are):
 | Slot | Photographer | Unsplash page |
 | --- | --- | --- |
 | introMaking | Sander Breneman | https://unsplash.com/photos/a-group-of-women-sitting-at-a-table-working-on-pottery-kJiPUr1KQSE |
-| introGallery | Jessica Pamp | https://unsplash.com/photos/a-group-of-people-standing-in-front-of-a-painting-JNTSoyb_bbw |
 | montrealWide | Marion Lhn | https://unsplash.com/photos/two-people-sitting-on-a-bench-overlooking-a-city-LmCnmjT7fNI |
 | areaDialogue | Priscilla Du Preez | https://unsplash.com/photos/people-laughing-and-talking-outside-during-daytime-nF8xhLMmg0c |
 | areaCommunities | Haberdoedas | https://unsplash.com/photos/people-gathering-in-a-community-garden-with-trees-in-background-c9xGzxR8ego |
