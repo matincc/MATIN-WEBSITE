@@ -84,6 +84,7 @@ function doPost(e) {
       sendReceipt(data);
     }
     if (body.form === 'benevolat') addVolunteer(data, received, id);
+    if (body.form === 'contact' && !/^Candidature/.test(clean(data.requester_type))) sendContactAck(data);
     return reply('ok');
   } catch (err) {
     console.error(err);
@@ -377,6 +378,61 @@ function volunteerEmail(volId, r) {
     subject: "Bienvenue dans l'équipe bénévole de Matin · Welcome to Matin's volunteer team",
     text: text,
   };
+}
+
+/*
+ * « Write to us » acknowledgement (owner's request, Oct 29 2026): whoever sends the contact
+ * form gets an immediate « we received your message » email, French then English (and
+ * Persian from the Persian site); replies go to info@. Job applications, which arrive here
+ * as contact rows marked « Candidature », get none. A failure is logged, never blocking.
+ */
+const CONTACT_REPLY_TO = 'info@matincc.ca';
+
+function sendContactAck(data) {
+  try {
+    const email = clean(data.email);
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) return;
+    const name = clean(data.name);
+    const parts = [
+      [
+        'Bonjour' + (name ? ' ' + name : '') + ',',
+        '',
+        "Merci d'avoir écrit à l'Institut interculturel Matin. " +
+          'Nous avons bien reçu votre message et nous vous répondrons dans les meilleurs délais.',
+        '',
+        'Cordialement,',
+        "L'équipe de l'Institut interculturel Matin",
+      ],
+      [
+        'Hello' + (name ? ' ' + name : '') + ',',
+        '',
+        'Thank you for writing to the Matin Intercultural Institute. ' +
+          'We have received your message and will reply as soon as possible.',
+        '',
+        'Best regards,',
+        'The Matin Intercultural Institute team',
+      ],
+    ];
+    if (clean(data.lang).toUpperCase() === 'FA') {
+      parts.push([
+        'سلام' + (name ? ' ' + name + ' عزیز' : '') + '،',
+        '',
+        'از اینکه برای مؤسسه میان‌فرهنگی متین پیام فرستادید سپاسگزاریم. ' +
+          'پیام شما به دست ما رسید و به‌زودی پاسخ می‌دهیم.',
+        '',
+        'با احترام،',
+        'تیم مؤسسه میان‌فرهنگی متین',
+      ]);
+    }
+    const text = parts.map((p) => p.join('\n')).join('\n\n———\n\n') +
+      '\n\n' + CONTACT_REPLY_TO + ' · https://matincc.ca';
+    GmailApp.sendEmail(email, 'Nous avons bien reçu votre message · We have received your message', text, {
+      name: 'Institut interculturel Matin',
+      replyTo: CONTACT_REPLY_TO,
+    });
+  } catch (err) {
+    console.error('Contact acknowledgement not sent: ' + err);
+  }
 }
 
 function columnNumber(letter) {
