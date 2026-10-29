@@ -5,6 +5,8 @@
  * life with the text set straight on it, editorial style, no card or panel. The photo
  * keeps its natural, bright colours everywhere (owner's request, Oct 29 2026: no grey or
  * navy wash, no halo, no filter); only a soft glow hugging the letters keeps them readable.
+ * Text in bold brick and both buttons in navy, with a larger slanted gold pen stroke under
+ * the headline (owner's request, Oct 29 2026, replacing the white text).
  *
  * Wide screens: the text sits on the right in every language, over the sky and the
  * trees, so the monument column (left of centre) and the crowd's faces stay visible
@@ -15,7 +17,7 @@
  * under prefers-reduced-motion. No script.
  */
 import Scribble from '@/components/ui/Scribble.astro';
-import '@fontsource/playfair-display/700-italic.css';
+import '@fontsource/playfair-display/800-italic.css';
 import { Picture } from 'astro:assets';
 import { ArrowRight } from '@lucide/astro';
 import PhotoCredit from '@/components/media/PhotoCredit.astro';
@@ -52,7 +54,10 @@ const a = aliveStrings(lang);
       <h1 id="hero-title" class="ahero__title">
         {/* The institute's name stays in the page's main heading for search engines and
             screen readers; the logo above already shows it. */}
-        <span class="sr-only">{t('home.heroEyebrow')}{lang === 'fr' ? ' : ' : ': '}</span>
+        <span class="sr-only">
+          {t('home.heroEyebrow')}
+          {lang === 'fr' ? ' : ' : ': '}
+        </span>
         <span class="ahero__tagline">{t('home.heroTitle')}</span>
       </h1>
       <Scribble class="ahero__scribble scribble--load" />
@@ -80,9 +85,15 @@ const a = aliveStrings(lang);
 
 <style>
   .ahero {
-    /* A soft dark glow hugging each letter only: the photo itself is never shaded,
+    /* A soft light glow hugging each brick letter only: the photo itself is never shaded,
        filtered or tinted (owner, Oct 29 2026). */
-    --glow: color-mix(in srgb, var(--matin-ink) 70%, transparent);
+    --glow: color-mix(in srgb, var(--matin-ivoire) 85%, transparent);
+    --halo:
+      1.5px 0 0 var(--matin-ivoire), -1.5px 0 0 var(--matin-ivoire), 0 1.5px 0 var(--matin-ivoire),
+      0 -1.5px 0 var(--matin-ivoire), 1px 1px 0 var(--matin-ivoire),
+      -1px -1px 0 var(--matin-ivoire), 1px -1px 0 var(--matin-ivoire),
+      -1px 1px 0 var(--matin-ivoire), 0 0 6px var(--matin-ivoire), 0 0 14px var(--glow),
+      0 0 28px var(--glow);
     position: relative;
     display: grid;
     grid-template-rows: 1fr auto;
@@ -138,8 +149,9 @@ const a = aliveStrings(lang);
     position: relative;
     max-width: min(40rem, 48%);
     text-shadow:
-      0 2px 4px var(--glow),
-      0 0 22px var(--glow);
+      0 0 3px var(--glow),
+      0 0 10px var(--glow),
+      0 0 26px var(--glow);
   }
   .ahero__place {
     display: flex;
@@ -150,7 +162,10 @@ const a = aliveStrings(lang);
     font-weight: 800;
     letter-spacing: 0.22em;
     text-transform: uppercase;
-    color: var(--matin-white);
+    /* Brick with a thick ivory halo hugging the letters, so it reads over the leaves
+       (owner, Oct 29 2026). The photo itself is untouched. */
+    color: var(--matin-brique-ink);
+    text-shadow: var(--halo);
   }
   .ahero__place::before {
     content: '';
@@ -160,7 +175,7 @@ const a = aliveStrings(lang);
   }
   :global(html[lang='fa']) .ahero__place {
     letter-spacing: 0;
-    font-size: 1.1rem;
+    font-size: 1.25rem;
   }
   .ahero__title {
     margin-block-start: 1.1rem;
@@ -170,11 +185,11 @@ const a = aliveStrings(lang);
     display: block;
     font-family: var(--font-brand);
     font-style: italic;
-    font-weight: 700;
+    font-weight: 800;
     font-size: clamp(3.1rem, 1.6rem + 5vw, 6.5rem);
     line-height: 0.95;
     letter-spacing: -0.02em;
-    color: var(--matin-white);
+    color: var(--matin-brique-ink);
     text-wrap: balance;
   }
   :global(html[lang='fa']) .ahero__tagline {
@@ -185,18 +200,35 @@ const a = aliveStrings(lang);
     letter-spacing: 0;
     font-size: clamp(2.7rem, 1.6rem + 4vw, 5.25rem);
   }
-  /* Hand-drawn underline under the headline (owner's request, Oct 28 2026). */
+  /* Hand-drawn underline under the headline (owner's request, Oct 28 2026), larger and
+     slanted like a ballpoint stroke since Oct 29 2026. */
   .ahero__copy :global(.ahero__scribble) {
-    width: min(16rem, 62%);
-    margin-block: 0.9rem 0.2rem;
+    width: min(28rem, 92%);
+    height: 1.4rem;
+    margin-block: 0.4rem 0.4rem;
+    margin-inline-start: 0.5rem;
+    rotate: -3.5deg;
+  }
+  :global([dir='rtl']) .ahero__copy :global(.ahero__scribble) {
+    rotate: 3.5deg;
+  }
+  .ahero__copy :global(.ahero__scribble path) {
+    stroke: var(--matin-soleil);
+    stroke-width: 4.5;
+  }
+  .ahero__copy :global(.ahero__scribble .scribble__second) {
+    stroke-width: 3;
   }
   .ahero__line {
     max-width: 34rem;
     margin-block-start: 0.9rem;
     font-size: clamp(1.15rem, 1rem + 0.6vw, 1.5rem);
-    font-weight: 500;
+    font-weight: 800;
     line-height: 1.45;
-    color: var(--matin-white);
+    /* Brick with a thick ivory halo hugging the letters, so it reads over the leaves
+       (owner, Oct 29 2026). The photo itself is untouched. */
+    color: var(--matin-brique-ink);
+    text-shadow: var(--halo);
   }
 
   /* ---------- Two quiet buttons ---------- */
@@ -226,11 +258,12 @@ const a = aliveStrings(lang);
   .ahero__btn--primary {
     padding: 0.7rem 1.5rem;
     border-radius: 999px;
-    background: var(--matin-white);
-    color: var(--matin-blue);
+    background: var(--matin-encre);
+    color: var(--matin-white);
   }
   .ahero__btn--primary:hover {
     background: var(--alive-gold);
+    color: var(--matin-encre);
     transform: translateY(-2px);
   }
   .ahero__btn :global(.ahero__arrow) {
@@ -321,23 +354,14 @@ const a = aliveStrings(lang);
     .ahero__btn--ghost {
       text-shadow: none;
     }
-    .ahero__place {
-      color: var(--matin-terracotta-deep);
-    }
-    .ahero__tagline {
-      color: var(--matin-blue);
-    }
-    .ahero__btn--ghost {
-      background: transparent;
-      border: 1.5px solid var(--matin-gold);
-      color: var(--matin-blue);
-    }
+    /* On the page under the photo: brick, no halo. */
+    .ahero__place,
     .ahero__line {
-      color: var(--matin-ink);
+      text-shadow: none;
     }
-    .ahero__btn--primary {
-      background: var(--matin-blue);
-      color: var(--matin-white);
+    .ahero__place,
+    .ahero__line {
+      color: var(--matin-brique-ink);
     }
     .ahero__inner {
       grid-row: 2;

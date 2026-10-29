@@ -9,6 +9,7 @@
  * top edge, larger text, a gentle enlargement on hover and a round (+) button over the
  * image that opens it in the page's fullscreen viewer (Lightbox.astro, `lightboxGroup`).
  */
+import RemoteEventImage from '@/components/content/RemoteEventImage.astro';
 import { Picture, getImage } from 'astro:assets';
 import {
   BookOpen,
@@ -101,7 +102,14 @@ const large =
   data-accent={accent}
   data-event-end={event.endDate.toISOString()}
 >
-  {!d.image && (
+  {!d.image && d.remoteImage && (
+    <RemoteEventImage
+      image={d.remoteImage}
+      alt={pick(d.imageAlt, lang) ?? ''}
+      class="agenda-image"
+    />
+  )}
+  {!d.image && !d.remoteImage && (
     <DialogueArt accent={accent} seed={event.id} class="agenda-image agenda-image--art">
       <span class="agenda-art-icon">
         <SubjectIcon size={30} stroke-width={1.6} aria-hidden="true" />
@@ -252,6 +260,10 @@ const large =
     margin: -1.75rem -1.75rem 0.25rem;
     aspect-ratio: 16 / 9;
     overflow: hidden;
+  }
+  .agenda-card :global(.remote-img.agenda-image) {
+    margin: -1.75rem -1.75rem 0.25rem;
+    aspect-ratio: 16 / 9;
   }
   .agenda-card :global(.agenda-image--art) {
     margin: -1.75rem -1.75rem 0.25rem;

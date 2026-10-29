@@ -30,3 +30,12 @@ eventUrl: https://2026.tiff-jp.net/en/
 sourceUrl: https://www.outlookindia.com/art-entertainment/tokyo-film-festival-full-2026-lineup-revealed
 lastVerified: '2026-10-27'
 featuredUntil: '2026-11-01'
+# Official image, loaded from the organizer's own site (owner's request, Oct 29 2026).
+remoteImage:
+  src: 'https://2026.tiff-jp.net/img/top/slides/poster/39th_tiff_poster_pc.jpg'
+  credit: 'Tokyo International Film Festival'
+  source: 'https://2026.tiff-jp.net/en/'
+imageAlt:
+  fr: 'Affiche officielle du 39e Festival international du film de Tokyo.'
+  en: 'Official poster of the 39th Tokyo International Film Festival.'
+  fa: 'پوستر رسمی سی‌ونهمین جشنوارهٔ بین‌المللی فیلم توکیو.'

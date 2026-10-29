@@ -1,0 +1,165 @@
+---
+/**
+ * Cover for a Matin News item without a photo (owner's request, Oct 29 2026, replacing the
+ * circle motif): the round sun logo from the header rising gently over a dawn ground, with
+ * « Matin News » under it in the three languages, the page's language first. Decorative:
+ * the card's title carries the meaning. The logo floats slowly; still under reduced motion.
+ */
+import { Image } from 'astro:assets';
+import logo from '@/assets/brand/logo-matin.png';
+import type { UiLang } from '@/i18n/routes';
+
+interface Props {
+  lang: UiLang;
+  class?: string;
+}
+const { lang, class: className } = Astro.props;
+const labels: { lang: UiLang; text: string }[] = [
+  { lang: 'fr', text: 'Nouvelles de Matin' },
+  { lang: 'en', text: 'Matin News' },
+  { lang: 'fa', text: 'اخبار متین' },
+];
+const ordered = [
+  ...labels.filter((l) => l.lang === lang),
+  ...labels.filter((l) => l.lang !== lang),
+];
+---
+
+<div class:list={['mnews-art', className]} aria-hidden="true">
+  <div class="mnews-art__stack">
+    <span class="mnews-art__mark">
+      <span class="mnews-art__sun"></span>
+      <Image src={logo} alt="" width={176} class="mnews-art__logo" loading="lazy" />
+    </span>
+    <span class="mnews-art__horizon"></span>
+    <p class="mnews-art__labels">
+      {ordered.map((l, i) => (
+        <span
+          lang={l.lang}
+          dir={l.lang === 'fa' ? 'rtl' : 'ltr'}
+          class:list={['mnews-art__label', i === 0 && 'mnews-art__label--main']}
+        >
+          {l.text}
+        </span>
+      ))}
+    </p>
+  </div>
+</div>
+
+<style>
+  .mnews-art {
+    position: relative;
+    display: grid;
+    place-items: center;
+    overflow: hidden;
+    width: 100%;
+    height: 100%;
+    min-height: 14rem;
+    background: var(--matin-aube);
+  }
+  /* The logo on the sun rising behind it, over a short gold horizon. */
+  .mnews-art__mark {
+    position: relative;
+    display: grid;
+    place-items: center;
+  }
+  .mnews-art__sun {
+    position: absolute;
+    width: 165%;
+    aspect-ratio: 1;
+    border-radius: 50%;
+    background: color-mix(in srgb, var(--matin-soleil) 45%, var(--matin-ivoire));
+    translate: 0 12%;
+  }
+  .mnews-art__horizon {
+    position: relative;
+    width: min(14rem, 80%);
+    height: 2px;
+    margin-block: 0.15rem 0.2rem;
+    background: var(--matin-soleil);
+  }
+  .mnews-art__stack {
+    position: relative;
+    display: grid;
+    justify-items: center;
+    gap: 0.7rem;
+    padding: 1.25rem;
+    text-align: center;
+  }
+  .mnews-art__logo {
+    position: relative;
+    width: clamp(5.5rem, 4rem + 4vw, 8rem);
+    height: auto;
+    border-radius: 50%;
+    background: var(--matin-white);
+    box-shadow: 0 0 0 6px color-mix(in srgb, var(--matin-white) 70%, transparent);
+  }
+  .mnews-art__labels {
+    position: relative;
+    display: grid;
+    gap: 0.1rem;
+    margin: 0;
+  }
+  .mnews-art__label {
+    font-family: var(--font-display);
+    font-size: 0.85rem;
+    font-weight: 700;
+    color: var(--matin-encre);
+  }
+  .mnews-art__label--main {
+    font-size: 1.15rem;
+    font-weight: 800;
+    color: var(--matin-brique-ink);
+  }
+  /* Small cards (phones): a more compact stack so the three labels fit. */
+  @media (max-width: 40rem) {
+    .mnews-art__stack {
+      gap: 0.35rem;
+      padding: 0.75rem;
+    }
+    .mnews-art__logo {
+      width: 4.25rem;
+      box-shadow: 0 0 0 4px color-mix(in srgb, var(--matin-white) 70%, transparent);
+    }
+    .mnews-art__label {
+      font-size: 0.75rem;
+    }
+    .mnews-art__label--main {
+      font-size: 0.95rem;
+    }
+  }
+  @media (prefers-reduced-motion: no-preference) {
+    .mnews-art__logo {
+      animation: mnews-float 6s ease-in-out infinite;
+    }
+    .mnews-art__sun {
+      animation:
+        mnews-rise 2.4s cubic-bezier(0.2, 0.7, 0.2, 1) both,
+        mnews-glow 7s ease-in-out 2.4s infinite;
+    }
+  }
+  @keyframes mnews-float {
+    0%,
+    100% {
+      transform: translateY(0) rotate(0deg);
+    }
+    50% {
+      transform: translateY(-7px) rotate(-4deg);
+    }
+  }
+  @keyframes mnews-rise {
+    from {
+      translate: 0 45%;
+      opacity: 0.4;
+    }
+  }
+  @keyframes mnews-glow {
+    0%,
+    100% {
+      scale: 1;
+    }
+    50% {
+      scale: 1.06;
+    }
+  }
+</style>

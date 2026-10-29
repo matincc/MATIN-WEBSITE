@@ -35,3 +35,12 @@ eventUrl: https://www.unesco.org/en/articles/5th-unesco-global-forum-against-rac
 sourceUrl: https://www.unesco.org/en/articles/5th-unesco-global-forum-against-racism-and-discrimination
 lastVerified: '2026-10-27'
 featuredUntil: '2026-10-30'
+# Official image, loaded from UNESCO's own site (owner's request, Oct 29 2026).
+remoteImage:
+  src: 'https://www.unesco.org/sites/default/files/styles/paragraph_medium_desktop/article/2026-04/Media%20Stakeout%20Cover%20Picture.jpg.webp?itok=QsjLqd9p'
+  credit: 'UNESCO'
+  source: 'https://www.unesco.org/en/articles/unesco-announces-5th-global-forum-against-racism-and-discrimination-be-held-hague'
+imageAlt:
+  fr: 'Visuel officiel de l’UNESCO pour le 5e Forum mondial contre le racisme et les discriminations.'
+  en: 'Official UNESCO visual for the 5th Global Forum against Racism and Discrimination.'
+  fa: 'تصویر رسمی یونسکو برای پنجمین مجمع جهانی علیه نژادپرستی و تبعیض.'

@@ -8,6 +8,7 @@
  * ones). Region chips filter the gallery; arrows scroll it; it works without script
  * (all picks shown, swipe or scroll). Hidden when there is no pick.
  */
+import RemoteEventImage from '@/components/content/RemoteEventImage.astro';
 import { ArrowRight, ArrowUpRight, ChevronLeft, ChevronRight, Star } from '@lucide/astro';
 import { Picture } from 'astro:assets';
 import DialogueArt from '@/components/brand/DialogueArt.astro';
@@ -109,6 +110,19 @@ const tiles = picks.map((event) => {
                   sizes="(min-width: 64rem) 24rem, 78vw"
                   loading={i < 3 ? 'eager' : 'lazy'}
                 />
+              ) : tile.event.data.remoteImage ? (
+                <RemoteEventImage
+                  image={tile.event.data.remoteImage}
+                  eager={i < 3}
+                  class="lpick__remote"
+                >
+                  <DialogueArt
+                    slot="fallback"
+                    accent="coral"
+                    seed={tile.event.id}
+                    class="lpick__art"
+                  />
+                </RemoteEventImage>
               ) : (
                 <DialogueArt accent="coral" seed={tile.event.id} class="lpick__art" />
               )}
@@ -297,6 +311,9 @@ const tiles = picks.map((event) => {
     height: 100%;
     object-fit: cover;
     transition: transform 1s cubic-bezier(0.2, 0.7, 0.2, 1);
+  }
+  .lpick__media :global(.remote-img) {
+    height: 100%;
   }
   .lpick__region {
     position: absolute;

@@ -30,3 +30,12 @@ eventUrl: https://festivalofauthors.ca/2026/03/05/2026-festival-dates/
 sourceUrl: https://festivalofauthors.ca/2026/03/05/2026-festival-dates/
 lastVerified: '2026-10-27'
 featuredUntil: '2026-11-01'
+# Official image, loaded from the organizer's own site (owner's request, Oct 29 2026).
+remoteImage:
+  src: 'https://festivalofauthors.ca/wp-content/uploads/2026/04/Web-homepage-SEO-1-1024x512.png'
+  credit: 'Toronto International Festival of Authors'
+  source: 'https://festivalofauthors.ca/'
+imageAlt:
+  fr: 'Visuel officiel 2026 du Toronto International Festival of Authors.'
+  en: 'Official 2026 visual of the Toronto International Festival of Authors.'
+  fa: 'تصویر رسمی ۲۰۲۶ جشنوارهٔ بین‌المللی نویسندگان تورنتو.'

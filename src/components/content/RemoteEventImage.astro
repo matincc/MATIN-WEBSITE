@@ -1,0 +1,77 @@
+---
+/**
+ * The official image of a selected event, loaded straight from the organizer's own website
+ * (owner's request, Oct 29 2026: real festival visuals instead of the circle motif on
+ * Matin's Picks). The file is not copied into the repository; its host is allowed in the
+ * CSP (astro.config.mjs) and a tiny credit names and links the organizer. The image sits
+ * over `fallback` art, so if the organizer removes the file the card still shows a cover.
+ */
+interface Props {
+  image: { src: string; credit: string; source: string };
+  alt?: string;
+  class?: string;
+  eager?: boolean;
+}
+const { image, alt = '', class: className, eager = false } = Astro.props;
+---
+
+<div class:list={['remote-img', className]}>
+  <slot name="fallback" />
+  <img
+    src={image.src}
+    alt={alt}
+    loading={eager ? 'eager' : 'lazy'}
+    decoding="async"
+    referrerpolicy="no-referrer"
+    class="remote-img__img"
+  />
+  <a href={image.source} class="remote-img__credit" target="_blank" rel="noopener noreferrer">
+    © {image.credit}
+  </a>
+</div>
+
+<script>
+  // If the organizer's file cannot load, hide it and its credit so the cover art shows.
+  const hide = (img: HTMLImageElement) => img.closest('.remote-img')?.classList.add('is-broken');
+  document.querySelectorAll<HTMLImageElement>('.remote-img__img').forEach((img) => {
+    if (img.complete && img.naturalWidth === 0) hide(img);
+    else img.addEventListener('error', () => hide(img), { once: true });
+  });
+</script>
+
+<style>
+  .remote-img.is-broken .remote-img__img,
+  .remote-img.is-broken .remote-img__credit {
+    display: none;
+  }
+  .remote-img {
+    position: relative;
+    overflow: hidden;
+  }
+  .remote-img > :global(:first-child:not(img)) {
+    position: absolute;
+    inset: 0;
+  }
+  .remote-img__img {
+    position: relative;
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+  .remote-img__credit {
+    position: absolute;
+    inset-block-end: 0.4rem;
+    inset-inline-end: 0.4rem;
+    padding: 0.1rem 0.45rem;
+    border-radius: 999px;
+    background: color-mix(in srgb, var(--matin-ink) 60%, transparent);
+    color: var(--matin-white);
+    font-size: 10px;
+    line-height: 1.5;
+    text-decoration: none;
+  }
+  .remote-img__credit:hover {
+    text-decoration: underline;
+  }
+</style>

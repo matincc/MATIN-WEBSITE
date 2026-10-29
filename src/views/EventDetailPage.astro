@@ -1,4 +1,5 @@
 ---
+import RemoteEventImage from '@/components/content/RemoteEventImage.astro';
 import { Picture, getImage } from 'astro:assets';
 import {
   ArrowLeft,
@@ -167,6 +168,13 @@ const jsonLd = {
             sizes="(min-width: 1024px) 50vw, 100vw"
             class="size-full object-cover"
             loading="eager"
+          />
+        ) : d.remoteImage ? (
+          <RemoteEventImage
+            image={d.remoteImage}
+            alt={pick(d.imageAlt, lang) ?? ''}
+            eager
+            class="size-full"
           />
         ) : (
           <CoverArt category={subjectCover[d.subject]} seed={event.id} class="size-full" />
