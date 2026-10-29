@@ -34,7 +34,11 @@ const role = pick(p.signature, lang) || pick(p.title, lang);
 ---
 
 {paragraphs.length > 0 && (
-  <section class="letter-band section-pad" aria-labelledby="home-letter-title">
+  <section
+    id="president-letter"
+    class="letter-band section-pad scroll-mt-24"
+    aria-labelledby="home-letter-title"
+  >
     <div class="container-site letter-grid">
       {photo && (
         <figure class="letter-photo" data-reveal>
