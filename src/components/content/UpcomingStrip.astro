@@ -108,11 +108,11 @@ const accents = ['coral', 'gold', 'blue', 'green'] as const;
 </script>
 
 <style>
-  /* Navy, like the shade at the foot of the hero photo, so the two read as one
-     (owner's hero brief, Oct 29 2026). */
+  /* Warm cream right under the bright hero photo (owner's request, Oct 29 2026: no
+     dark band). */
   .upcoming {
-    background: var(--matin-blue);
-    color: var(--alive-cream);
+    background: var(--matin-cream);
+    color: var(--matin-blue);
   }
   .upcoming__inner {
     display: grid;
@@ -120,7 +120,7 @@ const accents = ['coral', 'gold', 'blue', 'green'] as const;
     align-items: center;
     gap: 1.25rem 2.5rem;
     padding-block: 1.5rem 1.75rem;
-    border-block-start: 1px solid color-mix(in srgb, var(--alive-cream) 18%, transparent);
+    border-block-start: 4px solid var(--matin-gold);
   }
   .upcoming__title {
     display: inline-flex;
@@ -131,7 +131,7 @@ const accents = ['coral', 'gold', 'blue', 'green'] as const;
     font-weight: 800;
     letter-spacing: 0.2em;
     text-transform: uppercase;
-    color: var(--alive-gold);
+    color: var(--matin-terracotta-deep);
     white-space: nowrap;
   }
   :global(html[lang='fa']) .upcoming__title {
@@ -174,7 +174,7 @@ const accents = ['coral', 'gold', 'blue', 'green'] as const;
   }
   /* Quiet rules between the dates instead of boxes. */
   .upcoming__item + .upcoming__item {
-    border-inline-start: 1px solid color-mix(in srgb, var(--alive-cream) 18%, transparent);
+    border-inline-start: 1px solid color-mix(in srgb, var(--matin-blue) 18%, transparent);
   }
   .upcoming__link {
     position: relative;
@@ -184,7 +184,7 @@ const accents = ['coral', 'gold', 'blue', 'green'] as const;
     height: 100%;
     padding: 0.5rem 2.25rem 0.5rem 1.25rem;
     border-radius: 0.75rem;
-    color: var(--alive-cream);
+    color: var(--matin-blue);
     text-decoration: none;
     transition: background 0.3s ease;
   }
@@ -192,15 +192,15 @@ const accents = ['coral', 'gold', 'blue', 'green'] as const;
     padding-inline-start: 0;
   }
   .upcoming__link:hover {
-    background: color-mix(in srgb, var(--alive-cream) 8%, transparent);
+    background: var(--color-ivory);
   }
   .upcoming__link:hover .upcoming__name {
     text-decoration: underline;
-    text-decoration-color: var(--alive-gold);
+    text-decoration-color: var(--matin-gold);
     text-underline-offset: 0.2em;
   }
   .upcoming__link:focus-visible {
-    outline: 3px solid var(--alive-gold);
+    outline: 3px solid var(--matin-blue);
     outline-offset: 2px;
   }
   .upcoming__date {
@@ -212,19 +212,19 @@ const accents = ['coral', 'gold', 'blue', 'green'] as const;
     padding-inline-end: 1rem;
     border-inline-end: 2px solid var(--tone);
     line-height: 1;
-    color: var(--alive-cream);
+    color: var(--matin-blue);
   }
   [data-tone='coral'] {
-    --tone: var(--alive-coral);
+    --tone: var(--matin-coral);
   }
   [data-tone='gold'] {
-    --tone: var(--alive-gold);
+    --tone: var(--matin-gold);
   }
   [data-tone='blue'] {
-    --tone: var(--alive-cream);
+    --tone: var(--matin-teal);
   }
   [data-tone='green'] {
-    --tone: color-mix(in srgb, var(--alive-gold) 55%, var(--alive-cream));
+    --tone: var(--matin-terracotta);
   }
   /* The day in the headline's serif, the month in small capitals. */
   .upcoming__day {
@@ -242,7 +242,7 @@ const accents = ['coral', 'gold', 'blue', 'green'] as const;
     font-weight: 800;
     letter-spacing: 0.12em;
     text-transform: uppercase;
-    color: var(--alive-gold);
+    color: var(--matin-terracotta-deep);
   }
   .upcoming__body {
     display: grid;
@@ -254,10 +254,10 @@ const accents = ['coral', 'gold', 'blue', 'green'] as const;
     font-weight: 800;
     letter-spacing: 0.1em;
     text-transform: uppercase;
-    color: color-mix(in srgb, var(--alive-cream) 80%, transparent);
+    color: var(--matin-teal-deep);
   }
   .upcoming__kind.is-matin {
-    color: var(--alive-gold);
+    color: var(--matin-terracotta-deep);
   }
   .upcoming__name {
     overflow: hidden;
@@ -271,7 +271,7 @@ const accents = ['coral', 'gold', 'blue', 'green'] as const;
   }
   .upcoming__city {
     font-size: 0.85rem;
-    color: color-mix(in srgb, var(--alive-cream) 85%, transparent);
+    color: var(--matin-ink);
   }
   .upcoming__link :global(.upcoming__ext) {
     position: absolute;
@@ -294,17 +294,17 @@ const accents = ['coral', 'gold', 'blue', 'green'] as const;
     width: 2.5rem;
     height: 2.5rem;
     border-radius: 999px;
-    border: 1.5px solid color-mix(in srgb, var(--alive-cream) 55%, transparent);
-    color: var(--alive-cream);
+    border: 1.5px solid color-mix(in srgb, var(--matin-blue) 45%, transparent);
+    color: var(--matin-blue);
   }
   .upcoming__btn:hover {
-    background: var(--alive-gold);
-    border-color: var(--alive-gold);
-    color: var(--alive-green);
+    background: var(--matin-blue);
+    border-color: var(--matin-blue);
+    color: var(--matin-white);
   }
   .upcoming__btn:focus-visible,
   .upcoming__all:focus-visible {
-    outline: 3px solid var(--alive-gold);
+    outline: 3px solid var(--matin-blue);
     outline-offset: 2px;
   }
   .upcoming__all {
@@ -314,7 +314,7 @@ const accents = ['coral', 'gold', 'blue', 'green'] as const;
     font-family: var(--font-display);
     font-weight: 800;
     font-size: 0.95rem;
-    color: var(--alive-gold);
+    color: var(--matin-blue);
     white-space: nowrap;
   }
   @media (max-width: 63.99rem) {
