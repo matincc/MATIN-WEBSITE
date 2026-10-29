@@ -362,10 +362,25 @@ const joinWays = [
         scale 0.45s cubic-bezier(0.2, 0.7, 0.2, 1),
         box-shadow 0.45s ease;
     }
+    .team-card__avatar {
+      transition:
+        scale 0.45s cubic-bezier(0.2, 0.7, 0.2, 1),
+        rotate 0.45s ease,
+        box-shadow 0.45s ease;
+    }
+    /* The photo itself clearly answers too: it grows, turns slightly and its ring
+       thickens (owner, Oct 29 2026: the motion must be visible on the faces). */
+    .team-grid > li.team-card:hover .team-card__avatar {
+      scale: 1.15;
+      rotate: -4deg;
+      box-shadow:
+        0 0 0 4px var(--color-white),
+        0 0 0 11px var(--ring, var(--color-soleil));
+    }
     .team-grid > li.team-card:hover {
       rotate: 0deg;
-      translate: 0 -0.75rem;
-      scale: 1.04;
+      translate: 0 -1rem;
+      scale: 1.05;
       box-shadow: 0 1.25rem 2.5rem -1rem color-mix(in srgb, var(--color-primary) 35%, transparent);
     }
     .team-join__ways li {
