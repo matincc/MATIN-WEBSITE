@@ -8,11 +8,8 @@ import type { UiLang } from './routes';
 import { typo } from '@/lib/frenchTypo';
 
 const fr = {
-  tempPhoto: 'Photo temporaire',
   photoCredit: 'Photo : {author} / {source}',
   unsplashLicense: 'Licence Unsplash',
-  tempNote:
-    'Les photos marquées « Photo temporaire » illustrent des thèmes en attendant les photos de Matin. Elles ne montrent ni les activités ni les membres de Matin.',
   featured: 'À la une',
   readFullNote: 'Lire le mot complet',
   all: 'Tout',
@@ -25,11 +22,8 @@ const fr = {
 type LivingDict = typeof fr;
 
 const en: LivingDict = {
-  tempPhoto: 'Temporary photo',
   photoCredit: 'Photo: {author} / {source}',
   unsplashLicense: 'Unsplash License',
-  tempNote:
-    'Photos marked "Temporary photo" illustrate themes until Matin’s own photos replace them. They do not show Matin’s activities or members.',
   featured: 'Featured',
   readFullNote: 'Read the full note',
   all: 'All',
@@ -40,11 +34,8 @@ const en: LivingDict = {
 };
 
 const fa: LivingDict = {
-  tempPhoto: 'عکس موقت',
   photoCredit: 'عکس: {author} / {source}',
   unsplashLicense: 'مجوز Unsplash',
-  tempNote:
-    'عکس‌هایی که برچسب «عکس موقت» دارند، تا زمانی که عکس‌های خود متین جایگزینشان شود، فقط موضوع‌ها را نشان می‌دهند. این عکس‌ها فعالیت‌ها یا اعضای متین را نشان نمی‌دهند.',
   featured: 'برجسته',
   readFullNote: 'خواندن متن کامل',
   all: 'همه',
