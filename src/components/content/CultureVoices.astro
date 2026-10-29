@@ -1,0 +1,589 @@
+---
+/**
+ * « What Culture Means to Us » (owner's brief, Oct 29 2026), on the Our Team page after the
+ * Executive Team: three members answer « Hey, what does culture mean to you? » in their own
+ * words (src/lib/cultureVoices.ts). Not three cards: three compositions of the same family,
+ * each a name tag (photo, name, role) beside a larger reflection on layered warm paper.
+ *
+ * Wide screens (from 64rem): each composition sits on a 12-column grid with its own
+ * placement, so the rhythm breaks the grid on purpose: Mina's tag hangs low on the start
+ * side over her apricot sheet; Hakan's rises above the end side of his sandstone sheet; Benoît's
+ * is pinned on top of a narrower pale-rose sheet. Tags overlap only the sheet's padding,
+ * never its text.
+ * Phones and tablets: the tag sits on the sheet's top edge, start, end, then start again.
+ * Logical properties throughout, so Persian mirrors. No continuous animation; the reveals
+ * are skipped under reduced motion (BaseLayout adds .reveal-ready only when
+ * motion is allowed); the hover state then changes without movement.
+ * Never: speech bubbles, wobbly photo frames, designed signatures (owner, Oct 28 2026).
+ */
+import { Image } from 'astro:assets';
+import type { UiLang } from '@/i18n/routes';
+import { pick } from '@/i18n/ui';
+import { forLang, getTeam } from '@/lib/content';
+import { cultureVoices, cultureVoicesStrings as s } from '@/lib/cultureVoices';
+
+interface Props {
+  lang: UiLang;
+}
+const { lang } = Astro.props;
+const team = forLang(await getTeam(), lang);
+const quoteMark = lang === 'en' ? '“' : '«';
+
+// The opening sentence is set larger, as the first thing the person says; the text itself
+// is unchanged and stays one paragraph.
+const splitLead = (text: string) => {
+  const m = text.match(/^(.+?[.!?؟])(\s+)([\s\S]+)$/u);
+  return m ? { lead: m[1], rest: m[3] } : { lead: '', rest: text };
+};
+
+const voices = cultureVoices.flatMap((v) => {
+  const member = team.find((m) => m.id === v.member);
+  if (!member) return [];
+  const text = pick(v.text, lang) ?? v.text.en;
+  return [
+    {
+      ...v,
+      ...splitLead(text),
+      name: (lang === 'fa' && member.data.nameFa) || member.data.name,
+      role: pick(member.data.role, lang),
+      photo: member.data.photo,
+    },
+  ];
+});
+---
+
+{voices.length > 0 && (
+  <section id="culture" class="voices scroll-mt-24" aria-labelledby="voices-title">
+    <header class="voices__head">
+      <div class="voices__titles">
+        <h2 id="voices-title" class="voices__title">
+          {pick(s.title, lang)}
+        </h2>
+        <p class="voices__subtitle">{pick(s.subtitle, lang)}</p>
+      </div>
+      <p class="voices__asked" data-reveal>
+        <span class="voices__asked-label">{pick(s.asked, lang)}</span>
+        <span class="voices__asked-q">{pick(s.question, lang)}</span>
+      </p>
+    </header>
+
+    <div class="voices__body">
+      <ol class="voices__list">
+        {voices.map((v, i) => (
+          <li class:list={['voice', `voice--${v.tone}`]}>
+            <figure class="voice__fig">
+              <figcaption class="voice__tag" data-reveal style={`--reveal-delay:${160 + i * 60}ms`}>
+                <span class="voice__hole" aria-hidden="true" />
+                {v.photo && (
+                  <Image src={v.photo} alt="" width={128} height={128} class="voice__photo" />
+                )}
+                <span class="voice__who">
+                  <h3 class="voice__name">{v.name}</h3>
+                  {v.role && <span class="voice__role">{v.role}</span>}
+                </span>
+              </figcaption>
+              <blockquote class="voice__sheet" data-reveal>
+                <span class="voice__mark" aria-hidden="true">
+                  {quoteMark}
+                </span>
+                <p class="voice__text">
+                  {v.lead && <span class="voice__lead">{v.lead} </span>}
+                  {v.rest}
+                </p>
+              </blockquote>
+            </figure>
+          </li>
+        ))}
+      </ol>
+    </div>
+  </section>
+)}
+
+<style>
+  .voices {
+    /* Warm tones mixed from the Matin palette only (CLAUDE.md, section 3). */
+    --v-apricot: color-mix(
+      in srgb,
+      var(--matin-brique) 11%,
+      color-mix(in srgb, var(--matin-soleil) 24%, var(--matin-ivoire))
+    );
+    --v-sand: color-mix(in srgb, var(--matin-white) 55%, var(--matin-ivoire));
+    --v-rose: color-mix(in srgb, var(--matin-brique) 12%, var(--matin-ivoire));
+    --v-caramel: color-mix(in srgb, var(--matin-soleil) 70%, var(--matin-brique));
+    --v-cocoa: color-mix(in srgb, var(--matin-brique-ink) 55%, var(--matin-nuit));
+    --v-shadow: color-mix(in srgb, var(--matin-brique-ink) 26%, transparent);
+    /* A very faint paper grain (an inline SVG, no file to load). */
+    --v-grain: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 .45 0 0 0 0 .3 0 0 0 0 .2 0 0 0 .06 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+    position: relative;
+    padding-block: clamp(1rem, 0.5rem + 2vw, 2.5rem) clamp(1rem, 0.5rem + 2vw, 2rem);
+  }
+
+  /* ---------- Heading: title, subtitle and the question on a slip of paper ---------- */
+  .voices__head {
+    display: grid;
+    gap: clamp(1.75rem, 1.25rem + 2vw, 2.5rem);
+    align-items: end;
+    max-width: 78rem;
+    margin-inline: auto;
+    margin-block-end: clamp(3.5rem, 2.5rem + 4vw, 6.5rem);
+  }
+  @media (min-width: 56rem) {
+    .voices__head {
+      grid-template-columns: minmax(0, 1.5fr) minmax(0, 1fr);
+    }
+  }
+  .voices__title {
+    font-family: var(--font-editorial);
+    font-size: clamp(2.35rem, 1.5rem + 3vw, 4.25rem);
+    font-weight: 600;
+    font-variation-settings:
+      'SOFT' 100,
+      'opsz' 144;
+    line-height: 1.04;
+    letter-spacing: -0.015em;
+    color: var(--color-primary);
+    text-wrap: balance;
+  }
+  :global(html[lang='fa']) .voices__title {
+    font-weight: 800;
+    line-height: 1.35;
+    letter-spacing: 0;
+  }
+  .voices__subtitle {
+    max-width: 34rem;
+    margin-block-start: 1.1rem;
+    font-size: clamp(1.125rem, 1rem + 0.45vw, 1.375rem);
+    line-height: 1.6;
+    color: var(--color-ink);
+    text-wrap: pretty;
+  }
+  /* The question, as if jotted on a slip and taped to the page. */
+  .voices__asked {
+    position: relative;
+    justify-self: start;
+    max-width: 24rem;
+    padding: 1.4rem 1.6rem 1.3rem;
+    border-radius: 0.4rem 1.6rem 0.4rem 1.6rem;
+    background-color: var(--color-white);
+    background-image: var(--v-grain);
+    box-shadow: 0 0.9rem 1.8rem -1.1rem var(--v-shadow);
+    rotate: -1.6deg;
+  }
+  @media (min-width: 56rem) {
+    .voices__asked {
+      justify-self: end;
+      margin-block-end: 0.4rem;
+    }
+  }
+  .voices__asked::before {
+    /* A strip of gold tape. */
+    content: '';
+    position: absolute;
+    inset-block-start: -0.7rem;
+    inset-inline-start: 50%;
+    width: 5.5rem;
+    height: 1.4rem;
+    translate: -50% 0;
+    rotate: 3deg;
+    border-radius: 0.15rem;
+    background: color-mix(in srgb, var(--matin-soleil) 55%, transparent);
+  }
+  :global([dir='rtl']) .voices__asked::before {
+    translate: 50% 0;
+  }
+  .voices__asked-label {
+    display: block;
+    font-family: var(--font-display);
+    font-size: 0.875rem;
+    font-weight: 800;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--color-brique-ink);
+  }
+  :global(html[lang='fa']) .voices__asked-label {
+    letter-spacing: 0;
+    font-size: 1rem;
+  }
+  .voices__asked-q {
+    display: block;
+    margin-block-start: 0.4rem;
+    font-family: var(--font-editorial);
+    font-size: clamp(1.3rem, 1.15rem + 0.5vw, 1.6rem);
+    font-weight: 500;
+    font-variation-settings:
+      'SOFT' 100,
+      'opsz' 48;
+    line-height: 1.3;
+    color: var(--color-primary);
+  }
+  :global(html[lang='fa']) .voices__asked-q {
+    font-weight: 700;
+    line-height: 1.7;
+  }
+
+  /* ---------- The three compositions ---------- */
+  .voices__body {
+    position: relative;
+    max-width: 78rem;
+    margin-inline: auto;
+  }
+  .voices__list {
+    position: relative;
+    display: grid;
+    gap: clamp(3.25rem, 2.5rem + 3vw, 6.5rem);
+  }
+  .voice__fig {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    margin: 0;
+  }
+
+  /* The reflection: a warm sheet (::after) with a second, deeper sheet slipped under it
+     (::before); both sit behind the text inside the sheet's own stacking context. */
+  .voice__sheet {
+    position: relative;
+    isolation: isolate;
+    margin: 0;
+    padding: 3.4rem clamp(1.35rem, 0.9rem + 2vw, 2.25rem) clamp(1.6rem, 1.2rem + 1.5vw, 2.25rem);
+    border-radius: 1.25rem 4.5rem 1.25rem 2.25rem;
+  }
+  .voice__sheet::before,
+  .voice__sheet::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    border-radius: inherit;
+  }
+  .voice__sheet::before {
+    background: var(--v-under);
+    rotate: var(--v-under-rotate, 0.8deg);
+    translate: var(--v-under-shift, 0.3rem 0.45rem);
+  }
+  .voice__sheet::after {
+    background-color: var(--v-sheet);
+    background-image: var(--v-grain);
+    box-shadow:
+      0 1px 2px color-mix(in srgb, var(--matin-ink) 6%, transparent),
+      0 1.5rem 3rem -1.75rem var(--v-shadow);
+  }
+  .voice__mark {
+    position: absolute;
+    inset-block-start: -0.12em;
+    inset-inline-start: clamp(1rem, 0.6rem + 1.5vw, 1.75rem);
+    font-family: var(--font-editorial);
+    font-size: clamp(5.5rem, 4.5rem + 3vw, 8rem);
+    font-weight: 700;
+    font-variation-settings: 'SOFT' 100;
+    line-height: 1;
+    color: var(--v-mark);
+    pointer-events: none;
+    user-select: none;
+  }
+  :global(html:is([lang='fa'], [lang^='fr'])) .voice__mark {
+    inset-block-start: -0.3em;
+    font-family: 'Fraunces Variable', Georgia, serif;
+  }
+  .voice__text {
+    position: relative;
+    max-width: 40rem;
+    font-size: clamp(1.0625rem, 1rem + 0.3vw, 1.25rem);
+    line-height: 1.8;
+    color: var(--color-ink);
+    text-wrap: pretty;
+  }
+  :global(html[lang='fa']) .voice__text {
+    line-height: 2.05;
+  }
+  .voice__lead {
+    display: block;
+    margin-block-end: 0.55rem;
+    font-family: var(--font-editorial);
+    font-size: clamp(1.45rem, 1.2rem + 0.9vw, 2rem);
+    font-weight: 500;
+    font-variation-settings:
+      'SOFT' 100,
+      'opsz' 72;
+    line-height: 1.25;
+    color: var(--v-lead);
+  }
+  :global(html[lang='fa']) .voice__lead {
+    font-weight: 700;
+    line-height: 1.6;
+  }
+
+  /* The name tag: smaller, darker, a little askew, with a punched hole. */
+  .voice__tag {
+    position: relative;
+    z-index: 2;
+    display: flex;
+    align-items: center;
+    gap: 0.9rem;
+    width: fit-content;
+    max-width: min(22rem, 88%);
+    margin-block-end: -2.1rem;
+    padding: 0.9rem 1.35rem 0.9rem 0.9rem;
+    padding-inline: 0.9rem 1.35rem;
+    border-radius: 0.6rem 1.75rem 0.6rem 1.75rem;
+    background: var(--v-tag);
+    color: var(--v-tag-ink);
+    box-shadow: 0 0.9rem 1.6rem -0.9rem color-mix(in srgb, var(--matin-nuit) 45%, transparent);
+    rotate: var(--v-tag-rotate, -1.5deg);
+  }
+  .voice__hole {
+    position: absolute;
+    inset-block-start: 0.55rem;
+    inset-inline-end: 0.6rem;
+    width: 0.5rem;
+    aspect-ratio: 1;
+    border-radius: 50%;
+    background: var(--color-ivory);
+    box-shadow: inset 0 1px 2px color-mix(in srgb, var(--matin-nuit) 40%, transparent);
+  }
+  .voice__tag :global(.voice__photo) {
+    flex: none;
+    width: clamp(3.4rem, 3rem + 1vw, 4.25rem);
+    height: auto;
+    aspect-ratio: 1;
+    border-radius: 50%;
+    object-fit: cover;
+    box-shadow: 0 0 0 3px var(--v-tag-ring);
+  }
+  .voice__who {
+    display: grid;
+    gap: 0.2rem;
+    min-width: 0;
+  }
+  .voice__name {
+    font-family: var(--font-editorial);
+    font-size: clamp(1.35rem, 1.2rem + 0.6vw, 1.75rem);
+    font-weight: 650;
+    font-variation-settings:
+      'SOFT' 100,
+      'opsz' 60;
+    line-height: 1.12;
+    color: inherit;
+  }
+  :global(html[lang='fa']) .voice__name {
+    font-weight: 800;
+    line-height: 1.5;
+  }
+  .voice__role {
+    font-family: var(--font-display);
+    font-size: 0.9375rem;
+    font-weight: 700;
+    line-height: 1.35;
+    color: inherit;
+    opacity: 0.92;
+  }
+
+  /* ---------- Three tones of the same family ---------- */
+  .voice--apricot {
+    --v-sheet: var(--v-apricot);
+    --v-under: color-mix(in srgb, var(--matin-brique) 16%, var(--v-apricot));
+    --v-mark: color-mix(in srgb, var(--matin-brique) 55%, var(--v-apricot));
+    --v-lead: var(--color-brique-ink);
+    --v-tag: var(--color-brique-ink);
+    --v-tag-ink: var(--color-white);
+    --v-tag-ring: var(--color-soleil);
+  }
+  .voice--sand {
+    --v-sheet: var(--v-sand);
+    --v-under: color-mix(in srgb, var(--matin-soleil) 22%, var(--matin-sable));
+    --v-under-rotate: -0.9deg;
+    --v-under-shift: -0.35rem 0.45rem;
+    --v-mark: color-mix(in srgb, var(--v-caramel) 75%, var(--v-sand));
+    --v-lead: var(--v-cocoa);
+    --v-tag: var(--v-caramel);
+    --v-tag-ink: var(--color-primary);
+    --v-tag-ring: var(--color-white);
+    --v-tag-rotate: 1.8deg;
+  }
+  .voice--rose {
+    --v-sheet: var(--v-rose);
+    --v-under: color-mix(in srgb, var(--matin-brique) 15%, var(--v-rose));
+    --v-under-rotate: 0.7deg;
+    --v-under-shift: 0.5rem -0.45rem;
+    --v-mark: color-mix(in srgb, var(--matin-brique) 38%, var(--v-rose));
+    --v-lead: var(--v-cocoa);
+    --v-tag: var(--v-cocoa);
+    --v-tag-ink: var(--color-white);
+    --v-tag-ring: var(--v-caramel);
+    --v-tag-rotate: -1deg;
+  }
+  .voice--sand .voice__sheet {
+    border-radius: 3.5rem 1.25rem 2.5rem 1.25rem;
+  }
+  .voice--rose .voice__sheet {
+    border-radius: 2.5rem 1.25rem 5rem 1.25rem;
+  }
+  :global([dir='rtl']) .voice--apricot .voice__sheet {
+    border-radius: 4.5rem 1.25rem 2.25rem 1.25rem;
+  }
+  :global([dir='rtl']) .voice--sand .voice__sheet {
+    border-radius: 1.25rem 3.5rem 1.25rem 2.5rem;
+  }
+  :global([dir='rtl']) .voice--rose .voice__sheet {
+    border-radius: 1.25rem 2.5rem 1.25rem 5rem;
+  }
+
+  /* Phones and tablets: the tag on the sheet's top edge, start, end, start again. */
+  .voice--sand .voice__tag {
+    align-self: flex-end;
+    margin-inline-end: 0.75rem;
+  }
+  .voice--rose .voice__tag {
+    margin-inline-start: 1.5rem;
+  }
+  .voice--apricot .voice__tag {
+    margin-inline-start: 0.4rem;
+  }
+  /* The quote mark on the side away from the tag. */
+  @media (max-width: 63.99rem) {
+    .voice--apricot .voice__mark,
+    .voice--rose .voice__mark {
+      inset-inline-start: auto;
+      inset-inline-end: clamp(1rem, 0.6rem + 1.5vw, 1.75rem);
+    }
+    .voice__mark {
+      font-size: 5rem;
+    }
+  }
+  @media (max-width: 39.99rem) {
+    .voice__mark {
+      display: none;
+    }
+  }
+  @media (min-width: 40rem) and (max-width: 63.99rem) {
+    .voice--apricot .voice__fig {
+      margin-inline-end: 8%;
+    }
+    .voice--sand .voice__fig {
+      margin-inline-start: 8%;
+    }
+    .voice--rose .voice__fig {
+      margin-inline: 4%;
+    }
+  }
+
+  /* ---------- Wide screens: three placements on a 12-column grid ---------- */
+  @media (min-width: 64rem) {
+    .voice__fig {
+      display: grid;
+      grid-template-columns: repeat(12, minmax(0, 1fr));
+      align-items: center;
+    }
+    .voice__tag {
+      margin: 0;
+      max-width: 21rem;
+      width: auto;
+    }
+    .voice__sheet {
+      padding-block: clamp(2.75rem, 2rem + 1.5vw, 3.5rem);
+    }
+
+    /* Mina: her tag hangs from the bottom of her sheet, on the start side. It overlaps
+       only the sheet's bottom padding, whatever the text length. */
+    .voice--apricot .voice__tag {
+      grid-row: 2;
+      grid-column: 1 / 5;
+      justify-self: start;
+      margin-block-start: -2.5rem;
+    }
+    .voice--apricot .voice__sheet {
+      grid-row: 1;
+      grid-column: 3 / 12;
+      padding-block-end: 4rem;
+      padding-inline-start: calc(100% / 9 + 2.75rem);
+      padding-inline-end: clamp(2rem, 1rem + 2vw, 3.5rem);
+    }
+    .voice--apricot .voice__mark {
+      inset-inline-start: calc(100% / 9 + 1.5rem);
+    }
+
+    /* Hakan: the mirror image, his tag rising above the end of his sheet. */
+    .voice--sand .voice__tag {
+      grid-row: 1;
+      grid-column: 9 / 13;
+      justify-self: end;
+    }
+    .voice--sand .voice__sheet {
+      grid-row: 2;
+      grid-column: 2 / 11;
+      margin-block-start: -3rem;
+      padding-block-start: 3.75rem;
+      padding-inline-start: clamp(2.5rem, 1.5rem + 2.5vw, 4.5rem);
+      padding-inline-end: clamp(2.5rem, 1.5rem + 2.5vw, 4.5rem);
+    }
+
+    /* Benoît: a narrower sheet, the tag pinned on its top edge. */
+    .voice--rose .voice__tag {
+      grid-row: 1;
+      grid-column: 7 / 11;
+      justify-self: start;
+      margin-block-end: -2.4rem;
+    }
+    .voice--rose .voice__sheet {
+      grid-row: 2;
+      grid-column: 3 / 11;
+      padding-block-start: 4.25rem;
+      padding-inline: clamp(2.5rem, 1.5rem + 2.5vw, 4.5rem);
+    }
+  }
+
+  /* ---------- Motion: staggered entrance and a quiet hover ---------- */
+  @media (prefers-reduced-motion: no-preference) {
+    /* The tag slides in from its own side, after its sheet. */
+    :global(.reveal-ready) .voice--apricot .voice__tag[data-reveal]:not(:global(.is-visible)),
+    :global(.reveal-ready) .voice--rose .voice__tag[data-reveal]:not(:global(.is-visible)) {
+      transform: translateX(-1.5rem);
+    }
+    :global(.reveal-ready) .voice--sand .voice__tag[data-reveal]:not(:global(.is-visible)) {
+      transform: translateX(1.5rem);
+    }
+    :global(.reveal-ready [dir='rtl'])
+      .voice--apricot
+      .voice__tag[data-reveal]:not(:global(.is-visible)),
+    :global(.reveal-ready [dir='rtl'])
+      .voice--rose
+      .voice__tag[data-reveal]:not(:global(.is-visible)) {
+      transform: translateX(1.5rem);
+    }
+    :global(.reveal-ready [dir='rtl'])
+      .voice--sand
+      .voice__tag[data-reveal]:not(:global(.is-visible)) {
+      transform: translateX(-1.5rem);
+    }
+  }
+  @media (hover: hover) {
+    .voice__sheet,
+    .voice__tag {
+      transition:
+        translate 0.5s cubic-bezier(0.2, 0.7, 0.2, 1),
+        rotate 0.5s cubic-bezier(0.2, 0.7, 0.2, 1),
+        box-shadow 0.5s ease;
+    }
+    .voice__sheet::before {
+      transition: rotate 0.6s cubic-bezier(0.2, 0.7, 0.2, 1);
+    }
+    .voice__sheet::after {
+      transition: box-shadow 0.5s ease;
+    }
+    .voice__fig:is(:hover, :focus-within) .voice__sheet {
+      translate: 0 -0.35rem;
+    }
+    .voice__fig:is(:hover, :focus-within) .voice__sheet::after {
+      box-shadow:
+        0 1px 2px color-mix(in srgb, var(--matin-ink) 6%, transparent),
+        0 2rem 3.5rem -1.75rem var(--v-shadow);
+    }
+    .voice__fig:is(:hover, :focus-within) .voice__sheet::before {
+      rotate: calc(var(--v-under-rotate, 0.8deg) * 2);
+    }
+    .voice__fig:is(:hover, :focus-within) .voice__tag {
+      rotate: 0deg;
+      translate: 0 -0.5rem;
+    }
+  }
+</style>

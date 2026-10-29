@@ -11,6 +11,8 @@
  * to share one's expertise as a volunteer or advisor, linked to the volunteer form on the
  * contact page (owner's request, Oct 28 2026; `#advisors` kept for the menu and older links).
  * Adding a member is one YAML file in src/content/team/ (name, role, photo, bio, LinkedIn).
+ * Between the two, « What Culture Means to Us » (owner's brief, Oct 29 2026): three members'
+ * own words on culture (CultureVoices.astro, texts in src/lib/cultureVoices.ts).
  */
 import { Image } from 'astro:assets';
 import {
@@ -24,6 +26,7 @@ import {
 } from '@lucide/astro';
 import PageLayout from '@/layouts/PageLayout.astro';
 import PresidentSection from '@/components/content/PresidentSection.astro';
+import CultureVoices from '@/components/content/CultureVoices.astro';
 import CommunityIllustration from '@/components/brand/CommunityIllustration.astro';
 import Prose from '@/components/ui/Prose.astro';
 import { href, siteAlternates, type UiLang } from '@/i18n/routes';
@@ -135,6 +138,8 @@ const joinWays = [
           </ul>
         </section>
       ))}
+
+      <CultureVoices lang={lang} />
 
       <section id="advisors" class="team-join scroll-mt-24" aria-labelledby="advisors-title">
         <div class="team-join__text">
