@@ -153,6 +153,9 @@ const events = defineCollection({
         /** Drafts appear only on the local preview (npm run dev), never on the live site. */
         draft: z.boolean().default(false),
         image: image().optional(),
+        /** Selected events only: the organizer's official image, loaded from its own site
+            (RemoteEventImage.astro; its host must be allowed in the CSP img-src). */
+        remoteImage: z.object({ src: z.url(), credit: z.string(), source: z.url() }).optional(),
         imageAlt: biOpt,
         /** The image is the official poster: always shown whole, never cropped. */
         imageIsPoster: z.boolean().default(false),

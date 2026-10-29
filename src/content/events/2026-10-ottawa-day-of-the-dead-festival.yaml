@@ -31,3 +31,12 @@ eventUrl: https://www.dayofthedeadfestival.ca/
 sourceUrl: https://www.dayofthedeadfestival.ca/
 lastVerified: '2026-10-27'
 featuredUntil: '2026-11-01'
+# Official image, loaded from the organizer's own site (owner's request, Oct 29 2026).
+remoteImage:
+  src: 'https://static.wixstatic.com/media/9a5051_d06a1c38ebd4482da4980c5c3d5bb3d7~mv2.png'
+  credit: 'Day of the Dead Festival Ottawa'
+  source: 'https://www.dayofthedeadfestival.ca/'
+imageAlt:
+  fr: 'Visuel officiel du Festival du Jour des Morts d’Ottawa.'
+  en: 'Official visual of the Day of the Dead Festival Ottawa.'
+  fa: 'تصویر رسمی جشنوارهٔ روز مردگان اتاوا.'
