@@ -236,11 +236,18 @@ function addVolunteer(data, received, id) {
   try {
     const sheet = SpreadsheetApp.openById(VOL_REGISTRY_ID).getSheetByName(VOL_TAB);
     const v = (f) => clean(data[f]);
-    sheet.appendRow([
+    // The Approve checkboxes are pre-filled down the sheet (unticked = FALSE), so the new
+    // row is the first one whose Received cell (B) is empty, never appendRow.
+    const last = Math.max(sheet.getLastRow(), 1);
+    const dates = sheet.getRange(1, 2, last, 1).getValues();
+    let row = dates.findIndex((r, i) => i > 0 && String(r[0]).trim() === '') + 1;
+    if (row < 2) row = last + 1;
+    sheet.getRange(row, 1, 1, 12).setValues([[
       '', received, v('name'), v('email'), v('country'), v('city'), v('languages'),
-      v('collaboration'), v('skills'), v('additional_info'), v('lang').toUpperCase(),
-      '', false, '', '', id,
-    ]);
+      v('collaboration'), v('skills'), v('additional_info'), v('lang').toUpperCase(), '',
+    ]]);
+    sheet.getRange(row, 16).setValue(id);
+    if (row > last) sheet.getRange(row, 13).insertCheckboxes();
   } catch (err) {
     console.error('Volunteer registry not updated: ' + err);
   }
