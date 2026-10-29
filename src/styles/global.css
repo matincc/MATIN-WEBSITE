@@ -52,6 +52,8 @@
   /* Two light grounds mixed from the colours above for the homepage rhythm (Oct 29 2026,
      owner: the homepage ground was not yet inviting): apricot dawn and pale turquoise. */
   --matin-aube: color-mix(in srgb, var(--matin-soleil) 30%, var(--matin-ivoire));
+  /* A soft brick tint (owner, Oct 29 2026: the Executive Team panel warmer, brick). */
+  --matin-brique-pale: color-mix(in srgb, var(--matin-brique) 18%, var(--matin-ivoire));
   /* Leaning to blue, never a pale green (owner, Oct 25 2026). */
   --matin-firouzeh-pale: color-mix(
     in srgb,
@@ -111,6 +113,7 @@
   --color-nuit: var(--matin-nuit);
   --color-aube: var(--matin-aube);
   --color-firouzeh-pale: var(--matin-firouzeh-pale);
+  --color-brique-pale: var(--matin-brique-pale);
   --color-navy: var(--matin-blue);
   --color-gold: var(--matin-gold);
   --color-mustard: var(--matin-gold);
