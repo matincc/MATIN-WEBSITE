@@ -147,14 +147,19 @@ export const media = {
     temporary: true,
     shows: 'A group of women and men mapping their city together on a large table map.',
   },
-  /** Participation (volunteer invitation): people smiling in front of a participatory budget
-      board in Montréal. The owner disliked the former discussion-circle photo (Oct 29 2026);
-      this is one of his own photos, also used small in the Who we are collage. */
+  /** Participation: a discussion circle in Montréal, openly licensed (already on the site). */
   participation: {
-    src: introParticipatoryBudget,
-    focus: '50% 30%',
+    src: photos.dialogueCircle.src,
+    focus: photos.dialogueCircle.focus,
     temporary: false,
-    shows: 'Three people smiling in front of the CDN-NDG 2023 participatory budget board.',
+    shows: 'A discussion circle at Wikimania 2017 in Montréal (Wikimedia Commons).',
+    credit: {
+      author: photos.dialogueCircle.credit.author,
+      license: photos.dialogueCircle.credit.license,
+      licenseUrl: photos.dialogueCircle.credit.licenseUrl,
+      source: photos.dialogueCircle.credit.source,
+      sourceName: 'Wikimedia Commons',
+    },
   },
 } satisfies Record<string, MediaEntry>;
 

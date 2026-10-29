@@ -9,8 +9,7 @@
  * Layout: the Executive Team on a soft turquoise panel showing only its members (owner's
  * request, Oct 28 2026), then, in place of the former Advisors & Friends list, one invitation
  * to share one's expertise as a volunteer or advisor, linked to the volunteer form on the
- * contact page (owner's request, Oct 28 2026; `#advisors` kept for the menu and older links),
- * beside a photo of a Matin festival in an arch (owner's request, Oct 29 2026).
+ * contact page (owner's request, Oct 28 2026; `#advisors` kept for the menu and older links).
  * Adding a member is one YAML file in src/content/team/ (name, role, photo, bio, LinkedIn).
  */
 import { Image } from 'astro:assets';
@@ -25,7 +24,7 @@ import {
 } from '@lucide/astro';
 import PageLayout from '@/layouts/PageLayout.astro';
 import PresidentSection from '@/components/content/PresidentSection.astro';
-import joinPhoto from '@/assets/photos/team-join-festival.jpg';
+import CommunityIllustration from '@/components/brand/CommunityIllustration.astro';
 import Prose from '@/components/ui/Prose.astro';
 import { href, siteAlternates, type UiLang } from '@/i18n/routes';
 import { useTranslations, pick } from '@/i18n/ui';
@@ -152,13 +151,7 @@ const joinWays = [
           </a>
         </div>
         <figure class="team-join__art" aria-hidden="true">
-          <Image
-            src={joinPhoto}
-            alt=""
-            widths={[480, 720, 960]}
-            sizes="(min-width: 64rem) 28rem, 88vw"
-            class="team-join__img"
-          />
+          <CommunityIllustration class="team-join__img" />
           <span class="team-join__block"></span>
         </figure>
       </section>
@@ -243,12 +236,6 @@ const joinWays = [
   .team-join__art :global(.team-join__img) {
     position: relative;
     z-index: 1;
-    display: block;
-    width: 100%;
-    aspect-ratio: 4 / 5;
-    object-fit: cover;
-    object-position: 50% 60%;
-    border-radius: 12rem 12rem var(--radius-card) var(--radius-card);
   }
   .team-join__block {
     position: absolute;
