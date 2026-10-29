@@ -26,6 +26,7 @@ import type { ImageMetadata } from 'astro';
 import { photos } from '@/lib/photos';
 import whoFriendsGroup from '@/assets/photos/who-friends-group.jpg';
 import areaCulturalMapping from '@/assets/photos/area-cultural-mapping.jpg';
+import introParticipatoryBudget from '@/assets/photos/intro-participatory-budget.jpg';
 
 export interface MediaCredit {
   author: string;
@@ -92,17 +93,14 @@ export const media = {
       'a-group-of-women-sitting-at-a-table-working-on-pottery-kJiPUr1KQSE',
     ),
   },
-  /** Who we are, third photo of the collage: visitors in front of a painting. */
+  /** Who we are, third photo of the collage: three people in front of a participatory budget
+      board in Montréal (photo chosen by the owner, Oct 29 2026, replacing the gallery photo;
+      no credit shown until its source is confirmed). */
   introGallery: {
-    unsplash: 'photo-1569783721854-33a99b4c0bae',
-    focus: '50% 50%',
+    src: introParticipatoryBudget,
+    focus: '50% 30%',
     temporary: true,
-    shows: 'Visitors looking at a painting in a museum (New York).',
-    credit: unsplashCredit(
-      'Jessica Pamp',
-      'yessijes',
-      'a-group-of-people-standing-in-front-of-a-painting-JNTSoyb_bbw',
-    ),
+    shows: 'Three people smiling in front of the CDN-NDG 2023 participatory budget board.',
   },
   /** Full-width pause between sections: Montréal seen from Mont-Royal. */
   montrealWide: {
