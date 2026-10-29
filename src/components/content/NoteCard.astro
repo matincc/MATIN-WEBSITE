@@ -7,7 +7,8 @@
  * another language is shown in that language, with its own lang and direction.
  * Warmer type (owner's request, Oct 29 2026: not formal, cheerful): the opening line as a
  * soft Fraunces title, the text in rounded Nunito (Vazirmatn in Persian), a closing
- * question in a speech bubble, then his name and position as plain text.
+ * question in a speech bubble. No sign-off under the text: his name and position are
+ * already in the card's head (owner's request, Oct 29 2026).
  */
 import { Image } from 'astro:assets';
 import type { ImageMetadata } from 'astro';
@@ -119,14 +120,6 @@ const alt = pick(n.imageAlt, lang) ?? '';
     ))}
     {question && <p class="note__question">{question}</p>}
   </div>
-  {/* Sign-off: his name and position as plain text, never a designed or imitated
-      signature (owner's rule, Oct 28 2026). */}
-  <p class="note__sign">
-    <span class="note__sign-name">{name}</span>
-    <span class="note__sign-role">
-      {role}{lang === 'fa' ? '، ' : ', '}{org}
-    </span>
-  </p>
   {isTranslation && (
     <p class="note__translation">
       {t('notes.translatedFrom', { language: t(`notes.languageNames.${n.original}`) })}
@@ -249,25 +242,8 @@ const alt = pick(n.imageAlt, lang) ?? '';
     font-weight: 700;
   }
 
-  .note__sign {
-    display: flex;
-    flex-direction: column;
-    margin: 1.4rem 1.75rem 0;
-    padding-top: 0.9rem;
-    border-top: 1px solid var(--color-line);
-  }
-  .note__sign-name {
-    font-family: var(--font-display);
-    font-size: 1.1rem;
-    font-weight: 800;
-    color: var(--color-primary);
-  }
-  .note__sign-role {
-    font-size: 0.95rem;
-    color: var(--color-ink);
-  }
   .note__translation {
-    margin: 0.4rem 1.75rem 0;
+    margin: 0.9rem 1.75rem 0;
     font-size: 0.85rem;
     font-style: italic;
     color: var(--color-ink);
@@ -435,7 +411,6 @@ const alt = pick(n.imageAlt, lang) ?? '';
     }
     .note__lang,
     .note__title,
-    .note__sign,
     .note__translation,
     .note__more {
       margin-inline: 1.15rem;
