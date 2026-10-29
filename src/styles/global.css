@@ -468,6 +468,32 @@
     @apply rounded-[var(--radius-card)] border bg-white;
     border-color: var(--color-card-edge);
     box-shadow: var(--shadow-card);
+    /* One deep corner, alternating from card to card (owner's request, Oct 29 2026: less
+       boxed); logical, so Persian mirrors. */
+    border-start-end-radius: 2.75rem;
+  }
+  li:nth-child(2n) > .card,
+  li.card:nth-child(2n) {
+    border-start-end-radius: var(--radius-card);
+    border-end-start-radius: 2.75rem;
+  }
+  /* Card lists that break the ruler-straight row: every second card (two columns) or the
+     middle column (three columns) sits lower; heights stay equal within a row. */
+  @media (min-width: 48rem) and (max-width: 63.99rem) {
+    .stagger-grid {
+      padding-block-end: 2rem;
+    }
+    .stagger-grid > li:nth-child(2n) {
+      margin-block: 2rem -2rem;
+    }
+  }
+  @media (min-width: 64rem) {
+    .stagger-grid {
+      padding-block-end: 2.5rem;
+    }
+    .stagger-grid > li:nth-child(3n + 2) {
+      margin-block: 2.5rem -2.5rem;
+    }
   }
   /* Cards that are links or hold a call to action lift gently on hover. */
   .card-lift {
@@ -478,7 +504,7 @@
   }
   .card-lift:hover,
   .card-lift:focus-within {
-    transform: translateY(-4px);
+    transform: translateY(-8px);
     box-shadow: 0 14px 30px -18px color-mix(in srgb, var(--color-primary) 45%, transparent);
   }
   .link-arrow {
@@ -596,6 +622,20 @@
   }
   .sr-only-focusable:not(:focus):not(:focus-within) {
     @apply sr-only;
+  }
+}
+
+/* Every photo on the site grows a little under a desktop pointer (owner's request, Oct 29
+   2026), whether the pointer is on the photo or on its card. The `scale` property adds to
+   any crop a component sets with `transform`. Never on the homepage hero photo (owner:
+   "don't touch the photo") nor in the fullscreen viewer. */
+@media (hover: hover) and (pointer: fine) and (prefers-reduced-motion: no-preference) {
+  main img:not(.ahero img, dialog img) {
+    transition: scale 0.7s cubic-bezier(0.2, 0.7, 0.2, 1);
+  }
+  main :is(figure, article, li, .media):hover img:not(.ahero img, dialog img),
+  main img:not(.ahero img, dialog img):hover {
+    scale: 1.05;
   }
 }
 

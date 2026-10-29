@@ -82,7 +82,7 @@ const alternates = siteAlternates('news');
         <>
           <PostCard post={lead} lang={lang} featured />
           {rest.length > 0 && (
-            <ul class="mt-10 grid gap-6 md:grid-cols-2 lg:grid-cols-3 lg:gap-8">
+            <ul class="stagger-grid mt-10 grid gap-6 md:grid-cols-2 lg:grid-cols-3 lg:gap-8">
               {rest.map((post) => (
                 <li>
                   <PostCard post={post} lang={lang} />

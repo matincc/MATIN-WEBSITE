@@ -162,9 +162,25 @@ const joinWays = [
 <style>
   /* The two groups stacked (owner's brief, Oct 25 2026), each a full-width panel. */
   /* A coloured ground behind the two panels (owner's brief, Oct 27 2026: no plain white). */
+  /* Warmer (owner's request, Oct 29 2026): ivory ground with a quiet sun ring. */
   .team-groups {
-    padding-block: clamp(3rem, 2rem + 3vw, 5rem);
-    background: var(--team-ground, var(--color-teal-deep));
+    position: relative;
+    overflow: hidden;
+    padding-block: clamp(4rem, 3rem + 4vw, 7rem);
+    background: var(--team-ground, var(--color-ivory));
+  }
+  .team-groups::before {
+    content: '';
+    position: absolute;
+    inset-block-start: 40%;
+    inset-inline-start: clamp(-8rem, -3rem - 6vw, -3rem);
+    width: clamp(12rem, 6rem + 16vw, 24rem);
+    aspect-ratio: 1;
+    border-radius: 50%;
+    border: 1.5rem solid color-mix(in srgb, var(--color-soleil) 30%, var(--color-ivory));
+  }
+  .team-groups__stack {
+    position: relative;
   }
   .team-groups__stack {
     display: grid;
@@ -176,10 +192,9 @@ const joinWays = [
   }
   /* Executive Team: soft turquoise, navy headings, a matte gold edge. */
   .team-group--executive-team {
-    border: 1px solid var(--color-aqua-edge);
-    border-block-start: 5px solid var(--color-gold);
-    border-start-end-radius: 7rem;
-    background: var(--color-aqua);
+    border-start-end-radius: 8rem;
+    border-end-start-radius: 4rem;
+    background: var(--color-firouzeh-pale);
   }
   /* The invitation to collaborate (owner's request, Oct 28 2026): warm cream, a teal top
      edge, the text beside the community illustration on a mustard block. */
@@ -188,11 +203,10 @@ const joinWays = [
     align-items: center;
     gap: clamp(2rem, 1.5rem + 2vw, 3.5rem);
     padding: clamp(1.5rem, 0.75rem + 3vw, 3.5rem);
-    border: 1px solid var(--color-card-edge);
-    border-block-start: 5px solid var(--color-teal);
     border-radius: calc(var(--radius-card) * 1.4);
-    border-start-end-radius: 7rem;
-    background: var(--color-cream);
+    border-start-start-radius: 8rem;
+    border-end-end-radius: 4rem;
+    background: var(--color-sable);
   }
   @media (min-width: 56rem) {
     .team-join {
@@ -217,13 +231,15 @@ const joinWays = [
     align-items: center;
     gap: 0.45rem;
     padding: 0.45rem 0.95rem;
-    border: 1px solid var(--color-teal-edge);
     border-radius: 999px;
     font-family: var(--font-display);
     font-size: 0.9375rem;
     font-weight: 700;
-    color: var(--color-teal-deep);
-    background: var(--color-paper);
+    color: var(--color-firouzeh-ink);
+    background: var(--color-white);
+  }
+  .team-join__ways li:nth-child(2n) {
+    translate: 0 0.4rem;
   }
   .team-join__cta {
     margin-block-start: 1.75rem;
@@ -243,18 +259,19 @@ const joinWays = [
     position: absolute;
     inset-block-end: 0;
     inset-inline-end: -1rem;
-    width: 45%;
-    height: 55%;
-    border-radius: var(--radius-card);
-    background: var(--color-gold);
+    width: 55%;
+    aspect-ratio: 1;
+    border-radius: 50%;
+    background: var(--color-soleil);
   }
   .team-group__head {
     max-width: 48rem;
     margin-block-end: clamp(1.75rem, 1.4rem + 1.5vw, 2.75rem);
   }
   .team-group__title {
-    font-size: clamp(1.875rem, 1.5rem + 1.3vw, 2.625rem);
-    font-weight: 800;
+    font-family: var(--font-editorial);
+    font-size: clamp(2rem, 1.5rem + 1.6vw, 3rem);
+    font-weight: 700;
     line-height: 1.15;
     color: var(--color-primary);
   }
@@ -300,12 +317,63 @@ const joinWays = [
        the tallest, and one shared minimum keeps both groups alike. */
     min-height: var(--team-card-min, 21rem);
     padding: 1.75rem clamp(0.5rem, 0.25rem + 1vw, 1.25rem) 1.5rem;
-    border: 1px solid var(--color-card-edge);
-    border-block-start: 4px solid var(--accent);
     border-radius: var(--radius-card);
-    background: var(--color-paper);
+    background: var(--color-white);
     box-shadow: var(--shadow-card);
     text-align: center;
+  }
+  /* Less like a row of identical boxes (owner's request, Oct 29 2026): each card has its
+     own deep corner, a slight tilt and its own height in the row, a ring in a different
+     colour of the palette; under a desktop pointer it rises, grows a little and
+     straightens. Equal card sizes are kept (owner's brief, Oct 27 2026). */
+  .team-grid > li:nth-child(4n + 1) {
+    --ring: var(--color-soleil);
+    border-start-start-radius: 4.5rem;
+    rotate: -1deg;
+  }
+  .team-grid > li:nth-child(4n + 2) {
+    --ring: var(--color-firouzeh);
+    border-end-end-radius: 4.5rem;
+    rotate: 0.8deg;
+  }
+  .team-grid > li:nth-child(4n + 3) {
+    --ring: var(--color-brique);
+    border-start-end-radius: 4.5rem;
+    rotate: -0.6deg;
+  }
+  .team-grid > li:nth-child(4n + 4) {
+    --ring: var(--color-primary);
+    border-end-start-radius: 4.5rem;
+    rotate: 1deg;
+  }
+  @media (min-width: 40rem) {
+    .team-grid > li:nth-child(2n) {
+      translate: 0 1.75rem;
+    }
+    .team-grid {
+      padding-block-end: 1.75rem;
+    }
+  }
+  @media (hover: hover) and (prefers-reduced-motion: no-preference) {
+    .team-card {
+      transition:
+        rotate 0.45s ease,
+        translate 0.45s cubic-bezier(0.2, 0.7, 0.2, 1),
+        scale 0.45s cubic-bezier(0.2, 0.7, 0.2, 1),
+        box-shadow 0.45s ease;
+    }
+    .team-grid > li.team-card:hover {
+      rotate: 0deg;
+      translate: 0 -0.75rem;
+      scale: 1.04;
+      box-shadow: 0 1.25rem 2.5rem -1rem color-mix(in srgb, var(--color-primary) 35%, transparent);
+    }
+    .team-join__ways li {
+      transition: translate 0.35s ease;
+    }
+    .team-join__ways li:hover {
+      translate: 0 -0.3rem;
+    }
   }
   .team-card__avatar {
     display: block;
@@ -315,8 +383,8 @@ const joinWays = [
     border-radius: 50%;
     object-fit: cover;
     box-shadow:
-      0 0 0 4px var(--color-paper),
-      0 0 0 6px var(--color-gold);
+      0 0 0 4px var(--color-white),
+      0 0 0 8px var(--ring, var(--color-soleil));
   }
   .team-card__initials {
     display: grid;
@@ -338,8 +406,9 @@ const joinWays = [
   /* Name and title clearly apart (owner's brief, Oct 27 2026): a larger navy name, then a
      smaller terracotta title under a short gold rule. */
   .team-card__name {
-    font-size: clamp(1.3125rem, 1.2rem + 0.4vw, 1.5rem);
-    font-weight: 800;
+    font-family: var(--font-editorial);
+    font-size: clamp(1.3125rem, 1.2rem + 0.4vw, 1.55rem);
+    font-weight: 700;
     line-height: 1.2;
     color: var(--color-primary);
   }
@@ -347,7 +416,7 @@ const joinWays = [
     font-size: 0.9375rem;
     font-weight: 600;
     line-height: 1.5;
-    color: var(--color-terracotta-deep);
+    color: var(--color-brique-ink);
   }
   .team-card__role::before {
     content: '';

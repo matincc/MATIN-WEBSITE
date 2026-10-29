@@ -126,7 +126,7 @@ const facts = [
         <h2 id="others-title" class="section-title mb-12">
           {t('programs.otherPrograms')}
         </h2>
-        <ul class="grid gap-8 md:grid-cols-2 lg:grid-cols-3">
+        <ul class="stagger-grid grid gap-8 md:grid-cols-2 lg:grid-cols-3">
           {others.map((p) => (
             <li>
               <ProgramCard program={p} lang={lang} />

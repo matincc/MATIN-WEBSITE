@@ -71,7 +71,7 @@ const uid = `picks-${exclude.length ? 'events' : 'home'}`;
           >
             <h3 class="region-panel__title">{t(`newsRegions.${tab.region}`)}</h3>
             {tab.events.length > 0 ? (
-              <ul class="grid gap-6 md:grid-cols-2 lg:grid-cols-3" data-upcoming-list>
+              <ul class="stagger-grid grid gap-6 md:grid-cols-2 lg:grid-cols-3" data-upcoming-list>
                 {tab.events.map((event) => (
                   <li>
                     <EventCard

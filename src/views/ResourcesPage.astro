@@ -547,8 +547,15 @@ const groups = resourceCategories
     overflow: hidden;
     border: 1px solid var(--color-card-edge);
     border-radius: calc(var(--radius-card) * 1.3);
+    border-start-end-radius: 6rem;
     background: var(--body-bg);
     box-shadow: var(--shadow-card);
+  }
+  /* Less regular (owner's request, Oct 29 2026): the deep corner alternates from one
+     category to the next, and in the two-column lists the second card sits lower. */
+  .directory-group:nth-child(2n) {
+    border-start-end-radius: calc(var(--radius-card) * 1.3);
+    border-end-start-radius: 6rem;
   }
   .directory-group[data-category='municipal'] {
     --cat: var(--color-brique);
@@ -629,6 +636,20 @@ const groups = resourceCategories
   @media (min-width: 64rem) {
     .org-list {
       grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+    .org-list:not(.org-list--three) > :global(:nth-child(2n)) {
+      margin-block: 1.75rem -1.75rem;
+    }
+    .directory-group .org-list:not(.org-list--three) {
+      padding-block-end: calc(clamp(1.25rem, 0.8rem + 2vw, 2.25rem) + 1.75rem);
+    }
+  }
+  @media (min-width: 72rem) {
+    .org-list--three > :global(:nth-child(3n + 2)) {
+      margin-block: 1.75rem -1.75rem;
+    }
+    .org-list--three {
+      padding-block-end: calc(clamp(1.25rem, 0.8rem + 2vw, 2.25rem) + 1.75rem);
     }
   }
   /* The municipalities (owner's brief, Oct 25 2026): three across on desktop, two on

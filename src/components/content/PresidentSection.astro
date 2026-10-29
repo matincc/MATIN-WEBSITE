@@ -37,10 +37,11 @@ const linkedinPath =
 {bio && (
   <section
     id="our-president"
-    class="president-band on-dark scroll-mt-24 py-14 sm:py-16"
+    class="president-band scroll-mt-24 py-14 sm:py-20"
     aria-labelledby="our-president-title"
   >
-    <div class="container-site">
+    <span class="president-band__sun" aria-hidden="true"></span>
+    <div class="container-site relative">
       <SectionHeader
         align="start"
         id="our-president-title"
@@ -98,9 +99,21 @@ const linkedinPath =
 <style>
   /* Deep navy band (owner's choice, Oct 24 2026: navy, teal, cream and matte gold on the
      Our Team page); the warm-white card keeps the biography in ink and navy. */
-  /* Scheme A (Oct 29 2026): the page's one dark moment, the night ground. */
+  /* Warmer and more human (owner's request, Oct 29 2026): an apricot dawn ground with a
+     large sun rising behind the card, in place of the night band. */
   .president-band {
-    background: var(--color-nuit);
+    position: relative;
+    overflow: hidden;
+    background: var(--color-aube);
+  }
+  .president-band__sun {
+    position: absolute;
+    inset-block-start: clamp(2rem, 1rem + 3vw, 5rem);
+    inset-inline-end: clamp(-6rem, -2rem - 4vw, -2rem);
+    width: clamp(12rem, 6rem + 18vw, 26rem);
+    aspect-ratio: 1;
+    border-radius: 50%;
+    background: var(--color-soleil);
   }
   /* Inside the warm-white card the LinkedIn button is the brique main button again. */
   .president-bio :global(.btn-primary) {
@@ -126,7 +139,8 @@ const linkedinPath =
     border: 1px solid var(--color-card-edge);
     border-block-start: 5px solid var(--color-gold);
     border-radius: var(--radius-card);
-    border-end-end-radius: 7rem;
+    border-start-end-radius: 7rem;
+    border-end-start-radius: 4rem;
     background: var(--color-paper);
     box-shadow: var(--shadow-card);
     color: var(--color-ink);
@@ -144,7 +158,7 @@ const linkedinPath =
     width: 58%;
     aspect-ratio: 1;
     border-radius: 50%;
-    background: var(--color-soleil);
+    background: var(--color-firouzeh);
   }
   .president-bio__photo {
     position: relative;
@@ -153,9 +167,34 @@ const linkedinPath =
     aspect-ratio: 4 / 5;
     object-fit: cover;
     object-position: 50% 20%;
-    border: 4px solid var(--color-white);
+    border: 6px solid var(--color-white);
     border-radius: var(--radius-card);
     border-start-start-radius: 6rem;
+    box-shadow: 0 1rem 2rem -1.25rem color-mix(in srgb, var(--color-primary) 45%, transparent);
+  }
+  /* The portrait sits slightly askew like a printed photo and straightens, rising a
+     little, under a desktop pointer. */
+  @media (min-width: 768px) {
+    .president-bio__photo {
+      rotate: -1.5deg;
+    }
+  }
+  @media (hover: hover) and (prefers-reduced-motion: no-preference) {
+    .president-bio__photo {
+      transition:
+        rotate 0.5s ease,
+        translate 0.5s cubic-bezier(0.2, 0.7, 0.2, 1);
+    }
+    .president-bio__media:hover .president-bio__photo {
+      rotate: 0deg;
+      translate: 0 -0.6rem;
+    }
+    .president-bio__block {
+      transition: scale 0.6s cubic-bezier(0.2, 0.7, 0.2, 1);
+    }
+    .president-bio__media:hover .president-bio__block {
+      scale: 1.08;
+    }
   }
   .president-bio__initials {
     display: grid;
@@ -169,8 +208,9 @@ const linkedinPath =
     max-width: 44rem;
   }
   .president-bio__name {
+    font-family: var(--font-editorial);
     font-size: clamp(2.25rem, 1.7rem + 2vw, 3.25rem);
-    font-weight: 800;
+    font-weight: 700;
     line-height: 1.1;
     color: var(--color-primary);
   }
@@ -178,12 +218,12 @@ const linkedinPath =
   .president-bio__position {
     margin-top: 0.75rem;
     padding-bottom: 1.4rem;
-    border-bottom: 2px solid var(--color-gold);
+    border-bottom: 2px solid var(--color-soleil);
     font-family: var(--font-display);
     font-size: clamp(1.125rem, 1.05rem + 0.4vw, 1.375rem);
     font-weight: 700;
     letter-spacing: 0.01em;
-    color: var(--color-teal-deep);
+    color: var(--color-brique-ink);
   }
   /* About 19 to 20px reading text, a comfortable line and paragraph spacing. */
   .president-bio__text :global(.president-bio__prose) {
