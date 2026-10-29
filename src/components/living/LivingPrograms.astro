@@ -18,20 +18,30 @@ interface Props {
 const { lang } = Astro.props;
 const t = useTranslations(lang);
 const l = livingStrings(lang);
-const areas: { title: string; text: string; slot: MediaSlot; tone: string }[] = [
+/* Each photo keeps close to its own proportions so people stay in view (owner's image
+   layout brief, Oct 29 2026): the festival crowd is a tall photo, the mapping table a wide one. */
+const areas: { title: string; text: string; slot: MediaSlot; tone: string; ratio: number }[] = [
   {
     title: t('home.area1Title'),
     text: t('home.area1Text'),
     slot: 'areaDialogue',
     tone: 'terracotta',
+    ratio: 5 / 4,
   },
   {
     title: t('home.area2Title'),
     text: t('home.area2Text'),
     slot: 'areaCommunities',
     tone: 'green',
+    ratio: 4 / 5,
   },
-  { title: t('home.area3Title'), text: t('home.area3Text'), slot: 'areaResearch', tone: 'gold' },
+  {
+    title: t('home.area3Title'),
+    text: t('home.area3Text'),
+    slot: 'areaResearch',
+    tone: 'gold',
+    ratio: 3 / 2,
+  },
 ];
 const volunteer = `${href('contact', lang)}#${lang === 'fr' ? 'benevolat' : 'volunteer'}`;
 const ways = [
@@ -53,15 +63,17 @@ const ways = [
     </header>
 
     <ol class="lprog__list">
-      {areas.map((a, i) => (
+      {areas.map((a) => (
         <li class:list={['lprog__row', `lprog__row--${a.tone}`]}>
-          <MediaImage
-            slot={a.slot}
-            lang={lang}
-            ratio={i === 1 ? 1 : 5 / 4}
-            sizes="(min-width: 64rem) 40rem, 92vw"
-            class="lprog__photo"
-          />
+          <div class="lprog__photo" data-reveal>
+            <MediaImage
+              slot={a.slot}
+              lang={lang}
+              ratio={a.ratio}
+              sizes="(min-width: 56rem) 46rem, 100vw"
+              credit="below"
+            />
+          </div>
           <div class="lprog__text" data-reveal>
             <span class="lprog__mark" aria-hidden="true"></span>
             <h3 class="lprog__title">{a.title}</h3>
@@ -132,34 +144,49 @@ const ways = [
       grid-template-columns: minmax(0, 7fr) minmax(0, 5fr);
       gap: clamp(2.5rem, 1.5rem + 4vw, 6rem);
     }
-    /* Every other row turns around: photo on the other side. */
+    /* Every other row turns around: photo on the other side. The festival crowd gets the
+       wider column so its people stay large. */
     .lprog__row:nth-child(even) {
       grid-template-columns: minmax(0, 5fr) minmax(0, 6fr);
     }
-    .lprog__row:nth-child(even) :global(.lprog__photo) {
+    .lprog__row:nth-child(even) .lprog__photo {
       order: 2;
     }
     .lprog__row:nth-child(3) {
-      grid-template-columns: minmax(0, 6fr) minmax(0, 5fr);
-      margin-inline-start: 6%;
+      grid-template-columns: minmax(0, 7fr) minmax(0, 5fr);
     }
   }
-  /* Three different shapes for three different subjects. */
+  /* On phones and tablets the photos run almost edge to edge, so crowds and faces stay
+     large (owner's image layout brief, Oct 29 2026). */
+  @media (max-width: 55.99rem) {
+    .lprog__photo {
+      margin-inline: calc(-1 * clamp(0.25rem, 2vw, 1rem));
+    }
+  }
+  /* Organic frames, never circles or plain rectangles: soft asymmetric curves, a different
+     one for each subject. Percent radii follow each photo's shape at every screen size, and
+     stay small enough that the corners never cut through a face. */
   .lprog__row--terracotta :global(.media__frame) {
-    border-radius: 2rem 10rem 2rem 2rem;
+    border-radius: 34% 9% 26% 11% / 26% 9% 22% 11%;
   }
   .lprog__row--green :global(.media__frame) {
-    border-radius: 50%;
+    border-radius: 9% 30% 11% 26% / 6% 16% 7% 14%;
   }
   .lprog__row--gold :global(.media__frame) {
-    border-radius: 999px 999px 2rem 2rem;
+    border-radius: 12% 34% 9% 28% / 18% 42% 13% 36%;
   }
-  .lprog__row--green :global(.media__credit) {
-    position: static;
-    margin-block-start: 0.6rem;
-    background: none;
-    color: var(--living-charcoal);
-    padding: 0;
+  .lprog__photo :global(.media__credit) {
+    padding-inline: 1rem;
+  }
+  /* A gentle entrance for the photos: they settle in from a little smaller. Only when
+     motion is allowed (data-reveal is inert under reduced motion). */
+  @media (prefers-reduced-motion: no-preference) {
+    :global(.reveal-ready) .lprog__photo[data-reveal] {
+      transform: scale(0.97);
+    }
+    :global(.reveal-ready) .lprog__photo[data-reveal]:global(.is-visible) {
+      transform: none;
+    }
   }
   .lprog__text {
     position: relative;
