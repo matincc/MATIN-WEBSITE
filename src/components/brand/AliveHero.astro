@@ -4,7 +4,7 @@
  * "Matin Alive" hero of Oct 27): one full-width documentary photo of Montréal's public
  * life with the text set straight on it, editorial style, no card or panel. The photo
  * keeps its natural, bright colours everywhere (owner's request, Oct 29 2026: no grey or
- * navy wash); only a soft, edgeless warm halo right behind the words keeps them readable.
+ * navy wash, no halo, no filter); only a soft glow hugging the letters keeps them readable.
  *
  * Wide screens: the text sits on the right in every language, over the sky and the
  * trees, so the monument column (left of centre) and the crowd's faces stay visible
@@ -80,11 +80,13 @@ const a = aliveStrings(lang);
 
 <style>
   .ahero {
-    --halo: var(--alive-cream);
+    /* A soft dark glow hugging each letter only: the photo itself is never shaded,
+       filtered or tinted (owner, Oct 29 2026). */
+    --glow: color-mix(in srgb, var(--matin-ink) 70%, transparent);
     position: relative;
     display: grid;
     grid-template-rows: 1fr auto;
-    min-height: clamp(34rem, calc(100svh - 13rem), 48rem);
+    min-height: clamp(38rem, calc(100svh - 9rem), 52rem);
     overflow: hidden;
     isolation: isolate;
     background: var(--matin-paper);
@@ -103,7 +105,7 @@ const a = aliveStrings(lang);
     width: 100%;
     height: 100%;
     object-fit: cover;
-    object-position: 50% 38%;
+    object-position: var(--focus, 50% 70%);
     transform-origin: 30% 60%;
   }
   /* An almost imperceptible push-in, once (none under reduced motion). */
@@ -135,29 +137,9 @@ const a = aliveStrings(lang);
   .ahero__copy {
     position: relative;
     max-width: min(40rem, 48%);
-    /* A soft light glow around each letter for the busy parts of the trees. */
     text-shadow:
-      0 0 14px color-mix(in srgb, var(--halo) 90%, transparent),
-      0 0 3px color-mix(in srgb, var(--halo) 80%, transparent);
-  }
-  /* A soft, edgeless warm halo right behind the words, so they read on the sky and the
-     trees while the rest of the photo keeps its natural colours (owner's request, Oct 29
-     2026: no grey or navy wash over the people). */
-  .ahero__copy::before {
-    content: '';
-    position: absolute;
-    inset: -2.5rem -3rem;
-    z-index: -1;
-    border-radius: 50%;
-    background: radial-gradient(
-      closest-side,
-      color-mix(in srgb, var(--halo) 72%, transparent) 0%,
-      color-mix(in srgb, var(--halo) 60%, transparent) 55%,
-      color-mix(in srgb, var(--halo) 22%, transparent) 82%,
-      transparent 100%
-    );
-    filter: blur(14px);
-    pointer-events: none;
+      0 2px 4px var(--glow),
+      0 0 22px var(--glow);
   }
   .ahero__place {
     display: flex;
@@ -168,13 +150,13 @@ const a = aliveStrings(lang);
     font-weight: 800;
     letter-spacing: 0.22em;
     text-transform: uppercase;
-    color: var(--matin-terracotta-deep);
+    color: var(--matin-white);
   }
   .ahero__place::before {
     content: '';
     width: 2.25rem;
     height: 2px;
-    background: currentColor;
+    background: var(--alive-gold);
   }
   :global(html[lang='fa']) .ahero__place {
     letter-spacing: 0;
@@ -192,7 +174,7 @@ const a = aliveStrings(lang);
     font-size: clamp(3.1rem, 1.6rem + 5vw, 6.5rem);
     line-height: 0.95;
     letter-spacing: -0.02em;
-    color: var(--matin-blue);
+    color: var(--matin-white);
     text-wrap: balance;
   }
   :global(html[lang='fa']) .ahero__tagline {
@@ -214,7 +196,7 @@ const a = aliveStrings(lang);
     font-size: clamp(1.15rem, 1rem + 0.6vw, 1.5rem);
     font-weight: 500;
     line-height: 1.45;
-    color: var(--matin-ink);
+    color: var(--matin-white);
   }
 
   /* ---------- Two quiet buttons ---------- */
@@ -244,11 +226,11 @@ const a = aliveStrings(lang);
   .ahero__btn--primary {
     padding: 0.7rem 1.5rem;
     border-radius: 999px;
-    background: var(--matin-blue);
-    color: var(--matin-white);
+    background: var(--matin-white);
+    color: var(--matin-blue);
   }
   .ahero__btn--primary:hover {
-    background: var(--matin-terracotta-deep);
+    background: var(--alive-gold);
     transform: translateY(-2px);
   }
   .ahero__btn :global(.ahero__arrow) {
@@ -263,15 +245,19 @@ const a = aliveStrings(lang);
   /* The second action reads as a link with a gold rule that fills in on hover. */
   .ahero__btn--ghost {
     padding-block: 0.4rem;
-    color: var(--matin-blue);
-    border-block-end: 2px solid var(--matin-gold);
+    padding: 0.7rem 1.5rem;
+    border-radius: 999px;
+    background: var(--matin-blue);
+    color: var(--matin-white);
+    text-shadow: none;
   }
   .ahero__btn--ghost:hover {
-    color: var(--matin-terracotta-deep);
-    border-color: var(--matin-terracotta-deep);
+    background: var(--alive-gold);
+    color: var(--matin-blue);
+    transform: translateY(-2px);
   }
   .ahero__btn:focus-visible {
-    outline: 3px solid var(--matin-blue);
+    outline: 3px solid var(--alive-gold);
     outline-offset: 4px;
   }
 
@@ -329,10 +315,29 @@ const a = aliveStrings(lang);
       z-index: 0;
     }
     .ahero__media :global(img) {
-      object-position: 30% 35%;
+      object-position: 30% 65%;
     }
-    .ahero__copy::before {
-      display: none;
+    .ahero__copy,
+    .ahero__btn--ghost {
+      text-shadow: none;
+    }
+    .ahero__place {
+      color: var(--matin-terracotta-deep);
+    }
+    .ahero__tagline {
+      color: var(--matin-blue);
+    }
+    .ahero__btn--ghost {
+      background: transparent;
+      border: 1.5px solid var(--matin-gold);
+      color: var(--matin-blue);
+    }
+    .ahero__line {
+      color: var(--matin-ink);
+    }
+    .ahero__btn--primary {
+      background: var(--matin-blue);
+      color: var(--matin-white);
     }
     .ahero__inner {
       grid-row: 2;
