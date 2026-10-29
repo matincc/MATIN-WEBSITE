@@ -176,8 +176,9 @@ function addToRegistry(data, received) {
  * Receipt email (owner's decision, Oct 28 2026): each membership applicant gets an
  * immediate « we received your application » email, in French then English. No fees,
  * no voting, no promise of acceptance: the welcome email is sent later, when an admin
- * ticks Approve in the registry. Sent only from members@matincc.ca once that address is
- * a Gmail "send as" alias of this account; otherwise skipped and logged, never blocking.
+ * ticks Approve in the registry. Sent from members@matincc.ca once that address is a Gmail
+ * "send as" alias of this account; until then from this account, with replies going to
+ * members@ (Oct 29 2026, same as the welcome email). A failure is logged, never blocking.
  */
 const MEMBERS_FROM = 'members@matincc.ca';
 
@@ -185,10 +186,6 @@ function sendReceipt(data) {
   try {
     const email = clean(data.email);
     if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) return;
-    if (GmailApp.getAliases().indexOf(MEMBERS_FROM) === -1) {
-      console.warn('Receipt not sent: ' + MEMBERS_FROM + ' is not a send-as alias yet.');
-      return;
-    }
     const first = clean(data.first_name);
     const text = [
       'Bonjour' + (first ? ' ' + first : '') + ',',
@@ -207,11 +204,9 @@ function sendReceipt(data) {
       '',
       'Institut interculturel Matin · Matin Intercultural Institute',
     ].join('\n');
-    GmailApp.sendEmail(email, "Votre demande d'adhésion a été reçue · Your membership application has been received", text, {
-      from: MEMBERS_FROM,
-      name: 'Institut interculturel Matin',
-      replyTo: MEMBERS_FROM,
-    });
+    const options = { name: 'Institut interculturel Matin', replyTo: MEMBERS_FROM };
+    if (GmailApp.getAliases().indexOf(MEMBERS_FROM) !== -1) options.from = MEMBERS_FROM;
+    GmailApp.sendEmail(email, "Votre demande d'adhésion a été reçue · Your membership application has been received", text, options);
   } catch (err) {
     console.error('Receipt not sent: ' + err);
   }
