@@ -1,0 +1,436 @@
+---
+/**
+ * Living homepage: Matin's Picks as a cultural discovery gallery (owner's brief, Oct 29
+ * 2026). The same data as the Events page (`featuredUntil`, picksOf, up to three per
+ * region), shown as one horizontal gallery of large images: each tile has its category
+ * (the event's subject), the date, the title, the place and the "why it matters" line,
+ * and opens the event (its page here for Matin's events, the organizer's page for selected
+ * ones). Region chips filter the gallery; arrows scroll it; it works without script
+ * (all picks shown, swipe or scroll). Hidden when there is no pick.
+ */
+import RemoteEventImage from '@/components/content/RemoteEventImage.astro';
+import { ArrowRight, ArrowUpRight, ChevronLeft, ChevronRight, Star } from '@lucide/astro';
+import { Picture } from 'astro:assets';
+import DialogueArt from '@/components/brand/DialogueArt.astro';
+import { baseLang, href, type UiLang } from '@/i18n/routes';
+import { pick, useTranslations } from '@/i18n/ui';
+import { livingStrings } from '@/i18n/living';
+import {
+  cityOf,
+  forLang,
+  getUpcomingEvents,
+  isMatinEvent,
+  pickRegionOf,
+  picksOf,
+  slugOf,
+} from '@/lib/content';
+import { dateBadge } from '@/lib/dates';
+import { newsRegions } from '@/lib/taxonomy';
+
+interface Props {
+  lang: UiLang;
+}
+const { lang } = Astro.props;
+const t = useTranslations(lang);
+const l = livingStrings(lang);
+const picks = forLang(picksOf(await getUpcomingEvents()), lang);
+const regions = newsRegions.filter((r) => picks.some((e) => pickRegionOf(e) === r));
+const tiles = picks.map((event) => {
+  const d = event.data;
+  const ours = isMatinEvent(event);
+  return {
+    event,
+    region: pickRegionOf(event),
+    url: ours ? href('events', lang, slugOf(event, baseLang(lang))) : d.eventUrl,
+    external: !ours,
+    title: pick(d.title, lang) ?? '',
+    why: pick(d.whyItMatters, lang) ?? pick(d.summary, lang),
+    subject: t(`agendaSubjects.${d.subject}`),
+    place: cityOf(event, lang),
+    badge: dateBadge(event.startDate, lang, d.timeZone),
+  };
+});
+---
+
+{tiles.length > 0 && (
+  <section id="picks" class="lpicks scroll-mt-24" aria-labelledby="lpicks-title" data-lpicks>
+    <div class="container-site lpicks__head">
+      <div>
+        <p class="living-kicker">
+          <Star size={16} aria-hidden="true" />
+          {t('events.selectedByMatin')}
+        </p>
+        <h2 id="lpicks-title" class="living-title">
+          {t('events.picksTitle')}
+        </h2>
+        <p class="living-lede">{t('events.picksLede')}</p>
+      </div>
+      <a href={href('events', lang)} class="living-link">
+        {t('home.eventsAll')}
+        <ArrowRight size={20} class="flip-rtl" aria-hidden="true" />
+      </a>
+    </div>
+
+    <div class="container-site lpicks__bar">
+      {regions.length > 1 && (
+        <div class="lpicks__chips" role="group" aria-label={l.filterLabel}>
+          <button type="button" class="lpicks__chip" aria-pressed="true" data-filter="all">
+            {l.all}
+          </button>
+          {regions.map((r) => (
+            <button type="button" class="lpicks__chip" aria-pressed="false" data-filter={r}>
+              {t(`newsRegions.${r}`)}
+            </button>
+          ))}
+        </div>
+      )}
+      <div class="lpicks__nav" data-lpicks-nav hidden>
+        <button type="button" class="lpicks__arrow" data-lpicks-prev>
+          <ChevronLeft size={22} class="flip-rtl" aria-hidden="true" />
+          <span class="sr-only">{l.prev}</span>
+        </button>
+        <button type="button" class="lpicks__arrow" data-lpicks-next>
+          <ChevronRight size={22} class="flip-rtl" aria-hidden="true" />
+          <span class="sr-only">{l.next}</span>
+        </button>
+      </div>
+    </div>
+
+    <ul class="lpicks__track" data-lpicks-track data-upcoming-list>
+      {tiles.map((tile, i) => (
+        <li class="lpicks__item" data-region={tile.region}>
+          <article class="lpick" data-event-end={tile.event.endDate.toISOString()}>
+            <div class="lpick__media">
+              {tile.event.data.image ? (
+                <Picture
+                  src={tile.event.data.image}
+                  alt=""
+                  formats={['avif', 'webp']}
+                  widths={[400, 640, 900]}
+                  sizes="(min-width: 64rem) 24rem, 78vw"
+                  loading={i < 3 ? 'eager' : 'lazy'}
+                />
+              ) : tile.event.data.remoteImage ? (
+                <RemoteEventImage
+                  image={tile.event.data.remoteImage}
+                  eager={i < 3}
+                  class="lpick__remote"
+                >
+                  <DialogueArt
+                    slot="fallback"
+                    accent="coral"
+                    seed={tile.event.id}
+                    class="lpick__art"
+                  />
+                </RemoteEventImage>
+              ) : (
+                <DialogueArt accent="coral" seed={tile.event.id} class="lpick__art" />
+              )}
+              <span class="lpick__region">{t(`newsRegions.${tile.region}`)}</span>
+            </div>
+            <div class="lpick__body">
+              <p class="lpick__meta">
+                <span class="lpick__date">
+                  <span class="lpick__day">{tile.badge.day}</span>
+                  <span>{tile.badge.month.replace('.', '')}</span>
+                </span>
+                <span class="lpick__subject">{tile.subject}</span>
+              </p>
+              <h3 class="lpick__title">
+                <a
+                  href={tile.url}
+                  class="lpick__link"
+                  target={tile.external ? '_blank' : undefined}
+                  rel={tile.external ? 'noopener noreferrer' : undefined}
+                >
+                  {tile.title}
+                  {tile.external && <span class="sr-only">{t('a11y.externalLink')}</span>}
+                </a>
+                <ArrowUpRight size={22} class="lpick__arrow flip-rtl" aria-hidden="true" />
+              </h3>
+              {tile.place && <p class="lpick__place">{tile.place}</p>}
+              {tile.why && <p class="lpick__why">{tile.why}</p>}
+            </div>
+          </article>
+        </li>
+      ))}
+    </ul>
+  </section>
+)}
+
+<script>
+  for (const root of document.querySelectorAll<HTMLElement>('[data-lpicks]')) {
+    const track = root.querySelector<HTMLElement>('[data-lpicks-track]')!;
+    const nav = root.querySelector<HTMLElement>('[data-lpicks-nav]')!;
+    const items = [...track.querySelectorAll<HTMLElement>('.lpicks__item')];
+    const rtl = getComputedStyle(root).direction === 'rtl';
+    const step = (dir: number) => {
+      const item = items.find((i) => !i.hidden);
+      const width = item ? item.offsetWidth + parseFloat(getComputedStyle(track).columnGap) : 320;
+      track.scrollBy({ left: dir * width * (rtl ? -1 : 1), behavior: 'smooth' });
+    };
+    root.querySelector('[data-lpicks-prev]')?.addEventListener('click', () => step(-1));
+    root.querySelector('[data-lpicks-next]')?.addEventListener('click', () => step(1));
+    const update = () => (nav.hidden = track.scrollWidth <= track.clientWidth + 2);
+    new ResizeObserver(update).observe(track);
+    update();
+    // Region chips: show one region, or all; expired events stay hidden.
+    const chips = [...root.querySelectorAll<HTMLButtonElement>('[data-filter]')];
+    for (const chip of chips) {
+      chip.addEventListener('click', () => {
+        const f = chip.dataset.filter;
+        chips.forEach((c) => c.setAttribute('aria-pressed', String(c === chip)));
+        for (const item of items) {
+          if (item.dataset.expired) continue;
+          item.hidden = f !== 'all' && item.dataset.region !== f;
+        }
+        track.scrollTo({ left: 0 });
+        update();
+      });
+    }
+  }
+</script>
+
+<style>
+  .lpicks {
+    padding-block: clamp(4rem, 3rem + 4vw, 7rem);
+    overflow: hidden;
+  }
+  .lpicks__head {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: end;
+    justify-content: space-between;
+    gap: 1.5rem 3rem;
+  }
+  .lpicks__bar {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    margin-block: 2rem 1.75rem;
+  }
+  .lpicks__chips {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.6rem;
+  }
+  .lpicks__chip {
+    min-height: 2.75rem;
+    padding: 0.45rem 1.2rem;
+    border: 1.5px solid var(--living-charcoal);
+    border-radius: 999px;
+    font-family: var(--font-display);
+    font-weight: 700;
+    color: var(--living-charcoal);
+    transition:
+      background-color 0.3s ease,
+      color 0.3s ease;
+  }
+  .lpicks__chip:hover {
+    background: var(--living-gold);
+    border-color: var(--living-gold);
+  }
+  .lpicks__chip[aria-pressed='true'] {
+    background: var(--living-charcoal);
+    color: var(--living-ivory);
+  }
+  .lpicks__nav {
+    display: flex;
+    gap: 0.6rem;
+  }
+  .lpicks__nav[hidden] {
+    display: none;
+  }
+  .lpicks__arrow {
+    display: grid;
+    place-items: center;
+    width: 3rem;
+    height: 3rem;
+    border-radius: 50%;
+    background: var(--living-terracotta-ink);
+    color: var(--matin-white);
+    transition: background-color 0.3s ease;
+  }
+  .lpicks__arrow:hover {
+    background: var(--living-coral);
+    color: var(--living-charcoal);
+  }
+
+  /* The gallery: wide tiles in one row that bleeds off the edge of the page. */
+  .lpicks__track {
+    --pad: max(1rem, calc((100vw - 90rem) / 2 + 1.5rem));
+    display: grid;
+    grid-auto-flow: column;
+    grid-auto-columns: min(78vw, 24rem);
+    gap: clamp(1.25rem, 1rem + 1.5vw, 2.25rem);
+    overflow-x: auto;
+    overscroll-behavior-x: contain;
+    scroll-snap-type: x mandatory;
+    scroll-padding-inline: var(--pad);
+    padding-inline: var(--pad);
+    padding-block: 0.5rem 1.5rem;
+    scrollbar-width: thin;
+    scrollbar-color: var(--living-terracotta) transparent;
+  }
+  .lpicks__item {
+    scroll-snap-align: start;
+  }
+  .lpicks__item[hidden] {
+    display: none;
+  }
+  /* Every second tile sits a little lower: a rhythm, not a grid. */
+  @media (min-width: 48rem) {
+    .lpicks__item:nth-child(even) {
+      padding-block-start: 2.5rem;
+    }
+  }
+  .lpick {
+    position: relative;
+    display: grid;
+    gap: 1rem;
+  }
+  .lpick__media {
+    position: relative;
+    overflow: hidden;
+    aspect-ratio: 4 / 5;
+    border-radius: 1.5rem;
+    background: var(--living-sand);
+  }
+  .lpicks__item:nth-child(3n + 2) .lpick__media {
+    border-radius: 1.5rem 6rem 1.5rem 1.5rem;
+  }
+  .lpicks__item:nth-child(3n) .lpick__media {
+    border-radius: 6rem 1.5rem 1.5rem 1.5rem;
+  }
+  .lpick__media :global(img),
+  .lpick__media :global(.lpick__art) {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 1s cubic-bezier(0.2, 0.7, 0.2, 1);
+  }
+  .lpick__media :global(.remote-img) {
+    height: 100%;
+  }
+  .lpick__region {
+    position: absolute;
+    inset-block-end: 0.85rem;
+    inset-inline-start: 0.85rem;
+    padding: 0.25rem 0.8rem;
+    border-radius: 999px;
+    background: var(--living-ivory);
+    color: var(--living-charcoal);
+    font-family: var(--font-display);
+    font-size: 0.85rem;
+    font-weight: 800;
+  }
+  .lpick__body {
+    display: grid;
+    gap: 0.5rem;
+  }
+  .lpick__meta {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    gap: 0.4rem 0.9rem;
+  }
+  .lpick__date {
+    display: inline-flex;
+    align-items: baseline;
+    gap: 0.3rem;
+    font-family: var(--font-display);
+    font-weight: 800;
+    color: var(--living-terracotta-ink);
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+  }
+  .lpick__day {
+    font-family: var(--font-editorial);
+    font-size: 1.9rem;
+    line-height: 1;
+    letter-spacing: 0;
+  }
+  .lpick__subject {
+    font-family: var(--font-display);
+    font-size: 0.85rem;
+    font-weight: 800;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--living-green-ink);
+  }
+  :global(html[lang='fa']) .lpick__subject,
+  :global(html[lang='fa']) .lpick__date {
+    letter-spacing: 0;
+  }
+  .lpick__title {
+    display: flex;
+    gap: 0.4rem;
+    align-items: start;
+    font-family: var(--font-editorial);
+    font-size: clamp(1.4rem, 1.25rem + 0.5vw, 1.7rem);
+    font-weight: 600;
+    line-height: 1.2;
+    color: var(--living-charcoal);
+    text-wrap: balance;
+  }
+  :global(html[lang='fa']) .lpick__title {
+    font-family: var(--font-display);
+    font-weight: 800;
+    line-height: 1.5;
+  }
+  .lpick__link {
+    color: inherit;
+    text-decoration: none;
+  }
+  /* The whole tile is the link's target area. */
+  .lpick__link::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: 1.5rem;
+  }
+  .lpick__link:focus-visible {
+    outline: none;
+  }
+  .lpick:has(.lpick__link:focus-visible) {
+    outline: 3px solid var(--living-terracotta-ink);
+    outline-offset: 6px;
+    border-radius: 1.5rem;
+  }
+  :global(.lpick__arrow) {
+    flex: none;
+    margin-block-start: 0.2rem;
+    color: var(--living-terracotta);
+    transition: translate 0.35s ease;
+  }
+  .lpick__place {
+    font-weight: 600;
+    color: var(--living-charcoal);
+  }
+  .lpick__why {
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    line-height: 1.55;
+    color: var(--living-charcoal);
+  }
+  @media (hover: hover) and (prefers-reduced-motion: no-preference) {
+    .lpick:hover .lpick__media :global(img),
+    .lpick:hover .lpick__media :global(.lpick__art) {
+      transform: scale(1.05);
+    }
+    .lpick:hover :global(.lpick__arrow) {
+      translate: 3px -3px;
+    }
+    .lpick:hover .lpick__link {
+      text-decoration: underline;
+      text-decoration-color: var(--living-gold);
+      text-decoration-thickness: 3px;
+      text-underline-offset: 0.2em;
+    }
+  }
+</style>

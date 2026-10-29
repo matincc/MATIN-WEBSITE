@@ -1,0 +1,88 @@
+/*
+ * Name tag shared by the Our Team page (owner's briefs, Oct 29 2026): the Executive Team
+ * gallery and « What Culture Means to Us » label each person with the same small, darker
+ * paper tag (a punched hole, the name in the editorial serif, the role), in the same colour
+ * for the same person, so the two sections read as two chapters of one story.
+ * Imported by TeamPage.astro and CultureVoices.astro. Position and tilt are set by the
+ * component that places the tag.
+ */
+.name-tag {
+  --tag-bg: var(--matin-brique-ink);
+  --tag-ink: var(--matin-white);
+  --tag-ring: var(--matin-soleil);
+  position: relative;
+  z-index: 2;
+  display: flex;
+  align-items: center;
+  gap: 0.9rem;
+  width: fit-content;
+  padding-block: 0.9rem;
+  padding-inline: 1.15rem 1.6rem;
+  border-radius: 0.6rem 1.75rem 0.6rem 1.75rem;
+  background: var(--tag-bg);
+  color: var(--tag-ink);
+  box-shadow: 0 0.9rem 1.6rem -0.9rem color-mix(in srgb, var(--matin-nuit) 45%, transparent);
+}
+.name-tag:has(.name-tag__photo) {
+  padding-inline-start: 0.9rem;
+}
+/* Tones: one per person, the same in both sections. */
+.name-tag[data-tone='encre'] {
+  --tag-bg: var(--matin-encre);
+  --tag-ring: var(--matin-soleil);
+}
+.name-tag[data-tone='caramel'] {
+  --tag-bg: color-mix(in srgb, var(--matin-soleil) 70%, var(--matin-brique));
+  --tag-ink: var(--matin-encre);
+  --tag-ring: var(--matin-white);
+}
+.name-tag[data-tone='cocoa'] {
+  --tag-bg: color-mix(in srgb, var(--matin-brique-ink) 55%, var(--matin-nuit));
+  --tag-ring: color-mix(in srgb, var(--matin-soleil) 70%, var(--matin-brique));
+}
+.name-tag__hole {
+  position: absolute;
+  inset-block-start: 0.55rem;
+  inset-inline-end: 0.6rem;
+  width: 0.5rem;
+  aspect-ratio: 1;
+  border-radius: 50%;
+  background: var(--matin-ivoire);
+  box-shadow: inset 0 1px 2px color-mix(in srgb, var(--matin-nuit) 40%, transparent);
+}
+.name-tag__photo {
+  flex: none;
+  width: clamp(3.4rem, 3rem + 1vw, 4.25rem);
+  height: auto;
+  aspect-ratio: 1;
+  border-radius: 50%;
+  object-fit: cover;
+  box-shadow: 0 0 0 3px var(--tag-ring);
+}
+.name-tag__who {
+  display: grid;
+  gap: 0.2rem;
+  min-width: 0;
+}
+.name-tag__name {
+  font-family: var(--font-editorial);
+  font-size: clamp(1.35rem, 1.2rem + 0.6vw, 1.75rem);
+  font-weight: 650;
+  font-variation-settings:
+    'SOFT' 100,
+    'opsz' 60;
+  line-height: 1.12;
+  color: inherit;
+}
+html[lang='fa'] .name-tag__name {
+  font-weight: 800;
+  line-height: 1.5;
+}
+.name-tag__role {
+  font-family: var(--font-display);
+  font-size: 0.9375rem;
+  font-weight: 700;
+  line-height: 1.35;
+  color: inherit;
+  opacity: 0.92;
+}

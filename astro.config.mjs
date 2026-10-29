@@ -58,7 +58,7 @@ export default defineConfig({
     csp: {
       directives: [
         "default-src 'self'",
-        "img-src 'self' data: https://*.google-analytics.com https://*.googletagmanager.com",
+        "img-src 'self' data: https://images.unsplash.com https://2026.tiff-jp.net https://festivalofauthors.ca https://static.wixstatic.com https://www.unesco.org https://*.google-analytics.com https://*.googletagmanager.com",
         "font-src 'self' data:",
         "connect-src 'self' https://plausible.io https://*.google-analytics.com https://*.analytics.google.com https://*.googletagmanager.com https://challenges.cloudflare.com",
         'frame-src https://www.youtube-nocookie.com https://www.google.com https://challenges.cloudflare.com',

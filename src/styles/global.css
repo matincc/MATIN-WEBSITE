@@ -15,41 +15,82 @@
 @import '@fontsource/playfair-display/700.css';
 /* Persian pages only: the browser fetches it just where Persian text appears. */
 @import '@fontsource-variable/vazirmatn/index.css';
+/* Handwriting touches on the homepage (owner's request, Oct 28 2026: a more human site):
+   Caveat for Latin pages (Persian keeps Vazirmatn). Only the President's name and short
+   notes use them, never reading text. */
+@import '@fontsource/caveat/600.css';
+/* The Living homepage (owner's brief, Oct 29 2026): Fraunces, a warm editorial serif with
+   soft, rounded terminals, for the homepage section headlines (Latin pages only; Persian
+   keeps Vazirmatn). Variable: weight, optical size, softness. */
+@import '@fontsource-variable/fraunces/full.css';
+@import '@fontsource-variable/fraunces/full-italic.css';
 
 /*
- * Matin colour system. These variables are the ONLY colours on the site (see
- * CLAUDE.md). Everything else below points at them.
- * Navy and cream carry the identity; coral, mustard, teal and terracotta are the
- * "cultures in dialogue" accents, used selectively (accents, cards, bands, shapes).
+ * Matin colour system, scheme A « Brique & Firouzeh » (owner's decision, Oct 29 2026).
+ * "Matin" is the morning: the colours of dawn over two cultures. Brique (Montréal brick,
+ * Persian brick and pottery) is the organisation colour; Firouzeh (Persian turquoise
+ * tiles, the St. Lawrence) its companion; Soleil the logo's sun; Encre the logo's navy
+ * for text; Ivoire and Sable the grounds; Nuit one dark moment per page and the footer.
+ * Seven colours. These are the ONLY colours on the site (see CLAUDE.md); every older
+ * name below is an alias of one of them, so no page keeps a colour of its own.
+ * Contrast (checked, WCAG AA): encre on ivoire 10.6 / sable 9.4 / white 11.9;
+ * brique-ink on ivoire 5.7; firouzeh-ink on ivoire 6.4; white on brique 5.0, on
+ * brique-ink 6.4, on firouzeh 5.0, on firouzeh-ink 7.2, on nuit 14.9; soleil on nuit 7.6;
+ * encre on soleil 6.1. Brique and firouzeh (4.5 on ivoire) for large text, shapes and
+ * button grounds; soleil never as text on light grounds.
  */
 :root {
-  --matin-blue: #193a53; /* deep navy: headings, navigation, buttons, links, footer */
-  --matin-cream: #f5ebdd; /* warm cream: alternate section backgrounds */
-  --matin-paper: #fffcf7; /* warm white: main page background */
-  --matin-gold: #d8a548; /* mustard gold: lines, maple leaves, the hero tagline, buttons on navy */
-  --matin-coral: #d86c58; /* coral: accents and shapes only (never small text) */
-  --matin-teal: #408c8d; /* teal: accents, shapes, large text only */
-  --matin-terracotta: #a95542; /* terracotta: warm bands with white text */
-  --matin-teal-deep: #2c6a6b; /* text-safe teal: labels and panels (5.3:1+ on cream) */
-  --matin-terracotta-deep: #9a4636; /* text-safe terracotta/coral: labels (5.4:1+ on cream) */
-  --matin-ink: #293442; /* body text */
-  --matin-white: #ffffff; /* cards, text on navy */
+  --matin-brique: #b5513a; /* organisation colour: main buttons, large titles, shapes */
+  --matin-brique-ink: #9c4430; /* brique for small text and labels */
+  --matin-firouzeh: #1e7a8a; /* companion: links, labels, one section per page */
+  --matin-firouzeh-ink: #17606d; /* firouzeh for small text */
+  --matin-soleil: #e8b04a; /* the sun: highlights, sun shapes, rules, never text on light */
+  --matin-encre: #193a53; /* the logo's navy: headings, menu, text */
+  --matin-ivoire: #f7f2ea; /* page ground */
+  --matin-sable: #eee4d3; /* second ground, to set sections apart */
+  --matin-nuit: #13293a; /* one dark moment per page, the footer */
+  /* Two light grounds mixed from the colours above for the homepage rhythm (Oct 29 2026,
+     owner: the homepage ground was not yet inviting): apricot dawn and pale turquoise. */
+  --matin-aube: color-mix(in srgb, var(--matin-soleil) 30%, var(--matin-ivoire));
+  /* A soft brick tint (owner, Oct 29 2026: the Executive Team panel warmer, brick). */
+  --matin-brique-pale: color-mix(in srgb, var(--matin-brique) 18%, var(--matin-ivoire));
+  /* Leaning to blue, never a pale green (owner, Oct 25 2026). */
+  --matin-firouzeh-pale: color-mix(
+    in srgb,
+    color-mix(in srgb, var(--matin-firouzeh) 80%, var(--matin-encre)) 17%,
+    var(--matin-white)
+  );
+
+  /* Older names, kept so every component follows the new scheme. */
+  --matin-blue: var(--matin-encre);
+  --matin-cream: var(--matin-sable);
+  --matin-paper: var(--matin-ivoire);
+  --matin-gold: var(--matin-soleil);
+  --matin-coral: var(--matin-brique);
+  --matin-teal: var(--matin-firouzeh);
+  --matin-terracotta: var(--matin-brique);
+  --matin-teal-deep: var(--matin-firouzeh-ink);
+  --matin-terracotta-deep: var(--matin-brique-ink);
+  --matin-ink: #273240; /* body text: encre, a touch softer for long reading */
+  --matin-white: #ffffff;
   --matin-red: #b33b42; /* maple red: sparingly, only for the Canadian brand identity */
-}
 
-/*
- * Matin Alive (owner's brief, Oct 27 2026): the proposed homepage palette, used only by the
- * homepage preview (.alive and its components) while the owner reviews it. Not a
- * replacement for the colours above. Contrast (checked): cream on green 10.2, gold on
- * green 6.8, cream on blue 8.2, gold on blue 5.4, green on gold 6.8, green on cream 10.2.
- * Coral is a shape colour (2.6 on cream; 4.0 on green, large text only).
- */
-:root {
-  --alive-green: #183f3b; /* deep green: hero panel, Faces & Voices, buttons */
-  --alive-coral: #e47a59; /* warm coral: shapes, edges, dots */
-  --alive-gold: #f2bd69; /* soft gold: labels and buttons on dark bands */
-  --alive-cream: #f6f0e6; /* warm cream: light bands, text on dark */
-  --alive-blue: #294a68; /* cultural blue: Coming up, Cultures on Screen */
+  /* Homepage palettes of Oct 27 and Oct 29 2026, now aliases of the scheme. */
+  --alive-green: var(--matin-nuit);
+  --alive-coral: var(--matin-brique);
+  --alive-gold: var(--matin-soleil);
+  --alive-cream: var(--matin-ivoire);
+  --alive-blue: var(--matin-encre);
+  --living-ivory: var(--matin-ivoire);
+  --living-sand: var(--matin-sable);
+  --living-terracotta: var(--matin-brique);
+  --living-terracotta-ink: var(--matin-brique-ink);
+  --living-coral: var(--matin-soleil);
+  --living-gold: var(--matin-soleil);
+  --living-green: var(--matin-firouzeh);
+  --living-green-ink: var(--matin-firouzeh-ink);
+  --living-charcoal: var(--matin-ink);
+  --font-editorial: 'Fraunces Variable', 'Georgia', 'Times New Roman', serif;
 }
 
 /*
@@ -63,6 +104,16 @@
  */
 @theme {
   --color-primary: var(--matin-blue);
+  --color-brique: var(--matin-brique);
+  --color-brique-ink: var(--matin-brique-ink);
+  --color-firouzeh: var(--matin-firouzeh);
+  --color-firouzeh-ink: var(--matin-firouzeh-ink);
+  --color-soleil: var(--matin-soleil);
+  --color-sable: var(--matin-sable);
+  --color-nuit: var(--matin-nuit);
+  --color-aube: var(--matin-aube);
+  --color-firouzeh-pale: var(--matin-firouzeh-pale);
+  --color-brique-pale: var(--matin-brique-pale);
   --color-navy: var(--matin-blue);
   --color-gold: var(--matin-gold);
   --color-mustard: var(--matin-gold);
@@ -157,6 +208,7 @@
     --font-sans: 'Vazirmatn Variable', Tahoma, 'Segoe UI', sans-serif;
     --font-display: 'Vazirmatn Variable', Tahoma, 'Segoe UI', sans-serif;
     --font-news: 'Vazirmatn Variable', Tahoma, 'Segoe UI', sans-serif;
+    --font-editorial: 'Vazirmatn Variable', Tahoma, 'Segoe UI', sans-serif;
   }
   /* Latin-script text inside Persian pages (e.g. the logo) keeps the Latin font. */
   html[lang='fa'] [lang^='fr'],
@@ -252,11 +304,22 @@
     font-size: clamp(1.1875rem, 1.1rem + 0.4vw, 1.375rem);
     letter-spacing: 0.14em;
   }
+  /* Section titles (scheme A, Oct 29 2026): the homepage's editorial serif on every page,
+     soft and warm; Persian keeps Vazirmatn (--font-editorial is redefined for fa). */
   .section-title {
-    @apply font-display font-extrabold;
+    font-family: var(--font-editorial);
+    font-weight: 700;
+    font-variation-settings:
+      'SOFT' 100,
+      'opsz' 96;
     font-size: clamp(2.125rem, 1.55rem + 2.1vw, 3.5rem);
     line-height: 1.08;
-    letter-spacing: -0.01em;
+    letter-spacing: -0.015em;
+    text-wrap: balance;
+  }
+  html[lang='fa'] .section-title {
+    font-weight: 800;
+    font-variation-settings: normal;
   }
   .lede {
     @apply text-muted;
@@ -280,17 +343,18 @@
     flex: 1;
     border-radius: 999px;
   }
+  /* Scheme A: brique, soleil, firouzeh, encre. */
   .mosaic > span:nth-child(1) {
-    background: var(--color-coral);
+    background: var(--color-brique);
   }
   .mosaic > span:nth-child(2) {
-    background: var(--color-gold);
+    background: var(--color-soleil);
   }
   .mosaic > span:nth-child(3) {
-    background: var(--color-teal);
+    background: var(--color-firouzeh);
   }
   .mosaic > span:nth-child(4) {
-    background: var(--color-terracotta);
+    background: var(--color-primary);
   }
   /* Accent sets for cards and tiles: --accent (shapes, borders), --accent-ink (text-safe
      label colour on paper/cream/white). */
@@ -337,8 +401,14 @@
     transform: none;
   }
   /* Primary: petroleum blue, white text (11.7:1). */
+  /* Main button (scheme A, Oct 29 2026): the organisation colour, brique, white text
+     6.4:1; darker on hover. */
   .btn-primary {
-    @apply bg-primary text-white hover:bg-primary-hover;
+    background: var(--color-brique-ink);
+    color: var(--color-white);
+  }
+  .btn-primary:hover {
+    background: color-mix(in srgb, var(--color-brique-ink) 80%, black);
   }
   /* Secondary: light background, thin gold border, blue text (11.7:1). */
   .btn-outline {
@@ -375,7 +445,12 @@
   }
   .on-terracotta .btn-primary,
   .on-teal .btn-primary {
-    @apply bg-primary text-white hover:bg-primary-hover;
+    background: var(--color-white);
+    color: var(--color-primary);
+  }
+  .on-terracotta .btn-primary:hover,
+  .on-teal .btn-primary:hover {
+    background: var(--color-sable);
   }
   /* Blue bands: gold label, white title, gold main button with blue text (4.6:1). */
   .on-dark .eyebrow {
@@ -385,13 +460,43 @@
     @apply text-white;
   }
   .on-dark .btn-primary {
-    @apply bg-gold text-primary hover:bg-cream;
+    background: var(--color-soleil);
+    color: var(--color-primary);
+  }
+  .on-dark .btn-primary:hover {
+    background: var(--color-sable);
   }
   /* Shared card style: white, softly rounded, a clear warm edge and a very light shadow. */
   .card {
     @apply rounded-[var(--radius-card)] border bg-white;
     border-color: var(--color-card-edge);
     box-shadow: var(--shadow-card);
+    /* One deep corner, alternating from card to card (owner's request, Oct 29 2026: less
+       boxed); logical, so Persian mirrors. */
+    border-start-end-radius: 2.75rem;
+  }
+  li:nth-child(2n) > .card,
+  li.card:nth-child(2n) {
+    border-start-end-radius: var(--radius-card);
+    border-end-start-radius: 2.75rem;
+  }
+  /* Card lists that break the ruler-straight row: every second card (two columns) or the
+     middle column (three columns) sits lower; heights stay equal within a row. */
+  @media (min-width: 48rem) and (max-width: 63.99rem) {
+    .stagger-grid {
+      padding-block-end: 2rem;
+    }
+    .stagger-grid > li:nth-child(2n) {
+      margin-block: 2rem -2rem;
+    }
+  }
+  @media (min-width: 64rem) {
+    .stagger-grid {
+      padding-block-end: 2.5rem;
+    }
+    .stagger-grid > li:nth-child(3n + 2) {
+      margin-block: 2.5rem -2.5rem;
+    }
   }
   /* Cards that are links or hold a call to action lift gently on hover. */
   .card-lift {
@@ -402,7 +507,8 @@
   }
   .card-lift:hover,
   .card-lift:focus-within {
-    transform: translateY(-4px);
+    /* The rise itself comes from the shared organic-box hover (translate). */
+    transform: none;
     box-shadow: 0 14px 30px -18px color-mix(in srgb, var(--color-primary) 45%, transparent);
   }
   .link-arrow {
@@ -523,6 +629,87 @@
   }
 }
 
+/* Every photo on the site grows a little under a desktop pointer (owner's request, Oct 29
+   2026), whether the pointer is on the photo or on its card. The `scale` property adds to
+   any crop a component sets with `transform`. Never on the homepage hero photo (owner:
+   "don't touch the photo") nor in the fullscreen viewer. */
+@media (hover: hover) {
+  main img:not(.ahero img, dialog img) {
+    transition: scale 0.7s cubic-bezier(0.2, 0.7, 0.2, 1);
+  }
+  main :is(figure, article, li, .media):hover img:not(.ahero img, dialog img),
+  main img:not(.ahero img, dialog img):hover {
+    scale: 1.05;
+  }
+}
+
+/* ---------- Organic boxes on every page (owner's request, Oct 29 2026) ----------
+   No box stays a plain rectangle: cards and panels take one deep corner (logical, so
+   Persian mirrors), cards in lists alternate it and sit slightly askew, and under a
+   desktop pointer a card rises a little and straightens. `:not(#o)` only raises the
+   specificity above the components' own `border-radius`, so these rules win. */
+:is(
+  .wire__item,
+  .post,
+  .note,
+  .org,
+  .event-wide,
+  .article-main,
+  .glance,
+  .article-visual,
+  .album__text,
+  .gallery-empty,
+  .notes-empty,
+  .region-empty,
+  .notes-author__card,
+  .profile-photo,
+  .empty-state,
+  .form-panel,
+  .poster-card__img
+):not(#o) {
+  border-start-end-radius: 3rem;
+}
+:is(.article-main, .glance, .notes-author__card, .form-panel, .gallery-empty):not(#o) {
+  border-start-end-radius: 5rem;
+}
+:is(li:nth-child(2n) > :is(.post, .note, .event-wide), :is(.wire__item, .org):nth-child(2n)):not(
+  #o
+) {
+  border-start-end-radius: var(--radius-card);
+  border-end-start-radius: 3rem;
+}
+/* A slight tilt on cards in lists (every third one each way). */
+:is(
+  li:nth-child(3n + 1) > :is(.card, .post, .note, .event-wide),
+  :is(.card, .wire__item, .org):is(li):nth-child(3n + 1)
+) {
+  rotate: -0.6deg;
+}
+:is(
+  li:nth-child(3n) > :is(.card, .post, .note, .event-wide),
+  :is(.card, .wire__item, .org):is(li):nth-child(3n)
+) {
+  rotate: 0.5deg;
+}
+@media (hover: hover) {
+  :is(.card, .post, .note, .org, .wire__item, .event-wide) {
+    transition:
+      rotate 0.45s ease,
+      translate 0.45s cubic-bezier(0.2, 0.7, 0.2, 1),
+      box-shadow 0.45s ease;
+  }
+  :is(.card, .post, .note, .org, .wire__item, .event-wide):is(:hover, :focus-within) {
+    rotate: 0deg;
+    translate: 0 -0.5rem;
+    box-shadow: 0 1.25rem 2.5rem -1.25rem color-mix(in srgb, var(--color-primary) 35%, transparent);
+  }
+  /* Forms and long reading panels do not move. */
+  :is(.form-panel, .article-main, form .card, .card:has(form)):is(:hover, :focus-within) {
+    rotate: 0deg;
+    translate: none;
+  }
+}
+
 /* Scroll-reveal: elements start visible; JS adds .reveal-ready only when motion is allowed. */
 @media (prefers-reduced-motion: no-preference) {
   .reveal-ready [data-reveal] {
@@ -630,7 +817,7 @@
 .news-band,
 .news-cultural {
   border-block: 6px solid var(--color-gold);
-  background: var(--color-primary);
+  background: var(--color-nuit);
   color: var(--color-white);
 }
 .news-band .section-title,

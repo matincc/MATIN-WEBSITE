@@ -43,7 +43,8 @@ values:
 history:
   # One entry per milestone, oldest first; add a new entry to extend the timeline (no
   # design change needed). Only real, approved milestones. `text` may hold several
-  # paragraphs separated by a blank line. Approved texts of October 21, 2026.
+  # paragraphs separated by a blank line. Approved texts of October 21, 2026; the month
+  # (October) added at the owner's request, Oct 29 2026 (never the exact day).
   - year: '2026'
     title:
       fr: 'Un nouveau matin se lève'
@@ -51,19 +52,19 @@ history:
       fa: 'صبحی تازه آغاز می‌شود'
     text:
       fr: |
-        En 2026, l'Institut interculturel Matin voit le jour à Montréal, animé par la conviction que la culture peut rapprocher les personnes et les communautés.
+        En octobre 2026, l'Institut interculturel Matin voit le jour à Montréal, animé par la conviction que la culture peut rapprocher les personnes et les communautés.
 
         Notre histoire ne fait que commencer. Nous tissons des liens, explorons des idées et cherchons à créer des occasions de dialogue et de collaboration.
 
         Nous vous invitons à prendre part à la suite de cette aventure.
       en: |
-        In 2026, Matin Intercultural Institute began its journey in Montréal, inspired by a belief in the power of culture to connect people and communities.
+        In October 2026, Matin Intercultural Institute began its journey in Montréal, inspired by a belief in the power of culture to connect people and communities.
 
         We are at the beginning of our story, building relationships, exploring ideas, and creating opportunities for dialogue and collaboration.
 
         We invite you to be part of what comes next.
       fa: |
-        مؤسسه میان‌فرهنگی متین در سال ۲۰۲۶ در مونترال فعالیت خود را آغاز کرد؛ با این باور که فرهنگ می‌تواند زمینه‌ساز آشنایی، ارتباط و همکاری میان انسان‌ها و جوامع مختلف باشد.
+        مؤسسه میان‌فرهنگی متین در اکتبر ۲۰۲۶ در مونترال فعالیت خود را آغاز کرد؛ با این باور که فرهنگ می‌تواند زمینه‌ساز آشنایی، ارتباط و همکاری میان انسان‌ها و جوامع مختلف باشد.
 
         ما تازه در آغاز راه هستیم؛ در حال شکل دادن به ارتباط‌های تازه، بررسی ایده‌ها و فراهم کردن فرصت‌هایی برای گفت‌وگو و همکاری.
 

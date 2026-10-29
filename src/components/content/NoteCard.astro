@@ -1,19 +1,23 @@
 ---
 /**
  * One note from the President, laid out like a LinkedIn post (owner's request, Oct 27
- * 2026): portrait, name and position, publication date, the text exactly as published,
+ * 2026): publication date, the text exactly as published,
  * an optional photo, and the link to the post on LinkedIn. A long text is folded after a
  * few lines with « Voir plus » (shown in full without JavaScript). A note written in
  * another language is shown in that language, with its own lang and direction.
+ * Warmer type (owner's request, Oct 29 2026: not formal, cheerful): the opening line as a
+ * soft Fraunces title, the text in rounded Nunito (Vazirmatn in Persian), a closing
+ * question in a speech bubble, then only the date: no header and no sign-off with his
+ * name and position, which his photo beside the notes already carries (owner's
+ * requests, Oct 29 2026).
  */
 import { Image } from 'astro:assets';
-import type { ImageMetadata } from 'astro';
 import type { CollectionEntry } from 'astro:content';
 import { ExternalLink } from '@lucide/astro';
 import { type UiLang } from '@/i18n/routes';
 import { pick, useTranslations } from '@/i18n/ui';
-import { getSingleton } from '@/lib/content';
 import { formatDate } from '@/lib/dates';
+import { noteHref } from '@/lib/notes';
 import { typo } from '@/lib/frenchTypo';
 
 interface Props {
@@ -26,12 +30,6 @@ interface Props {
 const { note, lang, headingLevel: Heading = 'h2', fold = true } = Astro.props;
 const t = useTranslations(lang);
 const n = note.data;
-const { president: p } = await getSingleton('about');
-const photos = import.meta.glob<ImageMetadata>('/src/assets/brand/president.{jpg,jpeg,png,webp}', {
-  eager: true,
-  import: 'default',
-});
-const portrait = Object.values(photos)[0];
 const shownLang = n.text[lang] ? lang : n.original;
 const raw = n.text[shownLang]!;
 const text = shownLang === 'fr' ? typo(raw, 'fr') : raw;
@@ -40,11 +38,15 @@ const paragraphs = text
   .split(/\n\s*\n/)
   .map((para) => para.trim());
 const translated = shownLang !== lang;
+// A translation of a note written in another language says so under the signature.
+const isTranslation = !translated && shownLang !== n.original;
+const headlineRaw = n.headline?.[shownLang];
+const headline = headlineRaw && shownLang === 'fr' ? typo(headlineRaw, 'fr') : headlineRaw;
+// The closing question of a post, set apart as an invitation to reply.
+const last = paragraphs.at(-1) ?? '';
+const question = paragraphs.length > 1 && /[?؟]$/.test(last) ? paragraphs.pop() : undefined;
 const date = formatDate(n.date, lang);
 const datetime = n.date.toISOString().slice(0, 10);
-const role = pick(p.title, lang);
-const org = t('president.org');
-const name = lang === 'fa' ? 'رضا معافی' : p.name;
 const alt = pick(n.imageAlt, lang) ?? '';
 ---
 
@@ -54,37 +56,27 @@ const alt = pick(n.imageAlt, lang) ?? '';
   aria-labelledby={`note-${note.id}-title`}
   data-note={fold ? '' : undefined}
 >
-  <Heading id={`note-${note.id}-title`} class="sr-only">
-    {t('notes.noteOf', { date })}
-  </Heading>
-  <header class="note__head">
-    {portrait ? (
-      <Image src={portrait} alt="" width={112} height={112} class="note__avatar" />
-    ) : (
-      <span class="note__avatar note__avatar--initials" aria-hidden="true">
-        RM
-      </span>
-    )}
-    <div class="note__who">
-      <p class="note__name">{name}</p>
-      <p class="note__role">
-        {role} · {org}
-      </p>
-      <p class="note__date">
-        <time datetime={datetime}>{date}</time>
-        <svg viewBox="0 0 24 24" class="note__in" aria-hidden="true">
-          <path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 1 1 0-4.125 2.062 2.062 0 0 1 0 4.125zM7.119 20.452H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0z" />
-        </svg>
-      </p>
-    </div>
-    {n.sample && <span class="note__sample">{t('notes.sample')}</span>}
-  </header>
+  <div class="note__mosaic" aria-hidden="true">
+    <span></span>
+    <span></span>
+    <span></span>
+    <span></span>
+  </div>
 
   {translated && (
     <p class="note__lang">
       {t('notes.originalLanguage', { language: t(`notes.languageNames.${shownLang}`) })}
     </p>
   )}
+
+  <Heading
+    id={`note-${note.id}-title`}
+    class:list={['note__title', !headline && 'sr-only']}
+    lang={translated ? shownLang : undefined}
+    dir={translated ? (shownLang === 'fa' ? 'rtl' : 'ltr') : undefined}
+  >
+    {headline ?? t('notes.noteOf', { date })}
+  </Heading>
 
   <div
     class="note__text"
@@ -95,6 +87,7 @@ const alt = pick(n.imageAlt, lang) ?? '';
     {paragraphs.map((para) => (
       <p>{para}</p>
     ))}
+    {question && <p class="note__question">{question}</p>}
   </div>
   {fold && (
     <button
@@ -109,6 +102,25 @@ const alt = pick(n.imageAlt, lang) ?? '';
       {t('notes.readMore')}
     </button>
   )}
+  {/* Only the date under the text (owner's request, Oct 29 2026: no header with his name
+      and position, his photo is beside the notes), with the translation note. */}
+  <p class="note__meta">
+    <svg viewBox="0 0 24 24" class="note__in" aria-hidden="true">
+      <path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 1 1 0-4.125 2.062 2.062 0 0 1 0 4.125zM7.119 20.452H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0z" />
+    </svg>
+    <time datetime={datetime} class="note__date">
+      {date}
+    </time>
+    {isTranslation && (
+      <span class="note__translation">
+        {t('notes.translatedFrom', { language: t(`notes.languageNames.${n.original}`) })}
+      </span>
+    )}
+    {n.sample && <span class="note__sample">{t('notes.sample')}</span>}
+    <a href={noteHref(note, lang)} class="note__page">
+      {t('notes.readFull')}
+    </a>
+  </p>
 
   {n.image && (
     <figure class="note__figure">
@@ -164,63 +176,86 @@ const alt = pick(n.imageAlt, lang) ?? '';
     overflow: hidden;
     border-radius: var(--radius-card);
     border: 1px solid var(--color-card-edge);
-    border-top: 6px solid var(--color-gold);
     background: var(--color-white);
     box-shadow: 0 18px 40px -26px color-mix(in srgb, var(--color-ink) 70%, transparent);
     color: var(--color-ink);
   }
-  .note--sample {
-    border-top-color: var(--color-coral);
-  }
-  .note__head {
+  .note__mosaic {
     display: flex;
-    align-items: center;
-    gap: 1rem;
-    padding: 1.5rem 1.75rem 0;
+    height: 0.4rem;
   }
-  .note__avatar {
-    flex: none;
-    width: 3.75rem;
-    height: 3.75rem;
-    border-radius: 999px;
-    object-fit: cover;
-    box-shadow:
-      0 0 0 3px var(--color-white),
-      0 0 0 5px var(--color-gold);
-  }
-  .note__avatar--initials {
-    display: grid;
-    place-items: center;
-    background: var(--color-primary);
-    color: var(--color-white);
-    font-family: var(--font-display);
-    font-weight: 800;
-  }
-  .note__who {
-    min-width: 0;
+  .note__mosaic > span {
     flex: 1;
   }
-  .note__name {
-    font-family: var(--font-display);
-    font-size: 1.2rem;
-    font-weight: 800;
-    line-height: 1.25;
-    color: var(--color-primary);
+  .note__mosaic > span:nth-child(1) {
+    background: var(--color-coral);
   }
-  .note__role {
+  .note__mosaic > span:nth-child(2) {
+    background: var(--color-gold);
+  }
+  .note__mosaic > span:nth-child(3) {
+    background: var(--color-teal);
+  }
+  .note__mosaic > span:nth-child(4) {
+    background: var(--color-terracotta);
+  }
+  .note__title {
+    position: relative;
+    margin: 1.6rem 1.75rem 0;
+    padding-inline-start: 1.1rem;
+    border-inline-start: 4px solid var(--color-gold);
+    font-family: var(--font-editorial);
+    font-weight: 700;
+    font-variation-settings:
+      'SOFT' 100,
+      'opsz' 72;
+    font-size: clamp(1.45rem, 1.2rem + 0.9vw, 1.95rem);
+    line-height: 1.22;
+    color: var(--color-terracotta-deep);
+    text-wrap: balance;
+  }
+  .note__question {
+    position: relative;
+    margin-top: 1.4em !important;
+    padding: 0.85rem 1.2rem;
+    border-radius: 1.1rem;
+    border-end-start-radius: 0.25rem;
+    background: var(--color-aqua);
+    color: var(--color-primary);
+    font-weight: 700;
+  }
+
+  .note__meta {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.4rem 0.6rem;
+    margin: 1rem 1.75rem 0;
     font-size: 0.95rem;
-    line-height: 1.4;
   }
   .note__date {
-    display: flex;
-    align-items: center;
-    gap: 0.4rem;
-    margin-top: 0.15rem;
-    font-size: 0.9rem;
-    font-weight: 600;
+    font-weight: 700;
     color: var(--color-teal-deep);
   }
+  .note__page {
+    margin-inline-start: auto;
+    font-family: var(--font-display);
+    font-weight: 800;
+    color: var(--color-primary);
+    text-decoration: underline;
+    text-decoration-color: var(--color-gold);
+    text-underline-offset: 4px;
+  }
+  .note__translation {
+    font-style: italic;
+    color: var(--color-ink);
+  }
+  .note__translation::before {
+    content: '· ';
+    font-style: normal;
+  }
   .note__in {
+    color: var(--color-teal-deep);
     width: 0.85rem;
     height: 0.85rem;
     fill: currentColor;
@@ -250,15 +285,17 @@ const alt = pick(n.imageAlt, lang) ?? '';
   }
   .note__text {
     padding: 1.1rem 1.75rem 0;
-    font-size: 1.125rem;
-    line-height: 1.75;
+    font-family: var(--font-display);
+    font-size: 1.15rem;
+    font-weight: 500;
+    line-height: 1.8;
     white-space: pre-line;
   }
   .note__text > p + p {
     margin-top: 0.9em;
   }
   .note__text.is-folded {
-    max-height: calc(1.125rem * 1.75 * 5);
+    max-height: calc(1.15rem * 1.8 * 6);
     overflow: hidden;
   }
   .note__more {
@@ -317,19 +354,12 @@ const alt = pick(n.imageAlt, lang) ?? '';
     height: 1.6rem;
   }
   @media (max-width: 30rem) {
-    .note__sample {
-      position: absolute;
-      top: 0.9rem;
-      inset-inline-end: 1.15rem;
-    }
-    .note--sample .note__head {
-      padding-top: 2.9rem;
-    }
-    .note__head,
     .note__text {
       padding-inline: 1.15rem;
     }
     .note__lang,
+    .note__title,
+    .note__meta,
     .note__more {
       margin-inline: 1.15rem;
     }

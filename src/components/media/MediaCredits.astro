@@ -1,0 +1,55 @@
+---
+/**
+ * The credits of several registry photos shown together (a collage), in one short line
+ * under it, in very small type: each photographer, source and licence (src/lib/media.ts).
+ */
+import type { UiLang } from '@/i18n/routes';
+import { livingStrings } from '@/i18n/living';
+import { media, type MediaEntry, type MediaSlot } from '@/lib/media';
+
+interface Props {
+  slots: MediaSlot[];
+  lang: UiLang;
+  class?: string;
+}
+const { slots, lang, class: className } = Astro.props;
+const l = livingStrings(lang);
+const entries: MediaEntry[] = slots.map((s) => media[s]);
+const credits = entries.flatMap((m) => (m.credit ? [m.credit] : []));
+---
+
+<p class:list={['mcredits', className]}>
+  {credits.map((c, i) => (
+    <span class="mcredits__item">
+      <a href={c.authorUrl ?? c.source} target="_blank" rel="noopener noreferrer">
+        {l.photoCredit.replace('{author}', c.author).replace('{source}', c.sourceName)}
+      </a>{' '}
+      (
+      <a href={c.licenseUrl} target="_blank" rel="noopener noreferrer license">
+        {c.licenseKey === 'unsplash' ? l.unsplashLicense : c.license}
+      </a>
+      ){i < credits.length - 1 ? ' ·' : ''}
+    </span>
+  ))}
+</p>
+
+<style>
+  .mcredits {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.25rem 0.45rem;
+    font-size: 0.625rem;
+    line-height: 1.5;
+    opacity: 0.8;
+    color: var(--living-charcoal);
+  }
+  .mcredits a {
+    color: inherit;
+    text-decoration: none;
+  }
+  .mcredits a:hover,
+  .mcredits a:focus-visible {
+    text-decoration: underline;
+  }
+</style>

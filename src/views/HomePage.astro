@@ -1,13 +1,13 @@
 ---
 /**
- * Homepage (French, English and Persian), in this order: Matin in Action (Matin's own
- * featured item, src/lib/matin.ts, and the "coming soon" posters in one carousel), Matin's
- * Picks (the same section as on the Events
- * page), the latest news (without the featured article), Matin Moments (featured gallery
- * items), Get Involved, Who We Are, Areas of Work, Cultural Resources & Organizations,
- * newsletter.
- * The photographs are openly licensed views of Montréal (see src/lib/photos.ts), shown
- * with their credits; they illustrate the themes, they do not document Matin activities.
+ * The Living homepage (owner's "Living Cultural Institution" brief, Oct 29 2026; CLAUDE.md
+ * section 4d), in French, English and Persian: the hero (unchanged, Tam-Tams photo), Coming
+ * up, Who we are (statement and photo collage), Matin in Action as visual stories, the
+ * President's note (excerpt), Matin's Picks as a discovery gallery, a full-width pause on
+ * Montréal, Programs and Participation, News, Notes from the President, Cultural
+ * Resources. Colours `--living-*` and the Fraunces headline face, scoped to `.living`.
+ * Every photo outside posters, events and the portrait comes from the image registry
+ * src/lib/media.ts (temporary ones are labelled); see docs/IMAGES.md.
  */
 import {
   ArrowRight,
@@ -22,21 +22,20 @@ import {
 import { getCollection } from 'astro:content';
 import { getImage } from 'astro:assets';
 import Lightbox from '@/components/ui/Lightbox.astro';
+import LivingIntro from '@/components/living/LivingIntro.astro';
+import PresidentExcerpt from '@/components/living/PresidentExcerpt.astro';
+import PicksGallery from '@/components/living/PicksGallery.astro';
+import MontrealPause from '@/components/living/MontrealPause.astro';
+import LivingPrograms from '@/components/living/LivingPrograms.astro';
+import { livingStrings } from '@/i18n/living';
 import NewsRegionTabs from '@/components/content/NewsRegionTabs.astro';
-import PicksSection from '@/components/content/PicksSection.astro';
 import PostCard from '@/components/content/PostCard.astro';
 import NoteCard from '@/components/content/NoteCard.astro';
-import MatinMoments from '@/components/content/MatinMoments.astro';
 import ResourcesTeaser from '@/components/content/ResourcesTeaser.astro';
 import ExpireEvents from '@/components/content/ExpireEvents.astro';
 import BaseLayout from '@/layouts/BaseLayout.astro';
 import AliveHero from '@/components/brand/AliveHero.astro';
 import UpcomingStrip from '@/components/content/UpcomingStrip.astro';
-import FacesVoices from '@/components/content/FacesVoices.astro';
-import MatinQuestion from '@/components/content/MatinQuestion.astro';
-import CulturesOnScreen from '@/components/content/CulturesOnScreen.astro';
-import SectionHeader from '@/components/ui/SectionHeader.astro';
-import AreasGrid from '@/components/content/AreasGrid.astro';
 import { href, newsAnchors, siteAlternates, type UiLang } from '@/i18n/routes';
 import { pick, useTranslations } from '@/i18n/ui';
 import { getMatinFeed, type MatinItem } from '@/lib/matin';
@@ -84,7 +83,8 @@ const soon = await Promise.all(
       return { item, large };
     }),
 );
-const slideSizes = '(min-width: 64rem) 28rem, (min-width: 48rem) 46vw, 85vw';
+const slideSizes = '(min-width: 64rem) 22rem, (min-width: 40rem) 46vw, 82vw';
+const leadSizes = '(min-width: 64rem) 26rem, (min-width: 40rem) 46vw, 82vw';
 // News (owner's brief, Oct 25 2026): Cultural News approved by the President in three
 // region tabs, then Matin News, leaving out the article already featured in Matin in Action.
 const newsHref = href('news', lang);
@@ -95,9 +95,7 @@ const matinNews = news
   .slice(0, 3);
 // Notes from the President (owner's request, Oct 27 2026): the two latest, on a deep terracotta band.
 const notes = await getNotes(2);
-// Matin Alive (owner's brief, Oct 27 2026): the placeholder sections (Faces & Voices, The
-// Matin Question prototype) appear only on previews until the owner approves them live.
-const preview = process.env.CONTEXT !== 'production';
+const l = livingStrings(lang);
 ---
 
 <BaseLayout lang={lang} alternates={siteAlternates('home')} searchable={false}>
@@ -108,47 +106,36 @@ const preview = process.env.CONTEXT !== 'production';
     </p>
   </div>
 
-  <div class="alive">
+  <div class="alive living">
     <AliveHero lang={lang} />
-    <UpcomingStrip lang={lang} />
+    {/* Four dates only (owner's request, Oct 28 2026: fewer identical cards). */}
+    <UpcomingStrip lang={lang} limit={4} />
 
-    <!-- Matin in Action: what Matin is doing now. The featured item (a highlight marked
-       featured, else Matin's next event, else the latest article), then the latest items.
-       Only Matin's own content; see src/content/highlights/README.md. -->
-    <section
-      id="action"
-      class="section-pad scroll-mt-24 action-band"
-      aria-labelledby="action-title"
-    >
+    <!-- Who we are: the approved introduction, set large, beside a photo collage -->
+    <LivingIntro lang={lang} />
+
+    <!-- Matin in Action as visual stories: the featured activity told large, Matin's
+       "coming soon" posters beside it at different heights. Only Matin's own content
+       (src/lib/matin.ts, src/content/coming-soon/). Each poster opens in the page's
+       fullscreen viewer. On phones the stories scroll sideways. -->
+    <section id="action" class="laction scroll-mt-24" aria-labelledby="action-title">
       <div class="container-site">
-        <SectionHeader
-          id="action-title"
-          title={t('home.actionTitle')}
-          lede={t('home.actionLede')}
-          align="start"
-          class="mb-10"
-        />
-        {/* Matin in Action carousel (owner's brief, Oct 27 2026): the featured activity, then
-          Matin's "coming soon" posters (src/content/coming-soon/). Every poster opens in the
-          page's fullscreen viewer, as one group; three across on wide screens, swiped on
-          smaller ones with the arrow buttons. */}
+        <header class="laction__head" data-reveal>
+          <h2 id="action-title" class="living-title">
+            {t('home.actionTitle')}
+          </h2>
+          <p class="living-lede">{t('home.actionLede')}</p>
+        </header>
         {featured || soon.length > 0 ? (
-          <div class="action-carousel" data-carousel>
-            <ul class="action-track" data-carousel-track>
+          <div class="laction__stories" data-carousel>
+            <ul class="laction__track" data-carousel-track>
               {featured && (
-                <li class="action-slide">
-                  <article
-                    class:list={['feature', featured.poster && 'feature--poster']}
-                    data-reveal
-                  >
+                <li class="laction__item laction__item--lead">
+                  <article class="story story--lead" data-reveal>
                     {posterLarge ? (
-                      /* A poster opens in the same fullscreen viewer as Gallery → Posters; the
-                       button under it leads to the activity's page (the poster download stays
-                       on that page and in the Gallery, not on the homepage: owner's request,
-                       Oct 27 2026). */
                       <a
                         href={posterLarge}
-                        class="feature__zoom"
+                        class="story__zoom"
                         data-lightbox="action-posters"
                         data-alt={featured.imageAlt}
                         data-caption={featured.title}
@@ -156,27 +143,26 @@ const preview = process.env.CONTEXT !== 'production';
                       >
                         <MatinMedia
                           item={featured}
-                          sizes={slideSizes}
-                          class="feature__media is-poster"
+                          sizes={leadSizes}
+                          class="story__media is-poster"
                         />
-                        <span class="feature__zoom-icon" aria-hidden="true">
+                        <span class="story__plus" aria-hidden="true">
                           <Plus size={24} />
                         </span>
                       </a>
                     ) : (
                       <MatinMedia
                         item={featured}
-                        sizes={slideSizes}
-                        class:list={['feature__media', featured.poster && 'is-poster']}
+                        sizes={leadSizes}
+                        class:list={['story__media', featured.poster && 'is-poster']}
                       />
                     )}
-                    {/* No side panel (owner's request, Oct 27 2026): a poster already carries
-                      its details, so only the title and the activity button sit under it. */}
-                    <div class="feature__caption">
-                      <h3 class="feature__title">{featured.title}</h3>
+                    <div class="story__caption">
+                      <p class="story__label story__label--lead">{l.featured}</p>
+                      <h3 class="story__title">{featured.title}</h3>
                       {!featured.poster && (
                         <>
-                          <p class="feature__when">
+                          <p class="story__when">
                             <CalendarDays size={18} aria-hidden="true" />
                             <time datetime={featured.datetime}>{featured.when}</time>
                             {featured.location && (
@@ -186,69 +172,61 @@ const preview = process.env.CONTEXT !== 'production';
                               </>
                             )}
                           </p>
-                          <p class="feature__summary">{featured.summary}</p>
+                          <p class="story__summary">{featured.summary}</p>
                         </>
                       )}
-                      <div class="feature__actions">
-                        <a
-                          href={featured.url}
-                          class="btn btn-primary"
-                          target={featured.external ? '_blank' : undefined}
-                          rel={featured.external ? 'noopener noreferrer' : undefined}
-                        >
-                          {featured.ctaLabel ?? ctaFor(featured.type, t)}
-                          {featured.external ? (
-                            <ExternalLink size={18} aria-hidden="true" />
-                          ) : (
-                            <ArrowRight size={18} class="flip-rtl" aria-hidden="true" />
-                          )}
-                          {featured.external && (
-                            <span class="sr-only">{t('a11y.externalLink')}</span>
-                          )}
-                        </a>
-                      </div>
+                      <a
+                        href={featured.url}
+                        class="living-btn"
+                        target={featured.external ? '_blank' : undefined}
+                        rel={featured.external ? 'noopener noreferrer' : undefined}
+                      >
+                        {featured.ctaLabel ?? ctaFor(featured.type, t)}
+                        {featured.external ? (
+                          <ExternalLink size={18} aria-hidden="true" />
+                        ) : (
+                          <ArrowRight size={18} class="flip-rtl" aria-hidden="true" />
+                        )}
+                        {featured.external && <span class="sr-only">{t('a11y.externalLink')}</span>}
+                      </a>
                     </div>
                   </article>
                 </li>
               )}
-              {soon.map((p) => (
-                <li class="action-slide">
-                  <article class="feature feature--poster feature--soon" data-reveal>
+              {soon.map((p, i) => (
+                <li class="laction__item">
+                  <article class="story" data-reveal style={`--reveal-delay:${(i + 1) * 120}ms`}>
                     <a
                       href={p.large}
-                      class="feature__zoom"
+                      class="story__zoom"
                       data-lightbox="action-posters"
                       data-alt={p.item.imageAlt}
                       data-caption={`${p.item.title} · ${t('home.comingSoon')}`}
                       aria-label={t('gallery.openPoster', { title: p.item.title })}
                     >
-                      <MatinMedia
-                        item={p.item}
-                        sizes={slideSizes}
-                        class="feature__media is-poster"
-                      />
-                      <span class="feature__zoom-icon" aria-hidden="true">
+                      <MatinMedia item={p.item} sizes={slideSizes} class="story__media is-poster" />
+                      <span class="story__plus" aria-hidden="true">
                         <Plus size={24} />
                       </span>
                     </a>
-                    <div class="feature__caption">
-                      <p class="feature__soon">
+                    <div class="story__caption">
+                      <p class="story__label">
                         <Clock size={16} aria-hidden="true" />
                         {t('home.comingSoon')}
                       </p>
-                      <h3 class="feature__title">{p.item.title}</h3>
-                      <p class="feature__subtitle">{p.item.summary}</p>
+                      <h3 class="story__title">{p.item.title}</h3>
+                      <p class="story__subtitle">{p.item.summary}</p>
                     </div>
                   </article>
                 </li>
               ))}
             </ul>
-            <div class="action-carousel__nav" data-carousel-nav hidden>
-              <button type="button" class="action-carousel__btn" data-carousel-prev>
+            <div class="laction__nav" data-carousel-nav hidden>
+              <button type="button" class="laction__arrow" data-carousel-prev>
                 <ChevronLeft size={22} class="flip-rtl" aria-hidden="true" />
                 <span class="sr-only">{t('home.carouselPrev')}</span>
               </button>
-              <button type="button" class="action-carousel__btn" data-carousel-next>
+              <button type="button" class="laction__arrow" data-carousel-next>
                 <ChevronRight size={22} class="flip-rtl" aria-hidden="true" />
                 <span class="sr-only">{t('home.carouselNext')}</span>
               </button>
@@ -257,42 +235,46 @@ const preview = process.env.CONTEXT !== 'production';
         ) : (
           <div class="empty-state">
             <p>{t('home.latestEmpty')}</p>
-            <a href="#newsletter" class="btn btn-primary">
-              {t('home.involvedSecondary')}
-              <ArrowRight size={18} class="flip-rtl" aria-hidden="true" />
-            </a>
           </div>
         )}
       </div>
     </section>
 
-    <!-- Matin's Picks: the same section and data as on the Events page -->
-    <PicksSection
-      lang={lang}
-      class="section-pad picks-band"
-      link={{ href: href('events', lang), label: t('home.eventsAll') }}
-    />
+    <!-- A Personal Note from Our President: photo, first paragraph, link to the full note -->
+    <PresidentExcerpt lang={lang} />
+
+    <!-- Matin's Picks: a discovery gallery (same data as the Events page) -->
+    <PicksGallery lang={lang} />
     <ExpireEvents />
 
-    <!-- News (owner's brief, Oct 25 2026): Cultural News in region tabs, then Matin News -->
-    <section
-      id="latest-news"
-      class="news-band on-dark section-pad scroll-mt-24"
-      aria-labelledby="latest-news-title"
-    >
+    <!-- A full-width pause: Montréal -->
+    <MontrealPause lang={lang} />
+
+    <!-- Programs and Participation -->
+    <LivingPrograms lang={lang} />
+
+    <!-- News, set like a cultural publication: Cultural News in region tabs, then Matin News -->
+    <section id="latest-news" class="lnews scroll-mt-24" aria-labelledby="latest-news-title">
       <div class="container-site">
-        <SectionHeader
-          align="start"
-          id="latest-news-title"
-          title={t('home.newsTitle')}
-          subtitle={t('news.lede')}
-          link={{ href: href('news', lang), label: t('home.newsAll') }}
-          class="mb-10"
-        />
+        <header class="lnews__head" data-reveal>
+          <div>
+            <h2 id="latest-news-title" class="living-title">
+              {t('home.newsTitle')}
+            </h2>
+            <p class="living-lede">{t('news.lede')}</p>
+          </div>
+          <a href={href('news', lang)} class="living-link">
+            {t('home.newsAll')}
+            <ArrowRight size={20} class="flip-rtl" aria-hidden="true" />
+          </a>
+        </header>
         <div class="news-wire">
-          <div class="news-panel__head">
-            <h3 class="news-panel__title">{t('news.culturalTitle')}</h3>
-            <a href={`${newsHref}#${newsAnchors.recommends}`} class="link-arrow">
+          <div class="lnews__sub">
+            <h3 class="lnews__subtitle">{t('news.culturalTitle')}</h3>
+            <a
+              href={`${newsHref}#${newsAnchors.recommends}`}
+              class="living-link living-link--small"
+            >
               {t('news.allCultural')}
               <ArrowRight size={18} class="flip-rtl" aria-hidden="true" />
             </a>
@@ -306,15 +288,17 @@ const preview = process.env.CONTEXT !== 'production';
           />
         </div>
         {matinNews.length > 0 && (
-          <div class="matin-news">
-            <div class="news-panel__head">
-              <h3 class="news-panel__title">{t('news.matinTitle')}</h3>
-              <a href={`${newsHref}#${newsAnchors['matin-news']}`} class="link-arrow">
+          <div class="lnews__matin">
+            <div class="lnews__sub">
+              <h3 class="lnews__subtitle">{t('news.matinTitle')}</h3>
+              <a
+                href={`${newsHref}#${newsAnchors['matin-news']}`}
+                class="living-link living-link--small"
+              >
                 {t('news.allMatin')}
                 <ArrowRight size={18} class="flip-rtl" aria-hidden="true" />
               </a>
             </div>
-            {/* A single article takes the wide card, so no empty columns are left beside it. */}
             <ul
               class:list={[
                 'grid gap-6 lg:gap-8',
@@ -337,26 +321,26 @@ const preview = process.env.CONTEXT !== 'production';
       </div>
     </section>
 
-    <!-- Faces & Voices of Matin, then The Matin Question (previews only for now) -->
-    {preview && <FacesVoices lang={lang} />}
-    {preview && <MatinQuestion lang={lang} />}
-
     <!-- Notes from the President: the latest LinkedIn notes, hidden while there are none -->
     {notes.length > 0 && (
       <section
         id="president-notes"
-        class="section-pad notes-home on-terracotta scroll-mt-24"
+        class="lnotes scroll-mt-24"
         aria-labelledby="president-notes-title"
       >
         <div class="container-site">
-          <SectionHeader
-            align="start"
-            id="president-notes-title"
-            title={t('notes.title')}
-            subtitle={t('notes.homeLede')}
-            link={{ href: href('notes', lang), label: t('notes.all') }}
-            class="mb-10"
-          />
+          <header class="lnews__head">
+            <div>
+              <h2 id="president-notes-title" class="living-title">
+                {t('notes.title')}
+              </h2>
+              <p class="living-lede">{t('notes.homeLede')}</p>
+            </div>
+            <a href={href('notes', lang)} class="living-link">
+              {t('notes.all')}
+              <ArrowRight size={20} class="flip-rtl" aria-hidden="true" />
+            </a>
+          </header>
           <ul class:list={['notes-home__list', notes.length > 1 && 'notes-home__list--two']}>
             {notes.map((note) => (
               <li>
@@ -368,48 +352,23 @@ const preview = process.env.CONTEXT !== 'production';
       </section>
     )}
 
-    <!-- Cultures on Screen: curated, licensed videos (placeholders on previews) -->
-    <CulturesOnScreen lang={lang} />
-
-    <!-- Matin Moments: featured photos and videos from the gallery -->
-    <MatinMoments lang={lang} />
-
-    <!-- Areas of work: deep teal band (owner's brief, Oct 25 2026), the introduction set
-       large directly under the title, then the three photo cards -->
-    <section class="section-pad areas-band on-teal" aria-labelledby="areas-title">
-      <div class="container-site">
-        <div class="areas-head">
-          <SectionHeader
-            id="areas-title"
-            eyebrow={t('home.areasEyebrow')}
-            title={t('home.areasTitle')}
-            align="start"
-            class="mb-6"
-          />
-          <p class="areas-intro" data-reveal>
-            {t('home.areasLede')}
-          </p>
-        </div>
-        <AreasGrid lang={lang} />
-      </div>
-    </section>
-
     <!-- Cultural Resources & Organizations: opens the directory -->
     <ResourcesTeaser lang={lang} />
   </div>
 
-  {/* One viewer for the page: the featured poster and the images of Matin's Picks. */}
+  {/* One viewer for the page: the Matin in Action posters. */}
   <Lightbox lang={lang} />
 </BaseLayout>
 
 <script>
-  // Matin in Action carousel: the arrow buttons appear only when the posters overflow.
+  // Matin in Action: on phones and tablets the stories scroll sideways; the arrow buttons
+  // appear only when they overflow.
   for (const root of document.querySelectorAll<HTMLElement>('[data-carousel]')) {
     const track = root.querySelector<HTMLElement>('[data-carousel-track]')!;
     const nav = root.querySelector<HTMLElement>('[data-carousel-nav]')!;
     const rtl = getComputedStyle(root).direction === 'rtl';
     const step = (dir: number) => {
-      const slide = track.querySelector<HTMLElement>('.action-slide');
+      const slide = track.querySelector<HTMLElement>('.laction__item');
       const width = slide ? slide.offsetWidth + parseFloat(getComputedStyle(track).columnGap) : 300;
       track.scrollBy({ left: dir * width * (rtl ? -1 : 1), behavior: 'smooth' });
     };
@@ -427,89 +386,241 @@ const preview = process.env.CONTEXT !== 'production';
 </script>
 
 <style>
-  /* ---------- Matin in Action ---------- */
-  /* Carousel: one poster and a peek of the next on phones, two on tablets, three
-     across on wide screens (owner's brief, Oct 27 2026). */
-  .action-track {
+  /* ================= Living homepage: shared pieces (CLAUDE.md 4d) ================= */
+  .living {
+    background: var(--living-ivory);
+    color: var(--living-charcoal);
+  }
+  /* Small label above a title: terracotta ink, spaced capitals (Latin). */
+  .living :global(.living-kicker) {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-family: var(--font-display);
+    font-size: clamp(0.85rem, 0.8rem + 0.2vw, 1rem);
+    font-weight: 800;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--living-terracotta-ink);
+  }
+  :global(html[lang='fa']) .living :global(.living-kicker) {
+    letter-spacing: 0;
+    font-size: 1.05rem;
+  }
+  /* Section headlines: Fraunces, large, soft; Persian keeps Vazirmatn. */
+  .living :global(.living-title) {
+    margin-block-start: 0.5rem;
+    font-family: var(--font-editorial);
+    font-size: clamp(2.5rem, 1.6rem + 3.6vw, 5rem);
+    font-weight: 600;
+    font-variation-settings:
+      'SOFT' 100,
+      'opsz' 144;
+    line-height: 1.02;
+    letter-spacing: -0.025em;
+    color: var(--living-charcoal);
+    text-wrap: balance;
+  }
+  :global(html[lang='fa']) .living :global(.living-title) {
+    font-family: var(--font-display);
+    font-size: clamp(2.1rem, 1.5rem + 2.6vw, 3.75rem);
+    font-weight: 900;
+    line-height: 1.35;
+    letter-spacing: 0;
+  }
+  .living :global(.living-lede) {
+    max-width: 40rem;
+    margin-block-start: 1.1rem;
+    font-size: clamp(1.1rem, 1rem + 0.4vw, 1.35rem);
+    line-height: 1.6;
+    color: var(--living-charcoal);
+  }
+  /* A text link with a gold rule that thickens on hover, and a moving arrow. */
+  .living :global(.living-link) {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-family: var(--font-display);
+    font-size: 1.125rem;
+    font-weight: 800;
+    color: var(--living-charcoal);
+    text-decoration: underline;
+    text-decoration-color: var(--living-gold);
+    text-decoration-thickness: 3px;
+    text-underline-offset: 0.35em;
+    transition: text-decoration-color 0.3s ease;
+  }
+  .living :global(.living-link--small) {
+    font-size: 1rem;
+  }
+  .living :global(.living-link svg) {
+    color: var(--living-terracotta-ink);
+    transition: translate 0.35s cubic-bezier(0.2, 0.7, 0.2, 1);
+  }
+  .living :global(.living-link:hover) {
+    text-decoration-color: var(--living-terracotta);
+  }
+  .living :global(.living-link:hover svg) {
+    translate: 4px 0;
+  }
+  :global([dir='rtl']) .living :global(.living-link:hover svg) {
+    translate: -4px 0;
+  }
+  /* Main button: deep terracotta with white text (5.5:1), coral with charcoal on hover. */
+  .living :global(.living-btn) {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.6rem;
+    min-height: 3rem;
+    padding: 0.75rem 1.6rem;
+    border-radius: 999px;
+    background: var(--living-terracotta-ink);
+    color: var(--matin-white);
+    font-family: var(--font-display);
+    font-size: 1.05rem;
+    font-weight: 800;
+    text-decoration: none;
+    transition:
+      background-color 0.3s ease,
+      color 0.3s ease,
+      transform 0.3s cubic-bezier(0.2, 0.7, 0.2, 1);
+  }
+  .living :global(.living-btn:hover) {
+    background: var(--living-coral);
+    color: var(--living-charcoal);
+    transform: translateY(-2px);
+  }
+  .living :global(:focus-visible) {
+    outline-color: var(--living-terracotta-ink);
+  }
+  /* The Coming up strip sits on the same warm ground. */
+  .living :global(.upcoming) {
+    background: var(--living-sand);
+  }
+
+  /* ================= Matin in Action: stories ================= */
+  .laction {
+    padding-block: clamp(4rem, 3rem + 4vw, 7rem);
+    background: var(--matin-firouzeh-pale);
+    border-start-end-radius: clamp(3rem, 8vw, 9rem);
+  }
+  .laction__head {
+    max-width: 48rem;
+    margin-block-end: clamp(2.5rem, 2rem + 2vw, 4rem);
+  }
+  /* Phones and tablets: one story and a peek of the next, swiped. */
+  .laction__track {
     display: grid;
     grid-auto-flow: column;
-    grid-auto-columns: 85%;
-    gap: clamp(1.25rem, 1rem + 1.5vw, 2.25rem);
+    grid-auto-columns: 82%;
+    gap: 1.5rem;
     overflow-x: auto;
     overscroll-behavior-x: contain;
     scroll-snap-type: x mandatory;
     scrollbar-width: thin;
-    padding-block: 0.5rem 1rem;
-    padding-inline: 0.25rem;
+    scrollbar-color: var(--living-terracotta) transparent;
+    padding: 0.75rem 0.5rem 1.5rem;
   }
-  @media (min-width: 48rem) {
-    .action-track {
-      grid-auto-columns: calc((100% - clamp(1.25rem, 1rem + 1.5vw, 2.25rem)) / 2);
+  @media (min-width: 40rem) {
+    .laction__track {
+      grid-auto-columns: 46%;
     }
   }
-  @media (min-width: 64rem) {
-    .action-track {
-      grid-auto-columns: calc((100% - 2 * clamp(1.25rem, 1rem + 1.5vw, 2.25rem)) / 3);
-    }
-  }
-  .action-slide {
+  .laction__item {
     scroll-snap-align: start;
   }
-  .action-carousel__nav {
+  /* Wide screens: the featured story large on the reading side, the next ones smaller,
+     at different heights, like a magazine spread. */
+  @media (min-width: 64rem) {
+    .laction__track {
+      grid-auto-flow: row;
+      grid-template-columns: minmax(0, 7.4fr) minmax(0, 2.8fr) minmax(0, 2.8fr);
+      gap: clamp(1.5rem, 1rem + 2vw, 3rem);
+      align-items: start;
+      overflow: visible;
+    }
+    .laction__item:nth-child(2) {
+      margin-block-start: 7rem;
+    }
+    .laction__item:nth-child(3) {
+      margin-block-start: 2rem;
+    }
+    .laction__item:nth-child(3n + 4) {
+      grid-column: 1;
+    }
+    .story--lead {
+      grid-template-columns: minmax(0, 1.15fr) minmax(0, 1fr);
+      align-items: end;
+      gap: 2rem;
+    }
+  }
+  .laction__nav {
     display: flex;
     justify-content: flex-end;
-    gap: 0.75rem;
-    margin-block-start: 0.5rem;
+    gap: 0.6rem;
   }
-  .action-carousel__nav[hidden] {
+  .laction__nav[hidden] {
     display: none;
   }
-  .action-carousel__btn {
+  .laction__arrow {
     display: grid;
     place-items: center;
     width: 3rem;
     height: 3rem;
-    border-radius: 999px;
-    background: var(--color-primary);
-    color: var(--color-white);
-    box-shadow: var(--shadow-card);
+    border-radius: 50%;
+    background: var(--living-terracotta-ink);
+    color: var(--matin-white);
   }
-  .action-carousel__btn:hover {
-    background: var(--color-gold);
-    color: var(--color-primary);
+  .laction__arrow:hover {
+    background: var(--living-coral);
+    color: var(--living-charcoal);
   }
-  .feature {
+  .story {
     display: grid;
     gap: 1.25rem;
   }
-  .feature__zoom {
+  .story__zoom {
     position: relative;
     display: block;
     overflow: hidden;
-    border-radius: calc(var(--radius-card) * 1.2);
-    box-shadow: var(--shadow-card);
+    border-radius: 1.25rem;
+    box-shadow: 0 24px 50px -30px color-mix(in srgb, var(--living-charcoal) 60%, transparent);
     cursor: zoom-in;
+    transition:
+      transform 0.6s cubic-bezier(0.2, 0.7, 0.2, 1),
+      rotate 0.6s cubic-bezier(0.2, 0.7, 0.2, 1);
   }
-  .feature :global(.feature__media) {
+  /* Posters pinned slightly off-straight (owner's request, Oct 28 2026). */
+  .laction__item:nth-child(3n + 1) .story__zoom {
+    rotate: -1.2deg;
+  }
+  .laction__item:nth-child(3n + 2) .story__zoom {
+    rotate: 1.4deg;
+  }
+  .laction__item:nth-child(3n) .story__zoom {
+    rotate: -0.6deg;
+  }
+  .story :global(.story__media) {
     overflow: hidden;
-    border-radius: calc(var(--radius-card) * 1.2);
     aspect-ratio: 4 / 3;
   }
-  .feature :global(.feature__media.is-poster) {
-    aspect-ratio: 4 / 5;
+  /* Matin's posters are 906 × 1280: the frame takes their exact shape. */
+  .story :global(.story__media.is-poster) {
+    aspect-ratio: 906 / 1280;
   }
-  .feature__zoom :global(img) {
-    transition: transform 0.5s ease;
+  .story__zoom :global(img) {
+    transition: transform 0.8s cubic-bezier(0.2, 0.7, 0.2, 1);
   }
-  .feature__zoom:hover :global(img) {
-    transform: scale(1.03);
+  @media (hover: hover) and (prefers-reduced-motion: no-preference) {
+    .story__zoom:hover {
+      rotate: 0deg;
+      transform: translateY(-6px);
+    }
+    .story__zoom:hover :global(img) {
+      transform: scale(1.03);
+    }
   }
-  .feature__zoom:hover .feature__zoom-icon {
-    background: var(--color-gold);
-    color: var(--color-primary);
-  }
-  /* Same zoom badge as the Gallery posters and event pages. */
-  .feature__zoom-icon {
+  .story__plus {
     position: absolute;
     inset-block-end: 1rem;
     inset-inline-end: 1rem;
@@ -517,79 +628,94 @@ const preview = process.env.CONTEXT !== 'production';
     place-items: center;
     width: 2.75rem;
     height: 2.75rem;
-    border-radius: 999px;
-    background: var(--color-primary);
-    color: var(--color-white);
-    box-shadow: var(--shadow-lift);
+    border-radius: 50%;
+    background: var(--living-charcoal);
+    color: var(--living-ivory);
+    transition: background-color 0.3s ease;
   }
-  @media (prefers-reduced-motion: reduce) {
-    .feature__zoom :global(img) {
-      transition: none;
-    }
-    .feature__zoom:hover :global(img) {
-      transform: none;
-    }
+  .story__zoom:hover .story__plus {
+    background: var(--living-gold);
+    color: var(--living-charcoal);
   }
-  .feature__caption {
+  .story__caption {
     display: grid;
-    gap: 0.8rem;
+    gap: 0.75rem;
+    justify-items: start;
   }
-  .feature__title {
-    font-size: clamp(1.5rem, 1.25rem + 1vw, 2.125rem);
-    font-weight: 800;
-    line-height: 1.15;
-    text-wrap: balance;
-  }
-  /* "Coming soon": a clear gold label on the posters not yet scheduled. */
-  .feature__soon {
+  .story__label {
     display: inline-flex;
     align-items: center;
     gap: 0.45rem;
-    justify-self: start;
-    padding: 0.35rem 0.95rem;
+    padding: 0.3rem 0.9rem;
     border-radius: 999px;
-    background: var(--color-gold);
-    color: var(--color-primary);
+    background: var(--living-gold);
+    color: var(--living-charcoal);
     font-family: var(--font-display);
-    font-size: 0.9rem;
+    font-size: 0.85rem;
     font-weight: 800;
-    letter-spacing: 0.1em;
+    letter-spacing: 0.08em;
     text-transform: uppercase;
   }
-  .feature__subtitle {
-    font-family: var(--font-display);
-    font-size: 1.125rem;
-    font-weight: 700;
-    color: var(--color-terracotta-deep);
+  .story__label--lead {
+    background: var(--living-coral);
   }
-  .feature__when {
+  :global(html[lang='fa']) .story__label {
+    letter-spacing: 0;
+  }
+  .story__title {
+    font-family: var(--font-editorial);
+    font-size: clamp(1.5rem, 1.3rem + 0.8vw, 2rem);
+    font-weight: 600;
+    font-variation-settings: 'SOFT' 100;
+    line-height: 1.15;
+    color: var(--living-charcoal);
+    text-wrap: balance;
+  }
+  .story--lead .story__title {
+    font-size: clamp(1.75rem, 1.35rem + 1vw, 2.3rem);
+    line-height: 1.05;
+  }
+  :global(html[lang='fa']) .story__title {
+    font-family: var(--font-display);
+    font-weight: 800;
+    line-height: 1.5;
+  }
+  .story__subtitle {
+    font-family: var(--font-display);
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: var(--living-terracotta-ink);
+  }
+  .story__when {
     display: flex;
     flex-wrap: wrap;
     align-items: center;
     gap: 0.4rem 0.6rem;
     font-weight: 700;
-    color: var(--color-primary);
   }
-  .feature__when :global(svg) {
-    color: var(--color-teal-deep);
+  .story__when :global(svg) {
+    color: var(--living-green-ink);
   }
-  .feature__summary {
+  .story__summary {
     font-size: 1.125rem;
     line-height: 1.65;
   }
-  .feature__actions {
+
+  /* ================= News: a cultural publication, on the page ================= */
+  .lnews {
+    padding-block: clamp(4rem, 3rem + 4vw, 7rem);
+    background: var(--matin-paper);
+    border-start-start-radius: clamp(3rem, 8vw, 9rem);
+  }
+  .lnews__head {
     display: flex;
     flex-wrap: wrap;
-    gap: 0.75rem;
+    align-items: end;
+    justify-content: space-between;
+    gap: 1.5rem 3rem;
+    margin-block-end: clamp(2rem, 1.5rem + 2vw, 3.5rem);
   }
-
-  /* ---------- News & Insights ---------- */
-  /* Cultural News: editorial list straight on the page (.news-wire in global.css). */
-  .news-panel__title {
-    font-size: clamp(1.5rem, 1.3rem + 0.7vw, 2rem);
-    font-weight: 800;
-  }
-  .news-panel__head {
+  .lnews__sub {
     display: flex;
     flex-wrap: wrap;
     align-items: baseline;
@@ -597,28 +723,88 @@ const preview = process.env.CONTEXT !== 'production';
     gap: 0.5rem 1.5rem;
     margin-block-end: 1.25rem;
   }
-  .news-panel__head .news-panel__title {
-    margin-block-end: 0;
+  .lnews__subtitle {
+    font-family: var(--font-display);
+    font-size: clamp(1.35rem, 1.2rem + 0.6vw, 1.75rem);
+    font-weight: 800;
+    color: var(--living-green-ink);
   }
-  .matin-news {
+  .lnews__matin {
     margin-block-start: clamp(3rem, 2.5rem + 2vw, 4.5rem);
   }
+  /* Region tabs: charcoal outlines, the active one filled. */
+  .lnews :global(.news-wire .is-enhanced > .region-tabs__list) {
+    border-block-end: 2px solid var(--living-charcoal);
+  }
+  .lnews :global(.news-wire .region-tab) {
+    border-color: var(--living-charcoal);
+    color: var(--living-charcoal);
+  }
+  .lnews :global(.news-wire .region-tab:hover) {
+    border-color: var(--living-gold);
+    background: var(--living-gold);
+    color: var(--living-charcoal);
+  }
+  .lnews :global(.news-wire .region-tab[aria-selected='true']) {
+    border-color: var(--living-charcoal);
+    background: var(--living-charcoal);
+    color: var(--living-ivory);
+  }
+  /* Stories as columns of a publication: no boxes, a coloured rule on top. */
+  .lnews :global(.wire__item) {
+    padding: 1.25rem 0 0;
+    border-radius: 0;
+    border-block-start: 4px solid var(--living-terracotta);
+    background: transparent;
+    box-shadow: none;
+    color: var(--living-charcoal);
+  }
+  .lnews :global(.wire__item:nth-child(4n + 2)) {
+    border-block-start-color: var(--living-green);
+  }
+  .lnews :global(.wire__item:nth-child(4n + 3)) {
+    border-block-start-color: var(--living-gold);
+  }
+  .lnews :global(.wire__item:nth-child(4n + 4)) {
+    border-block-start-color: var(--living-coral);
+  }
+  .lnews :global(.wire__item--lead) {
+    padding: clamp(1.5rem, 1rem + 2vw, 2.5rem);
+    border-radius: 0 0 2rem 2rem;
+    background: var(--living-ivory);
+  }
+  .lnews :global(.wire__source-name) {
+    background: var(--living-green-ink);
+  }
+  :global(html:not([lang='fa'])) .lnews :global(.wire__title) {
+    font-family: var(--font-editorial);
+    font-weight: 600;
+    font-variation-settings: 'SOFT' 50;
+  }
+  .lnews :global(.wire__title) {
+    color: var(--living-charcoal);
+  }
+  .lnews :global(.wire__title :is(a:hover, a:focus-visible)),
+  .lnews :global(.wire__title .wire__arrow) {
+    color: var(--living-terracotta-ink);
+  }
+  .lnews :global(.wire__source) {
+    background: transparent;
+    padding: 0;
+    color: var(--living-terracotta-ink);
+    text-decoration: underline;
+    text-decoration-color: var(--living-gold);
+    text-decoration-thickness: 2px;
+    text-underline-offset: 0.3em;
+  }
+  .lnews :global(.wire__source:hover) {
+    background: transparent;
+    color: var(--living-charcoal);
+  }
 
-  /* ---------- Areas of work ---------- */
-  /* The deep teal of the former Get Involved band (white text 6.2:1). */
-  .areas-band {
-    background: var(--color-teal-deep);
-  }
-  /* Notes from the President: white LinkedIn-style cards on deep terracotta. */
-  .notes-home {
-    background: var(--color-terracotta-deep);
-  }
-  .notes-home :global(.section-subtitle),
-  .notes-home :global(.section-head__link) {
-    color: var(--color-white);
-  }
-  .notes-home :global(.section-head__link svg) {
-    color: var(--color-cream);
+  /* ================= Notes from the President (when there are notes) ================= */
+  .lnotes {
+    padding-block: clamp(4rem, 3rem + 4vw, 7rem);
   }
   .notes-home__list {
     display: grid;
@@ -632,109 +818,28 @@ const preview = process.env.CONTEXT !== 'production';
       max-width: none;
     }
   }
-  .areas-head {
-    max-width: 56rem;
-    margin-block-end: clamp(2.5rem, 2rem + 2vw, 4rem);
+
+  /* The resources band closes the page on the same warm ground, with the warm button. */
+  .living :global(.btn-primary) {
+    background: var(--living-terracotta-ink);
+    color: var(--matin-white);
   }
-  .areas-intro {
-    font-size: clamp(1.25rem, 1.1rem + 0.6vw, 1.625rem);
-    line-height: 1.6;
-    color: var(--color-white);
+  .living :global(.btn-primary:hover) {
+    background: var(--living-coral);
+    color: var(--living-charcoal);
   }
-  /* Cards on teal: warm ivory, a gold edge and a clearer call to action. */
-  .areas-band :global(.area-card) {
-    border-color: transparent;
-    background: var(--color-ivory);
-    box-shadow: 0 18px 40px -24px color-mix(in srgb, var(--color-primary) 70%, transparent);
+  .living :global(.bg-paper) {
+    background: var(--living-ivory);
   }
-  .areas-band :global(.area-card__title) {
-    font-size: clamp(1.5rem, 1.3rem + 0.6vw, 1.875rem);
+  :global(html:not([lang='fa'])) .living :global(.section-title) {
+    font-family: var(--font-editorial);
+    font-weight: 600;
+    font-variation-settings: 'SOFT' 100;
   }
-  .areas-band :global(.area-card__text) {
-    font-size: 1.1875rem;
-    color: var(--color-ink);
-  }
-  .areas-band :global(.area-card__cta) {
-    align-self: flex-start;
-    padding: 0.55rem 1.2rem;
-    border-radius: 999px;
-    background: var(--color-primary);
-    color: var(--color-white);
-  }
-  .areas-band :global(.photo-credit a) {
-    color: inherit;
-  }
-  /* ---------- Matin Alive (owner's brief, Oct 27 2026) ---------- */
-  /* Editorial titles: the logo's serif, larger, deep green on light bands (Latin scripts;
-     Persian keeps Vazirmatn). */
-  :global(html:not([lang='fa'])) .alive :global(.section-title) {
-    font-family: var(--font-brand);
-    font-weight: 800;
-    letter-spacing: -0.015em;
-  }
-  .alive :global(.section-title) {
-    font-size: clamp(2.4rem, 1.5rem + 3.4vw, 4.5rem);
-    line-height: 1.04;
-  }
-  .alive :global(.bg-paper .section-title),
-  .alive .action-band :global(.section-title),
-  .alive .picks-band :global(.section-title) {
-    color: var(--alive-green);
-  }
-  /* Rhythm: warm cream and paper alternate, with a flat coral block offset in a corner. */
-  .action-band {
-    position: relative;
-    background: var(--color-paper);
-  }
-  .alive :global(.picks-band) {
-    position: relative;
-    overflow: hidden;
-    background: var(--alive-cream);
-  }
-  .alive :global(.picks-band)::before {
-    content: '';
-    position: absolute;
-    inset-block-start: 0;
-    inset-inline-end: 0;
-    width: clamp(6rem, 14vw, 12rem);
-    height: clamp(3rem, 6vw, 5rem);
-    border-end-start-radius: 999px;
-    background: var(--alive-coral);
-    opacity: 0.9;
-  }
-  /* Featured event cards: a gentle lift and a slight turn under the pointer. */
-  @media (hover: hover) and (prefers-reduced-motion: no-preference) {
-    .alive :global(.agenda-card--pick) {
-      transition:
-        transform 0.45s cubic-bezier(0.2, 0.7, 0.2, 1),
-        box-shadow 0.45s ease;
-    }
-    .alive :global(.agenda-card--pick:hover) {
-      transform: translateY(-6px) rotate(-0.5deg);
-    }
-    :global([dir='rtl']) .alive :global(.agenda-card--pick:hover) {
-      transform: translateY(-6px) rotate(0.5deg);
-    }
-    /* Matin in Action posters: the next one tilts in a little as the pointer arrives. */
-    .alive .action-slide:hover .feature__zoom {
-      transform: translateY(-4px);
-    }
-    .alive .feature__zoom {
-      transition: transform 0.45s cubic-bezier(0.2, 0.7, 0.2, 1);
-    }
-  }
-  /* News: the lead story set like a magazine headline. */
-  :global(html:not([lang='fa'])) .alive :global(.news-wire .wire__title) {
-    font-family: var(--font-brand);
-    font-weight: 800;
-  }
-  /* Staggered reveals: children of revealed lists follow one another. */
-  @media (prefers-reduced-motion: no-preference) {
-    .alive :global(.reveal-ready .action-slide:nth-child(2) [data-reveal]) {
-      transition-delay: 120ms;
-    }
-    .alive :global(.reveal-ready .action-slide:nth-child(3) [data-reveal]) {
-      transition-delay: 240ms;
+
+  @media (prefers-reduced-motion: reduce) {
+    .living :global(*) {
+      transition-duration: 0.01ms !important;
     }
   }
 </style>

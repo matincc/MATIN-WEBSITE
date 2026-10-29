@@ -1,0 +1,158 @@
+---
+/**
+ * Living homepage: "A Personal Note from Our President" as a short human introduction
+ * (owner's brief, Oct 29 2026): his relaxed autumn photo (owner's choice, Oct 28 2026) in
+ * an arch, the first paragraph of his approved message (about.yaml, word for word) set as
+ * a large quotation, his name and position, and a link to the complete note on the Notes
+ * from the President page (#personal-note).
+ */
+import { ArrowRight } from '@lucide/astro';
+import { Picture } from 'astro:assets';
+import { href, type UiLang } from '@/i18n/routes';
+import { pick, useTranslations } from '@/i18n/ui';
+import { livingStrings } from '@/i18n/living';
+import { getSingleton } from '@/lib/content';
+import portrait from '@/assets/photos/president-casual.jpg';
+
+interface Props {
+  lang: UiLang;
+}
+const { lang } = Astro.props;
+const t = useTranslations(lang);
+const l = livingStrings(lang);
+const { president: p } = await getSingleton('about');
+const message = (lang === 'fa' ? p.message?.fa : p.message?.[lang]) ?? '';
+// The first paragraph, without the opening quotation mark (a large one is drawn instead).
+const first = (message.split(/\n\s*\n/)[0] ?? '').trim().replace(/^[«"“]\s*/, '');
+const name = pick(p.displayName, lang) || p.name;
+const role = pick(p.signature, lang) || pick(p.title, lang);
+---
+
+{first && (
+  <section id="president-letter" class="pnote scroll-mt-24" aria-labelledby="pnote-title">
+    <div class="container-site pnote__grid">
+      <figure class="pnote__photo" data-reveal>
+        <span class="pnote__ring" aria-hidden="true"></span>
+        <Picture
+          src={portrait}
+          alt={t('about.presidentPhotoAlt', { name })}
+          formats={['avif', 'webp']}
+          widths={[360, 540, 720]}
+          sizes="(min-width: 64rem) 24rem, 70vw"
+        />
+      </figure>
+
+      <div class="pnote__text" data-reveal style="--reveal-delay:120ms">
+        <h2 id="pnote-title" class="living-kicker">
+          {t('about.founderTitle')}
+        </h2>
+        <blockquote class="pnote__quote">
+          <span class="pnote__mark" aria-hidden="true">
+            {lang === 'fr' ? '«' : lang === 'fa' ? '«' : '“'}
+          </span>
+          <p>{first}</p>
+        </blockquote>
+        <p class="pnote__sign">
+          <span class="pnote__name">{name}</span>
+          {role && <span class="pnote__role">{role}</span>}
+        </p>
+        <a href={`${href('notes', lang)}#personal-note`} class="living-btn">
+          {l.readFullNote}
+          <ArrowRight size={18} class="flip-rtl" aria-hidden="true" />
+        </a>
+      </div>
+    </div>
+  </section>
+)}
+
+<style>
+  /* A warm sand section with a large rounded top corner: an organic turn in the page. */
+  .pnote {
+    position: relative;
+    padding-block: clamp(4rem, 3rem + 4vw, 7rem);
+    background: var(--matin-aube);
+    border-start-start-radius: clamp(3rem, 8vw, 9rem);
+  }
+  .pnote__grid {
+    display: grid;
+    gap: clamp(2.5rem, 2rem + 3vw, 5rem);
+    align-items: center;
+  }
+  @media (min-width: 64rem) {
+    .pnote__grid {
+      grid-template-columns: minmax(0, 4fr) minmax(0, 7fr);
+    }
+  }
+  .pnote__photo {
+    position: relative;
+    justify-self: center;
+    width: min(24rem, 78%);
+    margin: 0;
+  }
+  .pnote__photo :global(img) {
+    position: relative;
+    display: block;
+    width: 100%;
+    aspect-ratio: 4 / 5;
+    object-fit: cover;
+    object-position: 50% 30%;
+    border-radius: 999px 999px 2rem 2rem;
+  }
+  /* A terracotta arch drawn just behind the photo, slightly offset. */
+  .pnote__ring {
+    position: absolute;
+    inset: 0;
+    translate: 0.9rem 0.9rem;
+    border: 2px solid var(--living-terracotta);
+    border-radius: 999px 999px 2rem 2rem;
+  }
+  :global([dir='rtl']) .pnote__ring {
+    translate: -0.9rem 0.9rem;
+  }
+  .pnote__quote {
+    position: relative;
+    margin-block: 1.25rem 2rem;
+  }
+  .pnote__mark {
+    display: block;
+    height: 0.62em;
+    font-family: var(--font-editorial);
+    font-size: clamp(4.5rem, 3.5rem + 3vw, 6.5rem);
+    line-height: 1;
+    color: var(--living-terracotta);
+  }
+  .pnote__quote p {
+    max-width: 44rem;
+    font-family: var(--font-editorial);
+    font-style: italic;
+    font-size: clamp(1.5rem, 1.1rem + 1.6vw, 2.4rem);
+    font-variation-settings:
+      'SOFT' 100,
+      'opsz' 60;
+    line-height: 1.32;
+    color: var(--living-charcoal);
+    text-wrap: pretty;
+  }
+  :global(html[lang='fa']) .pnote__quote p {
+    font-family: var(--font-display);
+    font-style: normal;
+    font-weight: 600;
+    font-size: clamp(1.3rem, 1.05rem + 1vw, 1.85rem);
+    line-height: 1.9;
+  }
+  .pnote__sign {
+    display: grid;
+    gap: 0.15rem;
+    margin-block-end: 2rem;
+  }
+  .pnote__name {
+    font-family: var(--font-display);
+    font-size: 1.25rem;
+    font-weight: 800;
+    color: var(--living-charcoal);
+  }
+  .pnote__role {
+    font-size: 1rem;
+    color: var(--living-charcoal);
+  }
+</style>

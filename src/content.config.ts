@@ -153,6 +153,9 @@ const events = defineCollection({
         /** Drafts appear only on the local preview (npm run dev), never on the live site. */
         draft: z.boolean().default(false),
         image: image().optional(),
+        /** Selected events only: the organizer's official image, loaded from its own site
+            (RemoteEventImage.astro; its host must be allowed in the CSP img-src). */
+        remoteImage: z.object({ src: z.url(), credit: z.string(), source: z.url() }).optional(),
         imageAlt: biOpt,
         /** The image is the official poster: always shown whole, never cropped. */
         imageIsPoster: z.boolean().default(false),
@@ -722,6 +725,20 @@ const notes = defineCollection({
         date: z.coerce.date(),
         /** Language the President wrote the note in. */
         original: z.enum(['fr', 'en', 'fa']),
+        /** Address of the note's own page (optional; defaults to the file name without
+            its date, e.g. 2026-10-29-winter-story.yaml → /en/president-notes/winter-story/). */
+        slug: z
+          .string()
+          .regex(/^[a-z0-9]+(?:-[a-z0-9]+)*$/)
+          .optional(),
+        /** The post's opening line, shown as the card's title (optional). */
+        headline: z
+          .object({
+            fr: z.string().optional(),
+            en: z.string().optional(),
+            fa: z.string().optional(),
+          })
+          .optional(),
         /** The note's text, exactly as published (blank lines separate paragraphs). */
         text: z.object({
           fr: z.string().optional(),

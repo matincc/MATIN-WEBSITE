@@ -1,24 +1,30 @@
 ---
 /**
- * "Matin Alive" homepage hero (owner's brief, Oct 27 2026): a cinematic, people-first
- * opening. Full-width documentary photos of Montréal's public life cross-fade slowly
- * behind an asymmetric deep-green panel carrying the institute's name, the headline
- * « Cultures en dialogue », the word "dialogue" turning through several languages, the
- * approved paragraph and two buttons.
+ * Homepage hero (owner's hero brief, Oct 29 2026, replacing the deep-green panel of the
+ * "Matin Alive" hero of Oct 27): one full-width documentary photo of Montréal's public
+ * life with the text set straight on it, editorial style, no card or panel. The photo
+ * keeps its natural, bright colours everywhere (owner's request, Oct 29 2026: no grey or
+ * navy wash, no halo, no filter); only a soft glow hugging the letters keeps them readable.
+ * Text in bold brick and both buttons in navy, with a larger slanted gold pen stroke under
+ * the headline (owner's request, Oct 29 2026, replacing the white text).
  *
- * Media: src/lib/heroMedia.ts. Only the first photo is loaded with the page; the others
- * (and a licensed video, once one exists) are added after load, only when the visitor
- * allows motion and has not asked to save data. One button pauses all movement
- * (WCAG 2.2.2); nothing moves under prefers-reduced-motion.
+ * Wide screens: the text sits on the right in every language, over the sky and the
+ * trees, so the monument column (left of centre) and the crowd's faces stay visible
+ * (owner's rule, Oct 27 2026). Below 64rem the photo sits on top and the text follows on
+ * the warm-white page.
+ *
+ * Motion: the text rises in once and the photo zooms in very slowly, once. Nothing moves
+ * under prefers-reduced-motion. No script.
  */
-import '@fontsource/playfair-display/700-italic.css';
+import Scribble from '@/components/ui/Scribble.astro';
+import '@fontsource/playfair-display/800-italic.css';
 import { Picture } from 'astro:assets';
-import { ArrowRight, Pause, Play } from '@lucide/astro';
+import { ArrowRight } from '@lucide/astro';
 import PhotoCredit from '@/components/media/PhotoCredit.astro';
 import { href, type UiLang } from '@/i18n/routes';
 import { useTranslations } from '@/i18n/ui';
 import { aliveStrings } from '@/i18n/alive';
-import { heroSlides, heroVideo } from '@/lib/heroMedia';
+import { heroPhoto } from '@/lib/heroMedia';
 
 interface Props {
   lang: UiLang;
@@ -26,96 +32,46 @@ interface Props {
 const { lang } = Astro.props;
 const t = useTranslations(lang);
 const a = aliveStrings(lang);
-const preview = process.env.CONTEXT !== 'production';
-const [first, ...more] = heroSlides;
-const credits = heroVideo
-  ? [heroVideo.credit, ...heroSlides.map((s) => s.credit)]
-  : heroSlides.map((s) => s.credit);
-
-// "Dialogue" in some of the languages spoken in Montréal (each with its own lang).
-const words = [
-  { text: 'Dialogue', lang: 'fr' },
-  // The owner's spelling on the homepage (Oct 27 2026): with a space, « گفت و گو ».
-  { text: 'گفت و گو', lang: 'fa' },
-  { text: 'Diálogo', lang: 'es' },
-  { text: 'حوار', lang: 'ar' },
-  { text: '对话', lang: 'zh' },
-  { text: 'Diyalog', lang: 'tr' },
-  { text: 'संवाद', lang: 'hi' },
-  { text: 'Діалог', lang: 'uk' },
-];
-// Start with a word in another language than the headline's.
-if (lang !== 'fa') words.push(words.shift()!);
-const sizes = '100vw';
 ---
 
-<section
-  class="ahero"
-  aria-labelledby="hero-title"
-  data-hero
-  data-video-mp4={heroVideo?.mp4}
-  data-video-webm={heroVideo?.webm}
->
-  <div class="ahero__media" aria-hidden="true" data-hero-media>
-    <figure class="ahero__slide is-active" style={`--focus:${first.focus ?? '50% 50%'}`}>
-      <Picture
-        src={first.src}
-        formats={['avif', 'webp']}
-        fallbackFormat="jpg"
-        widths={[640, 960, 1280, 1600]}
-        sizes={sizes}
-        alt=""
-        loading="eager"
-        fetchpriority="high"
-      />
-    </figure>
-    <template data-hero-more>
-      {more.map((s) => (
-        <figure class="ahero__slide" style={`--focus:${s.focus ?? '50% 50%'}`}>
-          <Picture
-            src={s.src}
-            formats={['avif', 'webp']}
-            fallbackFormat="jpg"
-            widths={[640, 960, 1280, 1600]}
-            sizes={sizes}
-            alt=""
-            loading="lazy"
-          />
-        </figure>
-      ))}
-    </template>
+<section class="ahero" aria-labelledby="hero-title">
+  <div class="ahero__media" aria-hidden="true">
+    <Picture
+      src={heroPhoto.src}
+      formats={['avif', 'webp']}
+      fallbackFormat="jpg"
+      widths={[640, 960, 1280, 1600, 1920]}
+      sizes="100vw"
+      alt=""
+      loading="eager"
+      fetchpriority="high"
+    />
   </div>
 
-  <span class="ahero__shape ahero__shape--sun" aria-hidden="true"></span>
-  <span class="ahero__shape ahero__shape--leaf" aria-hidden="true"></span>
-
   <div class="container-site ahero__inner">
-    <div class="ahero__panel">
-      <p class="ahero__place">
-        <span class="ahero__dot" aria-hidden="true"></span>
-        {a.heroPlace}
-      </p>
+    <div class="ahero__copy">
+      <p class="ahero__place">{a.heroPlace}</p>
       <h1 id="hero-title" class="ahero__title">
-        <span class="ahero__name">{t('home.heroEyebrow')}</span>
+        {/* The institute's name stays in the page's main heading for search engines and
+            screen readers; the logo above already shows it. */}
+        <span class="sr-only">
+          {t('home.heroEyebrow')}
+          {lang === 'fr' ? ' : ' : ': '}
+        </span>
         <span class="ahero__tagline">{t('home.heroTitle')}</span>
       </h1>
-      <p class="ahero__words" role="img" aria-label={a.heroWordsLabel}>
-        <span class="ahero__words-rule" aria-hidden="true"></span>
-        <span class="ahero__words-stack" aria-hidden="true" data-hero-words>
-          {words.map((w, i) => (
-            <span lang={w.lang} class:list={['ahero__word', i === 0 && 'is-active']}>
-              {w.text}
-            </span>
-          ))}
-        </span>
-      </p>
-      <p class="ahero__text">{t('home.heroText')}</p>
+      <Scribble class="ahero__scribble scribble--load" />
+      <p class="ahero__line">{a.heroLine}</p>
       <div class="ahero__actions">
-        <a href="#action" class="btn ahero__btn ahero__btn--primary">
+        <a href="#action" class="ahero__btn ahero__btn--primary">
           {a.heroCtaPrimary}
-          <ArrowRight size={18} class="flip-rtl" aria-hidden="true" />
+          <ArrowRight size={18} class="flip-rtl ahero__arrow" aria-hidden="true" />
         </a>
-        <a href={`${href('contact', lang)}#write`} class="btn ahero__btn ahero__btn--ghost">
+        {/* Straight to the volunteer form (owner's request, Oct 28 2026). */}
+        <a
+          href={`${href('contact', lang)}#${lang === 'fr' ? 'benevolat' : 'volunteer'}`}
+          class="ahero__btn ahero__btn--ghost"
+        >
           {a.heroCtaSecondary}
         </a>
       </div>
@@ -123,431 +79,263 @@ const sizes = '100vw';
   </div>
 
   <div class="container-site ahero__foot">
-    <div class="ahero__credits">
-      {credits.map((c, i) => (
-        <span class:list={['ahero__credit', i === 0 && 'is-active']} data-hero-credit>
-          <PhotoCredit credit={c} />
-        </span>
-      ))}
-      {preview && <p class="ahero__note">{a.heroMediaNote}</p>}
-    </div>
-    <button
-      type="button"
-      class="ahero__pause"
-      data-hero-pause
-      data-label-pause={a.heroPause}
-      data-label-play={a.heroPlay}
-      hidden
-    >
-      <span class="ahero__icon" data-icon-pause>
-        <Pause size={18} aria-hidden="true" />
-      </span>
-      <span class="ahero__icon" data-icon-play hidden>
-        <Play size={18} aria-hidden="true" />
-      </span>
-      <span class="sr-only" data-hero-pause-label>
-        {a.heroPause}
-      </span>
-    </button>
+    <PhotoCredit credit={heroPhoto.credit} />
   </div>
 </section>
 
-<script>
-  const hero = document.querySelector<HTMLElement>('[data-hero]');
-  const media = hero?.querySelector<HTMLElement>('[data-hero-media]');
-  const motionOk = matchMedia('(prefers-reduced-motion: no-preference)').matches;
-  const saveData = Boolean(
-    (navigator as Navigator & { connection?: { saveData?: boolean } }).connection?.saveData,
-  );
-
-  if (hero && media && motionOk && !saveData) {
-    const pauseBtn = hero.querySelector<HTMLButtonElement>('[data-hero-pause]')!;
-    const words = [...hero.querySelectorAll<HTMLElement>('.ahero__word')];
-    const credits = [...hero.querySelectorAll<HTMLElement>('[data-hero-credit]')];
-    let slides: HTMLElement[] = [];
-    let video: HTMLVideoElement | null = null;
-    let slide = 0;
-    let word = 0;
-    let paused = false;
-    let inView = true;
-    const offset = hero.dataset.videoMp4 ? 1 : 0;
-
-    const show = (list: HTMLElement[], i: number) =>
-      list.forEach((el, j) => el.classList.toggle('is-active', i === j));
-
-    const start = () => {
-      const tpl = media.querySelector<HTMLTemplateElement>('[data-hero-more]');
-      if (tpl) media.append(tpl.content.cloneNode(true));
-      slides = [...media.querySelectorAll<HTMLElement>('.ahero__slide')];
-      // A licensed video replaces the photos on wide screens (see src/lib/heroMedia.ts).
-      if (hero.dataset.videoMp4 && matchMedia('(min-width: 64rem)').matches) {
-        video = document.createElement('video');
-        Object.assign(video, { muted: true, loop: true, playsInline: true, autoplay: true });
-        video.className = 'ahero__video';
-        video.setAttribute('aria-hidden', 'true');
-        for (const [src, type] of [
-          [hero.dataset.videoWebm, 'video/webm'],
-          [hero.dataset.videoMp4, 'video/mp4'],
-        ]) {
-          if (!src) continue;
-          const s = document.createElement('source');
-          Object.assign(s, { src, type });
-          video.append(s);
-        }
-        video.addEventListener('playing', () => hero.classList.add('has-video'), { once: true });
-        media.append(video);
-      } else if (offset) {
-        show(credits, 1);
-      }
-      pauseBtn.hidden = false;
-    };
-
-    const tick = () => {
-      if (paused || !inView || document.hidden) return;
-      word = (word + 1) % words.length;
-      show(words, word);
-    };
-    const turn = () => {
-      if (paused || !inView || document.hidden || video || slides.length < 2) return;
-      slide = (slide + 1) % slides.length;
-      show(slides, slide);
-      show(credits, slide + offset);
-    };
-
-    pauseBtn.addEventListener('click', () => {
-      paused = !paused;
-      hero.classList.toggle('is-paused', paused);
-      pauseBtn.querySelector('[data-icon-pause]')!.toggleAttribute('hidden', paused);
-      pauseBtn.querySelector('[data-icon-play]')!.toggleAttribute('hidden', !paused);
-      pauseBtn.querySelector('[data-hero-pause-label]')!.textContent = paused
-        ? pauseBtn.dataset.labelPlay!
-        : pauseBtn.dataset.labelPause!;
-      if (video) void (paused ? video.pause() : video.play());
-    });
-    new IntersectionObserver(([e]) => (inView = e.isIntersecting)).observe(hero);
-
-    if (document.readyState === 'complete') start();
-    else addEventListener('load', start, { once: true });
-    setInterval(tick, 2600);
-    setInterval(turn, 7000);
-  }
-</script>
-
 <style>
   .ahero {
+    /* A soft light glow hugging each brick letter only: the photo itself is never shaded,
+       filtered or tinted (owner, Oct 29 2026). */
+    --glow: color-mix(in srgb, var(--matin-ivoire) 85%, transparent);
+    --halo:
+      1.5px 0 0 var(--matin-ivoire), -1.5px 0 0 var(--matin-ivoire), 0 1.5px 0 var(--matin-ivoire),
+      0 -1.5px 0 var(--matin-ivoire), 1px 1px 0 var(--matin-ivoire),
+      -1px -1px 0 var(--matin-ivoire), 1px -1px 0 var(--matin-ivoire),
+      -1px 1px 0 var(--matin-ivoire), 0 0 6px var(--matin-ivoire), 0 0 14px var(--glow),
+      0 0 28px var(--glow);
     position: relative;
     display: grid;
     grid-template-rows: 1fr auto;
     min-height: clamp(38rem, calc(100svh - 9rem), 52rem);
     overflow: hidden;
     isolation: isolate;
-    background: var(--alive-green);
-    color: var(--alive-cream);
+    background: var(--matin-paper);
+    color: var(--matin-blue);
   }
 
-  /* ---------- Media: photos (and later a licensed video) ---------- */
+  /* ---------- The photo ---------- */
   .ahero__media {
     position: absolute;
     inset: 0;
     z-index: -2;
+    overflow: hidden;
   }
-  .ahero__slide,
-  .ahero__media :global(.ahero__video) {
-    position: absolute;
-    inset: 0;
-    margin: 0;
-    opacity: 0;
-    transition: opacity 1.6s ease;
-  }
-  .ahero__slide.is-active,
-  .ahero.has-video :global(.ahero__video) {
-    opacity: 1;
-  }
-  .ahero__slide :global(img),
-  .ahero__media :global(.ahero__video) {
+  .ahero__media :global(img) {
     display: block;
     width: 100%;
     height: 100%;
     object-fit: cover;
-    object-position: var(--focus, 50% 50%);
+    object-position: var(--focus, 50% 70%);
+    transform-origin: 30% 60%;
   }
-  /* A very slow push-in on the visible photo only (none under reduced motion). */
+  /* An almost imperceptible push-in, once (none under reduced motion). */
   @media (prefers-reduced-motion: no-preference) {
-    .ahero__slide.is-active :global(img) {
-      animation: ahero-drift 9s ease-out both;
-    }
-    .ahero.is-paused .ahero__slide :global(img) {
-      animation-play-state: paused;
+    .ahero__media :global(img) {
+      animation: ahero-zoom 32s cubic-bezier(0.25, 0.1, 0.25, 1) both;
     }
   }
-  @keyframes ahero-drift {
+  @keyframes ahero-zoom {
     from {
       transform: scale(1);
     }
     to {
-      transform: scale(1.07);
+      transform: scale(1.06);
     }
   }
 
-  /* ---------- Flat shapes: the dialogue motif, a sun and a leaf ---------- */
-  .ahero__shape {
-    position: absolute;
-    z-index: -1;
-    pointer-events: none;
-  }
-  /* The panel sits on the right in every language and the shapes on the left, so the
-     monument in the Tam-Tams photo (left of centre) stays fully visible (owner's request,
-     Oct 27 2026). */
-  .ahero__shape--sun {
-    inset-block-start: clamp(2rem, 6vw, 5rem);
-    left: clamp(-4rem, -2vw, -1rem);
-    width: clamp(8rem, 14vw, 13rem);
-    aspect-ratio: 1;
-    border-radius: 50%;
-    background: var(--alive-coral);
-  }
-  .ahero__shape--leaf {
-    inset-block-start: clamp(7rem, 15vw, 12rem);
-    left: clamp(4rem, 9vw, 9rem);
-    width: clamp(4rem, 7vw, 6.5rem);
-    aspect-ratio: 1;
-    border-radius: 0 100% 0 100%;
-    background: var(--alive-gold);
-    opacity: 0.92;
-  }
-
-  /* ---------- The panel ---------- */
+  /* ---------- The text, straight on the photo ---------- */
   .ahero__inner {
     display: flex;
-    align-items: flex-end;
+    align-items: flex-start;
+    /* Physical right in every language, away from the monument and the faces. */
     justify-content: flex-end;
-    padding-block: clamp(3rem, 6vw, 5rem) 1.25rem;
+    padding-block: clamp(2.5rem, 6vh, 4.5rem) 1rem;
   }
   :global([dir='rtl']) .ahero__inner {
     justify-content: flex-start;
   }
-  .ahero__panel {
+  .ahero__copy {
     position: relative;
-    max-width: min(44rem, 54%);
-    padding: clamp(1.75rem, 1.2rem + 1.8vw, 2.75rem);
-    padding-inline-end: clamp(1.75rem, 1rem + 3vw, 3.5rem);
-    border-radius: 2.75rem 0 0 0;
-    background: var(--alive-green);
-    box-shadow: 0 30px 60px -30px rgb(0 0 0 / 0.55);
-  }
-  /* A coral edge on the reading side of the panel. */
-  .ahero__panel::before {
-    content: '';
-    position: absolute;
-    inset-block: clamp(1.75rem, 1.2rem + 1.8vw, 2.75rem);
-    inset-inline-start: 0;
-    width: 6px;
-    background: var(--alive-coral);
+    max-width: min(40rem, 48%);
+    text-shadow:
+      0 0 3px var(--glow),
+      0 0 10px var(--glow),
+      0 0 26px var(--glow);
   }
   .ahero__place {
-    display: inline-flex;
+    display: flex;
     align-items: center;
-    gap: 0.6rem;
+    gap: 0.85rem;
     font-family: var(--font-display);
-    font-size: 0.95rem;
+    font-size: clamp(0.85rem, 0.8rem + 0.25vw, 1rem);
     font-weight: 800;
-    letter-spacing: 0.16em;
+    letter-spacing: 0.22em;
     text-transform: uppercase;
-    color: var(--alive-gold);
+    /* Brick with a thick ivory halo hugging the letters, so it reads over the leaves
+       (owner, Oct 29 2026). The photo itself is untouched. */
+    color: var(--matin-brique-ink);
+    text-shadow: var(--halo);
+  }
+  .ahero__place::before {
+    content: '';
+    width: 2.25rem;
+    height: 2px;
+    background: var(--alive-gold);
   }
   :global(html[lang='fa']) .ahero__place {
     letter-spacing: 0;
-    font-size: 1.05rem;
-  }
-  .ahero__dot {
-    width: 0.6rem;
-    height: 0.6rem;
-    border-radius: 50%;
-    background: var(--alive-coral);
+    font-size: 1.25rem;
   }
   .ahero__title {
-    display: grid;
-    gap: 0.35rem;
-    margin-block-start: 1rem;
+    margin-block-start: 1.1rem;
   }
-  .ahero__name {
-    font-family: var(--font-display);
-    font-size: clamp(1.15rem, 1rem + 0.6vw, 1.5rem);
-    font-weight: 700;
-    color: var(--alive-cream);
-  }
-  /* The headline, editorial: the logo's serif, large and italic. */
+  /* The headline: the logo's serif, large and italic. */
   .ahero__tagline {
+    display: block;
     font-family: var(--font-brand);
     font-style: italic;
-    font-weight: 700;
-    font-size: clamp(3rem, 1.8rem + 4.2vw, 5.5rem);
-    line-height: 0.98;
-    letter-spacing: -0.015em;
-    color: var(--alive-cream);
+    font-weight: 800;
+    font-size: clamp(3.1rem, 1.6rem + 5vw, 6.5rem);
+    line-height: 0.95;
+    letter-spacing: -0.02em;
+    color: var(--matin-brique-ink);
     text-wrap: balance;
   }
   :global(html[lang='fa']) .ahero__tagline {
     font-family: var(--font-display);
     font-style: normal;
     font-weight: 900;
-    line-height: 1.25;
+    line-height: 1.2;
     letter-spacing: 0;
-    font-size: clamp(2.6rem, 1.6rem + 3.6vw, 4.75rem);
+    font-size: clamp(2.7rem, 1.6rem + 4vw, 5.25rem);
   }
-  /* "Dialogue" turning through languages: one word at a time, fading. */
-  .ahero__words {
-    display: flex;
-    align-items: center;
-    gap: 0.9rem;
-    margin-block: 0.9rem 1rem;
+  /* Hand-drawn underline under the headline (owner's request, Oct 28 2026), larger and
+     slanted like a ballpoint stroke since Oct 29 2026. */
+  .ahero__copy :global(.ahero__scribble) {
+    width: min(28rem, 92%);
+    height: 1.4rem;
+    margin-block: 0.4rem 0.4rem;
+    margin-inline-start: 0.5rem;
+    rotate: -3.5deg;
   }
-  .ahero__words-rule {
-    width: 3rem;
-    height: 2px;
-    background: var(--alive-gold);
+  :global([dir='rtl']) .ahero__copy :global(.ahero__scribble) {
+    rotate: 3.5deg;
   }
-  .ahero__words-stack {
-    display: grid;
-    font-family: var(--font-display);
-    font-size: clamp(1.35rem, 1.1rem + 0.8vw, 1.75rem);
+  .ahero__copy :global(.ahero__scribble path) {
+    stroke: var(--matin-soleil);
+    stroke-width: 4.5;
+  }
+  .ahero__copy :global(.ahero__scribble .scribble__second) {
+    stroke-width: 3;
+  }
+  .ahero__line {
+    max-width: 34rem;
+    margin-block-start: 0.9rem;
+    font-size: clamp(1.15rem, 1rem + 0.6vw, 1.5rem);
     font-weight: 800;
-    color: var(--alive-gold);
+    line-height: 1.45;
+    /* Brick with a thick ivory halo hugging the letters, so it reads over the leaves
+       (owner, Oct 29 2026). The photo itself is untouched. */
+    color: var(--matin-brique-ink);
+    text-shadow: var(--halo);
   }
-  .ahero__word {
-    grid-area: 1 / 1;
-    opacity: 0;
-    transform: translateY(0.4em);
-    transition:
-      opacity 0.6s ease,
-      transform 0.6s cubic-bezier(0.2, 0.7, 0.2, 1);
-  }
-  /* Persian words keep a Persian typeface on the French and English pages too. */
-  .ahero__word:lang(fa) {
-    font-family: 'Vazirmatn Variable', Tahoma, sans-serif;
-  }
-  .ahero__word.is-active {
-    opacity: 1;
-    transform: none;
-  }
-  .ahero__text {
-    max-width: 36rem;
-    font-size: clamp(1.1rem, 1rem + 0.45vw, 1.35rem);
-    line-height: 1.6;
-    color: var(--alive-cream);
-  }
+
+  /* ---------- Two quiet buttons ---------- */
   .ahero__actions {
     display: flex;
     flex-wrap: wrap;
-    gap: 0.75rem 1rem;
-    margin-block-start: 1.4rem;
+    gap: 0.75rem 1.5rem;
+    align-items: center;
+    margin-block-start: 2rem;
+    text-shadow: none;
   }
   .ahero__btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.6rem;
+    min-height: 3rem;
+    font-family: var(--font-display);
     font-size: 1.05rem;
+    font-weight: 800;
+    text-decoration: none;
+    transition:
+      background-color 0.35s ease,
+      color 0.35s ease,
+      border-color 0.35s ease,
+      transform 0.35s cubic-bezier(0.2, 0.7, 0.2, 1);
   }
   .ahero__btn--primary {
-    background: var(--alive-gold);
-    color: var(--alive-green);
+    padding: 0.7rem 1.5rem;
+    border-radius: 999px;
+    background: var(--matin-encre);
+    color: var(--matin-white);
   }
   .ahero__btn--primary:hover {
-    background: var(--alive-cream);
+    background: var(--alive-gold);
+    color: var(--matin-encre);
+    transform: translateY(-2px);
   }
+  .ahero__btn :global(.ahero__arrow) {
+    transition: translate 0.35s cubic-bezier(0.2, 0.7, 0.2, 1);
+  }
+  .ahero__btn--primary:hover :global(.ahero__arrow) {
+    translate: 4px 0;
+  }
+  :global([dir='rtl']) .ahero__btn--primary:hover :global(.ahero__arrow) {
+    translate: -4px 0;
+  }
+  /* The second action reads as a link with a gold rule that fills in on hover. */
   .ahero__btn--ghost {
-    border: 1.5px solid color-mix(in srgb, var(--alive-cream) 70%, transparent);
-    color: var(--alive-cream);
+    padding-block: 0.4rem;
+    padding: 0.7rem 1.5rem;
+    border-radius: 999px;
+    background: var(--matin-blue);
+    color: var(--matin-white);
+    text-shadow: none;
   }
   .ahero__btn--ghost:hover {
-    background: var(--alive-cream);
-    color: var(--alive-green);
+    background: var(--alive-gold);
+    color: var(--matin-blue);
+    transform: translateY(-2px);
   }
-  .ahero :global(a:focus-visible),
-  .ahero button:focus-visible {
+  .ahero__btn:focus-visible {
     outline: 3px solid var(--alive-gold);
-    outline-offset: 3px;
+    outline-offset: 4px;
   }
 
-  /* Text rises in once, one line after the other. */
+  /* The text rises in once, one line after the other. */
   @media (prefers-reduced-motion: no-preference) {
-    .ahero__panel > * {
-      animation: ahero-rise 0.9s cubic-bezier(0.2, 0.7, 0.2, 1) both;
+    .ahero__copy > * {
+      animation: ahero-rise 1.1s cubic-bezier(0.2, 0.7, 0.2, 1) both;
     }
-    .ahero__panel > :nth-child(2) {
-      animation-delay: 0.12s;
+    .ahero__copy > :nth-child(2) {
+      animation-delay: 0.15s;
     }
-    .ahero__panel > :nth-child(3) {
-      animation-delay: 0.3s;
+    .ahero__copy > :nth-child(3) {
+      animation-delay: 0.25s;
     }
-    .ahero__panel > :nth-child(4) {
-      animation-delay: 0.42s;
+    .ahero__copy > :nth-child(4) {
+      animation-delay: 0.35s;
     }
-    .ahero__panel > :nth-child(5) {
-      animation-delay: 0.54s;
+    .ahero__copy > :nth-child(5) {
+      animation-delay: 0.5s;
     }
   }
   @keyframes ahero-rise {
     from {
       opacity: 0;
-      transform: translateY(20px);
+      transform: translateY(16px);
     }
   }
 
-  /* ---------- Credits and the pause button ---------- */
+  /* ---------- Photo credit ---------- */
   .ahero__foot {
-    display: flex;
-    align-items: flex-end;
-    justify-content: space-between;
-    gap: 1rem;
-    padding-block-end: 1rem;
+    padding-block-end: 0.9rem;
   }
-  .ahero__credits {
-    display: grid;
-    gap: 0.35rem;
-  }
-  .ahero__credit {
-    display: none;
-  }
-  .ahero__credit.is-active {
-    display: block;
-  }
-  .ahero__credit :global(.photo-credit),
-  .ahero__note {
+  .ahero__foot :global(.photo-credit) {
     display: inline-flex;
-    padding: 0.25rem 0.65rem;
+    padding: 0.2rem 0.6rem;
     border-radius: 999px;
-    background: color-mix(in srgb, var(--alive-green) 88%, transparent);
-    color: var(--alive-cream);
-    font-size: 0.78rem;
+    background: color-mix(in srgb, var(--matin-ink) 55%, transparent);
+    color: var(--matin-white);
+    font-size: 0.75rem;
   }
-  .ahero__credit :global(.photo-credit a) {
+  .ahero__foot :global(.photo-credit a) {
     color: inherit;
   }
-  .ahero__note {
-    border: 1px dashed var(--alive-gold);
-  }
-  .ahero__pause {
-    display: grid;
-    flex-shrink: 0;
-    place-items: center;
-    width: 2.75rem;
-    height: 2.75rem;
-    border-radius: 999px;
-    background: color-mix(in srgb, var(--alive-green) 88%, transparent);
-    border: 1.5px solid color-mix(in srgb, var(--alive-cream) 60%, transparent);
-    color: var(--alive-cream);
-  }
-  .ahero__icon {
-    display: grid;
-  }
-  .ahero__icon[hidden],
-  .ahero__pause[hidden] {
-    display: none;
-  }
-  .ahero__pause:hover {
-    background: var(--alive-gold);
-    color: var(--alive-green);
-  }
 
-  /* ---------- Phones: the photo on top, the panel under it, nothing over faces ---------- */
+  /* ---------- Phones and tablets: the photo on top, fading into navy ---------- */
   @media (max-width: 63.99rem) {
     .ahero {
       min-height: 0;
@@ -556,38 +344,37 @@ const sizes = '100vw';
     .ahero__media {
       position: relative;
       grid-row: 1;
-      height: 46svh;
-      min-height: 17rem;
+      height: clamp(17rem, 52svh, 30rem);
       z-index: 0;
     }
-    .ahero__shape--sun {
-      inset-block-start: calc(46svh - 4.5rem);
-      left: auto;
-      inset-inline-end: 1.25rem;
-      width: 6.5rem;
-      z-index: 1;
+    .ahero__media :global(img) {
+      object-position: 30% 65%;
     }
-    .ahero__shape--leaf {
-      display: none;
+    .ahero__copy,
+    .ahero__btn--ghost {
+      text-shadow: none;
+    }
+    /* On the page under the photo: brick, no halo. */
+    .ahero__place,
+    .ahero__line {
+      text-shadow: none;
+    }
+    .ahero__place,
+    .ahero__line {
+      color: var(--matin-brique-ink);
     }
     .ahero__inner {
       grid-row: 2;
-      padding: 0;
-      max-width: none;
+      position: relative;
+      z-index: 1;
+      padding-block: 1.75rem 2rem;
     }
-    .ahero__panel {
-      max-width: none;
-      width: 100%;
-      border-radius: 0;
-      box-shadow: none;
-      padding-block-start: 2rem;
-    }
-    :global([dir='rtl']) .ahero__panel {
-      border-radius: 0;
+    .ahero__copy {
+      max-width: 40rem;
     }
     .ahero__foot {
       grid-row: 3;
-      padding-block: 0 1.25rem;
+      padding-block: 0 1rem;
     }
   }
 </style>

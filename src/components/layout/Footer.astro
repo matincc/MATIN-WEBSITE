@@ -49,7 +49,7 @@ const mapsUrl =
 const hasContact = Boolean(a || s.phone || s.email);
 ---
 
-<footer class="footer on-terracotta text-white">
+<footer class="footer on-dark text-white">
   <div class="mosaic footer-mosaic" aria-hidden="true">
     <span></span>
     <span></span>
@@ -87,7 +87,7 @@ const hasContact = Boolean(a || s.phone || s.email);
             <address class="mb-8 space-y-3 text-[1.1875rem] not-italic">
               {a && (
                 <p class="flex gap-3">
-                  <MapPin size={18} class="mt-1 shrink-0 text-cream" aria-hidden="true" />
+                  <MapPin size={18} class="mt-1 shrink-0 text-soleil" aria-hidden="true" />
                   <a href={mapsUrl} class="footer-link" target="_blank" rel="noopener noreferrer">
                     {a.street}
                     <br />
@@ -98,7 +98,7 @@ const hasContact = Boolean(a || s.phone || s.email);
               )}
               {s.phone && (
                 <p class="flex gap-3">
-                  <Phone size={18} class="mt-1 shrink-0 text-cream" aria-hidden="true" />
+                  <Phone size={18} class="mt-1 shrink-0 text-soleil" aria-hidden="true" />
                   <a
                     href={`tel:${s.phone.replace(/[^\d+]/g, '')}`}
                     class="footer-link whitespace-nowrap"
@@ -110,7 +110,7 @@ const hasContact = Boolean(a || s.phone || s.email);
               )}
               {s.email && (
                 <p class="flex gap-3">
-                  <Mail size={18} class="mt-1 shrink-0 text-cream" aria-hidden="true" />
+                  <Mail size={18} class="mt-1 shrink-0 text-soleil" aria-hidden="true" />
                   <a href={`mailto:${s.email}`} class="footer-link whitespace-nowrap" dir="ltr">
                     {s.email}
                   </a>
@@ -125,7 +125,7 @@ const hasContact = Boolean(a || s.phone || s.email);
           <>
             <h2 class="footer-title">{t('footer.hoursTitle')}</h2>
             <p class="flex gap-3 text-[1.1875rem] whitespace-pre-line">
-              <Clock size={18} class="mt-1 shrink-0 text-cream" aria-hidden="true" />
+              <Clock size={18} class="mt-1 shrink-0 text-soleil" aria-hidden="true" />
               <span>{pick(s.hours, lang)}</span>
             </p>
           </>
@@ -191,13 +191,14 @@ const hasContact = Boolean(a || s.phone || s.email);
   .footer-mosaic > span {
     border-radius: 0;
   }
-  /* Warm footer (owner's request, Oct 2026): deep terracotta, white text 6.4:1. */
+  /* Night footer (scheme A, Oct 29 2026): the site opens with the morning and ends with
+     Montréal at night. White text 14.9:1 on nuit, soleil 7.6:1. */
   .footer {
-    background: var(--color-terracotta-deep);
+    background: var(--color-nuit);
   }
-  /* Darker warm brown under the skyline; white text 9:1 or more. */
+  /* Deeper night under the skyline. */
   .footer-base {
-    background: color-mix(in srgb, var(--color-terracotta-deep) 62%, black);
+    background: color-mix(in srgb, var(--color-nuit) 70%, black);
   }
   /* The introduction under "Cultures in Dialogue": more room and air (owner's brief,
      Oct 24 2026). */
@@ -205,7 +206,7 @@ const hasContact = Boolean(a || s.phone || s.email);
     max-width: 34rem;
     font-size: 1.125rem;
     line-height: 1.8;
-    color: var(--color-cream);
+    color: var(--color-sable);
     text-wrap: pretty;
   }
   .footer-title {
@@ -222,7 +223,7 @@ const hasContact = Boolean(a || s.phone || s.email);
   }
   .footer-link:hover {
     text-decoration: underline;
-    text-decoration-color: var(--color-cream);
+    text-decoration-color: var(--color-soleil);
   }
   .footer-links {
     display: grid;

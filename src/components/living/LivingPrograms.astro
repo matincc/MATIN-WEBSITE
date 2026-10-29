@@ -1,0 +1,322 @@
+---
+/**
+ * Living homepage: Programs and Participation (owner's brief, Oct 29 2026). The three
+ * approved areas of work (home.area*) as alternating editorial rows, each with a large
+ * photograph in its own shape, then the invitation to take part (the approved team.join*
+ * texts) in a rounded green panel with a photo. Photos come from src/lib/media.ts.
+ */
+import { ArrowRight } from '@lucide/astro';
+import MediaImage from '@/components/media/MediaImage.astro';
+import type { MediaSlot } from '@/lib/media';
+import { href, type UiLang } from '@/i18n/routes';
+import { useTranslations } from '@/i18n/ui';
+import { livingStrings } from '@/i18n/living';
+
+interface Props {
+  lang: UiLang;
+}
+const { lang } = Astro.props;
+const t = useTranslations(lang);
+const l = livingStrings(lang);
+const areas: { title: string; text: string; slot: MediaSlot; tone: string }[] = [
+  {
+    title: t('home.area1Title'),
+    text: t('home.area1Text'),
+    slot: 'areaDialogue',
+    tone: 'terracotta',
+  },
+  {
+    title: t('home.area2Title'),
+    text: t('home.area2Text'),
+    slot: 'areaCommunities',
+    tone: 'green',
+  },
+  { title: t('home.area3Title'), text: t('home.area3Text'), slot: 'areaResearch', tone: 'gold' },
+];
+const volunteer = `${href('contact', lang)}#${lang === 'fr' ? 'benevolat' : 'volunteer'}`;
+const ways = [
+  t('team.joinWayInPerson'),
+  t('team.joinWayOnline'),
+  t('team.joinWayVolunteer'),
+  t('team.joinWayAdvisor'),
+];
+---
+
+<section id="programs" class="lprog scroll-mt-24" aria-labelledby="lprog-title">
+  <div class="container-site">
+    <header class="lprog__head" data-reveal>
+      <p class="living-kicker">{t('home.areasEyebrow')}</p>
+      <h2 id="lprog-title" class="living-title">
+        {t('home.areasTitle')}
+      </h2>
+      <p class="living-lede">{t('home.areasLede')}</p>
+    </header>
+
+    <ol class="lprog__list">
+      {areas.map((a, i) => (
+        <li class:list={['lprog__row', `lprog__row--${a.tone}`]}>
+          <MediaImage
+            slot={a.slot}
+            lang={lang}
+            ratio={i === 1 ? 1 : 5 / 4}
+            sizes="(min-width: 64rem) 40rem, 92vw"
+            class="lprog__photo"
+          />
+          <div class="lprog__text" data-reveal>
+            <span class="lprog__mark" aria-hidden="true"></span>
+            <h3 class="lprog__title">{a.title}</h3>
+            <p class="lprog__body">{a.text}</p>
+          </div>
+        </li>
+      ))}
+    </ol>
+
+    <p class="lprog__all">
+      <a href={href('programs', lang)} class="living-btn">
+        {l.programsAll}
+        <ArrowRight size={18} class="flip-rtl" aria-hidden="true" />
+      </a>
+    </p>
+
+    <!-- Participation: the approved invitation of Our Team (owner, Oct 28 2026). -->
+    <div class="ljoin" id="participate" data-reveal>
+      <div class="ljoin__text">
+        <h3 class="ljoin__title">{t('team.joinTitle')}</h3>
+        <p class="ljoin__body">{t('team.joinText')}</p>
+        <ul class="ljoin__ways">
+          {ways.map((w) => (
+            <li>{w}</li>
+          ))}
+        </ul>
+        <div class="ljoin__actions">
+          <a href={volunteer} class="ljoin__btn">
+            {t('team.joinCta')}
+            <ArrowRight size={18} class="flip-rtl" aria-hidden="true" />
+          </a>
+          <a href={href('contact', lang)} class="ljoin__link">
+            {t('home.actContact')}
+          </a>
+        </div>
+      </div>
+      <MediaImage
+        slot="participation"
+        lang={lang}
+        ratio={4 / 5}
+        sizes="(min-width: 64rem) 26rem, 88vw"
+        widths={[480, 720, 960]}
+        class="ljoin__photo"
+      />
+    </div>
+  </div>
+</section>
+
+<style>
+  .lprog {
+    padding-block: clamp(4rem, 3rem + 4vw, 7rem);
+    background: var(--matin-sable);
+    border-start-end-radius: clamp(3rem, 8vw, 9rem);
+  }
+  .lprog__head {
+    max-width: 52rem;
+  }
+  .lprog__list {
+    display: grid;
+    gap: clamp(3.5rem, 2.5rem + 5vw, 7rem);
+    margin-block-start: clamp(3rem, 2rem + 4vw, 5.5rem);
+  }
+  .lprog__row {
+    display: grid;
+    gap: 1.75rem;
+    align-items: center;
+  }
+  @media (min-width: 56rem) {
+    .lprog__row {
+      grid-template-columns: minmax(0, 7fr) minmax(0, 5fr);
+      gap: clamp(2.5rem, 1.5rem + 4vw, 6rem);
+    }
+    /* Every other row turns around: photo on the other side. */
+    .lprog__row:nth-child(even) {
+      grid-template-columns: minmax(0, 5fr) minmax(0, 6fr);
+    }
+    .lprog__row:nth-child(even) :global(.lprog__photo) {
+      order: 2;
+    }
+    .lprog__row:nth-child(3) {
+      grid-template-columns: minmax(0, 6fr) minmax(0, 5fr);
+      margin-inline-start: 6%;
+    }
+  }
+  /* Three different shapes for three different subjects. */
+  .lprog__row--terracotta :global(.media__frame) {
+    border-radius: 2rem 10rem 2rem 2rem;
+  }
+  .lprog__row--green :global(.media__frame) {
+    border-radius: 50%;
+  }
+  .lprog__row--gold :global(.media__frame) {
+    border-radius: 999px 999px 2rem 2rem;
+  }
+  .lprog__row--green :global(.media__credit) {
+    position: static;
+    margin-block-start: 0.6rem;
+    background: none;
+    color: var(--living-charcoal);
+    padding: 0;
+  }
+  .lprog__text {
+    position: relative;
+    max-width: 34rem;
+  }
+  .lprog__mark {
+    display: block;
+    width: 3.5rem;
+    height: 0.5rem;
+    margin-block-end: 1.25rem;
+    border-radius: 999px;
+    background: var(--tone);
+  }
+  .lprog__row--terracotta {
+    --tone: var(--living-terracotta);
+  }
+  .lprog__row--green {
+    --tone: var(--living-green);
+  }
+  .lprog__row--gold {
+    --tone: var(--living-gold);
+  }
+  .lprog__title {
+    font-family: var(--font-editorial);
+    font-size: clamp(1.75rem, 1.35rem + 1.5vw, 2.6rem);
+    font-weight: 600;
+    font-variation-settings:
+      'SOFT' 50,
+      'opsz' 72;
+    line-height: 1.12;
+    letter-spacing: -0.01em;
+    color: var(--living-charcoal);
+    text-wrap: balance;
+  }
+  :global(html[lang='fa']) .lprog__title {
+    font-family: var(--font-display);
+    font-weight: 800;
+    line-height: 1.5;
+    letter-spacing: 0;
+  }
+  .lprog__body {
+    margin-block-start: 1.25rem;
+    font-size: clamp(1.1rem, 1rem + 0.3vw, 1.25rem);
+    line-height: 1.7;
+    color: var(--living-charcoal);
+  }
+  .lprog__all {
+    margin-block-start: clamp(3rem, 2rem + 3vw, 5rem);
+    text-align: center;
+  }
+  @media (hover: hover) and (prefers-reduced-motion: no-preference) {
+    .lprog__row:hover :global(.media img) {
+      transform: scale(1.04);
+    }
+  }
+
+  /* ---------- Participation: a rounded green panel, white text ---------- */
+  .ljoin {
+    display: grid;
+    gap: 2rem;
+    align-items: center;
+    margin-block-start: clamp(4.5rem, 3rem + 5vw, 8rem);
+    padding: clamp(1.75rem, 1rem + 4vw, 4.5rem);
+    border-radius: 2.5rem 2.5rem 9rem 2.5rem;
+    background: var(--living-green);
+    color: var(--matin-white);
+  }
+  :global([dir='rtl']) .ljoin {
+    border-radius: 2.5rem 2.5rem 2.5rem 9rem;
+  }
+  @media (min-width: 64rem) {
+    .ljoin {
+      grid-template-columns: minmax(0, 7fr) minmax(0, 4fr);
+      gap: clamp(2.5rem, 2rem + 3vw, 5rem);
+    }
+  }
+  .ljoin__title {
+    font-family: var(--font-editorial);
+    font-size: clamp(1.9rem, 1.4rem + 2vw, 3.1rem);
+    font-weight: 600;
+    font-variation-settings: 'SOFT' 100;
+    line-height: 1.1;
+    color: var(--matin-white);
+    text-wrap: balance;
+  }
+  :global(html[lang='fa']) .ljoin__title {
+    font-family: var(--font-display);
+    font-weight: 800;
+    line-height: 1.5;
+  }
+  .ljoin__body {
+    max-width: 44rem;
+    margin-block-start: 1.25rem;
+    font-size: clamp(1.05rem, 1rem + 0.25vw, 1.2rem);
+    line-height: 1.75;
+  }
+  .ljoin__ways {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin-block-start: 1.5rem;
+  }
+  .ljoin__ways li {
+    padding: 0.3rem 0.9rem;
+    border: 1.5px solid color-mix(in srgb, var(--matin-white) 70%, transparent);
+    border-radius: 999px;
+    font-family: var(--font-display);
+    font-weight: 700;
+  }
+  .ljoin__actions {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 1rem 1.75rem;
+    margin-block-start: 2rem;
+  }
+  .ljoin__btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.6rem;
+    min-height: 3rem;
+    padding: 0.7rem 1.5rem;
+    border-radius: 999px;
+    background: var(--living-gold);
+    color: var(--living-charcoal);
+    font-family: var(--font-display);
+    font-weight: 800;
+    text-decoration: none;
+    transition:
+      background-color 0.3s ease,
+      transform 0.3s ease;
+  }
+  .ljoin__btn:hover {
+    background: var(--living-ivory);
+    transform: translateY(-2px);
+  }
+  .ljoin__link {
+    color: var(--matin-white);
+    font-family: var(--font-display);
+    font-weight: 800;
+    text-decoration: underline;
+    text-decoration-color: var(--living-gold);
+    text-decoration-thickness: 2px;
+    text-underline-offset: 0.3em;
+  }
+  .ljoin :focus-visible {
+    outline: 3px solid var(--matin-white);
+    outline-offset: 4px;
+  }
+  .ljoin :global(.ljoin__photo) {
+    width: min(100%, 26rem);
+    justify-self: center;
+  }
+  .ljoin :global(.ljoin__photo .media__frame) {
+    border-radius: 999px 999px 1.75rem 1.75rem;
+    rotate: 2deg;
+  }
+</style>

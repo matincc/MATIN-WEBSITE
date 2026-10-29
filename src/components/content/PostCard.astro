@@ -13,6 +13,7 @@ import { Picture } from 'astro:assets';
 import type { CollectionEntry } from 'astro:content';
 import { ArrowRight, CalendarDays, ExternalLink, MapPin } from '@lucide/astro';
 import CoverArt from './CoverArt.astro';
+import MatinNewsArt from '@/components/brand/MatinNewsArt.astro';
 import { articleHref } from '@/lib/content';
 import { type UiLang } from '@/i18n/routes';
 import { useTranslations, pick } from '@/i18n/ui';
@@ -54,8 +55,10 @@ const Heading = headingLevel;
         }
         class="post__img"
       />
+    ) : cultural ? (
+      <CoverArt category="arts" seed={post.id} class="post__img" />
     ) : (
-      <CoverArt category={cultural ? 'arts' : 'community'} seed={post.id} class="post__img" />
+      <MatinNewsArt lang={lang} class="post__img" />
     )}
     {cultural && d.region && (
       <span class="post__region">

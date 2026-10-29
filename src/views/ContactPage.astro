@@ -66,6 +66,7 @@ const details = [
 ---
 
 <PageLayout
+  accent="brique"
   lang={lang}
   title={t('contact.title')}
   lede={t('contact.lede')}
@@ -166,19 +167,20 @@ const details = [
 </PageLayout>
 
 <style>
-  /* Owner's brief (Oct 25 2026): soft turquoise, warm ivory, navy and matte gold instead
-     of plain white. Text stays navy or ink on these tints (10:1 or more). */
+  /* Scheme A (Oct 29 2026): a sand ground, panels with one deep corner each (less boxed,
+     owner's request), mirrored in Persian. Text stays navy or ink (10:1 or more). */
   .write-band {
-    background: var(--color-teal-pale);
-    border-block: 1px solid var(--color-teal-edge);
+    background: var(--color-sable);
   }
   .form-panel {
     background: var(--color-ivory);
     border-block-start: 6px solid var(--color-gold);
+    border-start-end-radius: 5rem;
   }
   .info-panel {
     background: var(--color-white);
     border-block-start: 6px solid var(--color-teal);
+    border-end-end-radius: 4rem;
   }
   .contact-art {
     position: relative;
@@ -194,9 +196,9 @@ const details = [
     position: absolute;
     inset-block-end: 0;
     inset-inline-end: -1rem;
-    width: 45%;
-    height: 55%;
-    border-radius: var(--radius-card);
+    width: 50%;
+    aspect-ratio: 1;
+    border-radius: 50%;
     background: var(--color-gold);
   }
   .volunteer-band {
@@ -213,5 +215,6 @@ const details = [
     max-width: 60rem;
     border: 1px solid var(--color-teal-edge);
     border-block-start: 6px solid var(--color-teal);
+    border-start-end-radius: 6rem;
   }
 </style>

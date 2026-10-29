@@ -1,0 +1,221 @@
+---
+/**
+ * "A Personal Note from Our President" on the homepage (owner's request, Oct 28 2026: a
+ * more human homepage, a real voice instead of institutional copy). The President's
+ * approved message from about.yaml, word for word, set as a letter on paper beside his
+ * portrait pinned like a printed photo, signed with his name and position in text; the caption under the photo uses a handwriting typeface (Caveat for
+ * French and English; Persian uses Vazirmatn bold). It is typeset, never an imitation of his
+ * real signature. Hidden if the message is empty.
+ */
+import { ArrowRight } from '@lucide/astro';
+import { Picture } from 'astro:assets';
+import Scribble from '@/components/ui/Scribble.astro';
+import { href, type UiLang } from '@/i18n/routes';
+import { pick, useTranslations } from '@/i18n/ui';
+import { getSingleton } from '@/lib/content';
+import portrait from '@/assets/photos/president-casual.jpg';
+
+interface Props {
+  lang: UiLang;
+  /** Anchor of the section: the full note lives on the Notes page (#personal-note) since
+      the Living homepage (Oct 29 2026) shows only an excerpt. */
+  id?: string;
+}
+const { lang, id = 'president-letter' } = Astro.props;
+const t = useTranslations(lang);
+const { president: p } = await getSingleton('about');
+const message = (lang === 'fa' ? p.message?.fa : p.message?.[lang]) ?? '';
+const paragraphs = message
+  .split(/\n\s*\n/)
+  .map((s) => s.trim())
+  .filter(Boolean);
+// A relaxed autumn portrait for the letter (owner's photo and choice, Oct 28 2026: less
+// formal than the suit portrait used on Our Team).
+const photo = portrait;
+const name = pick(p.displayName, lang) || p.name;
+const role = pick(p.signature, lang) || pick(p.title, lang);
+---
+
+{paragraphs.length > 0 && (
+  <section id={id} class="letter-band section-pad scroll-mt-24" aria-labelledby="home-letter-title">
+    <div class="container-site letter-grid">
+      {photo && (
+        <figure class="letter-photo" data-reveal>
+          <div class="letter-photo__print">
+            <span class="letter-photo__tape" aria-hidden="true"></span>
+            <Picture
+              src={photo}
+              alt={t('about.presidentPhotoAlt', { name })}
+              formats={['avif', 'webp']}
+              widths={[320, 480, 640]}
+              sizes="(min-width: 64rem) 20rem, 60vw"
+            />
+            <figcaption class="letter-hand">{name}</figcaption>
+          </div>
+        </figure>
+      )}
+
+      <div class="letter-paper-wrap" data-reveal style="--reveal-delay:120ms">
+        <article class="letter-paper">
+          <h2 id="home-letter-title" class="letter-title">
+            {t('about.founderTitle')}
+            <Scribble class="letter-title__line" color="var(--alive-coral)" />
+          </h2>
+          <blockquote class="letter-text">
+            {paragraphs.map((para) => (
+              <p>{para}</p>
+            ))}
+          </blockquote>
+          <footer class="letter-sign">
+            <span class="letter-name">{name}</span>
+            {role && <span class="letter-role">{role}</span>}
+          </footer>
+        </article>
+        <a href={`${href('team', lang)}#our-president`} class="link-arrow letter-more">
+          {t('about.ourPresident')}
+          <ArrowRight size={18} class="flip-rtl" aria-hidden="true" />
+        </a>
+      </div>
+    </div>
+  </section>
+)}
+
+<style>
+  .letter-band {
+    background: var(--alive-cream);
+    overflow: hidden;
+  }
+  .letter-grid {
+    display: grid;
+    gap: 3rem;
+    align-items: start;
+  }
+  @media (min-width: 64rem) {
+    .letter-grid {
+      grid-template-columns: minmax(0, 4fr) minmax(0, 8fr);
+      gap: clamp(3rem, 2rem + 4vw, 6.5rem);
+    }
+  }
+
+  /* The portrait, pinned like a printed photo: white border, a strip of tape, a slight tilt. */
+  .letter-photo {
+    justify-self: center;
+    width: min(20rem, 78%);
+    margin-block-start: 1.5rem;
+  }
+  .letter-photo__print {
+    position: relative;
+    padding: 0.85rem 0.85rem 0.6rem;
+    background: var(--color-white);
+    box-shadow:
+      0 1px 2px rgb(41 52 66 / 0.12),
+      0 14px 30px -18px rgb(41 52 66 / 0.45);
+    transform: rotate(-2.6deg);
+    transition: transform 0.5s ease;
+  }
+  .letter-photo__print:hover {
+    transform: rotate(-0.8deg);
+  }
+  .letter-photo__print :global(img) {
+    display: block;
+    width: 100%;
+    aspect-ratio: 4 / 5;
+    object-fit: cover;
+    object-position: 50% 40%;
+  }
+  .letter-photo__tape {
+    position: absolute;
+    inset-block-start: -0.9rem;
+    inset-inline-start: 50%;
+    width: 6.5rem;
+    height: 1.7rem;
+    translate: -50% 0;
+    rotate: 3deg;
+    background: var(--alive-gold);
+    opacity: 0.72;
+  }
+  .letter-hand {
+    display: block;
+    font-family: 'Caveat', var(--font-display);
+    font-weight: 600;
+    font-size: 1.9rem;
+    line-height: 1.2;
+    color: var(--color-primary);
+    text-align: center;
+    padding-block-start: 0.45rem;
+  }
+  /* Persian: Vazirmatn bold, the site's Persian face (owner's request, Oct 28 2026: the
+     Ruqaa handwriting face was not readable for Persian readers). */
+  :global([lang='fa']) .letter-hand {
+    font-family: var(--font-sans);
+    font-weight: 800;
+    font-size: 1.5rem;
+  }
+
+  /* The letter: warm paper, slightly off-straight, a ruled margin on the reading side. */
+  .letter-paper {
+    position: relative;
+    padding: clamp(1.75rem, 1rem + 3vw, 3.5rem);
+    padding-inline-start: clamp(2.25rem, 1.25rem + 3.5vw, 4.25rem);
+    background: var(--color-paper);
+    box-shadow:
+      0 1px 2px rgb(41 52 66 / 0.08),
+      0 22px 40px -28px rgb(41 52 66 / 0.4);
+    transform: rotate(0.6deg);
+  }
+  .letter-paper::before {
+    content: '';
+    position: absolute;
+    inset-block: 0;
+    inset-inline-start: clamp(1.1rem, 0.6rem + 1.6vw, 2.1rem);
+    width: 2px;
+    background: var(--alive-coral);
+    opacity: 0.45;
+  }
+  .letter-title {
+    display: inline-block;
+    font-size: clamp(1.6rem, 1.3rem + 1.2vw, 2.4rem);
+    font-weight: 800;
+    line-height: 1.15;
+    color: var(--color-primary);
+    margin-block-end: 1.75rem;
+  }
+  .letter-title :global(.letter-title__line) {
+    margin-block-start: 0.2rem;
+  }
+  .letter-text {
+    display: grid;
+    gap: 1.1rem;
+    max-width: 46rem;
+    font-size: clamp(1.15rem, 1.05rem + 0.45vw, 1.4rem);
+    line-height: 1.75;
+    color: var(--color-ink);
+  }
+  .letter-sign {
+    display: grid;
+    gap: 0.15rem;
+    justify-items: start;
+    margin-block-start: 2rem;
+  }
+  /* Sign-off: his name and position in text (the owner removed the designed signature
+     marks, Oct 28 2026). */
+  .letter-name {
+    font-family: var(--font-display);
+    font-weight: 800;
+    font-size: 1.35rem;
+    color: var(--color-primary);
+  }
+  .letter-role {
+    font-size: 0.98rem;
+    color: var(--color-ink);
+  }
+  .letter-more {
+    margin-block-start: 1.75rem;
+    margin-inline-start: 0.5rem;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .letter-photo__print {
+      transition: none;
+    }
+  }
+</style>

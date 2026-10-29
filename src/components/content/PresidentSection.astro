@@ -1,19 +1,23 @@
 ---
 /**
- * "Our President" on the About page: vertical portrait, name with credentials, position,
- * approved biography and a link to his personal LinkedIn profile. Texts come from
- * src/content/about/about.yaml (president). The portrait is
- * src/assets/brand/president.(jpg|png|webp): replace that file to change it; without it,
- * a plain framed initials panel is shown.
+ * The President on Our Team, as the opening profile of a magazine (owner's brief « The
+ * People Behind Matin », Oct 29 2026): no card. The approved portrait stands on a deep
+ * brick colour field that runs to the page edge, and stays in view while the biography is
+ * read beside it in one comfortable column (about 20px) instead of small columns. The
+ * opening sentence about culture leads, set large in the editorial serif. The LinkedIn link
+ * and the President's notes close the text as two quiet invitations.
+ * Texts come from src/content/about/about.yaml (president), unchanged. The portrait is
+ * src/assets/brand/president.(jpg|png|webp), never altered; without it, his initials.
+ * Persian mirrors through logical properties.
  */
 import { Image } from 'astro:assets';
-import { ExternalLink } from '@lucide/astro';
+import { ArrowRight, ArrowUpRight } from '@lucide/astro';
 import type { ImageMetadata } from 'astro';
-import SectionHeader from '@/components/ui/SectionHeader.astro';
 import Prose from '@/components/ui/Prose.astro';
-import type { UiLang } from '@/i18n/routes';
+import { href, type UiLang } from '@/i18n/routes';
 import { useTranslations, pick } from '@/i18n/ui';
 import { getSingleton, initials, renderMarkdown } from '@/lib/content';
+import { teamText } from '@/lib/teamStrings';
 
 interface Props {
   lang: UiLang;
@@ -29,132 +33,131 @@ const photo = Object.values(photos)[0];
 const name = pick(p.displayName, lang) || p.name;
 const position = pick(p.position, lang) || pick(p.title, lang);
 const bio = lang === 'fa' ? (p.bio?.fa ?? p.bio?.en) : p.bio?.[lang];
+// The opening sentence about culture leads; the rest follows in one reading column.
+const [bioLead = '', ...bioParts] = (bio ?? '').split(/\n\s*\n/);
+const bioRest = bioParts.join('\n\n');
 // LinkedIn glyph (simple-icons does not ship it).
 const linkedinPath =
   'M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 1 1 0-4.125 2.062 2.062 0 0 1 0 4.125zM7.119 20.452H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0z';
 ---
 
 {bio && (
-  <section
-    id="our-president"
-    class="president-band on-dark scroll-mt-24 py-14 sm:py-16"
-    aria-labelledby="our-president-title"
-  >
-    <div class="container-site">
-      <SectionHeader
-        align="start"
-        id="our-president-title"
-        title={t('about.ourPresident')}
-        class="mb-8"
-      />
-      <div class="president-bio">
-        <div class="president-bio__media">
-          <span class="president-bio__block" aria-hidden="true"></span>
-          {photo ? (
-            <Image
-              src={photo}
-              alt={t('about.presidentPhotoAlt', { name: lang === 'fa' ? name : p.name })}
-              widths={[320, 480, 640]}
-              sizes="(min-width: 768px) 26rem, 90vw"
-              class="president-bio__photo"
-            />
-          ) : (
-            <span class="president-bio__photo president-bio__initials" aria-hidden="true">
-              {initials(p.name)}
-            </span>
-          )}
-        </div>
-        <div class="president-bio__text">
-          <h3 class="president-bio__name">{name}</h3>
-          {position && <p class="president-bio__position">{position}</p>}
-          <Prose html={renderMarkdown(bio, lang)} class="president-bio__prose" />
+  <section id="our-president" class="pres scroll-mt-24" aria-labelledby="our-president-title">
+    <span class="pres__field" aria-hidden="true" />
+    <div class="container-site pres__grid">
+      <div class="pres__media">
+        <span class="pres__sun" aria-hidden="true" />
+        {photo ? (
+          <Image
+            src={photo}
+            alt={t('about.presidentPhotoAlt', { name: lang === 'fa' ? name : p.name })}
+            widths={[400, 640, 880]}
+            sizes="(min-width: 64rem) 30rem, (min-width: 40rem) 26rem, 82vw"
+            class="pres__photo"
+            loading="eager"
+          />
+        ) : (
+          <span class="pres__photo pres__initials" aria-hidden="true">
+            {initials(p.name)}
+          </span>
+        )}
+      </div>
+
+      <div class="pres__text">
+        <p class="pres__kicker">{t('about.ourPresident')}</p>
+        <h2 id="our-president-title" class="pres__name">
+          {name}
+        </h2>
+        {position && <p class="pres__position">{position}</p>}
+        <Prose html={renderMarkdown(bioLead, lang)} class="pres__lead" />
+      </div>
+
+      <div class="pres__more">
+        {bioRest && <Prose html={renderMarkdown(bioRest, lang)} class="pres__bio" />}
+
+        <ul class="pres__invites">
           {p.linkedin && (
-            <a
-              href={p.linkedin}
-              class="btn btn-primary president-bio__cta"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              <svg
-                viewBox="0 0 24 24"
-                width="18"
-                height="18"
-                aria-hidden="true"
-                fill="currentColor"
-              >
-                <path d={linkedinPath} />
-              </svg>
-              {t('about.discoverPresident')}
-              <ExternalLink size={18} aria-hidden="true" />
-              <span class="sr-only">{t('a11y.externalLink')}</span>
-            </a>
+            <li>
+              <a href={p.linkedin} class="pres__invite" target="_blank" rel="noopener noreferrer">
+                <span class="pres__badge pres__badge--in" aria-hidden="true">
+                  <svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor">
+                    <path d={linkedinPath} />
+                  </svg>
+                </span>
+                <span class="pres__invite-text">{t('about.discoverPresident')}</span>
+                <ArrowUpRight size={18} aria-hidden="true" class="pres__arrow" />
+                <span class="sr-only">{t('a11y.externalLink')}</span>
+              </a>
+            </li>
           )}
-        </div>
+          <li>
+            <a href={href('notes', lang)} class="pres__invite">
+              <span class="pres__badge pres__badge--notes" aria-hidden="true">
+                ”
+              </span>
+              <span class="pres__invite-text">{teamText('readNotes', lang)}</span>
+              <ArrowRight size={18} aria-hidden="true" class="pres__arrow rtl:-scale-x-100" />
+            </a>
+          </li>
+        </ul>
       </div>
     </div>
   </section>
 )}
 
 <style>
-  /* Deep navy band (owner's choice, Oct 24 2026: navy, teal, cream and matte gold on the
-     Our Team page); the warm-white card keeps the biography in ink and navy. */
-  .president-band {
-    background: var(--color-primary);
-  }
-  /* Inside the warm-white card the LinkedIn button is navy with white text again. */
-  .president-bio :global(.btn-primary) {
-    background: var(--color-primary);
-    color: var(--color-white);
-  }
-  .president-bio :global(.btn-primary:hover) {
-    background: var(--color-teal-deep);
-  }
-  /* Inside the white card the focus ring is navy again (white would vanish). */
-  .president-bio :global(:focus-visible) {
-    outline-color: var(--color-primary);
-  }
-  /* Two balanced columns (owner's brief, Oct 21 2026): the portrait in its own column,
-     staying in view while the biography is read; no text wraps around it. In Persian
-     the grid mirrors, so the portrait is on the right. Stacked on phones. */
-  /* Warm white card (Phase 3, owner's brief Oct 24 2026), with the shared card edge. */
-  .president-bio {
-    display: grid;
-    gap: 2.5rem;
-    max-width: 84rem;
-    padding: clamp(1.5rem, 1rem + 2.5vw, 3.25rem);
-    border: 1px solid var(--color-card-edge);
-    border-block-start: 5px solid var(--color-gold);
-    border-radius: var(--radius-card);
-    background: var(--color-paper);
-    box-shadow: var(--shadow-card);
-    color: var(--color-ink);
-  }
-  .president-bio__media {
+  /* An ivory page with one strong moment of colour: a deep brick field behind the
+     portrait, running from the page edge (owner, Oct 29 2026: more depth, less beige). */
+  .pres {
     position: relative;
-    width: min(100%, 24rem);
-    margin-block-end: 1rem;
+    overflow: hidden;
+    padding-block: clamp(3.5rem, 2rem + 5vw, 7.5rem);
+    background: var(--color-ivory);
   }
-  /* Teal block behind one corner of the portrait. */
-  .president-bio__block {
+  .pres__field {
     position: absolute;
-    inset-block-end: -1rem;
-    inset-inline-end: -1rem;
-    width: 55%;
-    height: 45%;
-    border-radius: var(--radius-card);
-    background: var(--color-teal);
+    inset-block-start: 0;
+    inset-inline-start: 0;
+    width: 100%;
+    height: clamp(17rem, 12rem + 22vw, 24rem);
+    background: var(--color-brique-ink);
   }
-  .president-bio__photo {
+  .pres__grid {
+    position: relative;
+    display: grid;
+    gap: clamp(2.5rem, 2rem + 2vw, 3.5rem);
+  }
+
+  /* The portrait: the photo as it is, a clean warm-white mount, one deep corner. */
+  .pres__media {
+    position: relative;
+    justify-self: center;
+    width: min(82vw, 26rem);
+  }
+  .pres__photo {
     position: relative;
     display: block;
     width: 100%;
+    height: auto;
     aspect-ratio: 4 / 5;
     object-fit: cover;
-    object-position: 50% 20%;
-    border: 4px solid var(--color-white);
-    border-radius: var(--radius-card);
+    object-position: 50% 25%;
+    border: 0.5rem solid var(--color-paper);
+    border-radius: 0.5rem;
+    border-start-end-radius: 6rem;
+    box-shadow: 0 2rem 3.5rem -2rem color-mix(in srgb, var(--matin-nuit) 60%, transparent);
   }
-  .president-bio__initials {
+  /* The logo's sun, rising behind one corner of the portrait. */
+  .pres__sun {
+    position: absolute;
+    inset-block-start: -1.75rem;
+    inset-inline-end: -1.75rem;
+    width: 38%;
+    aspect-ratio: 1;
+    border-radius: 50%;
+    background: var(--color-soleil);
+  }
+  .pres__initials {
     display: grid;
     place-items: center;
     font-size: 4rem;
@@ -162,54 +165,220 @@ const linkedinPath =
     color: var(--color-primary);
     background: var(--color-cream);
   }
-  .president-bio__text {
-    max-width: 44rem;
+
+  /* ---------- The text ---------- */
+  .pres__text {
+    max-width: 42rem;
+    color: var(--color-ink);
   }
-  .president-bio__name {
-    font-size: clamp(2.25rem, 1.7rem + 2vw, 3.25rem);
+  .pres__kicker {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    font-family: var(--font-display);
+    font-size: 0.95rem;
     font-weight: 800;
-    line-height: 1.1;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--color-brique-ink);
+  }
+  .pres__kicker::before {
+    content: '';
+    width: 2.5rem;
+    height: 3px;
+    border-radius: 2px;
+    background: var(--color-soleil);
+  }
+  :global(html[lang='fa']) .pres__kicker {
+    letter-spacing: 0;
+    font-size: 1.05rem;
+  }
+  .pres__name {
+    margin-block-start: 0.9rem;
+    font-family: var(--font-editorial);
+    font-size: clamp(2.75rem, 1.6rem + 4.2vw, 5.25rem);
+    font-weight: 600;
+    font-variation-settings:
+      'SOFT' 100,
+      'opsz' 144;
+    line-height: 1;
+    letter-spacing: -0.02em;
+    color: var(--color-primary);
+    text-wrap: balance;
+  }
+  :global(html[lang='fa']) .pres__name {
+    font-weight: 800;
+    line-height: 1.3;
+    letter-spacing: 0;
+  }
+  .pres__position {
+    margin-block-start: 1rem;
+    font-family: var(--font-display);
+    font-size: clamp(1.1rem, 1rem + 0.4vw, 1.35rem);
+    font-weight: 700;
+    line-height: 1.45;
+    color: var(--color-brique-ink);
+  }
+  /* The opening sentence about culture, set large like a magazine standfirst. */
+  .pres__text :global(.pres__lead) {
+    margin-block-start: clamp(1.75rem, 1.25rem + 1.5vw, 2.5rem);
+    padding-block-start: clamp(1.5rem, 1.25rem + 1vw, 2rem);
+    border-block-start: 2px solid var(--color-soleil);
+    font-family: var(--font-editorial);
+    font-size: clamp(1.5rem, 1.2rem + 1.1vw, 2.15rem);
+    font-weight: 450;
+    font-variation-settings:
+      'SOFT' 100,
+      'opsz' 72;
+    line-height: 1.35;
     color: var(--color-primary);
   }
-  /* The approved position, as written, under the name with a thin gold rule. */
-  .president-bio__position {
-    margin-top: 0.75rem;
-    padding-bottom: 1.4rem;
-    border-bottom: 2px solid var(--color-gold);
-    font-family: var(--font-display);
-    font-size: clamp(1.125rem, 1.05rem + 0.4vw, 1.375rem);
-    font-weight: 700;
-    letter-spacing: 0.01em;
-    color: var(--color-teal-deep);
-  }
-  /* About 19 to 20px reading text, a comfortable line and paragraph spacing. */
-  .president-bio__text :global(.president-bio__prose) {
-    margin-top: 2rem;
-    font-size: clamp(1.0625rem, 1rem + 0.4vw, 1.25rem);
+  :global(html[lang='fa']) .pres__text :global(.pres__lead) {
+    font-weight: 600;
     line-height: 1.8;
   }
-  .president-bio__text :global(.president-bio__prose > * + *) {
-    margin-top: 1.3em;
+  /* The rest of the biography runs under the portrait and the opening, across the page
+     (owner, Oct 29 2026: shorter section), in two columns on wide screens, about 19px. */
+  .pres__more {
+    grid-column: 1 / -1;
+    color: var(--color-ink);
   }
-  /* The opening sentence (about culture and people) leads, slightly larger. */
-  .president-bio__text :global(.president-bio__prose > p:first-child) {
-    font-size: 1.15em;
+  .pres__more :global(.pres__bio) {
+    margin-block-start: clamp(1.75rem, 1.25rem + 1.5vw, 2.5rem);
+    font-size: clamp(1.125rem, 1.05rem + 0.3vw, 1.3rem);
+    line-height: 1.8;
+  }
+  :global(html[lang='fa']) .pres__more :global(.pres__bio) {
+    line-height: 2.05;
+  }
+  .pres__more :global(.pres__bio > * + *) {
+    margin-block-start: 1.25em;
+  }
+  /* A drop cap opens the biography (Latin scripts only). */
+  :global(html:not([lang='fa'])) .pres__more :global(.pres__bio > p:first-child::first-letter) {
+    float: inline-start;
+    margin-block: 0.1em 0;
+    margin-inline-end: 0.12em;
+    font-family: var(--font-editorial);
+    font-size: 3.4em;
+    font-weight: 600;
+    line-height: 0.82;
+    color: var(--color-brique-ink);
+  }
+
+  /* Two quiet invitations: LinkedIn and his notes. */
+  .pres__invites {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem 2.25rem;
+    margin-block-start: clamp(2rem, 1.5rem + 1.5vw, 3rem);
+    padding-block-start: 1.5rem;
+    border-block-start: 1px solid color-mix(in srgb, var(--color-primary) 18%, transparent);
+  }
+  .pres__invite {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.75rem;
+    min-height: 2.75rem;
+    font-family: var(--font-display);
+    font-size: 1.0625rem;
+    font-weight: 700;
     color: var(--color-primary);
+    text-decoration: none;
   }
-  .president-bio__cta {
-    margin-top: 2.5rem;
-    gap: 0.6rem;
+  .pres__invite-text {
+    background: linear-gradient(currentColor, currentColor) no-repeat 0 100% / 0 2px;
+    transition: background-size 0.35s ease;
   }
-  @media (min-width: 768px) {
-    .president-bio {
-      grid-template-columns: minmax(15rem, 2fr) minmax(0, 3fr);
-      align-items: start;
-      gap: clamp(2.5rem, 1rem + 3vw, 4.5rem);
+  :global([dir='rtl']) .pres__invite-text {
+    background-position: 100% 100%;
+  }
+  .pres__invite:is(:hover, :focus-visible) .pres__invite-text {
+    background-size: 100% 2px;
+  }
+  .pres__badge {
+    display: grid;
+    flex: none;
+    place-items: center;
+    width: 2.6rem;
+    aspect-ratio: 1;
+    border-radius: 50%;
+    color: var(--color-white);
+    background: var(--color-brique-ink);
+    transition: rotate 0.35s ease;
+  }
+  .pres__badge--notes {
+    padding-block-start: 0.55rem;
+    font-family: var(--font-editorial);
+    font-size: 2.1rem;
+    font-weight: 700;
+    line-height: 1;
+    color: var(--color-primary);
+    background: var(--color-soleil);
+  }
+  .pres__invite:hover .pres__badge {
+    rotate: -8deg;
+  }
+  .pres__invite :global(.pres__arrow) {
+    color: var(--color-brique-ink);
+    transition: translate 0.35s ease;
+  }
+  .pres__invite:hover :global(.pres__arrow) {
+    translate: 0.2rem 0;
+  }
+
+  /* ---------- Tablets and wide screens: portrait and story side by side ---------- */
+  @media (min-width: 56rem) {
+    .pres__field {
+      width: clamp(18rem, 6rem + 26vw, 34rem);
+      height: clamp(30rem, 18rem + 22vw, 44rem);
+      border-end-end-radius: 6rem;
     }
-    .president-bio__media {
-      position: sticky;
-      top: 7rem;
-      width: 100%;
+    .pres__grid {
+      grid-template-columns: minmax(16rem, 5fr) minmax(0, 7fr);
+      align-items: start;
+      column-gap: clamp(3rem, 1rem + 5vw, 7rem);
+    }
+    .pres__media {
+      justify-self: stretch;
+      width: auto;
+      max-width: 30rem;
+      margin-block-start: clamp(1rem, 0rem + 2vw, 3rem);
+    }
+  }
+  /* Wide screens: the name sits level with the middle of the portrait; the rest of the
+     biography in two comfortable columns under both. */
+  @media (min-width: 56rem) {
+    .pres__grid {
+      align-items: center;
+    }
+    .pres__more {
+      padding-block-start: clamp(1rem, 0.5rem + 1vw, 2rem);
+    }
+  }
+  @media (min-width: 64rem) {
+    .pres__more :global(.pres__bio) {
+      columns: 2;
+      column-gap: clamp(3rem, 1rem + 4vw, 5.5rem);
+    }
+    .pres__more :global(.pres__bio > *) {
+      break-inside: avoid;
+    }
+  }
+
+  /* Gentle hover: the portrait rises a little and the sun grows. */
+  @media (hover: hover) {
+    .pres__photo {
+      transition: translate 0.5s cubic-bezier(0.2, 0.7, 0.2, 1);
+    }
+    .pres__sun {
+      transition: scale 0.6s cubic-bezier(0.2, 0.7, 0.2, 1);
+    }
+    .pres__media:hover .pres__photo {
+      translate: 0 -0.5rem;
+    }
+    .pres__media:hover .pres__sun {
+      scale: 1.1;
     }
   }
 </style>

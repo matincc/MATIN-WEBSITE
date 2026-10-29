@@ -1,0 +1,178 @@
+---
+/**
+ * Living homepage, the first section after the hero (owner's brief, Oct 29 2026): who
+ * Matin is, told as an editorial statement (the approved home.whoText, set large) beside
+ * a collage of three photographs in different shapes. Photos come from the
+ * registry (src/lib/media.ts), with one very small credit line.
+ */
+import { ArrowRight } from '@lucide/astro';
+import MediaImage from '@/components/media/MediaImage.astro';
+import MediaCredits from '@/components/media/MediaCredits.astro';
+import { href, type UiLang } from '@/i18n/routes';
+import { useTranslations } from '@/i18n/ui';
+
+interface Props {
+  lang: UiLang;
+}
+const { lang } = Astro.props;
+const t = useTranslations(lang);
+---
+
+<section class="lintro" aria-labelledby="lintro-title">
+  <div class="container-site lintro__grid">
+    <div class="lintro__text" data-reveal>
+      <p class="living-kicker">{t('home.positioning')}</p>
+      <h2 id="lintro-title" class="lintro__title">
+        {t('home.whoTitle')}
+      </h2>
+      <p class="lintro__statement">{t('home.whoText')}</p>
+      <a href={href('about', lang)} class="living-link">
+        {t('home.whoCardsLabel')}
+        <ArrowRight size={20} class="flip-rtl" aria-hidden="true" />
+      </a>
+    </div>
+
+    <div class="lintro__collage">
+      <span class="lintro__sun" aria-hidden="true"></span>
+      <MediaImage
+        slot="introConversation"
+        lang={lang}
+        ratio={4 / 5}
+        sizes="(min-width: 64rem) 26rem, 70vw"
+        class="lintro__a"
+        credit="none"
+      />
+      <MediaImage
+        slot="introMaking"
+        lang={lang}
+        ratio={1}
+        sizes="(min-width: 64rem) 16rem, 45vw"
+        widths={[400, 640, 900]}
+        class="lintro__b"
+        credit="none"
+      />
+      <MediaImage
+        slot="introGallery"
+        lang={lang}
+        ratio={3 / 2}
+        sizes="(min-width: 64rem) 18rem, 50vw"
+        widths={[400, 640, 900]}
+        class="lintro__c"
+        credit="none"
+      />
+      <MediaCredits
+        slots={['introConversation', 'introMaking', 'introGallery']}
+        lang={lang}
+        class="lintro__credits"
+      />
+    </div>
+  </div>
+</section>
+
+<style>
+  .lintro {
+    padding-block: clamp(4rem, 3rem + 5vw, 8rem) clamp(3rem, 2rem + 3vw, 5rem);
+  }
+  .lintro__grid {
+    display: grid;
+    gap: clamp(3rem, 2rem + 4vw, 5rem);
+    align-items: center;
+  }
+  @media (min-width: 64rem) {
+    .lintro__grid {
+      grid-template-columns: minmax(0, 6fr) minmax(0, 5fr);
+    }
+  }
+  .lintro__title {
+    margin-block: 0.75rem 1.5rem;
+    font-family: var(--font-display);
+    font-size: clamp(1.1rem, 1rem + 0.4vw, 1.35rem);
+    font-weight: 800;
+    color: var(--living-green-ink);
+  }
+  /* The approved introduction, set like the opening of a magazine feature. */
+  .lintro__statement {
+    max-width: 38rem;
+    font-family: var(--font-editorial);
+    font-size: clamp(1.6rem, 1.15rem + 1.8vw, 2.6rem);
+    font-weight: 400;
+    font-variation-settings:
+      'SOFT' 100,
+      'opsz' 72;
+    line-height: 1.25;
+    letter-spacing: -0.01em;
+    color: var(--living-charcoal);
+    text-wrap: pretty;
+  }
+  :global(html[lang='fa']) .lintro__statement {
+    font-family: var(--font-display);
+    font-size: clamp(1.4rem, 1.1rem + 1.2vw, 2.05rem);
+    font-weight: 600;
+    line-height: 1.8;
+    letter-spacing: 0;
+  }
+  .lintro__text :global(.living-link) {
+    margin-block-start: 2rem;
+  }
+
+  /* ---------- Collage: three shapes, overlapping, never a grid of equal boxes ---------- */
+  .lintro__collage {
+    position: relative;
+    display: grid;
+    grid-template-columns: repeat(12, minmax(0, 1fr));
+    grid-template-rows: auto auto;
+    max-width: 36rem;
+    margin-inline: auto;
+    width: 100%;
+  }
+  .lintro__sun {
+    position: absolute;
+    inset-block-start: 6%;
+    inset-inline-start: 2%;
+    width: 46%;
+    aspect-ratio: 1;
+    border-radius: 50%;
+    background: var(--living-gold);
+    opacity: 0.85;
+  }
+  .lintro__collage :global(.lintro__a) {
+    grid-column: 3 / 12;
+    grid-row: 1;
+    z-index: 1;
+    border-radius: 999px 999px 1.75rem 1.75rem;
+  }
+  .lintro__collage :global(.lintro__a .media__frame) {
+    border-radius: 999px 999px 1.75rem 1.75rem;
+  }
+  .lintro__collage :global(.lintro__b) {
+    grid-column: 1 / 6;
+    grid-row: 2;
+    z-index: 2;
+    margin-block-start: -38%;
+  }
+  .lintro__collage :global(.lintro__b .media__frame) {
+    border-radius: 50%;
+    outline: 0.5rem solid var(--living-ivory);
+  }
+  .lintro__collage :global(.lintro__c) {
+    grid-column: 6 / 13;
+    grid-row: 2;
+    z-index: 2;
+    margin-block-start: -12%;
+    margin-inline-start: 8%;
+  }
+  .lintro__collage :global(.lintro__c .media__frame) {
+    border-radius: 1.5rem 4.5rem 1.5rem 1.5rem;
+    outline: 0.5rem solid var(--living-ivory);
+  }
+  .lintro__collage :global(.lintro__credits) {
+    grid-column: 1 / -1;
+    grid-row: 3;
+    margin-block-start: 1.25rem;
+  }
+  @media (hover: hover) and (prefers-reduced-motion: no-preference) {
+    .lintro__collage :global(.media:hover img) {
+      transform: scale(1.04);
+    }
+  }
+</style>
