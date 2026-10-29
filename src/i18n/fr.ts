@@ -31,6 +31,7 @@ const fr = {
     newsSubmenu: 'Afficher les rubriques de la page Actualités',
     gallerySubmenu: 'Afficher les sections de la Galerie',
     resourcesSubmenu: 'Afficher les sections de la page Ressources',
+    contactSubmenu: 'Afficher les sections de la page Contact et collaboration',
     externalLink: '(ouvre un nouvel onglet)',
     breadcrumbs: "Fil d'Ariane",
     social: 'Réseaux sociaux',
@@ -51,7 +52,9 @@ const fr = {
     getInvolved: "S'impliquer",
     resources: 'Ressources',
     contact: 'Contact et collaboration',
+    contactMembership: 'Adhésion',
     careers: 'Emplois',
+    membership: 'Devenir membre',
     faq: 'FAQ',
     privacy: 'Politique de confidentialité',
     terms: "Conditions d'utilisation",
@@ -524,6 +527,8 @@ const fr = {
   contact: {
     careersNote: 'Vous cherchez plutôt un emploi rémunéré?',
     careersLink: 'Voir les postes ouverts',
+    membershipNote: 'Vous souhaitez devenir membre de Matin?',
+    membershipLink: 'Remplir le formulaire d’adhésion',
     title: 'Contact et collaboration',
     lede: 'Une question, une idée, une envie de collaborer ? Écrivez-nous : nous lisons chaque message et vous répondrons dès que possible.',
     formTitle: 'Écrivez-nous',
@@ -653,6 +658,82 @@ const fr = {
     volunteerText:
       'Matin accueille aussi des bénévoles qui veulent contribuer à ses activités culturelles.',
     volunteerCta: 'Rejoindre l’équipe de bénévoles',
+  },
+  membership: {
+    title: 'Devenir membre',
+    lede: 'Joignez-vous à l’Institut interculturel Matin et soutenez le dialogue entre les cultures, à Montréal et au-delà.',
+    metaDescription:
+      'Adhésion à l’Institut interculturel Matin : membres individuels, organismes et personnes élues, et formulaire d’adhésion en ligne.',
+    typesTitle: 'Trois façons d’adhérer',
+    typesSubtitle: 'Choisissez la catégorie qui vous correspond.',
+    individualTitle: 'Membre individuel',
+    individualWho: 'Toute personne de 18 ans ou plus qui partage la mission de Matin.',
+    individualRights:
+      'Droit de vote à l’assemblée générale et possibilité d’être élu au conseil d’administration.',
+    organizationTitle: 'Membre organisme',
+    organizationWho:
+      'Organismes sans but lucratif, culturels et communautaires, établissements et autres organisations qui partagent notre mission.',
+    organizationRights:
+      'Représenté par une personne déléguée; participe aux activités et aux assemblées, sans droit de vote.',
+    electedTitle: 'Personnes élues',
+    electedWho:
+      'Élus et élues des paliers municipal, provincial ou fédéral qui souhaitent appuyer le dialogue interculturel.',
+    electedRights:
+      'Participent aux activités et aux assemblées, sans droit de vote. Matin est non partisan : une adhésion n’est l’appui d’aucune personne ni d’aucun parti.',
+    feeNote: 'L’adhésion est gratuite jusqu’au 31 décembre 2027.',
+    stepsTitle: 'Comment ça fonctionne',
+    step1: 'Vous remplissez le formulaire d’adhésion.',
+    step2: 'Le conseil d’administration étudie votre demande.',
+    step3:
+      'Nous vous écrivons pour confirmer votre adhésion. Elle est valide 365 jours à partir de cette date et renouvelable.',
+    questions: 'Des questions sur l’adhésion?',
+    formTitle: 'Formulaire d’adhésion',
+    formIntro: 'Remplissez ce formulaire pour demander à devenir membre de Matin.',
+    typeQuestion: 'Vous souhaitez adhérer à titre de :',
+    firstName: 'Prénom',
+    lastName: 'Nom de famille',
+    delegateFirstName: 'Prénom de la personne déléguée',
+    delegateLastName: 'Nom de famille de la personne déléguée',
+    occupation: 'Profession ou occupation (facultatif)',
+    organization: 'Nom de l’organisme',
+    orgType: 'Type d’organisme (facultatif)',
+    orgTypes: {
+      nonprofit: 'Organisme sans but lucratif',
+      cultural: 'Organisme culturel',
+      community: 'Organisme communautaire',
+      public: 'Établissement public',
+      business: 'Entreprise',
+      other: 'Autre',
+    },
+    position: 'Fonction au sein de l’organisme (facultatif)',
+    office: 'Fonction élective (par exemple : conseillère municipale)',
+    govLevel: 'Palier de gouvernement',
+    govLevels: {
+      Municipal: 'Municipal',
+      Provincial: 'Provincial',
+      Federal: 'Fédéral',
+      Other: 'Autre',
+    },
+    district: 'Circonscription, district ou arrondissement (facultatif)',
+    addressTitle: 'Adresse',
+    address: 'Adresse (numéro, rue, appartement)',
+    city: 'Ville',
+    province: 'Province ou territoire',
+    postalCode: 'Code postal',
+    country: 'Pays',
+    message: 'Quelques mots sur vous ou sur votre organisme (facultatif)',
+    ageConfirm: 'Je déclare avoir 18 ans ou plus.',
+    authorizedConfirm:
+      'Je confirme être autorisé ou autorisée à présenter cette demande au nom de l’organisme.',
+    nonPartisanConfirm:
+      'Je comprends que Matin est non partisan et que mon adhésion ne peut servir à des fins électorales ou partisanes.',
+    bylawsConfirm:
+      'J’adhère à la mission de Matin et je m’engage à respecter ses règlements généraux.',
+    consent:
+      "J'accepte que Matin utilise ces renseignements uniquement pour gérer mon adhésion et son registre des membres, conformément à sa",
+    success:
+      'Merci! Votre demande d’adhésion a bien été envoyée. Nous l’étudierons et vous écrirons par courriel.',
+    submit: 'Envoyer ma demande d’adhésion',
   },
   faq: {
     title: 'Foire aux questions',

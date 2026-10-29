@@ -87,6 +87,14 @@ const resourcesLinks = [
     : { id: 'cat-international', label: t('resources.international') },
   { id: 'policy', label: t('resources.policyTitle') },
 ].map((l) => ({ ...l, href: anchor(resourcesHref, l.id) }));
+// Sub-links of "Contact & Collaboration" (owner's request, Oct 29 2026), in his order:
+// Write to us, Membership, Join Matin's Volunteer Team, all sections of the Contact page.
+const contactHref = href('contact', lang);
+const contactLinks = [
+  { id: 'write', label: t('contact.formTitle') },
+  { id: lang === 'fr' ? 'adhesion' : 'membership', label: t('nav.contactMembership') },
+  { id: lang === 'fr' ? 'benevolat' : 'volunteer', label: t('involved.volunteerTitle') },
+].map((l) => ({ ...l, href: anchor(contactHref, l.id) }));
 // Menu items that open a dropdown.
 const subMenus: Partial<Record<RouteKey, { id: string; label: string; links: typeof aboutLinks }>> =
   {
@@ -100,6 +108,7 @@ const subMenus: Partial<Record<RouteKey, { id: string; label: string; links: typ
       label: t('a11y.resourcesSubmenu'),
       links: resourcesLinks,
     },
+    contact: { id: 'contact-submenu', label: t('a11y.contactSubmenu'), links: contactLinks },
   };
 
 const current = Astro.url.pathname;

@@ -16,8 +16,9 @@ const { lang, showNewsletter = true } = Astro.props;
 const t = useTranslations(lang);
 const s = await getSettings();
 
-// Same order as the header menu; the FAQ (left out until it has questions) and Careers
-// (owner's request, Oct 27 2026; not in the header menu) sit before Contact.
+// Same order as the header menu; the FAQ (left out until it has questions), Become a Member
+// (Oct 28 2026) and Careers (owner's request, Oct 27 2026; neither in the header menu) sit
+// before Contact.
 const empty = await emptySections();
 const explore = (
   [
@@ -29,6 +30,7 @@ const explore = (
     'gallery',
     'resources',
     'faq',
+    'membership',
     'careers',
     'contact',
   ] as RouteKey[]

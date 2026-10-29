@@ -14,6 +14,7 @@ import CommunityIllustration from '@/components/brand/CommunityIllustration.astr
 import SectionHeader from '@/components/ui/SectionHeader.astro';
 import ContactForm from '@/components/forms/ContactForm.astro';
 import VolunteerForm from '@/components/forms/VolunteerForm.astro';
+import MembershipForm from '@/components/forms/MembershipForm.astro';
 import MapFacade from '@/components/ui/MapFacade.astro';
 import SocialLinks from '@/components/ui/SocialLinks.astro';
 import { href, siteAlternates, type UiLang } from '@/i18n/routes';
@@ -30,6 +31,8 @@ const inv = await getSingleton('involvement');
 // The volunteer form exists in all three languages.
 const hasVolunteer = true;
 const volunteerId = lang === 'fr' ? 'benevolat' : 'volunteer';
+// Membership form right after « Write to us » (owner's request, Oct 29 2026).
+const membershipId = lang === 'fr' ? 'adhesion' : 'membership';
 // Each detail appears only once it is set in the site settings.
 const a = s.address;
 const address = a && `${a.street}, ${a.city} (${a.region}) ${a.postalCode}`;
@@ -137,6 +140,29 @@ const details = [
     </div>
   </div>
 
+  <section
+    id={membershipId}
+    class="membership-band scroll-mt-24 py-16 sm:py-20"
+    aria-labelledby="membership-title"
+  >
+    <div class="container-site">
+      <SectionHeader
+        align="start"
+        id="membership-title"
+        title={t('membership.formTitle')}
+        subtitle={t('membership.lede')}
+      />
+      <p class="membership-fee">{t('membership.feeNote')}</p>
+      <div class="card form-panel form-panel--membership p-6 sm:p-10">
+        <p class="mb-8 text-lg">{t('membership.formIntro')}</p>
+        <MembershipForm lang={lang} action={`${href('contact', lang)}?sent=1#${membershipId}`} />
+      </div>
+      <p class="careers-note">
+        <a href={href('membership', lang)}>{t('membership.typesTitle')}</a>
+      </p>
+    </div>
+  </section>
+
   {hasVolunteer && (
     <section
       id={volunteerId}
@@ -196,6 +222,20 @@ const details = [
     aspect-ratio: 1;
     border-radius: 50%;
     background: var(--color-gold);
+  }
+  .membership-band {
+    background: var(--color-white);
+  }
+  .membership-fee {
+    margin-block: -0.5rem 1.5rem;
+    font-weight: 700;
+    color: var(--matin-brique-ink);
+  }
+  .form-panel--membership {
+    max-width: 60rem;
+    border: 1px solid var(--color-sable);
+    border-block-start: 6px solid var(--matin-brique);
+    border-start-end-radius: 6rem;
   }
   .volunteer-band {
     background: var(--color-paper);

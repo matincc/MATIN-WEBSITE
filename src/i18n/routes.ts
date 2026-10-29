@@ -22,6 +22,7 @@ export const routes = {
   resources: { fr: 'ressources', en: 'resources' },
   contact: { fr: 'contact', en: 'contact' },
   careers: { fr: 'emplois', en: 'careers' },
+  membership: { fr: 'adhesion', en: 'membership' },
   faq: { fr: 'faq', en: 'faq' },
   privacy: { fr: 'confidentialite', en: 'privacy' },
   terms: { fr: 'conditions-utilisation', en: 'terms-of-use' },
