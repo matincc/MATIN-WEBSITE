@@ -1,9 +1,10 @@
 ---
 /**
  * About page, in this order: Who We Are (photo, text and legal line; moved here from the homepage,
- * owner's brief Oct 25 2026), Our Mission (navy), Our Vision (deep teal) and Legal status
- * (aqua) as coloured cards on an ivory band, Our values (six coloured cards), Our story
- * (aqua band) (owner's About brief, Oct 25 2026: no shortcut buttons, no photo pair). The
+ * owner's brief Oct 25 2026), Our Mission (brick), Our Vision (turquoise) and Legal status
+ * (sand) as staggered cards, Our values (six cards at different heights), Our story (sand
+ * band with a rising sun) (owner's About brief, Oct 25 2026: no shortcut buttons, no photo
+ * pair; scheme A and organic shapes, Oct 29 2026: an arch photo, suns, uneven corners). The
  * President's personal note is on the homepage only (HomeLetter.astro, owner's request
  * Oct 29 2026). The President's biography and the team are on the Our Team
  * page (TeamPage.astro).
@@ -20,7 +21,6 @@ import {
 import PhotoCredit from '@/components/media/PhotoCredit.astro';
 import { photos } from '@/lib/photos';
 import PageLayout from '@/layouts/PageLayout.astro';
-import DialogueArt from '@/components/brand/DialogueArt.astro';
 import SectionHeader from '@/components/ui/SectionHeader.astro';
 import { href, siteAlternates, type UiLang } from '@/i18n/routes';
 import { useTranslations, pick } from '@/i18n/ui';
@@ -39,7 +39,7 @@ const blocks: {
   title: string;
   text?: string;
   accent: string;
-  /** Card surface: navy and teal are dark cards with white text, aqua a light one. */
+  /** Card surface: brique and firouzeh take white text, sable navy text. */
   tone: string;
   link?: { href: string; label: string };
   /** Short facts shown as a badge above the text (none at the moment). */
@@ -49,15 +49,15 @@ const blocks: {
     id: 'mission',
     title: t('about.mission'),
     text: pick(settings.mission, lang),
-    accent: 'navy',
-    tone: 'navy',
+    accent: 'terracotta',
+    tone: 'brique',
   },
   {
     id: 'vision',
     title: t('about.vision'),
     text: pick(about.vision, lang),
     accent: 'teal',
-    tone: 'teal',
+    tone: 'firouzeh',
   },
   ...(settings.legal
     ? [
@@ -66,15 +66,15 @@ const blocks: {
           title: t('about.legalStatus'),
           text: settings.legal.statement[lang],
           accent: 'mustard',
-          tone: 'aqua',
+          tone: 'sable',
           link: { href: href('legalInfo', lang), label: t('about.legalMore') },
         },
       ]
     : []),
 ];
-// Six coordinated surfaces for the values (owner's brief, Oct 25 2026): dark navy and deep
-// teal cards alternate with aqua and champagne ones.
-const valueTones = ['navy', 'aqua', 'champagne', 'teal', 'champagne', 'aqua'];
+// Six surfaces for the values, never a uniform grid (owner's request, Oct 29 2026: less
+// rigid): turquoise and brick cards with white text among white and sand ones.
+const valueTones = ['firouzeh', 'white', 'sable', 'sable', 'brique', 'white'];
 
 // Thin-line icons, all drawn at the same size and stroke width.
 // Equity is four equal squares: never a scale, gavel or other legal symbol.
@@ -109,11 +109,12 @@ const history = about.history.map((h) => ({
   description={t('about.lede')}
   alternates={siteAlternates('about')}
 >
-  <!-- Who we are: photo and text side by side -->
-  <section id="who-we-are" class="scroll-mt-24 pt-4 pb-20" aria-labelledby="who-we-are-title">
+  <!-- Who we are: the photo in an arch with the morning sun, the text set like a feature -->
+  <section id="who-we-are" class="who scroll-mt-24" aria-labelledby="who-we-are-title">
     <div class="container-site who-grid">
       <figure class="who-figure" data-reveal>
-        <span class="who-figure__block" aria-hidden="true"></span>
+        <span class="who-figure__sun" aria-hidden="true"></span>
+        <span class="who-figure__dot" aria-hidden="true"></span>
         <div class="who-figure__photo">
           <Picture
             src={photos.tamtams.src}
@@ -146,9 +147,11 @@ const history = about.history.map((h) => ({
     </div>
   </section>
 
-  <!-- Mission, Vision and Legal status: navy, deep teal and aqua cards on an ivory band -->
+  <!-- Mission, Vision and Legal status: brick, turquoise and sand cards, staggered like a
+       sunrise on a sand band, each with its own corner and shape -->
   {blocks.length > 0 && (
     <div class="about-band">
+      <span class="about-band__sun" aria-hidden="true"></span>
       <div class="container-site about-blocks">
         {blocks.map((b) => (
           <section
@@ -162,6 +165,7 @@ const history = about.history.map((h) => ({
             data-reveal
             aria-labelledby={`${b.id}-title`}
           >
+            <span class="about-block__shape" aria-hidden="true"></span>
             <h2 id={`${b.id}-title`} class="about-block__title">
               {b.title}
             </h2>
@@ -184,11 +188,12 @@ const history = about.history.map((h) => ({
     </div>
   )}
 
-  <!-- Our values -->
-  <section id="values" class="values scroll-mt-24 py-20" aria-labelledby="values-title">
-    <div class="container-site">
+  <!-- Our values: six cards at different heights and corners, never a uniform grid -->
+  <section id="values" class="values scroll-mt-24" aria-labelledby="values-title">
+    <span class="values__sun" aria-hidden="true"></span>
+    <div class="container-site relative">
       <SectionHeader align="start" id="values-title" title={t('about.values')} />
-      <ul class="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+      <ul class="values-grid">
         {about.values.map((v, i) => {
           const Icon = icons[v.icon];
           return (
@@ -205,9 +210,10 @@ const history = about.history.map((h) => ({
     </div>
   </section>
 
-  <!-- Our story: one entry per milestone in about.yaml (history), oldest first. -->
+  <!-- Our story: one entry per milestone in about.yaml (history), oldest first, on a sand
+       band where the sun rises on the horizon (the same sign as the page banners). -->
   <section id="story" class="story section-pad scroll-mt-24" aria-labelledby="history-title">
-    <DialogueArt accent="teal" seed="story" class="story__art" />
+    <span class="story__sun" aria-hidden="true"></span>
     <div class="container-site relative">
       <SectionHeader align="start" id="history-title" title={t('about.history')} />
       <ol class="timeline">
@@ -240,7 +246,14 @@ const history = about.history.map((h) => ({
 </script>
 
 <style>
+  /* Scheme A shapes (owner's request, Oct 29 2026: less boxed, less regular): arches,
+     suns and circles as on the homepage, uneven corners, cards at different heights.
+     Logical corners so the Persian page mirrors. Flat colours only. */
+
   /* ---------- Who we are ---------- */
+  .who {
+    padding-block: 0.5rem clamp(4rem, 3rem + 4vw, 7rem);
+  }
   .who-grid {
     display: grid;
     gap: 3rem;
@@ -249,31 +262,48 @@ const history = about.history.map((h) => ({
   @media (min-width: 64rem) {
     .who-grid {
       grid-template-columns: minmax(0, 5fr) minmax(0, 7fr);
-      gap: clamp(3.5rem, 2rem + 4vw, 7rem);
+      gap: clamp(3.5rem, 2rem + 5vw, 8rem);
+    }
+    /* The text sits a little lower than the photo: a feature page, not a form. */
+    .who-body {
+      padding-block-start: clamp(2rem, 1rem + 3vw, 5rem);
     }
   }
   .who-figure {
     position: relative;
-    max-width: 34rem;
+    max-width: 30rem;
     margin-inline: auto;
     width: 100%;
+    padding-block-start: 2rem;
   }
-  /* Teal block offset behind the photo: a quiet graphic accent. */
-  .who-figure__block {
+  /* The logo's sun behind the arch, and a small turquoise circle in front of it. */
+  .who-figure__sun {
     position: absolute;
-    inset-block-start: 1.5rem;
-    inset-inline-start: -1.25rem;
-    width: 70%;
-    height: 82%;
-    border-radius: var(--radius-card);
-    background: var(--color-teal);
+    inset-block-start: 0;
+    inset-inline-start: -1.5rem;
+    width: 52%;
+    aspect-ratio: 1;
+    border-radius: 50%;
+    background: var(--color-soleil);
+  }
+  .who-figure__dot {
+    position: absolute;
+    z-index: 2;
+    inset-block-end: 3.5rem;
+    inset-inline-end: -1rem;
+    width: 22%;
+    aspect-ratio: 1;
+    border-radius: 50%;
+    background: var(--color-firouzeh);
+    outline: 0.5rem solid var(--color-paper);
   }
   .who-figure__photo {
     position: relative;
+    z-index: 1;
     aspect-ratio: 4 / 5;
     overflow: hidden;
-    border-radius: var(--radius-card);
-    margin-inline-start: 0.75rem;
+    border-radius: 999px 999px 1.75rem 1.75rem;
+    margin-inline: 1.5rem 0;
   }
   /* The Tam-Tams photo is wide with a lot of sky: zoom towards the crowd. */
   .who-figure__photo :global(img) {
@@ -285,78 +315,119 @@ const history = about.history.map((h) => ({
     transform-origin: 50% 96%;
   }
   .who-figure figcaption {
-    margin-inline-start: 0.75rem;
+    margin-inline-start: 1.5rem;
   }
   .who-title {
-    font-size: clamp(2.25rem, 1.6rem + 2.4vw, 3.5rem);
-    font-weight: 800;
-    line-height: 1.1;
+    font-family: var(--font-editorial);
+    font-size: clamp(2.5rem, 1.7rem + 3vw, 4.25rem);
+    font-weight: 700;
+    font-variation-settings:
+      'SOFT' 100,
+      'opsz' 96;
+    line-height: 1.05;
+    letter-spacing: -0.01em;
   }
-  .who-title::after {
-    content: '';
-    display: block;
-    width: 4rem;
-    height: 3px;
-    margin-block-start: 1rem;
-    border-radius: 2px;
-    background: var(--color-gold);
+  :global(html[lang='fa']) .who-title {
+    font-weight: 800;
+    font-variation-settings: normal;
+    letter-spacing: 0;
+    line-height: 1.3;
   }
   /* Secondary positioning line: below the title, never in place of the slogan. */
   .who-positioning {
-    margin-block: 1.25rem;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.75rem;
+    margin-block: 1.25rem 1.75rem;
     font-family: var(--font-display);
-    font-size: clamp(1.25rem, 1.1rem + 0.5vw, 1.5rem);
+    font-size: clamp(1.15rem, 1.05rem + 0.45vw, 1.4rem);
     font-weight: 800;
-    color: var(--color-teal-deep);
+    color: var(--color-brique-ink);
   }
+  .who-positioning::before {
+    content: '';
+    flex: none;
+    width: 1.5rem;
+    height: 0.75rem;
+    border-radius: 999px 999px 0 0;
+    background: var(--color-soleil);
+  }
+  /* The approved introduction, set like the opening of a magazine feature. */
   .who-text {
-    max-width: 42rem;
-    font-size: clamp(1.25rem, 1.1rem + 0.55vw, 1.5rem);
-    line-height: 1.65;
+    max-width: 40rem;
+    font-family: var(--font-editorial);
+    font-size: clamp(1.4rem, 1.1rem + 1.2vw, 2.1rem);
+    font-variation-settings:
+      'SOFT' 100,
+      'opsz' 48;
+    line-height: 1.4;
+    text-wrap: pretty;
+  }
+  :global(html[lang='fa']) .who-text {
+    font-family: var(--font-sans);
+    font-size: clamp(1.3rem, 1.1rem + 0.8vw, 1.75rem);
+    line-height: 1.85;
   }
   .who-legal {
-    max-width: 42rem;
-    margin-block-start: 1.25rem;
-    padding: 0.85rem 1.1rem;
-    border-radius: 0.9rem;
-    border-inline-start: 4px solid var(--color-gold);
-    background: var(--color-ivory);
+    max-width: 40rem;
+    margin-block-start: 1.75rem;
+    padding-inline-start: 1.1rem;
+    border-inline-start: 3px solid var(--color-firouzeh);
     font-size: 1.0625rem;
   }
 
-  /* Mission, Vision and Legal status on an ivory band (owner's About brief, Oct 25 2026:
-     coordinated navy, deep teal, turquoise and matte-gold cards). */
+  /* ---------- Mission, Vision, Legal status ---------- */
   .about-band {
-    padding-block: clamp(3.5rem, 2.5rem + 3vw, 5.5rem);
-    background: var(--color-ivory);
-    border-block: 1px solid var(--color-card-edge);
+    position: relative;
+    overflow: hidden;
+    padding-block: clamp(4rem, 3rem + 4vw, 7rem) clamp(4.5rem, 3rem + 5vw, 8rem);
+    background: var(--color-sable);
+  }
+  /* A large pale sun behind the cards. */
+  .about-band__sun {
+    position: absolute;
+    inset-block-start: -8rem;
+    inset-inline-end: -8rem;
+    width: clamp(18rem, 10rem + 25vw, 34rem);
+    aspect-ratio: 1;
+    border-radius: 50%;
+    background: color-mix(in srgb, var(--color-soleil) 30%, var(--color-sable));
   }
   .about-blocks {
+    position: relative;
     display: grid;
     gap: 1.75rem;
+    align-items: start;
   }
-
-  /* Mission and Vision side by side; the compact Legal status card joins them as a third
-     column on wide screens (owner's brief, Oct 24 2026: it was too wide for its text). */
   @media (min-width: 56rem) {
     .about-blocks {
       grid-template-columns: repeat(2, minmax(0, 1fr));
     }
+    .about-block[data-tone='firouzeh'] {
+      margin-block-start: 3.5rem;
+    }
     .about-block--legal {
       grid-column: 1 / -1;
+      max-width: 40rem;
     }
   }
+  /* Wide screens: three cards of different widths, each a little lower than the last,
+     like the sun climbing. */
   @media (min-width: 72rem) {
     .about-blocks {
-      grid-template-columns: repeat(3, minmax(0, 1fr));
+      grid-template-columns: minmax(0, 5fr) minmax(0, 4.5fr) minmax(0, 3.5fr);
+      gap: 2rem;
     }
     .about-block--legal {
       grid-column: auto;
+      max-width: none;
+      margin-block-start: 7rem;
     }
   }
   /* Persian shows only the Legal status card: keep it compact. */
   .about-block--legal:only-child {
     max-width: 44rem;
+    margin-block-start: 0;
   }
   .about-block__badge {
     display: inline-block;
@@ -374,198 +445,271 @@ const history = about.history.map((h) => ({
   .about-block {
     position: relative;
     overflow: hidden;
-    padding: clamp(1.75rem, 1.2rem + 2.2vw, 3.25rem);
-    border: 1px solid var(--color-card-edge);
-    box-shadow: var(--shadow-card);
-    border-block-start: 6px solid var(--color-gold);
-    border-radius: var(--radius-card);
-    background: var(--color-white);
+    padding: clamp(2rem, 1.4rem + 2.4vw, 3.5rem);
+    border-radius: 1.5rem;
   }
-  /* A quiet flat circle in the corner of each card (no gradient). */
-  .about-block::after {
-    content: '';
-    position: absolute;
-    inset-block-end: -4.5rem;
-    inset-inline-end: -4.5rem;
-    width: 11rem;
-    height: 11rem;
-    border-radius: 50%;
-    pointer-events: none;
-  }
-  .about-block > * {
+  .about-block > :not(.about-block__shape) {
     position: relative;
     z-index: 1;
   }
-  @media (max-width: 40rem) {
-    .about-block::after {
-      width: 7rem;
-      height: 7rem;
-      inset-block-end: -3.5rem;
-      inset-inline-end: -3.5rem;
-    }
-  }
   .about-block__title {
     margin-block-end: 1.1rem;
-    font-size: clamp(1.75rem, 1.4rem + 1.2vw, 2.5rem);
+    font-family: var(--font-editorial);
+    font-size: clamp(1.9rem, 1.4rem + 1.5vw, 2.75rem);
+    font-weight: 700;
+    font-variation-settings:
+      'SOFT' 100,
+      'opsz' 72;
+    line-height: 1.1;
+  }
+  :global(html[lang='fa']) .about-block__title {
     font-weight: 800;
-  }
-  .about-block__title::after {
-    content: '';
-    display: block;
-    width: 3rem;
-    height: 3px;
-    margin-block-start: 0.75rem;
-    border-radius: 2px;
-    background: var(--color-gold);
-  }
-  /* Navy (Mission) and deep teal (Vision): white text 11.9:1 and 6.2:1, cream titles. */
-  .about-block[data-tone='navy'],
-  .about-block[data-tone='teal'] {
-    border-color: transparent;
-    border-block-start-color: var(--color-gold);
-    color: var(--color-white);
-  }
-  .about-block[data-tone='navy'] {
-    background: var(--color-primary);
-  }
-  .about-block[data-tone='teal'] {
-    background: var(--color-teal-deep);
-  }
-  .about-block[data-tone='navy'] .about-block__title,
-  .about-block[data-tone='teal'] .about-block__title {
-    color: var(--color-cream);
-  }
-  .about-block[data-tone='navy']::after {
-    background: color-mix(in srgb, var(--color-teal) 30%, transparent);
-  }
-  .about-block[data-tone='teal']::after {
-    background: color-mix(in srgb, var(--color-white) 12%, transparent);
-  }
-  /* Aqua (Legal status): navy text, gold badge edge. */
-  .about-block[data-tone='aqua'] {
-    background: var(--color-aqua);
-    border-color: var(--color-aqua-edge);
-    border-block-start-color: var(--color-gold);
-  }
-  .about-block[data-tone='aqua']::after {
-    background: color-mix(in srgb, var(--color-white) 45%, transparent);
+    font-variation-settings: normal;
   }
   .about-block__text {
-    max-width: 44rem;
-    font-size: clamp(1.125rem, 1.05rem + 0.3vw, 1.25rem);
+    max-width: 40rem;
+    font-size: clamp(1.125rem, 1.05rem + 0.3vw, 1.3rem);
     line-height: 1.7;
   }
-  /* Our values: six coloured cards on warm white (owner's About brief, Oct 25 2026).
-     Navy and deep teal take white text; aqua and champagne take navy and ink. */
+  .about-block__shape {
+    position: absolute;
+    z-index: 0;
+    pointer-events: none;
+  }
+  /* Mission: brick, white text (6.4:1), a deep arch corner and the sun rising in it. */
+  .about-block[data-tone='brique'] {
+    background: var(--color-brique-ink);
+    color: var(--color-white);
+    border-start-end-radius: 7rem;
+    padding-block-end: 5.5rem;
+  }
+  .about-block[data-tone='brique'] .about-block__title {
+    color: var(--color-sable);
+  }
+  .about-block[data-tone='brique'] .about-block__shape {
+    inset-block-end: 0;
+    inset-inline-end: 2rem;
+    width: 7rem;
+    height: 3.5rem;
+    border-radius: 999px 999px 0 0;
+    background: color-mix(in srgb, var(--color-soleil) 55%, var(--color-brique-ink));
+  }
+  /* Vision: turquoise, white text (5.0:1), a round corner at the start and a ring. */
+  .about-block[data-tone='firouzeh'] {
+    background: var(--color-firouzeh);
+    color: var(--color-white);
+    border-start-start-radius: 7rem;
+    padding-block-end: 5rem;
+  }
+  .about-block[data-tone='firouzeh'] .about-block__title {
+    color: var(--color-white);
+  }
+  .about-block[data-tone='firouzeh'] .about-block__shape {
+    inset-block-end: -3.5rem;
+    inset-inline-end: -3.5rem;
+    width: 10rem;
+    aspect-ratio: 1;
+    border-radius: 50%;
+    border: 1.25rem solid color-mix(in srgb, var(--color-white) 16%, var(--color-firouzeh));
+  }
+  /* Legal status: ivory with navy text, a soft round shape and a small sun. */
+  .about-block[data-tone='sable'] {
+    background: var(--color-ivory);
+    color: var(--color-ink);
+    border-radius: 1.5rem 1.5rem 4rem 1.5rem;
+    box-shadow: var(--shadow-card);
+  }
+  .about-block[data-tone='sable'] .about-block__shape {
+    inset-block-start: 1.75rem;
+    inset-inline-end: 1.75rem;
+    width: 2.25rem;
+    aspect-ratio: 1;
+    border-radius: 50%;
+    background: var(--color-soleil);
+  }
+  .about-block[data-tone='sable'] .about-block__title {
+    padding-inline-end: 3rem;
+    font-size: clamp(1.6rem, 1.3rem + 1vw, 2.1rem);
+  }
+  .about-block[data-tone='sable'] a {
+    color: var(--color-brique-ink);
+  }
+
+  /* ---------- Our values: cards at different heights, never a uniform grid ---------- */
   .values {
+    position: relative;
+    overflow: hidden;
+    padding-block: clamp(4.5rem, 3rem + 4vw, 7rem) clamp(5rem, 3rem + 6vw, 9rem);
     background: var(--color-paper);
   }
+  .values__sun {
+    position: absolute;
+    inset-block-start: clamp(3rem, 2rem + 3vw, 6rem);
+    inset-inline-end: clamp(-4rem, -2rem - 3vw, -1rem);
+    width: clamp(8rem, 5rem + 10vw, 16rem);
+    aspect-ratio: 1;
+    border-radius: 50%;
+    border: 1.25rem solid color-mix(in srgb, var(--color-firouzeh) 18%, var(--color-paper));
+  }
+  .values-grid {
+    display: grid;
+    gap: 1.5rem;
+    align-items: start;
+  }
+  @media (min-width: 48rem) {
+    .values-grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+    /* Every second card sits lower. */
+    .value-card:nth-child(2n) {
+      margin-block: 3rem -3rem;
+    }
+  }
+  @media (min-width: 72rem) {
+    .values-grid {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 2rem;
+    }
+    .value-card:nth-child(2n) {
+      margin-block: 0;
+    }
+    /* The middle column sits lower, the last one a little: an uneven line. */
+    .value-card:nth-child(3n + 2) {
+      margin-block: 4rem -4rem;
+    }
+    .value-card:nth-child(3n) {
+      margin-block: 1.5rem -1.5rem;
+    }
+  }
   .value-card {
-    height: 100%;
-    padding: 2rem;
-    border: 1px solid var(--color-card-edge);
-    border-block-start: 5px solid var(--color-gold);
-    border-radius: var(--radius-card);
-    box-shadow: var(--shadow-card);
+    position: relative;
+    padding: clamp(1.75rem, 1.4rem + 1.2vw, 2.5rem);
+    border-radius: 1.5rem;
     font-size: 1.125rem;
     line-height: 1.65;
+  }
+  /* Uneven corners and a slight tilt on a few cards; they straighten on hover. */
+  .value-card:nth-child(1) {
+    border-start-start-radius: 5rem;
+  }
+  .value-card:nth-child(2) {
+    rotate: -0.8deg;
+  }
+  .value-card:nth-child(3) {
+    border-end-end-radius: 5rem;
+  }
+  .value-card:nth-child(4) {
+    rotate: 0.7deg;
+  }
+  .value-card:nth-child(5) {
+    border-start-end-radius: 5rem;
+  }
+  .value-card:nth-child(6) {
+    border-end-start-radius: 5rem;
+    rotate: -0.5deg;
+  }
+  @media (hover: hover) and (prefers-reduced-motion: no-preference) {
+    .value-card {
+      transition: rotate 0.4s ease;
+    }
+    .value-card:hover {
+      rotate: 0deg;
+    }
   }
   .value-card__icon {
     display: grid;
     place-items: center;
-    width: 3.75rem;
-    height: 3.75rem;
+    width: 4rem;
+    height: 4rem;
     margin-block-end: 1.25rem;
-    border-radius: 1rem;
-    background: var(--color-white);
-    color: var(--color-primary);
+    border-radius: 50%;
   }
   .value-card__title {
     margin-block-end: 0.5rem;
-    font-size: 1.5rem;
-    font-weight: 800;
+    font-family: var(--font-editorial);
+    font-size: clamp(1.5rem, 1.35rem + 0.5vw, 1.85rem);
+    font-weight: 700;
+    font-variation-settings:
+      'SOFT' 100,
+      'opsz' 48;
+    line-height: 1.15;
   }
-  .value-card[data-tone='navy'],
-  .value-card[data-tone='teal'] {
-    border-color: transparent;
-    border-block-start-color: var(--color-gold);
+  :global(html[lang='fa']) .value-card__title {
+    font-weight: 800;
+    font-variation-settings: normal;
+  }
+  .value-card[data-tone='white'] {
+    background: var(--color-white);
+    border: 1px solid var(--color-card-edge);
+    box-shadow: var(--shadow-card);
+  }
+  .value-card[data-tone='white'] .value-card__icon {
+    background: var(--color-sable);
+    color: var(--color-brique-ink);
+  }
+  .value-card[data-tone='sable'] {
+    background: var(--color-sable);
+  }
+  .value-card[data-tone='sable'] .value-card__icon {
+    background: var(--color-white);
+    color: var(--color-firouzeh-ink);
+  }
+  .value-card[data-tone='firouzeh'],
+  .value-card[data-tone='brique'] {
     color: var(--color-white);
   }
-  .value-card[data-tone='navy'] {
-    background: var(--color-primary);
+  .value-card[data-tone='firouzeh'] {
+    background: var(--color-firouzeh);
   }
-  .value-card[data-tone='teal'] {
-    background: var(--color-teal-deep);
+  .value-card[data-tone='brique'] {
+    background: var(--color-brique-ink);
   }
-  .value-card[data-tone='navy'] .value-card__title,
-  .value-card[data-tone='teal'] .value-card__title {
-    color: var(--color-cream);
+  .value-card[data-tone='firouzeh'] .value-card__title,
+  .value-card[data-tone='brique'] .value-card__title {
+    color: var(--color-white);
   }
-  .value-card[data-tone='navy'] .value-card__icon {
-    background: color-mix(in srgb, var(--color-white) 12%, var(--color-primary));
-    color: var(--color-gold);
+  .value-card[data-tone='firouzeh'] .value-card__icon {
+    background: var(--color-ivory);
+    color: var(--color-firouzeh-ink);
   }
-  .value-card[data-tone='teal'] .value-card__icon {
-    background: var(--color-cream);
-    color: var(--color-teal-deep);
-  }
-  .value-card[data-tone='aqua'] {
-    background: var(--color-aqua);
-    border-color: var(--color-aqua-edge);
-    border-block-start-color: var(--color-primary);
-  }
-  .value-card[data-tone='champagne'] {
-    background: var(--color-champagne);
-    border-block-start-color: var(--color-teal);
-  }
-  /* Round badge: cream circle with a thin gold border. */
-  .badge {
-    display: grid;
-    place-items: center;
-    border-radius: 999px;
-    border: 3px solid var(--color-gold);
-  }
-  .badge--initials {
-    font-family: var(--font-display);
-    font-size: 3.75rem;
-    font-weight: 700;
+  .value-card[data-tone='brique'] .value-card__icon {
+    background: var(--color-soleil);
     color: var(--color-primary);
-    background: var(--color-cream);
   }
 
-  /* Our story on an aqua band with the dialogue motif (owner's About brief, Oct 25 2026):
-     navy years, a navy line with gold-ringed markers, ivory cards with a gold top edge. */
+  /* ---------- Our story: sand band, the sun rising on the horizon ---------- */
   .story {
     position: relative;
     overflow: hidden;
-    background: var(--color-aqua);
-    border-block: 1px solid var(--color-aqua-edge);
+    background: var(--color-sable);
+    border-block-end: 3px solid var(--color-primary);
   }
-  .story :global(.story__art) {
+  .story__sun {
     position: absolute;
-    inset-block-end: -5rem;
-    inset-inline-start: -6rem;
-    width: min(34rem, 70vw);
-    opacity: 0.35;
+    inset-block-end: 0;
+    inset-inline-end: clamp(1rem, 6vw, 8rem);
+    width: clamp(9rem, 5rem + 14vw, 20rem);
+    aspect-ratio: 2 / 1;
+    border-radius: 999px 999px 0 0;
+    background: var(--color-soleil);
   }
-  /* Timeline: year on the left, marker on the vertical line, card on the right. */
-  /* Our story: the year in large type on the reading side, a teal marker on the
-     line, then a wide card whose paragraphs keep a comfortable measure. */
+  /* Timeline: the year on the reading side, a sun marker on the line, then the card. */
   .timeline {
     position: relative;
     display: grid;
     gap: 2.5rem;
     padding-inline-start: 2.25rem;
+    padding-block-end: clamp(3rem, 2rem + 6vw, 8rem);
   }
   .timeline::before {
     content: '';
     position: absolute;
     inset-inline-start: 0.5rem;
     top: 0.75rem;
-    bottom: 0.75rem;
+    bottom: 0;
     width: 3px;
     border-radius: 2px;
-    background: color-mix(in srgb, var(--color-primary) 55%, var(--color-aqua));
+    background: var(--color-primary);
   }
   .timeline__item {
     position: relative;
@@ -580,32 +724,49 @@ const history = about.history.map((h) => ({
     width: 1.1rem;
     height: 1.1rem;
     border-radius: 999px;
-    background: var(--color-primary);
+    background: var(--color-soleil);
     box-shadow:
-      0 0 0 4px var(--color-gold),
-      0 0 0 8px var(--color-aqua);
+      0 0 0 3px var(--color-primary),
+      0 0 0 8px var(--color-sable);
   }
   .timeline__year {
-    font-family: var(--font-display);
-    font-size: clamp(2.75rem, 2rem + 3vw, 4.5rem);
-    font-weight: 800;
+    font-family: var(--font-editorial);
+    font-size: clamp(3rem, 2rem + 3.5vw, 5.25rem);
+    font-weight: 700;
+    font-variation-settings:
+      'SOFT' 100,
+      'opsz' 96;
     line-height: 1;
-    color: var(--color-primary);
+    color: var(--color-brique-ink);
+  }
+  :global(html[lang='fa']) .timeline__year {
+    font-weight: 800;
+    font-variation-settings: normal;
   }
   .timeline__card {
+    position: relative;
+    z-index: 1;
     padding: clamp(1.75rem, 1.2rem + 2.5vw, 3.5rem);
-    border: 1px solid var(--color-card-edge);
+    border-radius: 1.5rem;
+    border-start-end-radius: 6rem;
+    border-inline-start: 6px solid var(--color-firouzeh);
+    background: var(--color-white);
     box-shadow: var(--shadow-card);
-    border-block-start: 6px solid var(--color-gold);
-    border-inline-start: 6px solid var(--color-teal-deep);
-    border-radius: var(--radius-card);
-    background: var(--color-ivory);
   }
   .timeline__title {
     margin-block-end: 1.25rem;
-    font-size: clamp(1.75rem, 1.4rem + 1.3vw, 2.5rem);
-    font-weight: 800;
+    padding-inline-end: 2rem;
+    font-family: var(--font-editorial);
+    font-size: clamp(1.75rem, 1.4rem + 1.3vw, 2.6rem);
+    font-weight: 700;
+    font-variation-settings:
+      'SOFT' 100,
+      'opsz' 72;
     line-height: 1.15;
+  }
+  :global(html[lang='fa']) .timeline__title {
+    font-weight: 800;
+    font-variation-settings: normal;
   }
   .timeline__text {
     display: grid;
@@ -617,7 +778,7 @@ const history = about.history.map((h) => ({
   /* The invitation that closes the entry stands out a little. */
   .timeline__text > p:last-child:not(:first-child) {
     font-weight: 600;
-    color: var(--color-primary);
+    color: var(--color-brique-ink);
   }
   @media (min-width: 56rem) {
     .timeline {
