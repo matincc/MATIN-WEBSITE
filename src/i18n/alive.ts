@@ -8,10 +8,14 @@ import type { UiLang } from './routes';
 import { typo } from '@/lib/frenchTypo';
 
 const fr = {
-  heroPlace: 'Montréal · Québec',
-  heroLine: 'Relier les personnes, les cultures et les communautés.',
-  heroCtaPrimary: 'Découvrir Matin',
+  heroPlace: 'Montréal',
+  heroCtaPrimary: 'Découvrir nos activités',
   heroCtaSecondary: 'Rejoindre la conversation',
+  heroPause: 'Mettre les images en pause',
+  heroPlay: 'Relancer les images',
+  heroMediaNote:
+    'Aperçu : photos sous licence libre (Wikimedia Commons), en attendant une vidéo autorisée de Matin.',
+  heroWordsLabel: 'Le mot « dialogue » en plusieurs langues',
 
   upcomingTitle: 'À venir',
   upcomingMatin: 'Matin',
@@ -80,10 +84,14 @@ const fr = {
 type AliveDict = typeof fr;
 
 const en: AliveDict = {
-  heroPlace: 'Montréal · Québec',
-  heroLine: 'Connecting people, cultures, and communities.',
-  heroCtaPrimary: 'Explore Matin',
-  heroCtaSecondary: 'Join the Conversation',
+  heroPlace: 'Montréal',
+  heroCtaPrimary: 'Discover our activities',
+  heroCtaSecondary: 'Join the conversation',
+  heroPause: 'Pause the images',
+  heroPlay: 'Play the images',
+  heroMediaNote:
+    'Preview: openly licensed photos (Wikimedia Commons), until an authorized Matin video is available.',
+  heroWordsLabel: 'The word "dialogue" in several languages',
 
   upcomingTitle: 'Coming up',
   upcomingMatin: 'Matin',
@@ -150,10 +158,14 @@ const en: AliveDict = {
 };
 
 const fa: AliveDict = {
-  heroPlace: 'مونترال · کبک',
-  heroLine: 'پیوند میان مردم، فرهنگ‌ها و جامعه‌ها.',
-  heroCtaPrimary: 'با متین آشنا شوید',
+  heroPlace: 'مونترال',
+  heroCtaPrimary: 'فعالیت‌های ما را ببینید',
   heroCtaSecondary: 'به گفت‌وگو بپیوندید',
+  heroPause: 'توقف تصاویر',
+  heroPlay: 'پخش دوبارهٔ تصاویر',
+  heroMediaNote:
+    'پیش‌نمایش: عکس‌هایی با مجوز آزاد (ویکی‌مدیا کامانز)، تا زمانی که ویدیوی مجاز متین آماده شود.',
+  heroWordsLabel: 'واژهٔ «گفت‌وگو» به چند زبان',
 
   upcomingTitle: 'رویدادهای پیش رو',
   upcomingMatin: 'متین',
