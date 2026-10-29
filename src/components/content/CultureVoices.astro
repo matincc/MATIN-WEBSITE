@@ -21,6 +21,10 @@ import type { UiLang } from '@/i18n/routes';
 import { pick } from '@/i18n/ui';
 import { forLang, getTeam } from '@/lib/content';
 import { cultureVoices, cultureVoicesStrings as s } from '@/lib/cultureVoices';
+import '@/styles/name-tag.css';
+
+// Each person's tag has the same colour here and in the Executive Team gallery.
+const tagTone = { apricot: 'brique', sand: 'caramel', rose: 'cocoa' } as const;
 
 interface Props {
   lang: UiLang;
@@ -70,16 +74,21 @@ const voices = cultureVoices.flatMap((v) => {
     <div class="voices__body">
       <ol class="voices__list">
         {voices.map((v, i) => (
-          <li class:list={['voice', `voice--${v.tone}`]}>
+          <li id={`voice-${v.member}`} class:list={['voice', `voice--${v.tone}`, 'scroll-mt-24']}>
             <figure class="voice__fig">
-              <figcaption class="voice__tag" data-reveal style={`--reveal-delay:${160 + i * 60}ms`}>
-                <span class="voice__hole" aria-hidden="true" />
+              <figcaption
+                class="voice__tag name-tag"
+                data-tone={tagTone[v.tone]}
+                data-reveal
+                style={`--reveal-delay:${160 + i * 60}ms`}
+              >
+                <span class="name-tag__hole" aria-hidden="true" />
                 {v.photo && (
-                  <Image src={v.photo} alt="" width={128} height={128} class="voice__photo" />
+                  <Image src={v.photo} alt="" width={128} height={128} class="name-tag__photo" />
                 )}
-                <span class="voice__who">
-                  <h3 class="voice__name">{v.name}</h3>
-                  {v.role && <span class="voice__role">{v.role}</span>}
+                <span class="name-tag__who">
+                  <h3 class="name-tag__name">{v.name}</h3>
+                  {v.role && <span class="name-tag__role">{v.role}</span>}
                 </span>
               </figcaption>
               <blockquote class="voice__sheet" data-reveal>
@@ -313,69 +322,12 @@ const voices = cultureVoices.flatMap((v) => {
     line-height: 1.6;
   }
 
-  /* The name tag: smaller, darker, a little askew, with a punched hole. */
+  /* The name tag (shared look in src/styles/name-tag.css), a little askew, on the sheet's
+     edge. */
   .voice__tag {
-    position: relative;
-    z-index: 2;
-    display: flex;
-    align-items: center;
-    gap: 0.9rem;
-    width: fit-content;
     max-width: min(22rem, 88%);
     margin-block-end: -2.1rem;
-    padding: 0.9rem 1.35rem 0.9rem 0.9rem;
-    padding-inline: 0.9rem 1.35rem;
-    border-radius: 0.6rem 1.75rem 0.6rem 1.75rem;
-    background: var(--v-tag);
-    color: var(--v-tag-ink);
-    box-shadow: 0 0.9rem 1.6rem -0.9rem color-mix(in srgb, var(--matin-nuit) 45%, transparent);
     rotate: var(--v-tag-rotate, -1.5deg);
-  }
-  .voice__hole {
-    position: absolute;
-    inset-block-start: 0.55rem;
-    inset-inline-end: 0.6rem;
-    width: 0.5rem;
-    aspect-ratio: 1;
-    border-radius: 50%;
-    background: var(--color-ivory);
-    box-shadow: inset 0 1px 2px color-mix(in srgb, var(--matin-nuit) 40%, transparent);
-  }
-  .voice__tag :global(.voice__photo) {
-    flex: none;
-    width: clamp(3.4rem, 3rem + 1vw, 4.25rem);
-    height: auto;
-    aspect-ratio: 1;
-    border-radius: 50%;
-    object-fit: cover;
-    box-shadow: 0 0 0 3px var(--v-tag-ring);
-  }
-  .voice__who {
-    display: grid;
-    gap: 0.2rem;
-    min-width: 0;
-  }
-  .voice__name {
-    font-family: var(--font-editorial);
-    font-size: clamp(1.35rem, 1.2rem + 0.6vw, 1.75rem);
-    font-weight: 650;
-    font-variation-settings:
-      'SOFT' 100,
-      'opsz' 60;
-    line-height: 1.12;
-    color: inherit;
-  }
-  :global(html[lang='fa']) .voice__name {
-    font-weight: 800;
-    line-height: 1.5;
-  }
-  .voice__role {
-    font-family: var(--font-display);
-    font-size: 0.9375rem;
-    font-weight: 700;
-    line-height: 1.35;
-    color: inherit;
-    opacity: 0.92;
   }
 
   /* ---------- Three tones of the same family ---------- */
@@ -384,9 +336,6 @@ const voices = cultureVoices.flatMap((v) => {
     --v-under: color-mix(in srgb, var(--matin-brique) 16%, var(--v-apricot));
     --v-mark: color-mix(in srgb, var(--matin-brique) 55%, var(--v-apricot));
     --v-lead: var(--color-brique-ink);
-    --v-tag: var(--color-brique-ink);
-    --v-tag-ink: var(--color-white);
-    --v-tag-ring: var(--color-soleil);
   }
   .voice--sand {
     --v-sheet: var(--v-sand);
@@ -395,9 +344,6 @@ const voices = cultureVoices.flatMap((v) => {
     --v-under-shift: -0.35rem 0.45rem;
     --v-mark: color-mix(in srgb, var(--v-caramel) 75%, var(--v-sand));
     --v-lead: var(--v-cocoa);
-    --v-tag: var(--v-caramel);
-    --v-tag-ink: var(--color-primary);
-    --v-tag-ring: var(--color-white);
     --v-tag-rotate: 1.8deg;
   }
   .voice--rose {
@@ -407,9 +353,6 @@ const voices = cultureVoices.flatMap((v) => {
     --v-under-shift: 0.5rem -0.45rem;
     --v-mark: color-mix(in srgb, var(--matin-brique) 38%, var(--v-rose));
     --v-lead: var(--v-cocoa);
-    --v-tag: var(--v-cocoa);
-    --v-tag-ink: var(--color-white);
-    --v-tag-ring: var(--v-caramel);
     --v-tag-rotate: -1deg;
   }
   .voice--sand .voice__sheet {

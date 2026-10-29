@@ -16,9 +16,10 @@
  */
 import { Image } from 'astro:assets';
 import {
+  ArrowDown,
   ArrowRight,
+  ArrowUpRight,
   ChevronDown,
-  ExternalLink,
   Globe,
   HandHeart,
   Lightbulb,
@@ -27,6 +28,9 @@ import {
 import PageLayout from '@/layouts/PageLayout.astro';
 import PresidentSection from '@/components/content/PresidentSection.astro';
 import CultureVoices from '@/components/content/CultureVoices.astro';
+import { cultureVoices } from '@/lib/cultureVoices';
+import { teamText } from '@/lib/teamStrings';
+import '@/styles/name-tag.css';
 import CommunityIllustration from '@/components/brand/CommunityIllustration.astro';
 import Prose from '@/components/ui/Prose.astro';
 import { href, siteAlternates, type UiLang } from '@/i18n/routes';
@@ -39,17 +43,16 @@ interface Props {
 const { lang } = Astro.props;
 const t = useTranslations(lang);
 const team = forLang(await getTeam(), lang);
-const groups = [
-  {
-    id: 'executive-team',
-    title: t('nav.teamExecutive'),
-    lede: t('team.executiveLede'),
-    empty: t('team.executiveEmpty'),
-    members: team.filter((m) => m.data.group === 'executive' || m.data.group === 'staff'),
-    accent: 'teal',
-    accents: ['navy', 'teal', 'mustard'],
-  },
-];
+const executive = team.filter((m) => m.data.group === 'executive' || m.data.group === 'staff');
+// Each person keeps one colour across the page: the field behind the photo and the name
+// tag here, and the same tag in « What Culture Means to Us » below.
+const tones: Record<string, string> = {
+  '01-reza-moafi-executive-director': 'encre',
+  '02-mina-karimian': 'brique',
+  '03-hakan': 'caramel',
+  '04-benoit-akpaki': 'cocoa',
+};
+const voiceIds = new Set(cultureVoices.map((v) => v.member));
 const volunteerHref = `${href('contact', lang)}#${lang === 'fr' ? 'benevolat' : 'volunteer'}`;
 const joinWays = [
   { icon: MapPin, label: t('team.joinWayInPerson') },
@@ -65,79 +68,88 @@ const joinWays = [
   <!-- "#team" is kept for older links to the team section. -->
   <section id="team" class="team-groups scroll-mt-24" aria-label={t('nav.team')}>
     <div class="container-site team-groups__stack">
-      {groups.map((g) => (
-        <section
-          id={g.id}
-          class:list={['team-group scroll-mt-24', `team-group--${g.id}`]}
-          data-accent={g.accent}
-          aria-labelledby={`${g.id}-title`}
-        >
-          <div class="team-group__head">
-            <h2 id={`${g.id}-title`} class="team-group__title">
-              {g.title}
+      <section id="executive-team" class="crew scroll-mt-24" aria-labelledby="executive-team-title">
+        <header class="crew__head">
+          <div>
+            <p class="crew__kicker">{teamText('peopleBehind', lang)}</p>
+            <h2 id="executive-team-title" class="crew__title">
+              {t('nav.teamExecutive')}
             </h2>
-            <p class="team-group__lede">{g.lede}</p>
-            {g.members.length === 0 && <p class="team-empty">{g.empty}</p>}
           </div>
-          <ul class="team-grid">
-            {g.members.map((m, i) => {
-              const bio = m.data.bio && pick(m.data.bio, lang);
-              const full = m.data.fullBio && pick(m.data.fullBio, lang);
-              const name = (lang === 'fa' && m.data.nameFa) || m.data.name;
-              return (
-                <li
-                  class="team-card"
-                  data-accent={g.accents[i % g.accents.length]}
-                  data-reveal
-                  style={`--reveal-delay:${i * 120}ms`}
-                >
+          <p class="crew__lede">{t('team.executiveLede')}</p>
+        </header>
+        {executive.length === 0 && <p class="team-empty">{t('team.executiveEmpty')}</p>}
+        <ul class="crew__list">
+          {executive.map((m, i) => {
+            const bio = m.data.bio && pick(m.data.bio, lang);
+            const full = m.data.fullBio && pick(m.data.fullBio, lang);
+            const name = (lang === 'fa' && m.data.nameFa) || m.data.name;
+            const voice = voiceIds.has(m.id);
+            return (
+              <li
+                class="crew__member"
+                data-tone={tones[m.id] ?? 'brique'}
+                data-reveal
+                style={`--reveal-delay:${i * 140}ms`}
+              >
+                <div class="crew__frame">
+                  <span class="crew__field" aria-hidden="true" />
                   {m.data.photo ? (
                     <Image
                       src={m.data.photo}
                       alt={t('team.photoAlt', { name })}
-                      width={320}
-                      height={320}
-                      class="team-card__avatar"
+                      widths={[320, 480, 640]}
+                      sizes="(min-width: 64rem) 19rem, (min-width: 36rem) 42vw, 72vw"
+                      class="crew__photo"
                     />
                   ) : (
-                    <span class="team-card__avatar team-card__initials" aria-hidden="true">
+                    <span class="crew__photo crew__initials" aria-hidden="true">
                       {initials(m.data.name)}
                     </span>
                   )}
-                  <div class="team-card__body">
-                    <h3 class="team-card__name">{name}</h3>
-                    <p class="team-card__role">{pick(m.data.role, lang)}</p>
-                    {bio && <p class="team-card__bio">{bio}</p>}
-                    {full && (
-                      <details class="team-card__more">
-                        <summary>
-                          {t('team.readMore')}
-                          <ChevronDown size={18} aria-hidden="true" />
-                        </summary>
-                        <Prose html={renderMarkdown(full, lang)} class="team-card__full" />
-                      </details>
-                    )}
-                    {m.data.linkedin && (
-                      <a
-                        href={m.data.linkedin}
-                        class="team-card__linkedin"
-                        target="_blank"
-                        rel="noopener noreferrer"
-                      >
-                        {t('team.linkedin')}
-                        <ExternalLink size={16} aria-hidden="true" />
-                        <span class="sr-only">
-                          {t('about.onLinkedin', { name })} {t('a11y.externalLink')}
-                        </span>
-                      </a>
-                    )}
-                  </div>
-                </li>
-              );
-            })}
-          </ul>
-        </section>
-      ))}
+                </div>
+                <div class="crew__tag name-tag" data-tone={tones[m.id] ?? 'brique'}>
+                  <span class="name-tag__hole" aria-hidden="true" />
+                  <span class="name-tag__who">
+                    <h3 class="name-tag__name">{name}</h3>
+                    <span class="name-tag__role">{pick(m.data.role, lang)}</span>
+                  </span>
+                </div>
+                {bio && <p class="crew__bio">{bio}</p>}
+                {full && (
+                  <details class="crew__more">
+                    <summary>
+                      {t('team.readMore')}
+                      <ChevronDown size={18} aria-hidden="true" />
+                    </summary>
+                    <Prose html={renderMarkdown(full, lang)} class="crew__full" />
+                  </details>
+                )}
+                {voice && (
+                  <a href={`#voice-${m.id}`} class="crew__link">
+                    {teamText('inWords', lang, { name: name.split(' ')[0] })}
+                    <ArrowDown size={16} aria-hidden="true" />
+                  </a>
+                )}
+                {m.data.linkedin && (
+                  <a
+                    href={m.data.linkedin}
+                    class="crew__link"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    {t('team.linkedin')}
+                    <ArrowUpRight size={16} aria-hidden="true" />
+                    <span class="sr-only">
+                      {t('about.onLinkedin', { name })} {t('a11y.externalLink')}
+                    </span>
+                  </a>
+                )}
+              </li>
+            );
+          })}
+        </ul>
+      </section>
 
       <CultureVoices lang={lang} />
 
@@ -195,16 +207,6 @@ const joinWays = [
   .team-groups__stack {
     display: grid;
     gap: clamp(2.5rem, 2rem + 2vw, 4rem);
-  }
-  .team-group {
-    padding: clamp(1.1rem, 0.5rem + 2.75vw, 3.5rem);
-    border-radius: calc(var(--radius-card) * 1.4);
-  }
-  /* Executive Team: soft turquoise, navy headings, a matte gold edge. */
-  .team-group--executive-team {
-    border-start-end-radius: 8rem;
-    border-end-start-radius: 4rem;
-    background: var(--color-brique-pale);
   }
   /* The invitation to collaborate (owner's request, Oct 28 2026): warm cream, a teal top
      edge, the text beside the community illustration on a mustard block. */
@@ -274,10 +276,6 @@ const joinWays = [
     border-radius: 50%;
     background: var(--color-soleil);
   }
-  .team-group__head {
-    max-width: 48rem;
-    margin-block-end: clamp(1.75rem, 1.4rem + 1.5vw, 2.75rem);
-  }
   .team-group__title {
     font-family: var(--font-editorial);
     font-size: clamp(2rem, 1.5rem + 1.6vw, 3rem);
@@ -297,175 +295,167 @@ const joinWays = [
     line-height: 1.7;
     color: var(--color-ink);
   }
-  /* Five across when they fit comfortably, three on tablets, two on phones; an
-     incomplete last row stays centred. */
-  .team-grid {
-    --cols: 2;
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: center;
-    gap: 1.25rem;
+  /* ---------- The Executive Team: a photographic spread, not cards ----------
+     (owner's brief « The People Behind Matin », Oct 29 2026). Four equal portraits, each
+     on its own colour field offset behind it, at different heights; each name on the
+     same paper tag the person wears in « What Culture Means to Us » below. No panel. */
+  .crew {
+    padding-block: clamp(1rem, 0.5rem + 2vw, 2.5rem) 0;
   }
-  .team-grid > li {
-    flex: 0 0 calc((100% - (var(--cols) - 1) * 1.25rem) / var(--cols));
-  }
-  @media (min-width: 40rem) {
-    .team-grid {
-      --cols: 3;
-    }
-  }
-  @media (min-width: 80rem) {
-    .team-grid {
-      --cols: 5;
-    }
-  }
-  .team-card {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    /* Every card the same size (owner's brief, Oct 27 2026): cards in a row stretch to
-       the tallest, and one shared minimum keeps both groups alike. */
-    min-height: var(--team-card-min, 21rem);
-    padding: 1.75rem clamp(0.5rem, 0.25rem + 1vw, 1.25rem) 1.5rem;
-    border-radius: var(--radius-card);
-    background: var(--color-white);
-    box-shadow: var(--shadow-card);
-    text-align: center;
-  }
-  /* Less like a row of identical boxes (owner's request, Oct 29 2026): each card has its
-     own deep corner, a slight tilt and its own height in the row, a ring in a different
-     colour of the palette; under a desktop pointer it rises, grows a little and
-     straightens. Equal card sizes are kept (owner's brief, Oct 27 2026). */
-  .team-grid > li:nth-child(4n + 1) {
-    --ring: var(--color-soleil);
-    border-start-start-radius: 4.5rem;
-    rotate: -1deg;
-  }
-  .team-grid > li:nth-child(4n + 2) {
-    --ring: var(--color-firouzeh);
-    border-end-end-radius: 4.5rem;
-    rotate: 0.8deg;
-  }
-  .team-grid > li:nth-child(4n + 3) {
-    --ring: var(--color-brique);
-    border-start-end-radius: 4.5rem;
-    rotate: -0.6deg;
-  }
-  .team-grid > li:nth-child(4n + 4) {
-    --ring: var(--color-primary);
-    border-end-start-radius: 4.5rem;
-    rotate: 1deg;
-  }
-  @media (min-width: 40rem) {
-    .team-grid > li:nth-child(2n) {
-      translate: 0 1.75rem;
-    }
-    .team-grid {
-      padding-block-end: 1.75rem;
-    }
-  }
-  /* The hover state also applies when the computer asks for reduced motion: it then
-     changes at once instead of moving (owner, Oct 29 2026: he saw no change). */
-  @media (hover: hover) {
-    .team-card {
-      transition:
-        rotate 0.45s ease,
-        translate 0.45s cubic-bezier(0.2, 0.7, 0.2, 1),
-        scale 0.45s cubic-bezier(0.2, 0.7, 0.2, 1),
-        box-shadow 0.45s ease;
-    }
-    .team-card__avatar {
-      transition:
-        scale 0.45s cubic-bezier(0.2, 0.7, 0.2, 1),
-        rotate 0.45s ease,
-        box-shadow 0.45s ease;
-    }
-    /* The photo itself clearly answers too: it grows, turns slightly and its ring
-       thickens (owner, Oct 29 2026: the motion must be visible on the faces). */
-    .team-grid > li.team-card:hover .team-card__avatar,
-    .team-grid > li.team-card:focus-within .team-card__avatar {
-      scale: 1.15;
-      rotate: -4deg;
-      box-shadow:
-        0 0 0 4px var(--color-white),
-        0 0 0 11px var(--ring, var(--color-soleil));
-    }
-    .team-grid > li.team-card:hover,
-    .team-grid > li.team-card:focus-within {
-      rotate: 0deg;
-      translate: 0 -1rem;
-      scale: 1.05;
-      box-shadow: 0 1.25rem 2.5rem -1rem color-mix(in srgb, var(--color-primary) 35%, transparent);
-    }
-    .team-join__ways li {
-      transition: translate 0.35s ease;
-    }
-    .team-join__ways li:hover {
-      translate: 0 -0.3rem;
-    }
-  }
-  .team-card__avatar {
-    display: block;
-    flex-shrink: 0;
-    width: clamp(6rem, 5rem + 3vw, 8rem);
-    aspect-ratio: 1;
-    border-radius: 50%;
-    object-fit: cover;
-    box-shadow:
-      0 0 0 4px var(--color-white),
-      0 0 0 8px var(--ring, var(--color-soleil));
-  }
-  .team-card__initials {
+  .crew__head {
     display: grid;
-    place-items: center;
-    font-size: 2.25rem;
-    font-weight: 800;
-    color: var(--color-primary);
-    background: var(--color-cream);
+    gap: 1rem 3rem;
+    align-items: end;
+    max-width: 78rem;
+    margin-inline: auto;
+    margin-block-end: clamp(2.75rem, 2rem + 3vw, 4.5rem);
   }
-  .team-card__body {
+  @media (min-width: 56rem) {
+    .crew__head {
+      grid-template-columns: minmax(0, 1.4fr) minmax(0, 1fr);
+    }
+  }
+  .crew__kicker {
     display: flex;
-    flex: 1;
-    flex-direction: column;
     align-items: center;
-    gap: 0.45rem;
-    width: 100%;
-    margin-block-start: 1.25rem;
-  }
-  /* Name and title clearly apart (owner's brief, Oct 27 2026): a larger navy name, then a
-     smaller terracotta title under a short gold rule. */
-  .team-card__name {
-    font-family: var(--font-editorial);
-    font-size: clamp(1.3125rem, 1.2rem + 0.4vw, 1.55rem);
-    font-weight: 700;
-    line-height: 1.2;
-    color: var(--color-primary);
-  }
-  .team-card__role {
-    font-size: 0.9375rem;
-    font-weight: 600;
-    line-height: 1.5;
+    gap: 0.75rem;
+    font-family: var(--font-display);
+    font-size: 0.95rem;
+    font-weight: 800;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
     color: var(--color-brique-ink);
   }
-  .team-card__role::before {
+  .crew__kicker::before {
     content: '';
-    display: block;
-    width: 2rem;
-    height: 2px;
-    margin: 0.15rem auto 0.55rem;
-    border-radius: 1px;
-    background: var(--color-gold);
+    width: 2.5rem;
+    height: 3px;
+    border-radius: 2px;
+    background: var(--color-soleil);
   }
-  .team-card__bio {
-    font-size: 1rem;
-    line-height: 1.65;
-    text-align: start;
+  :global(html[lang='fa']) .crew__kicker {
+    letter-spacing: 0;
+    font-size: 1.05rem;
   }
-  /* "Read the full biography": a native disclosure, keyboard accessible. */
-  .team-card__more {
+  .crew__title {
+    margin-block-start: 0.75rem;
+    font-family: var(--font-editorial);
+    font-size: clamp(2.35rem, 1.5rem + 3vw, 4.25rem);
+    font-weight: 600;
+    font-variation-settings:
+      'SOFT' 100,
+      'opsz' 144;
+    line-height: 1.04;
+    letter-spacing: -0.015em;
+    color: var(--color-primary);
+  }
+  :global(html[lang='fa']) .crew__title {
+    font-weight: 800;
+    line-height: 1.35;
+    letter-spacing: 0;
+  }
+  .crew__lede {
+    max-width: 30rem;
+    font-size: clamp(1.125rem, 1rem + 0.45vw, 1.375rem);
+    line-height: 1.6;
+    color: var(--color-ink);
+  }
+
+  .crew__list {
+    display: grid;
+    gap: 3.5rem 2rem;
+    max-width: 78rem;
+    margin-inline: auto;
+  }
+  .crew__member {
+    --field: var(--matin-brique-ink);
+    --shift: 1rem;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  .crew__member[data-tone='encre'] {
+    --field: var(--matin-firouzeh);
+  }
+  .crew__member[data-tone='caramel'] {
+    --field: color-mix(in srgb, var(--matin-soleil) 70%, var(--matin-brique));
+  }
+  .crew__member[data-tone='cocoa'] {
+    --field: color-mix(in srgb, var(--matin-brique-ink) 55%, var(--matin-nuit));
+  }
+  .crew__frame {
+    position: relative;
     width: 100%;
   }
-  .team-card__more summary {
+  /* The colour field, offset behind the photo: down and towards the end, or the start. */
+  .crew__field {
+    position: absolute;
+    inset: 0;
+    border-radius: 0.5rem;
+    background: var(--field);
+    translate: var(--shift) var(--shift);
+  }
+  :global([dir='rtl']) .crew__field {
+    translate: calc(var(--shift) * -1) var(--shift);
+  }
+  .crew__member:nth-child(even) .crew__field {
+    translate: calc(var(--shift) * -1) var(--shift);
+  }
+  :global([dir='rtl']) .crew__member:nth-child(even) .crew__field {
+    translate: var(--shift) var(--shift);
+  }
+  .crew__photo {
+    position: relative;
+    display: block;
+    width: 100%;
+    height: auto;
+    aspect-ratio: 4 / 5;
+    object-fit: cover;
+    object-position: 50% 22%;
+    border-radius: 0.5rem;
+  }
+  /* One deep corner, alternating from portrait to portrait (logical, so Persian mirrors). */
+  .crew__member:nth-child(4n + 1) :is(.crew__photo, .crew__field) {
+    border-start-start-radius: 5rem;
+  }
+  .crew__member:nth-child(4n + 2) :is(.crew__photo, .crew__field) {
+    border-end-end-radius: 5rem;
+  }
+  .crew__member:nth-child(4n + 3) :is(.crew__photo, .crew__field) {
+    border-start-end-radius: 5rem;
+  }
+  .crew__member:nth-child(4n + 4) :is(.crew__photo, .crew__field) {
+    border-end-start-radius: 5rem;
+  }
+  .crew__initials {
+    display: grid;
+    place-items: center;
+    font-size: 3rem;
+    font-weight: 800;
+    color: var(--color-primary);
+    background: var(--color-sable);
+  }
+  /* The tag overlaps the bottom of the photo, on alternate sides. */
+  .crew__tag {
+    max-width: 92%;
+    margin-block-start: -2.25rem;
+    margin-inline-start: -0.5rem;
+    rotate: -1.5deg;
+  }
+  .crew__member:nth-child(even) .crew__tag {
+    align-self: flex-end;
+    margin-inline: 0 -0.5rem;
+    rotate: 1.5deg;
+  }
+  .crew__bio {
+    margin-block-start: 1.25rem;
+    font-size: 1.0625rem;
+    line-height: 1.7;
+  }
+  .crew__more {
+    margin-block-start: 0.75rem;
+  }
+  .crew__more summary {
     display: inline-flex;
     align-items: center;
     gap: 0.35rem;
@@ -475,33 +465,109 @@ const joinWays = [
     font-weight: 700;
     color: var(--color-primary);
   }
-  .team-card__more summary::-webkit-details-marker {
+  .crew__more summary::-webkit-details-marker {
     display: none;
   }
-  .team-card__more summary :global(svg) {
-    transition: transform 0.2s;
+  .crew__more[open] summary :global(svg) {
+    rotate: 180deg;
   }
-  .team-card__more[open] summary :global(svg) {
-    transform: rotate(180deg);
-  }
-  .team-card__more :global(.team-card__full) {
-    margin-top: 0.75rem;
-    font-size: 1rem;
+  .crew__more :global(.crew__full) {
+    margin-block-start: 0.75rem;
+    font-size: 1.0625rem;
     line-height: 1.7;
-    text-align: start;
   }
-  .team-card__linkedin {
+  .crew__link {
     display: inline-flex;
     align-items: center;
     gap: 0.4rem;
-    margin-top: auto;
-    padding-top: 0.75rem;
+    min-height: 2.75rem;
+    margin-block-start: 0.85rem;
     font-family: var(--font-display);
+    font-size: 1rem;
     font-weight: 700;
+    color: var(--color-firouzeh-ink);
+    text-decoration: underline;
+    text-decoration-color: color-mix(in srgb, var(--color-firouzeh-ink) 35%, transparent);
+    text-decoration-thickness: 2px;
+    text-underline-offset: 0.3em;
+    transition: text-decoration-color 0.3s ease;
   }
-  @media (prefers-reduced-motion: reduce) {
-    .team-card__more summary :global(svg) {
-      transition: none;
+  .crew__member:nth-child(even) .crew__link {
+    align-self: flex-end;
+  }
+  .crew__link + .crew__link {
+    margin-block-start: 0;
+  }
+  .crew__link:hover {
+    text-decoration-color: currentColor;
+  }
+
+  /* Phones: one portrait after the other, alternately on the start and end side. */
+  .crew__member {
+    width: min(78%, 22rem);
+  }
+  .crew__member:nth-child(even) {
+    justify-self: end;
+  }
+  /* Tablets: two by two, the second column lower. */
+  @media (min-width: 36rem) {
+    .crew__list {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 4rem clamp(2.5rem, 1rem + 4vw, 4rem);
+    }
+    .crew__member,
+    .crew__member:nth-child(even) {
+      width: auto;
+      justify-self: stretch;
+    }
+    .crew__member:nth-child(even) {
+      margin-block-start: 4rem;
+    }
+  }
+  /* Wide screens: four across at four different heights, like prints pinned on a wall. */
+  @media (min-width: 64rem) {
+    .crew__list {
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      column-gap: clamp(2rem, 0.5rem + 2.5vw, 3.5rem);
+    }
+    .crew__member:nth-child(4n + 1) {
+      margin-block-start: 0;
+    }
+    .crew__member:nth-child(4n + 2) {
+      margin-block-start: 4.5rem;
+    }
+    .crew__member:nth-child(4n + 3) {
+      margin-block-start: 1.5rem;
+    }
+    .crew__member:nth-child(4n + 4) {
+      margin-block-start: 6rem;
+    }
+  }
+
+  /* Hover: the photo rises, its colour field slides out a little, the tag straightens.
+     The state also applies under reduced motion, without movement (owner, Oct 29 2026). */
+  @media (hover: hover) {
+    .crew__photo,
+    .crew__field,
+    .crew__tag {
+      transition:
+        translate 0.5s cubic-bezier(0.2, 0.7, 0.2, 1),
+        rotate 0.5s cubic-bezier(0.2, 0.7, 0.2, 1);
+    }
+    .crew__member:is(:hover, :focus-within) .crew__photo {
+      translate: 0 -0.5rem;
+    }
+    .crew__member:is(:hover, :focus-within) {
+      --shift: 1.5rem;
+    }
+    .crew__member:is(:hover, :focus-within) .crew__tag {
+      rotate: 0deg;
+    }
+    .team-join__ways li {
+      transition: translate 0.35s ease;
+    }
+    .team-join__ways li:hover {
+      translate: 0 -0.3rem;
     }
   }
 </style>
