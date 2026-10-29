@@ -1,0 +1,17 @@
+---
+import type { GetStaticPaths } from 'astro';
+import NoteArticlePage from '@/views/NoteArticlePage.astro';
+import { getNotes } from '@/lib/content';
+import { noteSlug } from '@/lib/notes';
+
+// One page per note from the President, at the same address in every language.
+export const getStaticPaths = (async () =>
+  (await getNotes()).map((note) => ({
+    params: { slug: noteSlug(note) },
+    props: { note },
+  }))) satisfies GetStaticPaths;
+
+const { note } = Astro.props;
+---
+
+<NoteArticlePage lang="en" note={note} />

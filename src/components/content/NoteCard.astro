@@ -17,6 +17,7 @@ import { ExternalLink } from '@lucide/astro';
 import { type UiLang } from '@/i18n/routes';
 import { pick, useTranslations } from '@/i18n/ui';
 import { formatDate } from '@/lib/dates';
+import { noteHref } from '@/lib/notes';
 import { typo } from '@/lib/frenchTypo';
 
 interface Props {
@@ -116,6 +117,9 @@ const alt = pick(n.imageAlt, lang) ?? '';
       </span>
     )}
     {n.sample && <span class="note__sample">{t('notes.sample')}</span>}
+    <a href={noteHref(note, lang)} class="note__page">
+      {t('notes.readFull')}
+    </a>
   </p>
 
   {n.image && (
@@ -232,6 +236,15 @@ const alt = pick(n.imageAlt, lang) ?? '';
   .note__date {
     font-weight: 700;
     color: var(--color-teal-deep);
+  }
+  .note__page {
+    margin-inline-start: auto;
+    font-family: var(--font-display);
+    font-weight: 800;
+    color: var(--color-primary);
+    text-decoration: underline;
+    text-decoration-color: var(--color-gold);
+    text-underline-offset: 4px;
   }
   .note__translation {
     font-style: italic;

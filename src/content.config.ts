@@ -722,6 +722,12 @@ const notes = defineCollection({
         date: z.coerce.date(),
         /** Language the President wrote the note in. */
         original: z.enum(['fr', 'en', 'fa']),
+        /** Address of the note's own page (optional; defaults to the file name without
+            its date, e.g. 2026-10-29-winter-story.yaml → /en/president-notes/winter-story/). */
+        slug: z
+          .string()
+          .regex(/^[a-z0-9]+(?:-[a-z0-9]+)*$/)
+          .optional(),
         /** The post's opening line, shown as the card's title (optional). */
         headline: z
           .object({
