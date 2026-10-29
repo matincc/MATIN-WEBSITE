@@ -70,6 +70,9 @@ const linkedinPath =
         </h2>
         {position && <p class="pres__position">{position}</p>}
         <Prose html={renderMarkdown(bioLead, lang)} class="pres__lead" />
+      </div>
+
+      <div class="pres__more">
         {bioRest && <Prose html={renderMarkdown(bioRest, lang)} class="pres__bio" />}
 
         <ul class="pres__invites">
@@ -234,20 +237,25 @@ const linkedinPath =
     font-weight: 600;
     line-height: 1.8;
   }
-  /* The biography in one column, about 20px, generous paragraph spacing. */
-  .pres__text :global(.pres__bio) {
+  /* The rest of the biography runs under the portrait and the opening, across the page
+     (owner, Oct 29 2026: shorter section), in two columns on wide screens, about 19px. */
+  .pres__more {
+    grid-column: 1 / -1;
+    color: var(--color-ink);
+  }
+  .pres__more :global(.pres__bio) {
     margin-block-start: clamp(1.75rem, 1.25rem + 1.5vw, 2.5rem);
     font-size: clamp(1.125rem, 1.05rem + 0.3vw, 1.3rem);
     line-height: 1.8;
   }
-  :global(html[lang='fa']) .pres__text :global(.pres__bio) {
+  :global(html[lang='fa']) .pres__more :global(.pres__bio) {
     line-height: 2.05;
   }
-  .pres__text :global(.pres__bio > * + *) {
+  .pres__more :global(.pres__bio > * + *) {
     margin-block-start: 1.25em;
   }
   /* A drop cap opens the biography (Latin scripts only). */
-  :global(html:not([lang='fa'])) .pres__text :global(.pres__bio > p:first-child::first-letter) {
+  :global(html:not([lang='fa'])) .pres__more :global(.pres__bio > p:first-child::first-letter) {
     float: inline-start;
     margin-block: 0.1em 0;
     margin-inline-end: 0.12em;
@@ -332,18 +340,29 @@ const linkedinPath =
       column-gap: clamp(3rem, 1rem + 5vw, 7rem);
     }
     .pres__media {
-      position: sticky;
-      inset-block-start: 9rem;
       justify-self: stretch;
       width: auto;
       max-width: 30rem;
       margin-block-start: clamp(1rem, 0rem + 2vw, 3rem);
     }
   }
-  /* The name and story sit lower than the top of the portrait, magazine style. */
+  /* Wide screens: the name sits level with the middle of the portrait; the rest of the
+     biography in two comfortable columns under both. */
+  @media (min-width: 56rem) {
+    .pres__grid {
+      align-items: center;
+    }
+    .pres__more {
+      padding-block-start: clamp(1rem, 0.5rem + 1vw, 2rem);
+    }
+  }
   @media (min-width: 64rem) {
-    .pres__text {
-      padding-block-start: clamp(2rem, 1rem + 2vw, 4rem);
+    .pres__more :global(.pres__bio) {
+      columns: 2;
+      column-gap: clamp(3rem, 1rem + 4vw, 5.5rem);
+    }
+    .pres__more :global(.pres__bio > *) {
+      break-inside: avoid;
     }
   }
 
