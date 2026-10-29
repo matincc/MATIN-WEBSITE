@@ -335,6 +335,7 @@ const fr = {
     sample: 'Exemple',
     sampleNote:
       "Aperçu : les notes marquées « Exemple » montrent seulement la mise en page. Elles seront remplacées par les vraies publications LinkedIn du président et n'apparaîtront jamais sur le site public.",
+    translatedFrom: 'Traduction ; original en {language}',
     noteOf: 'Note du {date}',
   },
   pagination: {

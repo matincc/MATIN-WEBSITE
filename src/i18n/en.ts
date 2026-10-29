@@ -330,6 +330,7 @@ const en: Dictionary = {
     sample: 'Sample',
     sampleNote:
       'Preview: the notes marked “Sample” only show the layout. They will be replaced by the President’s real LinkedIn posts and will never appear on the public site.',
+    translatedFrom: 'Translation; original in {language}',
     noteOf: 'Note of {date}',
   },
   pagination: {

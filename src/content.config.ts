@@ -722,6 +722,14 @@ const notes = defineCollection({
         date: z.coerce.date(),
         /** Language the President wrote the note in. */
         original: z.enum(['fr', 'en', 'fa']),
+        /** The post's opening line, shown as the card's title (optional). */
+        headline: z
+          .object({
+            fr: z.string().optional(),
+            en: z.string().optional(),
+            fa: z.string().optional(),
+          })
+          .optional(),
         /** The note's text, exactly as published (blank lines separate paragraphs). */
         text: z.object({
           fr: z.string().optional(),

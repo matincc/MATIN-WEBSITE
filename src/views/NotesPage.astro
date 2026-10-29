@@ -88,7 +88,7 @@ const name = lang === 'fa' ? 'رضا معافی' : p.name;
           <ol class="notes-list">
             {notes.map((note) => (
               <li>
-                <NoteCard note={note} lang={lang} />
+                <NoteCard note={note} lang={lang} fold={false} />
               </li>
             ))}
           </ol>
