@@ -9,7 +9,7 @@ each place crops the photo to its own shape (arch, circle, rounded rectangle, wi
 
 | Slot | Where on the homepage | Shape | Now | Kind |
 | --- | --- | --- | --- | --- |
-| `introConversation` | Who we are, large photo of the collage | arch, 4:5 | Two older women talking (Age Cymru) | temporary, Unsplash |
+| `introConversation` | Who we are, large photo of the collage | arch, 4:5 | Young friends of different origins sitting together (photo chosen by Matin, Oct 29 2026) | temporary, local file `who-friends-group.jpg`, source to confirm |
 | `introMaking` | Who we are, round photo | circle | Women making pottery (Sander Breneman) | temporary, Unsplash |
 | `introGallery` | Who we are, third photo | rounded, 3:2 | Visitors before a painting (Jessica Pamp) | temporary, Unsplash |
 | `montrealWide` | Full-width pause before Programs | 21:9 (4:3 on phones) | Mont-Royal bench over Montréal (Marion Lhn) | temporary, Unsplash |
@@ -33,14 +33,11 @@ Not in the registry (they are Matin's own and stay where they are):
 2. In `src/lib/media.ts`, import it at the top:
    `import walk2026 from '@/assets/photos/walk-2026.jpg';`
 3. In the slot, replace the line `unsplash: 'photo-…',` with `src: walk2026,`.
-4. Set `temporary: false` (the « Photo temporaire » label disappears), update `shows`,
+4. Set `temporary: false`, update `shows`,
    and the `credit`: photographer's name, `license: 'Tous droits réservés'`,
    `licenseUrl` and `source` pointing to https://matincc.ca/, `sourceName: 'Matin'`.
 5. Adjust `focus` if needed: the point that must stay visible when the photo is cropped,
    as CSS `object-position` (`'50% 30%'` keeps faces near the top in view).
-
-When no slot is temporary any more, the note under Who we are ("Photos marked Temporary
-photo…") disappears by itself.
 
 ## Temporary photos (Unsplash)
 
@@ -50,13 +47,12 @@ photo…") disappears by itself.
   `astro.config.mjs` allows `https://images.unsplash.com` for this). Credits link to the
   photographer's Unsplash page.
 - They illustrate themes only. They are never presented as Matin's events, members or
-  partners, and each carries the « Photo temporaire » / "Temporary photo" / «عکس موقت»
-  label until replaced.
+  partners. On Matin's request (Oct 29 2026) they carry no « Photo temporaire » label,
+  only a very small credit.
 - When the last one is replaced, `https://images.unsplash.com` can be removed from the CSP.
 
 | Slot | Photographer | Unsplash page |
 | --- | --- | --- |
-| introConversation | Age Cymru | https://unsplash.com/photos/two-elderly-women-sitting-and-talking-6RZXBjjAtbU |
 | introMaking | Sander Breneman | https://unsplash.com/photos/a-group-of-women-sitting-at-a-table-working-on-pottery-kJiPUr1KQSE |
 | introGallery | Jessica Pamp | https://unsplash.com/photos/a-group-of-people-standing-in-front-of-a-painting-JNTSoyb_bbw |
 | montrealWide | Marion Lhn | https://unsplash.com/photos/two-people-sitting-on-a-bench-overlooking-a-city-LmCnmjT7fNI |

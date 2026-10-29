@@ -10,8 +10,9 @@
  * - `unsplash`: a TEMPORARY photo from Unsplash (Unsplash License: free for commercial and
  *   non-commercial use, no permission needed). Unsplash asks that its photos be loaded from
  *   its own image server (images.unsplash.com, allowed in the CSP in astro.config.mjs) and
- *   credited; each one is shown with a « Photo temporaire » label and its photographer.
- *   Temporary photos illustrate themes only: they never show Matin's events or members.
+ *   credited; each one is shown with a very small credit (owner's request, Oct 29 2026: no
+ *   « Photo temporaire » label). Temporary photos illustrate themes only: they never show
+ *   Matin's events or members.
  *
  * TO REPLACE A TEMPORARY PHOTO with a Matin photo (see docs/IMAGES.md):
  * 1. Put the file in src/assets/photos/ (JPEG, at least 2000px wide for `wide` slots).
@@ -23,6 +24,7 @@
  */
 import type { ImageMetadata } from 'astro';
 import { photos } from '@/lib/photos';
+import whoFriendsGroup from '@/assets/photos/who-friends-group.jpg';
 
 export interface MediaCredit {
   author: string;
@@ -45,11 +47,12 @@ export interface MediaEntry {
   unsplash?: string;
   /** The point kept in view when the photo is cropped (CSS object-position). */
   focus?: string;
-  /** Temporary stand-in: labelled on the page until Matin's own photo replaces it. */
+  /** Temporary stand-in until Matin's own photo replaces it (not labelled on the page). */
   temporary: boolean;
   /** What the photo shows, for the person replacing it (not shown on the page). */
   shows: string;
-  credit: MediaCredit;
+  /** Left out only while the photo's source is unknown: the credit line then skips it. */
+  credit?: MediaCredit;
 }
 
 const UNSPLASH_LICENSE = 'Unsplash License';
@@ -67,17 +70,14 @@ const unsplashCredit = (author: string, username: string, page: string): MediaCr
 });
 
 export const media = {
-  /** Who we are, large photo of the collage: a conversation between two older women. */
+  /** Who we are, large photo of the collage: a group of young friends of different origins
+      sitting together outdoors (photo chosen by the owner, Oct 29 2026; source not yet
+      known, so no credit is shown until it is). */
   introConversation: {
-    unsplash: 'photo-1773227059784-c1e36cc8c8c9',
-    focus: '50% 40%',
+    src: whoFriendsGroup,
+    focus: '50% 30%',
     temporary: true,
-    shows: 'Two older women sitting and talking (Age Cymru).',
-    credit: unsplashCredit(
-      'Age Cymru',
-      'agecymru',
-      'two-elderly-women-sitting-and-talking-6RZXBjjAtbU',
-    ),
+    shows: 'Eight smiling young friends of different origins sitting together outdoors.',
   },
   /** Who we are, second photo of the collage: people making pottery around a table. */
   introMaking: {
@@ -179,4 +179,3 @@ export function unsplashUrl(id: string, width: number, ratio?: number): string {
 }
 
 /** True while at least one slot still shows a temporary photo. */
-export const hasTemporaryMedia = Object.values(media).some((m) => m.temporary);

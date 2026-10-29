@@ -2,23 +2,20 @@
 /**
  * Living homepage, the first section after the hero (owner's brief, Oct 29 2026): who
  * Matin is, told as an editorial statement (the approved home.whoText, set large) beside
- * a collage of three photographs in different shapes. Temporary photos are labelled
- * (src/lib/media.ts), with a short note saying they are not Matin's activities.
+ * a collage of three photographs in different shapes. Photos come from the
+ * registry (src/lib/media.ts), with one very small credit line.
  */
 import { ArrowRight } from '@lucide/astro';
 import MediaImage from '@/components/media/MediaImage.astro';
 import MediaCredits from '@/components/media/MediaCredits.astro';
 import { href, type UiLang } from '@/i18n/routes';
 import { useTranslations } from '@/i18n/ui';
-import { livingStrings } from '@/i18n/living';
-import { hasTemporaryMedia } from '@/lib/media';
 
 interface Props {
   lang: UiLang;
 }
 const { lang } = Astro.props;
 const t = useTranslations(lang);
-const l = livingStrings(lang);
 ---
 
 <section class="lintro" aria-labelledby="lintro-title">
@@ -70,11 +67,6 @@ const l = livingStrings(lang);
       />
     </div>
   </div>
-  {hasTemporaryMedia && (
-    <div class="container-site">
-      <p class="living-tempnote">{l.tempNote}</p>
-    </div>
-  )}
 </section>
 
 <style>

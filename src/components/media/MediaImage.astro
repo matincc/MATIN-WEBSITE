@@ -2,9 +2,9 @@
 /**
  * One photograph of the image registry (src/lib/media.ts), named by its slot. Local files
  * go through Astro's optimizer; temporary Unsplash photos are loaded from Unsplash's image
- * server at the sizes the slot needs, cropped to the slot's shape around faces. A
- * temporary photo always carries the « Photo temporaire » label; every photo carries its
- * credit (photographer, source, licence).
+ * server at the sizes the slot needs, cropped to the slot's shape around faces. Every
+ * photo with a known source carries a very small credit (photographer, source, licence);
+ * no « Photo temporaire » label (owner's request, Oct 29 2026).
  */
 import { Picture } from 'astro:assets';
 import type { UiLang } from '@/i18n/routes';
@@ -41,15 +41,12 @@ const {
 const l = livingStrings(lang);
 const m: MediaEntry = media[slot];
 const largest = widths[widths.length - 1];
-const creditText = l.photoCredit
-  .replace('{author}', m.credit.author)
-  .replace('{source}', m.credit.sourceName);
+const creditText = m.credit
+  ? l.photoCredit.replace('{author}', m.credit.author).replace('{source}', m.credit.sourceName)
+  : '';
 ---
 
-<figure
-  class:list={['media', `media--${credit}`, m.temporary && 'media--temp', className]}
-  style={`--ratio:${ratio}`}
->
+<figure class:list={['media', `media--${credit}`, className]} style={`--ratio:${ratio}`}>
   <div class="media__frame">
     {m.unsplash ? (
       <img
@@ -77,16 +74,19 @@ const creditText = l.photoCredit
       )
     )}
   </div>
-  {credit !== 'none' && (
+  {credit !== 'none' && m.credit && (
     <figcaption class="media__credit">
-      {m.temporary && <span class="media__temp">{l.tempPhoto}</span>}
-      <a href={m.credit.authorUrl ?? m.credit.source} target="_blank" rel="noopener noreferrer">
-        {creditText}
-      </a>
-      <span aria-hidden="true">·</span>
-      <a href={m.credit.licenseUrl} target="_blank" rel="noopener noreferrer license">
-        {m.credit.licenseKey === 'unsplash' ? l.unsplashLicense : m.credit.license}
-      </a>
+      {m.credit && (
+        <>
+          <a href={m.credit.authorUrl ?? m.credit.source} target="_blank" rel="noopener noreferrer">
+            {creditText}
+          </a>
+          <span aria-hidden="true">·</span>
+          <a href={m.credit.licenseUrl} target="_blank" rel="noopener noreferrer license">
+            {m.credit.licenseKey === 'unsplash' ? l.unsplashLicense : m.credit.license}
+          </a>
+        </>
+      )}
     </figcaption>
   )}
 </figure>
@@ -111,25 +111,14 @@ const creditText = l.photoCredit
     object-fit: cover;
     transition: transform 1.1s cubic-bezier(0.2, 0.7, 0.2, 1);
   }
-  /* The temporary label: a small, honest tag at the start of the credit. */
-  .media__temp {
-    margin-inline-end: 0.2rem;
-    padding: 0.05rem 0.55rem;
-    border-radius: 999px;
-    background: var(--living-gold);
-    color: var(--living-charcoal);
-    font-family: var(--font-display);
-    font-size: 0.75rem;
-    font-weight: 800;
-    letter-spacing: 0.04em;
-  }
   .media__credit {
     display: flex;
     flex-wrap: wrap;
     align-items: center;
     gap: 0.15rem 0.4rem;
-    font-size: 0.75rem;
+    font-size: 0.625rem;
     line-height: 1.4;
+    opacity: 0.85;
   }
   .media__credit a {
     color: inherit;
@@ -144,9 +133,9 @@ const creditText = l.photoCredit
     inset-block-end: 0.6rem;
     inset-inline-end: 0.6rem;
     max-width: calc(100% - 1.2rem);
-    padding: 0.2rem 0.6rem 0.2rem 0.25rem;
+    padding: 0.1rem 0.5rem;
     border-radius: 999px;
-    background: color-mix(in srgb, var(--living-charcoal) 62%, transparent);
+    background: color-mix(in srgb, var(--living-charcoal) 45%, transparent);
     color: var(--matin-white);
   }
   .media--below .media__credit {
