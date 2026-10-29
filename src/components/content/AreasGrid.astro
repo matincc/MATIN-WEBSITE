@@ -36,7 +36,7 @@ const areas = [
 ];
 ---
 
-<ul class:list={['areas-grid', linked && 'areas-grid--loose']}>
+<ul class="areas-grid areas-grid--loose">
   {areas.map((a, i) => (
     <li data-reveal style={`--reveal-delay:${i * 130}ms`}>
       <article class:list={['area-card', linked && 'card-lift']} data-accent={a.accent}>
@@ -98,8 +98,9 @@ const areas = [
       margin-block-start: 3rem;
     }
   }
-  /* Homepage (owner's request, Oct 28 2026: less uniform): the cards sit slightly
-     off-straight, like prints laid on a table, and straighten on hover. */
+  /* Less uniform (owner's requests, Oct 28 and 29 2026): the cards sit slightly
+     off-straight, like prints laid on a table, and straighten on hover; each has its
+     own deep corner (an arch on one side), mirrored on the Persian page. */
   @media (min-width: 48rem) {
     .areas-grid--loose > li:nth-child(1) .area-card {
       rotate: -1.1deg;
@@ -129,6 +130,15 @@ const areas = [
     border-radius: var(--radius-card);
     background: var(--color-white);
   }
+  .areas-grid > li:nth-child(1) .area-card {
+    border-start-start-radius: 6rem;
+  }
+  .areas-grid > li:nth-child(2) .area-card {
+    border-end-end-radius: 5rem;
+  }
+  .areas-grid > li:nth-child(3) .area-card {
+    border-start-end-radius: 6rem;
+  }
   .area-card__media {
     position: relative;
     aspect-ratio: 4 / 3;
@@ -153,8 +163,12 @@ const areas = [
     padding: clamp(1.75rem, 1.4rem + 1vw, 2.5rem);
   }
   .area-card__title {
-    font-size: clamp(1.4rem, 1.2rem + 0.6vw, 1.75rem);
-    font-weight: 800;
+    font-family: var(--font-editorial);
+    font-size: clamp(1.5rem, 1.3rem + 0.6vw, 1.9rem);
+    font-weight: 700;
+    font-variation-settings:
+      'SOFT' 100,
+      'opsz' 48;
     line-height: 1.2;
     text-wrap: balance;
   }

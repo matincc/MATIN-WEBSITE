@@ -126,6 +126,7 @@ const linkedinPath =
     border: 1px solid var(--color-card-edge);
     border-block-start: 5px solid var(--color-gold);
     border-radius: var(--radius-card);
+    border-end-end-radius: 7rem;
     background: var(--color-paper);
     box-shadow: var(--shadow-card);
     color: var(--color-ink);
@@ -135,15 +136,15 @@ const linkedinPath =
     width: min(100%, 24rem);
     margin-block-end: 1rem;
   }
-  /* Teal block behind one corner of the portrait. */
+  /* The sun rising behind one corner of the portrait (scheme A, Oct 29 2026). */
   .president-bio__block {
     position: absolute;
-    inset-block-end: -1rem;
-    inset-inline-end: -1rem;
-    width: 55%;
-    height: 45%;
-    border-radius: var(--radius-card);
-    background: var(--color-teal);
+    inset-block-end: -1.5rem;
+    inset-inline-end: -1.5rem;
+    width: 58%;
+    aspect-ratio: 1;
+    border-radius: 50%;
+    background: var(--color-soleil);
   }
   .president-bio__photo {
     position: relative;
@@ -154,6 +155,7 @@ const linkedinPath =
     object-position: 50% 20%;
     border: 4px solid var(--color-white);
     border-radius: var(--radius-card);
+    border-start-start-radius: 6rem;
   }
   .president-bio__initials {
     display: grid;

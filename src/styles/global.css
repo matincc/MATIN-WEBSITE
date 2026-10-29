@@ -49,6 +49,15 @@
   --matin-ivoire: #f7f2ea; /* page ground */
   --matin-sable: #eee4d3; /* second ground, to set sections apart */
   --matin-nuit: #13293a; /* one dark moment per page, the footer */
+  /* Two light grounds mixed from the colours above for the homepage rhythm (Oct 29 2026,
+     owner: the homepage ground was not yet inviting): apricot dawn and pale turquoise. */
+  --matin-aube: color-mix(in srgb, var(--matin-soleil) 30%, var(--matin-ivoire));
+  /* Leaning to blue, never a pale green (owner, Oct 25 2026). */
+  --matin-firouzeh-pale: color-mix(
+    in srgb,
+    color-mix(in srgb, var(--matin-firouzeh) 80%, var(--matin-encre)) 17%,
+    var(--matin-white)
+  );
 
   /* Older names, kept so every component follows the new scheme. */
   --matin-blue: var(--matin-encre);
@@ -100,6 +109,8 @@
   --color-soleil: var(--matin-soleil);
   --color-sable: var(--matin-sable);
   --color-nuit: var(--matin-nuit);
+  --color-aube: var(--matin-aube);
+  --color-firouzeh-pale: var(--matin-firouzeh-pale);
   --color-navy: var(--matin-blue);
   --color-gold: var(--matin-gold);
   --color-mustard: var(--matin-gold);
