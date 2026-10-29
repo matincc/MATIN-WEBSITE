@@ -14,8 +14,10 @@ import { useTranslations } from '@/i18n/ui';
 
 interface Props {
   lang: UiLang;
+  /** Where the form returns without JavaScript (the Contact page passes its own address). */
+  action?: string;
 }
-const { lang } = Astro.props;
+const { lang, action } = Astro.props;
 const t = useTranslations(lang);
 
 const TYPES = [
@@ -41,7 +43,7 @@ const LANGUAGES = ['French', 'English'] as const;
   lang={lang}
   name="adhesion"
   id="member"
-  action={`${href('membership', lang)}?sent=1`}
+  action={action ?? `${href('membership', lang)}?sent=1`}
   submitLabel={t('membership.submit')}
   consentText={t('membership.consent')}
   successMessage={t('membership.success')}
