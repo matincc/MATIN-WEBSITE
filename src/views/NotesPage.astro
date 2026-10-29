@@ -43,7 +43,7 @@ const name = lang === 'fa' ? 'رضا معافی' : p.name;
       shows an excerpt and links here). */}
   <HomeLetter lang={lang} id="personal-note" />
 
-  <section class="notes-band on-teal" aria-label={t('notes.title')}>
+  <section class="notes-band" aria-label={t('notes.title')}>
     <div class="container-site notes-grid">
       <aside class="notes-author" aria-label={t('notes.author')}>
         <div class="notes-author__card">
@@ -101,8 +101,9 @@ const name = lang === 'fa' ? 'رضا معافی' : p.name;
 </PageLayout>
 
 <style>
+  /* Scheme A (Oct 29 2026): sable ground instead of the deep teal band. */
   .notes-band {
-    background: var(--color-teal-deep);
+    background: var(--color-sable);
     padding-block: clamp(3rem, 2rem + 3vw, 5.5rem);
   }
   .notes-grid {

@@ -34,12 +34,13 @@ const rows: { label: string; value: string; href?: string; ltr?: boolean }[] = [
 ---
 
 <PageLayout
+  accent="encre"
   lang={lang}
   title={t('legalInfo.title')}
   lede={t('legalInfo.lede')}
   alternates={siteAlternates('legalInfo')}
 >
-  <div class="container-site grid max-w-4xl gap-8 pt-4 pb-24">
+  <div class="container-site legal-stack grid max-w-4xl gap-8 pt-4 pb-24">
     <section class="card p-6 sm:p-12" aria-labelledby="statement-title">
       <h2 id="statement-title" class="mb-5 text-3xl font-bold sm:text-4xl">
         {t('legalInfo.status')}
@@ -114,6 +115,32 @@ const rows: { label: string; value: string; href?: string; ltr?: boolean }[] = [
 </PageLayout>
 
 <style>
+  /* Less regular (owner's request, Oct 29 2026): the two cards are offset from each
+     other, the first one on a sand ground with the sun in its corner. */
+  .legal-stack > section:first-child {
+    position: relative;
+    overflow: hidden;
+    background: var(--color-sable);
+    border-color: transparent;
+  }
+  .legal-stack > section:first-child::after {
+    content: '';
+    position: absolute;
+    inset-block-end: -2.5rem;
+    inset-inline-end: 2.5rem;
+    width: 5rem;
+    aspect-ratio: 1;
+    border-radius: 50%;
+    background: var(--color-soleil);
+  }
+  @media (min-width: 48rem) {
+    .legal-stack > section:first-child {
+      margin-inline-end: 4rem;
+    }
+    .legal-stack > section:last-child {
+      margin-inline-start: 4rem;
+    }
+  }
   .legal-list > div {
     display: grid;
     gap: 0.25rem 2rem;

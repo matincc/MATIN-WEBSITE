@@ -48,7 +48,7 @@ const present = [...new Set(programs.map((p) => p.data.category))];
       />
     )}
     {programs.length === 0 && <p class="empty-state">{t('programs.empty')}</p>}
-    <ul id="program-list" class="grid gap-x-8 gap-y-12 md:grid-cols-2 lg:grid-cols-3">
+    <ul id="program-list" class="stagger-grid grid gap-x-8 gap-y-12 md:grid-cols-2 lg:grid-cols-3">
       {programs.map((program) => (
         <li data-category={program.data.category}>
           <ProgramCard program={program} lang={lang} headingLevel="h2" />

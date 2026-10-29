@@ -1,6 +1,10 @@
 ---
-/** Thin gold line on each side of a small gold maple leaf — echoes the logo. Decorative. */
-import MapleLeaf from './MapleLeaf.astro';
+/**
+ * The rule under every section title (scheme A, Oct 29 2026): a thin line, the logo's sun
+ * rising on it as a small half disc, then a longer line. "Matin" is the morning. Decorative.
+ * (The file keeps its old name so every title follows; the maple leaf it replaced stays
+ * available in MapleLeaf.astro.)
+ */
 interface Props {
   class?: string;
 }
@@ -8,27 +12,42 @@ const { class: className = '' } = Astro.props;
 ---
 
 <div class:list={['leaf-rule', className]} aria-hidden="true">
-  <span></span>
-  <MapleLeaf size={16} />
-  <span></span>
+  <span class="leaf-rule__line leaf-rule__line--short"></span>
+  <span class="leaf-rule__sun"></span>
+  <span class="leaf-rule__line"></span>
 </div>
 
 <style>
   .leaf-rule {
     display: flex;
-    align-items: center;
-    gap: 0.75rem;
+    align-items: flex-end;
+    gap: 0.4rem;
     max-width: 18rem;
     color: var(--color-gold);
   }
-  .leaf-rule span {
+  .leaf-rule__line {
     flex: 1;
-    height: 1.5px;
+    height: 2px;
+    border-radius: 2px;
     background: currentColor;
   }
-  /* On terracotta and teal bands the leaf and lines are cream (decorative). */
+  .leaf-rule__line--short {
+    flex: 0 0 1.25rem;
+  }
+  .leaf-rule__sun {
+    flex: none;
+    width: 1.5rem;
+    height: 0.75rem;
+    margin-block-end: 2px;
+    border-radius: 1.5rem 1.5rem 0 0;
+    background: currentColor;
+  }
+  /* On coloured bands the sun and lines are sable (decorative). */
   :global(.on-terracotta) .leaf-rule,
   :global(.on-teal) .leaf-rule {
     color: var(--color-cream);
+  }
+  :global(.on-dark) .leaf-rule {
+    color: var(--color-soleil);
   }
 </style>

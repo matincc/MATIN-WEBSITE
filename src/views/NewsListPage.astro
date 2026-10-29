@@ -69,11 +69,7 @@ const alternates = siteAlternates('news');
     </div>
   </section>
 
-  <section
-    id="matin-news"
-    class="news-matin on-teal scroll-mt-28"
-    aria-labelledby="matin-news-title"
-  >
+  <section id="matin-news" class="news-matin scroll-mt-28" aria-labelledby="matin-news-title">
     <div class="container-site">
       <SectionHeader
         align="start"
@@ -86,7 +82,7 @@ const alternates = siteAlternates('news');
         <>
           <PostCard post={lead} lang={lang} featured />
           {rest.length > 0 && (
-            <ul class="mt-10 grid gap-6 md:grid-cols-2 lg:grid-cols-3 lg:gap-8">
+            <ul class="stagger-grid mt-10 grid gap-6 md:grid-cols-2 lg:grid-cols-3 lg:gap-8">
               {rest.map((post) => (
                 <li>
                   <PostCard post={post} lang={lang} />
@@ -116,14 +112,10 @@ const alternates = siteAlternates('news');
   .news-cultural {
     padding-block: clamp(2.5rem, 2rem + 2vw, 4rem) clamp(3rem, 2rem + 3vw, 5rem);
   }
-  /* Matin News: deep teal band (owner's request, Oct 27 2026: cards must stand out). */
+  /* Matin News (scheme A, Oct 29 2026): on the sable ground, so the page keeps one dark
+     moment only (Cultural News); the white cards still stand out. */
   .news-matin {
     padding-block: clamp(3rem, 2rem + 3vw, 5.5rem);
-    background: var(--color-teal-deep);
-  }
-  .news-matin :global(.section-subtitle),
-  .news-matin :global(.link-arrow),
-  .news-matin :global(.link-arrow svg) {
-    color: var(--color-white);
+    background: var(--color-sable);
   }
 </style>

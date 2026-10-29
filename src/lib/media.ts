@@ -28,6 +28,7 @@ import whoFriendsGroup from '@/assets/photos/who-friends-group.jpg';
 import areaCulturalMapping from '@/assets/photos/area-cultural-mapping.jpg';
 import introParticipatoryBudget from '@/assets/photos/intro-participatory-budget.jpg';
 import areaMatinFestival from '@/assets/photos/area-matin-festival.jpg';
+import joinWorkshopGroup from '@/assets/photos/join-workshop-group.jpg';
 
 export interface MediaCredit {
   author: string;
@@ -147,19 +148,15 @@ export const media = {
     temporary: true,
     shows: 'A group of women and men mapping their city together on a large table map.',
   },
-  /** Participation: a discussion circle in Montréal, openly licensed (already on the site). */
+  /** Participation (« Share Your Expertise with Matin »): women and men working together
+      around tables with sticky notes (photo chosen by the owner, Oct 29 2026, replacing the
+      Wikimedia discussion circle, which stays in photos.ts; source not yet known, so no
+      credit is shown). */
   participation: {
-    src: photos.dialogueCircle.src,
-    focus: photos.dialogueCircle.focus,
-    temporary: false,
-    shows: 'A discussion circle at Wikimania 2017 in Montréal (Wikimedia Commons).',
-    credit: {
-      author: photos.dialogueCircle.credit.author,
-      license: photos.dialogueCircle.credit.license,
-      licenseUrl: photos.dialogueCircle.credit.licenseUrl,
-      source: photos.dialogueCircle.credit.source,
-      sourceName: 'Wikimedia Commons',
-    },
+    src: joinWorkshopGroup,
+    focus: '50% 40%',
+    temporary: true,
+    shows: 'Women and men sharing ideas around tables covered with sticky notes.',
   },
 } satisfies Record<string, MediaEntry>;
 

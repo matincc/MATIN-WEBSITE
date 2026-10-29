@@ -42,6 +42,7 @@ const groups = resourceCategories
 ---
 
 <PageLayout
+  accent="encre"
   lang={lang}
   title={t('resources.title')}
   lede={t('resources.lede')}
@@ -535,58 +536,39 @@ const groups = resourceCategories
     font-weight: 800;
     color: var(--color-cream);
   }
+  /* Directory groups (scheme A, Oct 29 2026): one quiet pattern for every category, a
+     white head with a thick top edge and an icon tile in the category's colour, then the
+     cards on the ivory ground. The colour names the category; the page stays calm. */
   .directory-group {
-    --head-bg: var(--color-primary);
-    --head-ink: var(--color-white);
-    --head-lede: var(--color-cream);
-    --head-icon-bg: var(--color-gold);
-    --head-icon: var(--color-primary);
-    --body-bg: var(--color-cream);
+    --cat: var(--color-primary);
+    --cat-ink: var(--color-white);
+    --body-bg: var(--color-paper);
+    --org-surface: var(--color-white);
     overflow: hidden;
     border: 1px solid var(--color-card-edge);
     border-radius: calc(var(--radius-card) * 1.3);
+    border-start-end-radius: 6rem;
     background: var(--body-bg);
     box-shadow: var(--shadow-card);
   }
-  /* Canadian municipal institutions (first, Oct 25 2026): deep terracotta head, ivory
-     body with cream cards. */
+  /* Less regular (owner's request, Oct 29 2026): the deep corner alternates from one
+     category to the next, and in the two-column lists the second card sits lower. */
+  .directory-group:nth-child(2n) {
+    border-start-end-radius: calc(var(--radius-card) * 1.3);
+    border-end-start-radius: 6rem;
+  }
   .directory-group[data-category='municipal'] {
-    --head-bg: var(--color-terracotta-deep);
-    --head-lede: var(--color-cream);
-    --head-icon-bg: var(--color-cream);
-    --head-icon: var(--color-terracotta-deep);
-    --body-bg: var(--color-ivory);
-    --org-surface: var(--color-cream);
+    --cat: var(--color-brique);
   }
-  /* A: Canadian federal institutions: deep navy head, cream body. */
-  /* B: Québec institutions: deep teal head, soft turquoise body. */
   .directory-group[data-category='quebec'] {
-    --head-bg: var(--color-teal-deep);
-    --head-icon-bg: var(--color-white);
-    --head-icon: var(--color-teal-deep);
-    --body-bg: var(--color-aqua);
+    --cat: var(--color-firouzeh);
   }
-  /* C: cultural & community organizations: matte gold head, champagne body. */
   .directory-group[data-category='community'] {
-    --head-bg: var(--color-gold);
-    --head-ink: var(--color-primary);
-    --head-lede: var(--color-primary);
-    --head-icon-bg: var(--color-primary);
-    --head-icon: var(--color-gold);
-    --body-bg: var(--color-champagne);
+    --cat: var(--color-soleil);
+    --cat-ink: var(--color-primary);
   }
-  /* D: international: soft turquoise head with a navy edge, ivory body, cream cards. */
   .directory-group[data-category='international'] {
-    --head-bg: var(--color-aqua);
-    --head-ink: var(--color-primary);
-    --head-lede: var(--color-ink);
-    --head-icon-bg: var(--color-primary);
-    --head-icon: var(--color-gold);
-    --body-bg: var(--color-paper);
-    --org-surface: var(--color-cream);
-  }
-  .directory-group[data-category='international'] .directory-head {
-    border-block-start: 6px solid var(--color-primary);
+    --cat: var(--color-firouzeh-ink);
   }
   .directory-head {
     display: grid;
@@ -594,12 +576,10 @@ const groups = resourceCategories
     gap: 1rem 1.25rem;
     align-items: center;
     padding: clamp(1.25rem, 0.9rem + 1.4vw, 2rem) clamp(1.25rem, 0.8rem + 2vw, 2.5rem);
-    border-block-end: 3px solid var(--color-gold);
-    background: var(--head-bg);
-    color: var(--head-ink);
-  }
-  .directory-group[data-category='community'] .directory-head {
-    border-block-end-color: var(--color-primary);
+    border-block-start: 6px solid var(--cat);
+    border-block-end: 1px solid var(--color-card-edge);
+    background: var(--color-white);
+    color: var(--color-primary);
   }
   @media (min-width: 56rem) {
     .directory-head {
@@ -612,28 +592,28 @@ const groups = resourceCategories
     width: 3.5rem;
     height: 3.5rem;
     border-radius: 1rem;
-    background: var(--head-icon-bg);
-    color: var(--head-icon);
+    background: var(--cat);
+    color: var(--cat-ink);
   }
   .directory-title {
     font-size: clamp(1.5rem, 1.2rem + 1.1vw, 2.25rem);
     font-weight: 800;
     line-height: 1.2;
-    color: var(--head-ink);
+    color: var(--color-primary);
   }
   .directory-lede {
     max-width: 46rem;
     margin-block-start: 0.4rem;
     font-size: 1.0625rem;
     line-height: 1.55;
-    color: var(--head-lede);
+    color: var(--color-ink);
   }
   .directory-count {
     grid-column: 1 / -1;
     justify-self: start;
     padding: 0.3rem 0.95rem;
     border-radius: 999px;
-    background: var(--color-white);
+    background: var(--color-sable);
     font-family: var(--font-display);
     font-size: 0.9375rem;
     font-weight: 700;
@@ -656,6 +636,20 @@ const groups = resourceCategories
   @media (min-width: 64rem) {
     .org-list {
       grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+    .org-list:not(.org-list--three) > :global(:nth-child(2n)) {
+      margin-block: 1.75rem -1.75rem;
+    }
+    .directory-group .org-list:not(.org-list--three) {
+      padding-block-end: calc(clamp(1.25rem, 0.8rem + 2vw, 2.25rem) + 1.75rem);
+    }
+  }
+  @media (min-width: 72rem) {
+    .org-list--three > :global(:nth-child(3n + 2)) {
+      margin-block: 1.75rem -1.75rem;
+    }
+    .org-list--three {
+      padding-block-end: calc(clamp(1.25rem, 0.8rem + 2vw, 2.25rem) + 1.75rem);
     }
   }
   /* The municipalities (owner's brief, Oct 25 2026): three across on desktop, two on
