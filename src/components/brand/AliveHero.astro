@@ -88,7 +88,12 @@ const a = aliveStrings(lang);
     /* A soft light glow hugging each brick letter only: the photo itself is never shaded,
        filtered or tinted (owner, Oct 29 2026). */
     --glow: color-mix(in srgb, var(--matin-ivoire) 85%, transparent);
-    --glow-dark: color-mix(in srgb, var(--matin-ink) 80%, transparent);
+    --halo:
+      1.5px 0 0 var(--matin-ivoire), -1.5px 0 0 var(--matin-ivoire), 0 1.5px 0 var(--matin-ivoire),
+      0 -1.5px 0 var(--matin-ivoire), 1px 1px 0 var(--matin-ivoire),
+      -1px -1px 0 var(--matin-ivoire), 1px -1px 0 var(--matin-ivoire),
+      -1px 1px 0 var(--matin-ivoire), 0 0 6px var(--matin-ivoire), 0 0 14px var(--glow),
+      0 0 28px var(--glow);
     position: relative;
     display: grid;
     grid-template-rows: 1fr auto;
@@ -157,13 +162,10 @@ const a = aliveStrings(lang);
     font-weight: 800;
     letter-spacing: 0.22em;
     text-transform: uppercase;
-    /* White with a dark glow on its letters: it stays readable over sky and trees
-       (owner, Oct 29 2026: the brick label and line were lost in the trees). */
-    color: var(--matin-white);
-    text-shadow:
-      0 1px 2px var(--glow-dark),
-      0 0 10px var(--glow-dark),
-      0 0 22px var(--glow-dark);
+    /* Brick with a thick ivory halo hugging the letters, so it reads over the leaves
+       (owner, Oct 29 2026). The photo itself is untouched. */
+    color: var(--matin-brique-ink);
+    text-shadow: var(--halo);
   }
   .ahero__place::before {
     content: '';
@@ -173,7 +175,7 @@ const a = aliveStrings(lang);
   }
   :global(html[lang='fa']) .ahero__place {
     letter-spacing: 0;
-    font-size: 1.1rem;
+    font-size: 1.25rem;
   }
   .ahero__title {
     margin-block-start: 1.1rem;
@@ -223,12 +225,10 @@ const a = aliveStrings(lang);
     font-size: clamp(1.15rem, 1rem + 0.6vw, 1.5rem);
     font-weight: 800;
     line-height: 1.45;
-    /* The line crosses the trees: white with a dark glow on its letters only. */
-    color: var(--matin-white);
-    text-shadow:
-      0 1px 2px var(--glow-dark),
-      0 0 10px var(--glow-dark),
-      0 0 24px var(--glow-dark);
+    /* Brick with a thick ivory halo hugging the letters, so it reads over the leaves
+       (owner, Oct 29 2026). The photo itself is untouched. */
+    color: var(--matin-brique-ink);
+    text-shadow: var(--halo);
   }
 
   /* ---------- Two quiet buttons ---------- */
@@ -354,16 +354,14 @@ const a = aliveStrings(lang);
     .ahero__btn--ghost {
       text-shadow: none;
     }
-    /* On the page under the photo: brick label, navy line, no glow. */
+    /* On the page under the photo: brick, no halo. */
     .ahero__place,
     .ahero__line {
       text-shadow: none;
     }
-    .ahero__place {
-      color: var(--matin-brique-ink);
-    }
+    .ahero__place,
     .ahero__line {
-      color: var(--matin-encre);
+      color: var(--matin-brique-ink);
     }
     .ahero__inner {
       grid-row: 2;
