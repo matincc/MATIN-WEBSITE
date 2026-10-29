@@ -507,7 +507,8 @@
   }
   .card-lift:hover,
   .card-lift:focus-within {
-    transform: translateY(-8px);
+    /* The rise itself comes from the shared organic-box hover (translate). */
+    transform: none;
     box-shadow: 0 14px 30px -18px color-mix(in srgb, var(--color-primary) 45%, transparent);
   }
   .link-arrow {
@@ -639,6 +640,73 @@
   main :is(figure, article, li, .media):hover img:not(.ahero img, dialog img),
   main img:not(.ahero img, dialog img):hover {
     scale: 1.05;
+  }
+}
+
+/* ---------- Organic boxes on every page (owner's request, Oct 29 2026) ----------
+   No box stays a plain rectangle: cards and panels take one deep corner (logical, so
+   Persian mirrors), cards in lists alternate it and sit slightly askew, and under a
+   desktop pointer a card rises a little and straightens. `:not(#o)` only raises the
+   specificity above the components' own `border-radius`, so these rules win. */
+:is(
+  .wire__item,
+  .post,
+  .note,
+  .org,
+  .event-wide,
+  .article-main,
+  .glance,
+  .article-visual,
+  .album__text,
+  .gallery-empty,
+  .notes-empty,
+  .region-empty,
+  .notes-author__card,
+  .profile-photo,
+  .empty-state,
+  .form-panel,
+  .poster-card__img
+):not(#o) {
+  border-start-end-radius: 3rem;
+}
+:is(.article-main, .glance, .notes-author__card, .form-panel, .gallery-empty):not(#o) {
+  border-start-end-radius: 5rem;
+}
+:is(li:nth-child(2n) > :is(.post, .note, .event-wide), :is(.wire__item, .org):nth-child(2n)):not(
+  #o
+) {
+  border-start-end-radius: var(--radius-card);
+  border-end-start-radius: 3rem;
+}
+/* A slight tilt on cards in lists (every third one each way). */
+:is(
+  li:nth-child(3n + 1) > :is(.card, .post, .note, .event-wide),
+  :is(.card, .wire__item, .org):is(li):nth-child(3n + 1)
+) {
+  rotate: -0.6deg;
+}
+:is(
+  li:nth-child(3n) > :is(.card, .post, .note, .event-wide),
+  :is(.card, .wire__item, .org):is(li):nth-child(3n)
+) {
+  rotate: 0.5deg;
+}
+@media (hover: hover) {
+  :is(.card, .post, .note, .org, .wire__item, .event-wide) {
+    transition:
+      rotate 0.45s ease,
+      translate 0.45s cubic-bezier(0.2, 0.7, 0.2, 1),
+      box-shadow 0.45s ease;
+  }
+  :is(.card, .post, .note, .org, .wire__item, .event-wide):is(:hover, :focus-within) {
+    rotate: 0deg;
+    translate: 0 -0.5rem;
+    box-shadow: 0 1.25rem 2.5rem -1.25rem color-mix(in srgb, var(--color-primary) 35%, transparent);
+  }
+  /* Forms and long reading panels do not move. */
+  :is(.form-panel, .article-main, form .card, .card:has(form)):is(:hover, :focus-within) {
+    rotate: 0deg;
+    translate: none;
   }
 }
 
