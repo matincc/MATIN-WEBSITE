@@ -29,7 +29,8 @@ const items: RouteKey[] = [
 ];
 const links = items.map((key) => ({ key, href: href(key, lang), label: t(`nav.${key}`) }));
 const aboutHref = href('about', lang);
-// Sub-links of "About": only Who We Are and the President's note. Mission, Vision,
+// Sub-links of "About": only Who We Are (the President's note moved to the homepage
+// letter, owner's request Oct 29 2026). Mission, Vision,
 // Values, Our Story and Legal status stay on the About page with their anchors
 // (#mission, #vision, #values, #story, #legal-status), so old links keep working.
 const aboutLinks = [
@@ -38,7 +39,6 @@ const aboutLinks = [
     label: t('nav.whoWeAre'),
     href: `${aboutHref}#who-we-are`,
   },
-  { id: 'president', label: t('nav.president'), href: `${aboutHref}#president` },
 ];
 // Sub-links of "Our Team" (owner's brief, Oct 24 2026): exactly three, the President,
 // the Executive Team and the invitation to collaborate (Oct 28 2026), on the Our Team page.

@@ -3,10 +3,9 @@
  * About page, in this order: Who We Are (photo, text and legal line; moved here from the homepage,
  * owner's brief Oct 25 2026), Our Mission (navy), Our Vision (deep teal) and Legal status
  * (aqua) as coloured cards on an ivory band, Our values (six coloured cards), Our story
- * (aqua band), A personal note from our President (owner's About brief, Oct 25 2026: no
- * shortcut buttons, no photo pair). The Persian page shows the values, the story and the
- * founder's note (Who We Are, Mission and Vision have no Persian translation yet) and
- * links to the English page. The President's biography and the team are on the Our Team
+ * (aqua band) (owner's About brief, Oct 25 2026: no shortcut buttons, no photo pair). The
+ * President's personal note is on the homepage only (HomeLetter.astro, owner's request
+ * Oct 29 2026). The President's biography and the team are on the Our Team
  * page (TeamPage.astro).
  */
 import { Picture } from 'astro:assets';
@@ -16,7 +15,6 @@ import {
   LayoutGrid,
   MessagesSquare,
   Palette,
-  Quote,
   Users,
 } from '@lucide/astro';
 import PhotoCredit from '@/components/media/PhotoCredit.astro';
@@ -89,8 +87,6 @@ const icons = {
   equity: LayoutGrid,
 };
 
-const president = about.president;
-
 // Paragraphs are separated by a blank line in about.yaml.
 const paragraphs = (text?: string) =>
   (text ?? '')
@@ -105,9 +101,6 @@ const history = about.history.map((h) => ({
   title: pick(h.title, lang)!,
   paragraphs: paragraphs(pick(h.text, lang)),
 }));
-const message = paragraphs(lang === 'fa' ? president.message.fa : president.message[lang]);
-const founderName = pick(president.displayName, lang) || president.name;
-const founderRole = pick(president.signature, lang) || pick(president.title, lang);
 ---
 
 <PageLayout
@@ -234,43 +227,17 @@ const founderRole = pick(president.signature, lang) || pick(president.title, lan
       </ol>
     </div>
   </section>
-
-  <!-- A personal note from our President: a tall letter on cream, a navy head with the
-       quotation badge above the title, the message on ivory, then the signature; framed by
-       teal and gold blocks and the dialogue motif; paragraphs on the reading side. -->
-  {message.length > 0 && (
-    <section id="president" class="founder scroll-mt-24" aria-labelledby="president-title">
-      <DialogueArt accent="teal" seed="founder" class="founder__art" />
-      <div class="container-site">
-        <div class="founder__frame">
-          <span class="founder__block founder__block--a" aria-hidden="true"></span>
-          <span class="founder__block founder__block--b" aria-hidden="true"></span>
-          <figure class="founder__note" data-reveal>
-            <header class="founder__head">
-              <span class="founder__mark" aria-hidden="true">
-                <Quote size={28} stroke-width={1.75} />
-              </span>
-              <h2 class="founder__title" id="president-title">
-                {t('about.founderTitle')}
-              </h2>
-            </header>
-            <div class="founder__body">
-              <blockquote class="founder__quote">
-                {message.map((para) => (
-                  <p>{para}</p>
-                ))}
-              </blockquote>
-              <figcaption class="founder__sign">
-                <span class="founder__name">{founderName}</span>
-                {founderRole && <span class="founder__role">{founderRole}</span>}
-              </figcaption>
-            </div>
-          </figure>
-        </div>
-      </div>
-    </section>
-  )}
+  <!-- The President's personal note left the About page (owner's request, Oct 29 2026:
+       it was shown twice); its full text is on the Notes from the President page
+       (#personal-note), with an excerpt on the homepage. Old links to #president land there. -->
+  <span hidden data-letter-href={`${href('notes', lang)}#personal-note`}></span>
 </PageLayout>
+
+<script>
+  // Old links to the President's note (#president) land on its full text (Notes page).
+  const letter = document.querySelector<HTMLElement>('[data-letter-href]')?.dataset.letterHref;
+  if (letter && location.hash === '#president') location.replace(letter);
+</script>
 
 <style>
   /* ---------- Who we are ---------- */
@@ -669,144 +636,6 @@ const founderRole = pick(president.signature, lang) || pick(president.title, lan
     }
     .timeline__year {
       text-align: end;
-    }
-  }
-
-  /* A personal note from our President (owner's About brief, Oct 25 2026: warmer colour,
-     a taller letter). On cream: a letter about 50rem wide, a navy head (white title 11.9:1,
-     gold badge 5.3:1), the message on ivory (ink 13:1), teal and gold blocks behind two
-     corners and the dialogue motif in the background. */
-  .founder {
-    position: relative;
-    overflow: hidden;
-    padding-block: clamp(4rem, 2.5rem + 5vw, 7.5rem);
-    background: var(--color-tint);
-  }
-  .founder :global(.founder__art) {
-    position: absolute;
-    inset-block-start: -4rem;
-    inset-inline-end: -6rem;
-    width: min(38rem, 70vw);
-    opacity: 0.45;
-  }
-  .founder__frame {
-    position: relative;
-    max-width: 50rem;
-    margin-inline: auto;
-  }
-  .founder__block {
-    position: absolute;
-    border-radius: var(--radius-card);
-  }
-  .founder__block--a {
-    inset-block-start: -1rem;
-    inset-inline-start: -1rem;
-    width: 9rem;
-    height: 9rem;
-    background: var(--color-gold);
-  }
-  .founder__block--b {
-    inset-block-end: -1rem;
-    inset-inline-end: -1rem;
-    width: 40%;
-    height: 9rem;
-    background: var(--color-teal);
-  }
-  .founder__note {
-    position: relative;
-    overflow: hidden;
-    border: 1px solid var(--color-card-edge);
-    border-radius: var(--radius-card);
-    background: var(--color-ivory);
-    box-shadow: var(--shadow-card);
-  }
-  /* Navy head: the badge sits above the title, both on the reading side. */
-  .founder__head {
-    display: flex;
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 1.1rem;
-    padding: clamp(2rem, 1.2rem + 3vw, 3.5rem) clamp(2rem, 1.2rem + 3.5vw, 4.5rem);
-    border-block-end: 5px solid var(--color-gold);
-    background: var(--color-primary);
-  }
-  .founder__mark {
-    display: grid;
-    flex-shrink: 0;
-    place-items: center;
-    width: 3.75rem;
-    height: 3.75rem;
-    border-radius: 50%;
-    background: var(--color-gold);
-    color: var(--color-primary);
-  }
-  .founder__title {
-    font-size: clamp(1.75rem, 1.3rem + 1.6vw, 2.75rem);
-    font-weight: 800;
-    line-height: 1.15;
-    color: var(--color-white);
-  }
-  .founder__body {
-    padding: clamp(2rem, 1.2rem + 3.5vw, 4.5rem);
-    padding-block-start: clamp(2.25rem, 1.5rem + 3vw, 4rem);
-  }
-  /* Paragraphs on the reading side, a comfortable measure and generous spacing. */
-  .founder__quote {
-    display: grid;
-    gap: 1.5rem;
-    max-width: 42rem;
-    font-size: clamp(1.1875rem, 1.08rem + 0.45vw, 1.4375rem);
-    line-height: 1.85;
-    color: var(--color-ink);
-    text-align: start;
-  }
-  /* The opening paragraph a little larger, the closing invitation a little warmer. */
-  .founder__quote > p:first-child {
-    font-size: 1.08em;
-    color: var(--color-primary);
-  }
-  .founder__quote > p:last-child:not(:first-child) {
-    font-weight: 600;
-    color: var(--color-primary);
-  }
-  .founder__sign {
-    display: grid;
-    gap: 0.3rem;
-    justify-items: start;
-    margin-block-start: 2.75rem;
-    padding-block-start: 1.75rem;
-    border-block-start: 1px solid var(--color-card-edge);
-  }
-  .founder__sign::before {
-    content: '';
-    width: 4rem;
-    height: 3px;
-    margin-block-end: 1rem;
-    border-radius: 2px;
-    background: var(--color-teal);
-  }
-  .founder__name {
-    font-family: var(--font-display);
-    font-size: clamp(1.25rem, 1.15rem + 0.4vw, 1.5rem);
-    font-weight: 800;
-    color: var(--color-primary);
-  }
-  .founder__role {
-    font-size: 1.0625rem;
-    color: var(--color-teal-deep);
-    font-weight: 600;
-  }
-  @media (max-width: 40rem) {
-    .founder__block--a {
-      width: 5rem;
-      height: 5rem;
-      inset-block-start: -0.6rem;
-      inset-inline-start: -0.6rem;
-    }
-    .founder__block--b {
-      inset-block-end: -0.6rem;
-      inset-inline-end: -0.6rem;
-      height: 5rem;
     }
   }
 </style>

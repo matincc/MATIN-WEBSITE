@@ -1,0 +1,65 @@
+---
+/**
+ * The credits of several registry photos shown together (a collage), in one short line
+ * under it: the « Photo temporaire » label when one of them is temporary, then each
+ * photographer, source and licence (src/lib/media.ts).
+ */
+import type { UiLang } from '@/i18n/routes';
+import { livingStrings } from '@/i18n/living';
+import { media, type MediaEntry, type MediaSlot } from '@/lib/media';
+
+interface Props {
+  slots: MediaSlot[];
+  lang: UiLang;
+  class?: string;
+}
+const { slots, lang, class: className } = Astro.props;
+const l = livingStrings(lang);
+const entries: MediaEntry[] = slots.map((s) => media[s]);
+const temporary = entries.some((m) => m.temporary);
+---
+
+<p class:list={['mcredits', className]}>
+  {temporary && <span class="mcredits__temp">{l.tempPhoto}</span>}
+  {entries.map((m, i) => (
+    <span class="mcredits__item">
+      <a href={m.credit.authorUrl ?? m.credit.source} target="_blank" rel="noopener noreferrer">
+        {l.photoCredit
+          .replace('{author}', m.credit.author)
+          .replace('{source}', m.credit.sourceName)}
+      </a>{' '}
+      (
+      <a href={m.credit.licenseUrl} target="_blank" rel="noopener noreferrer license">
+        {m.credit.licenseKey === 'unsplash' ? l.unsplashLicense : m.credit.license}
+      </a>
+      ){i < entries.length - 1 ? ' ·' : ''}
+    </span>
+  ))}
+</p>
+
+<style>
+  .mcredits {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.25rem 0.45rem;
+    font-size: 0.75rem;
+    line-height: 1.5;
+    color: var(--living-charcoal);
+  }
+  .mcredits a {
+    color: inherit;
+    text-decoration: none;
+  }
+  .mcredits a:hover,
+  .mcredits a:focus-visible {
+    text-decoration: underline;
+  }
+  .mcredits__temp {
+    padding: 0.05rem 0.55rem;
+    border-radius: 999px;
+    background: var(--living-gold);
+    font-family: var(--font-display);
+    font-weight: 800;
+  }
+</style>

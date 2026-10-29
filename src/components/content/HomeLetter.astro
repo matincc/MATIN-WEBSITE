@@ -17,8 +17,11 @@ import portrait from '@/assets/photos/president-casual.jpg';
 
 interface Props {
   lang: UiLang;
+  /** Anchor of the section: the full note lives on the Notes page (#personal-note) since
+      the Living homepage (Oct 29 2026) shows only an excerpt. */
+  id?: string;
 }
-const { lang } = Astro.props;
+const { lang, id = 'president-letter' } = Astro.props;
 const t = useTranslations(lang);
 const { president: p } = await getSingleton('about');
 const message = (lang === 'fa' ? p.message?.fa : p.message?.[lang]) ?? '';
@@ -34,7 +37,7 @@ const role = pick(p.signature, lang) || pick(p.title, lang);
 ---
 
 {paragraphs.length > 0 && (
-  <section class="letter-band section-pad" aria-labelledby="home-letter-title">
+  <section id={id} class="letter-band section-pad scroll-mt-24" aria-labelledby="home-letter-title">
     <div class="container-site letter-grid">
       {photo && (
         <figure class="letter-photo" data-reveal>
