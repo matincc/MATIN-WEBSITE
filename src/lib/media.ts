@@ -132,7 +132,8 @@ export const media = {
       garden photo; the clean version he sent, Oct 29 2026). */
   areaCommunities: {
     src: areaMatinFestival,
-    focus: '50% 40%',
+    // Owner, Oct 29 2026: the two people at the bottom matter most; crop from the top only.
+    focus: '50% 100%',
     temporary: false,
     shows: 'A crowd gathered on the grass around a microphone at a Matin festival.',
   },
