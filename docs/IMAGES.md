@@ -15,7 +15,7 @@ each place crops the photo to its own shape (arch, circle, rounded rectangle, wi
 | `montrealWide` | Full-width pause before Programs | 21:9 (4:3 on phones) | Mont-Royal bench over Montréal (Marion Lhn) | temporary, Unsplash |
 | `areaDialogue` | Programs, area 1 | rounded, 5:4 | Friends laughing and talking (Priscilla Du Preez) | temporary, Unsplash |
 | `areaCommunities` | Programs, area 2 | circle | Community garden (Haberdoedas) | temporary, Unsplash |
-| `areaResearch` | Programs, area 3 | arch, 5:4 | Public library (Sara Kurfeß) | temporary, Unsplash |
+| `areaResearch` | Programs, area 3 | arch, 5:4 | Women and men mapping their city on a table map (photo chosen by Matin, Oct 29 2026) | temporary, local file `area-cultural-mapping.jpg`, source to confirm |
 | `participation` | "Share Your Expertise with Matin" panel | arch, 4:5 | Discussion circle, Montréal (Iñaki LL) | openly licensed, Wikimedia Commons |
 
 Not in the registry (they are Matin's own and stay where they are):
@@ -58,4 +58,3 @@ Not in the registry (they are Matin's own and stay where they are):
 | montrealWide | Marion Lhn | https://unsplash.com/photos/two-people-sitting-on-a-bench-overlooking-a-city-LmCnmjT7fNI |
 | areaDialogue | Priscilla Du Preez | https://unsplash.com/photos/people-laughing-and-talking-outside-during-daytime-nF8xhLMmg0c |
 | areaCommunities | Haberdoedas | https://unsplash.com/photos/people-gathering-in-a-community-garden-with-trees-in-background-c9xGzxR8ego |
-| areaResearch | Sara Kurfeß | https://unsplash.com/photos/people-inside-library-5H08Y81JF_M |

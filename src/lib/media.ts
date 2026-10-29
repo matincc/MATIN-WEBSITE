@@ -25,6 +25,7 @@
 import type { ImageMetadata } from 'astro';
 import { photos } from '@/lib/photos';
 import whoFriendsGroup from '@/assets/photos/who-friends-group.jpg';
+import areaCulturalMapping from '@/assets/photos/area-cultural-mapping.jpg';
 
 export interface MediaCredit {
   author: string;
@@ -139,13 +140,14 @@ export const media = {
       'people-gathering-in-a-community-garden-with-trees-in-background-c9xGzxR8ego',
     ),
   },
-  /** Programs, area 3 (research, cultural policy and public dialogue). */
+  /** Programs, area 3 (research, cultural policy and public dialogue): women and men drawing
+      a cultural map together around a large table (photo chosen by the owner, Oct 29 2026,
+      replacing the library photo; source not yet known, so no credit is shown). */
   areaResearch: {
-    unsplash: 'photo-1553714155-2ee64b8575e6',
-    focus: '50% 50%',
+    src: areaCulturalMapping,
+    focus: '55% 40%',
     temporary: true,
-    shows: 'People reading in a public library (Stuttgart).',
-    credit: unsplashCredit('Sara Kurfeß', 'stereophototyp', 'people-inside-library-5H08Y81JF_M'),
+    shows: 'A group of women and men mapping their city together on a large table map.',
   },
   /** Participation: a discussion circle in Montréal, openly licensed (already on the site). */
   participation: {
