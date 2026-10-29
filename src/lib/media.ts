@@ -27,6 +27,7 @@ import { photos } from '@/lib/photos';
 import whoFriendsGroup from '@/assets/photos/who-friends-group.jpg';
 import areaCulturalMapping from '@/assets/photos/area-cultural-mapping.jpg';
 import introParticipatoryBudget from '@/assets/photos/intro-participatory-budget.jpg';
+import areaMatinFestival from '@/assets/photos/area-matin-festival.jpg';
 
 export interface MediaCredit {
   author: string;
@@ -126,17 +127,14 @@ export const media = {
       'people-laughing-and-talking-outside-during-daytime-nF8xhLMmg0c',
     ),
   },
-  /** Programs, area 2 (cultural planning and community development). */
+  /** Programs, area 2 (shown under area 1 on phones): a crowd on the grass at a Matin
+      festival, Matin's own photo (owner's choice, Oct 29 2026, replacing the community
+      garden photo; the story label and thumbnail strip were cropped off). */
   areaCommunities: {
-    unsplash: 'photo-1781785161788-a906202dba8f',
-    focus: '50% 55%',
-    temporary: true,
-    shows: 'People gathering in a community garden.',
-    credit: unsplashCredit(
-      'Haberdoedas',
-      'haberdoedas',
-      'people-gathering-in-a-community-garden-with-trees-in-background-c9xGzxR8ego',
-    ),
+    src: areaMatinFestival,
+    focus: '50% 40%',
+    temporary: false,
+    shows: 'A crowd gathered on the grass around a microphone at a Matin festival.',
   },
   /** Programs, area 3 (research, cultural policy and public dialogue): women and men drawing
       a cultural map together around a large table (photo chosen by the owner, Oct 29 2026,
