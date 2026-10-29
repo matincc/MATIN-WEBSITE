@@ -610,7 +610,9 @@ const history = about.history.map((h) => ({
   }
   /* On a desktop pointer each card rises a little, grows slightly and straightens
      (owner's request, Oct 29 2026); its icon turns gently. */
-  @media (hover: hover) and (prefers-reduced-motion: no-preference) {
+  /* The hover state also applies when the computer asks for reduced motion: it then
+     changes at once instead of moving (owner, Oct 29 2026: he saw no change). */
+  @media (hover: hover) {
     .value-card {
       transition:
         rotate 0.45s ease,

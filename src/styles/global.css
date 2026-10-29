@@ -632,7 +632,7 @@
    2026), whether the pointer is on the photo or on its card. The `scale` property adds to
    any crop a component sets with `transform`. Never on the homepage hero photo (owner:
    "don't touch the photo") nor in the fullscreen viewer. */
-@media (hover: hover) and (pointer: fine) and (prefers-reduced-motion: no-preference) {
+@media (hover: hover) {
   main img:not(.ahero img, dialog img) {
     transition: scale 0.7s cubic-bezier(0.2, 0.7, 0.2, 1);
   }

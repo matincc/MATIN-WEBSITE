@@ -191,7 +191,9 @@ const linkedinPath =
       rotate: -1.5deg;
     }
   }
-  @media (hover: hover) and (prefers-reduced-motion: no-preference) {
+  /* The hover state also applies when the computer asks for reduced motion: it then
+     changes at once instead of moving (owner, Oct 29 2026: he saw no change). */
+  @media (hover: hover) {
     .president-bio__photo {
       transition:
         rotate 0.5s ease,

@@ -82,7 +82,12 @@ const joinWays = [
               const full = m.data.fullBio && pick(m.data.fullBio, lang);
               const name = (lang === 'fa' && m.data.nameFa) || m.data.name;
               return (
-                <li class="team-card" data-accent={g.accents[i % g.accents.length]}>
+                <li
+                  class="team-card"
+                  data-accent={g.accents[i % g.accents.length]}
+                  data-reveal
+                  style={`--reveal-delay:${i * 120}ms`}
+                >
                   {m.data.photo ? (
                     <Image
                       src={m.data.photo}
@@ -354,7 +359,9 @@ const joinWays = [
       padding-block-end: 1.75rem;
     }
   }
-  @media (hover: hover) and (prefers-reduced-motion: no-preference) {
+  /* The hover state also applies when the computer asks for reduced motion: it then
+     changes at once instead of moving (owner, Oct 29 2026: he saw no change). */
+  @media (hover: hover) {
     .team-card {
       transition:
         rotate 0.45s ease,
@@ -370,14 +377,16 @@ const joinWays = [
     }
     /* The photo itself clearly answers too: it grows, turns slightly and its ring
        thickens (owner, Oct 29 2026: the motion must be visible on the faces). */
-    .team-grid > li.team-card:hover .team-card__avatar {
+    .team-grid > li.team-card:hover .team-card__avatar,
+    .team-grid > li.team-card:focus-within .team-card__avatar {
       scale: 1.15;
       rotate: -4deg;
       box-shadow:
         0 0 0 4px var(--color-white),
         0 0 0 11px var(--ring, var(--color-soleil));
     }
-    .team-grid > li.team-card:hover {
+    .team-grid > li.team-card:hover,
+    .team-grid > li.team-card:focus-within {
       rotate: 0deg;
       translate: 0 -1rem;
       scale: 1.05;
