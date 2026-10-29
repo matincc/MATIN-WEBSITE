@@ -316,6 +316,18 @@ const en: Dictionary = {
   },
   notes: {
     title: 'Notes from the President',
+    journalTitle: 'Notes from Our President',
+    journalSubtitle: 'Thoughts, stories, and little moments about culture, people, and the world we share.',
+    pinned: 'A Note to Begin With',
+    latest: 'Latest Note',
+    readFull: 'Read the Full Note',
+    readWelcome: 'Read the Note',
+    archiveTitle: 'More Thoughts & Stories',
+    continue: 'Continue reading',
+    showMore: 'Show more notes',
+    back: 'Back to Notes from Our President',
+    keepReading: 'Keep Reading',
+    linkedin: 'LinkedIn',
     lede: 'Reflections, encounters and ideas from Reza Moafi, President of Matin Intercultural Institute, first shared on LinkedIn.',
     homeLede: 'The latest reflections from our President, shared on LinkedIn.',
     all: 'All notes from the President',
@@ -330,6 +342,7 @@ const en: Dictionary = {
     sample: 'Sample',
     sampleNote:
       'Preview: the notes marked “Sample” only show the layout. They will be replaced by the President’s real LinkedIn posts and will never appear on the public site.',
+    translatedFrom: 'Translation; original in {language}',
     noteOf: 'Note of {date}',
   },
   pagination: {

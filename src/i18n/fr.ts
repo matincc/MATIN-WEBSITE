@@ -321,6 +321,18 @@ const fr = {
   },
   notes: {
     title: 'Notes du président',
+    journalTitle: 'Notes de notre président',
+    journalSubtitle: 'Des réflexions, des histoires et de petits moments sur la culture, les gens et le monde que nous partageons.',
+    pinned: 'Un mot pour commencer',
+    latest: 'Dernière note',
+    readFull: 'Lire la note complète',
+    readWelcome: 'Lire le mot',
+    archiveTitle: 'D’autres réflexions et histoires',
+    continue: 'Continuer la lecture',
+    showMore: 'Afficher plus de notes',
+    back: 'Retour aux notes de notre président',
+    keepReading: 'À lire aussi',
+    linkedin: 'LinkedIn',
     lede: "Réflexions, rencontres et idées de Reza Moafi, président de l'Institut interculturel Matin, partagées d'abord sur LinkedIn.",
     homeLede: 'Les dernières réflexions de notre président, partagées sur LinkedIn.',
     all: 'Toutes les notes du président',
@@ -335,6 +347,7 @@ const fr = {
     sample: 'Exemple',
     sampleNote:
       "Aperçu : les notes marquées « Exemple » montrent seulement la mise en page. Elles seront remplacées par les vraies publications LinkedIn du président et n'apparaîtront jamais sur le site public.",
+    translatedFrom: 'Traduction ; original en {language}',
     noteOf: 'Note du {date}',
   },
   pagination: {

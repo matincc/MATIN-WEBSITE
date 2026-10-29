@@ -1,0 +1,59 @@
+---
+/** Breadcrumbs of the President's journal pages (same look as the inner page banners). */
+import { ChevronRight } from '@lucide/astro';
+import type { UiLang } from '@/i18n/routes';
+import { useTranslations } from '@/i18n/ui';
+import type { Crumb } from '@/layouts/PageLayout.astro';
+
+interface Props {
+  lang: UiLang;
+  trail: Crumb[];
+}
+const { lang, trail } = Astro.props;
+const t = useTranslations(lang);
+---
+
+<nav aria-label={t('a11y.breadcrumbs')} class="jr-crumbs">
+  <ol>
+    {trail.map((c, i) => (
+      <li>
+        {i > 0 && <ChevronRight size={14} class="flip-rtl jr-crumbs__sep" aria-hidden="true" />}
+        {i === trail.length - 1 ? (
+          <span aria-current="page">{c.label}</span>
+        ) : (
+          <a href={c.href}>{c.label}</a>
+        )}
+      </li>
+    ))}
+  </ol>
+</nav>
+
+<style>
+  .jr-crumbs ol {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.25rem 0.4rem;
+    font-size: 0.95rem;
+    color: var(--color-ink);
+  }
+  .jr-crumbs li {
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+  }
+  .jr-crumbs a {
+    color: var(--color-ink);
+    text-underline-offset: 4px;
+  }
+  .jr-crumbs a:hover {
+    text-decoration: underline;
+    text-decoration-color: var(--color-gold);
+  }
+  .jr-crumbs [aria-current] {
+    font-weight: 600;
+  }
+  .jr-crumbs__sep {
+    color: var(--color-primary);
+  }
+</style>
