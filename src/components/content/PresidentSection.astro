@@ -98,16 +98,17 @@ const linkedinPath =
 <style>
   /* Deep navy band (owner's choice, Oct 24 2026: navy, teal, cream and matte gold on the
      Our Team page); the warm-white card keeps the biography in ink and navy. */
+  /* Scheme A (Oct 29 2026): the page's one dark moment, the night ground. */
   .president-band {
-    background: var(--color-primary);
+    background: var(--color-nuit);
   }
-  /* Inside the warm-white card the LinkedIn button is navy with white text again. */
+  /* Inside the warm-white card the LinkedIn button is the brique main button again. */
   .president-bio :global(.btn-primary) {
-    background: var(--color-primary);
+    background: var(--color-brique-ink);
     color: var(--color-white);
   }
   .president-bio :global(.btn-primary:hover) {
-    background: var(--color-teal-deep);
+    background: color-mix(in srgb, var(--color-brique-ink) 80%, black);
   }
   /* Inside the white card the focus ring is navy again (white would vanish). */
   .president-bio :global(:focus-visible) {

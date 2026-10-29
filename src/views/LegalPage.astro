@@ -40,7 +40,12 @@ const html = renderMarkdown(body, lang).replace(/<h2>(.*?)<\/h2>/g, (_, inner: s
 });
 ---
 
-<PageLayout lang={lang} title={pick(doc.title, lang)!} alternates={siteAlternates(page)}>
+<PageLayout
+  accent="encre"
+  lang={lang}
+  title={pick(doc.title, lang)!}
+  alternates={siteAlternates(page)}
+>
   <p slot="hero" class="mt-6 text-sm text-muted">
     {t('legal.updated', { date: formatDate(doc.updated, lang) })}
   </p>

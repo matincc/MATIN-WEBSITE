@@ -26,60 +26,59 @@
 @import '@fontsource-variable/fraunces/full-italic.css';
 
 /*
- * Matin colour system. These variables are the ONLY colours on the site (see
- * CLAUDE.md). Everything else below points at them.
- * Navy and cream carry the identity; coral, mustard, teal and terracotta are the
- * "cultures in dialogue" accents, used selectively (accents, cards, bands, shapes).
+ * Matin colour system, scheme A « Brique & Firouzeh » (owner's decision, Oct 29 2026).
+ * "Matin" is the morning: the colours of dawn over two cultures. Brique (Montréal brick,
+ * Persian brick and pottery) is the organisation colour; Firouzeh (Persian turquoise
+ * tiles, the St. Lawrence) its companion; Soleil the logo's sun; Encre the logo's navy
+ * for text; Ivoire and Sable the grounds; Nuit one dark moment per page and the footer.
+ * Seven colours. These are the ONLY colours on the site (see CLAUDE.md); every older
+ * name below is an alias of one of them, so no page keeps a colour of its own.
+ * Contrast (checked, WCAG AA): encre on ivoire 10.6 / sable 9.4 / white 11.9;
+ * brique-ink on ivoire 5.7; firouzeh-ink on ivoire 6.4; white on brique 5.0, on
+ * brique-ink 6.4, on firouzeh 5.0, on firouzeh-ink 7.2, on nuit 14.9; soleil on nuit 7.6;
+ * encre on soleil 6.1. Brique and firouzeh (4.5 on ivoire) for large text, shapes and
+ * button grounds; soleil never as text on light grounds.
  */
 :root {
-  --matin-blue: #193a53; /* deep navy: headings, navigation, buttons, links, footer */
-  --matin-cream: #f5ebdd; /* warm cream: alternate section backgrounds */
-  --matin-paper: #fffcf7; /* warm white: main page background */
-  --matin-gold: #d8a548; /* mustard gold: lines, maple leaves, the hero tagline, buttons on navy */
-  --matin-coral: #d86c58; /* coral: accents and shapes only (never small text) */
-  --matin-teal: #408c8d; /* teal: accents, shapes, large text only */
-  --matin-terracotta: #a95542; /* terracotta: warm bands with white text */
-  --matin-teal-deep: #2c6a6b; /* text-safe teal: labels and panels (5.3:1+ on cream) */
-  --matin-terracotta-deep: #9a4636; /* text-safe terracotta/coral: labels (5.4:1+ on cream) */
-  --matin-ink: #293442; /* body text */
-  --matin-white: #ffffff; /* cards, text on navy */
+  --matin-brique: #b5513a; /* organisation colour: main buttons, large titles, shapes */
+  --matin-brique-ink: #9c4430; /* brique for small text and labels */
+  --matin-firouzeh: #1e7a8a; /* companion: links, labels, one section per page */
+  --matin-firouzeh-ink: #17606d; /* firouzeh for small text */
+  --matin-soleil: #e8b04a; /* the sun: highlights, sun shapes, rules, never text on light */
+  --matin-encre: #193a53; /* the logo's navy: headings, menu, text */
+  --matin-ivoire: #f7f2ea; /* page ground */
+  --matin-sable: #eee4d3; /* second ground, to set sections apart */
+  --matin-nuit: #13293a; /* one dark moment per page, the footer */
+
+  /* Older names, kept so every component follows the new scheme. */
+  --matin-blue: var(--matin-encre);
+  --matin-cream: var(--matin-sable);
+  --matin-paper: var(--matin-ivoire);
+  --matin-gold: var(--matin-soleil);
+  --matin-coral: var(--matin-brique);
+  --matin-teal: var(--matin-firouzeh);
+  --matin-terracotta: var(--matin-brique);
+  --matin-teal-deep: var(--matin-firouzeh-ink);
+  --matin-terracotta-deep: var(--matin-brique-ink);
+  --matin-ink: #273240; /* body text: encre, a touch softer for long reading */
+  --matin-white: #ffffff;
   --matin-red: #b33b42; /* maple red: sparingly, only for the Canadian brand identity */
-}
 
-/*
- * Matin Alive (owner's brief, Oct 27 2026): the proposed homepage palette, used only by the
- * homepage preview (.alive and its components) while the owner reviews it. Not a
- * replacement for the colours above. Contrast (checked): cream on green 10.2, gold on
- * green 6.8, cream on blue 8.2, gold on blue 5.4, green on gold 6.8, green on cream 10.2.
- * Coral is a shape colour (2.6 on cream; 4.0 on green, large text only).
- */
-:root {
-  --alive-green: #183f3b; /* deep green: hero panel, Faces & Voices, buttons */
-  --alive-coral: #e47a59; /* warm coral: shapes, edges, dots */
-  --alive-gold: #f2bd69; /* soft gold: labels and buttons on dark bands */
-  --alive-cream: #f6f0e6; /* warm cream: light bands, text on dark */
-  --alive-blue: #294a68; /* cultural blue: Coming up, Cultures on Screen */
-}
-
-/*
- * Living homepage (owner's "Living Cultural Institution" brief, Oct 29 2026): a warmer
- * palette for the homepage preview, scoped to `.living`. Warm ivory ground, terracotta,
- * coral, soft gold and a cultural green, charcoal text. Contrast (checked): charcoal on
- * ivory 13.0, terracotta-ink on ivory 4.8 / white 5.5, green-ink on ivory 5.9, white on
- * terracotta-ink 5.5, white on green 4.9, charcoal on gold 8.1, charcoal on coral 5.1.
- * Terracotta (3.4 on ivory) is for large headlines and shapes only; coral and gold are
- * shapes and button grounds (with charcoal text), never text on light grounds.
- */
-:root {
-  --living-ivory: #f5f0e7; /* page ground */
-  --living-sand: #efe5d3; /* a deeper warm ground for alternate sections */
-  --living-terracotta: #c8664c; /* large headlines, shapes */
-  --living-terracotta-ink: #a84f37; /* small text, labels, main buttons (white text) */
-  --living-coral: #e97753; /* shapes, hover grounds (charcoal text) */
-  --living-gold: #e8b953; /* shapes, highlights, button grounds (charcoal text) */
-  --living-green: #367c73; /* cultural green: accents, white text on it */
-  --living-green-ink: #2b655d; /* small green text on light grounds */
-  --living-charcoal: #252927; /* text */
+  /* Homepage palettes of Oct 27 and Oct 29 2026, now aliases of the scheme. */
+  --alive-green: var(--matin-nuit);
+  --alive-coral: var(--matin-brique);
+  --alive-gold: var(--matin-soleil);
+  --alive-cream: var(--matin-ivoire);
+  --alive-blue: var(--matin-encre);
+  --living-ivory: var(--matin-ivoire);
+  --living-sand: var(--matin-sable);
+  --living-terracotta: var(--matin-brique);
+  --living-terracotta-ink: var(--matin-brique-ink);
+  --living-coral: var(--matin-soleil);
+  --living-gold: var(--matin-soleil);
+  --living-green: var(--matin-firouzeh);
+  --living-green-ink: var(--matin-firouzeh-ink);
+  --living-charcoal: var(--matin-ink);
   --font-editorial: 'Fraunces Variable', 'Georgia', 'Times New Roman', serif;
 }
 
@@ -94,6 +93,13 @@
  */
 @theme {
   --color-primary: var(--matin-blue);
+  --color-brique: var(--matin-brique);
+  --color-brique-ink: var(--matin-brique-ink);
+  --color-firouzeh: var(--matin-firouzeh);
+  --color-firouzeh-ink: var(--matin-firouzeh-ink);
+  --color-soleil: var(--matin-soleil);
+  --color-sable: var(--matin-sable);
+  --color-nuit: var(--matin-nuit);
   --color-navy: var(--matin-blue);
   --color-gold: var(--matin-gold);
   --color-mustard: var(--matin-gold);
@@ -188,6 +194,7 @@
     --font-sans: 'Vazirmatn Variable', Tahoma, 'Segoe UI', sans-serif;
     --font-display: 'Vazirmatn Variable', Tahoma, 'Segoe UI', sans-serif;
     --font-news: 'Vazirmatn Variable', Tahoma, 'Segoe UI', sans-serif;
+    --font-editorial: 'Vazirmatn Variable', Tahoma, 'Segoe UI', sans-serif;
   }
   /* Latin-script text inside Persian pages (e.g. the logo) keeps the Latin font. */
   html[lang='fa'] [lang^='fr'],
@@ -283,11 +290,22 @@
     font-size: clamp(1.1875rem, 1.1rem + 0.4vw, 1.375rem);
     letter-spacing: 0.14em;
   }
+  /* Section titles (scheme A, Oct 29 2026): the homepage's editorial serif on every page,
+     soft and warm; Persian keeps Vazirmatn (--font-editorial is redefined for fa). */
   .section-title {
-    @apply font-display font-extrabold;
+    font-family: var(--font-editorial);
+    font-weight: 700;
+    font-variation-settings:
+      'SOFT' 100,
+      'opsz' 96;
     font-size: clamp(2.125rem, 1.55rem + 2.1vw, 3.5rem);
     line-height: 1.08;
-    letter-spacing: -0.01em;
+    letter-spacing: -0.015em;
+    text-wrap: balance;
+  }
+  html[lang='fa'] .section-title {
+    font-weight: 800;
+    font-variation-settings: normal;
   }
   .lede {
     @apply text-muted;
@@ -311,17 +329,18 @@
     flex: 1;
     border-radius: 999px;
   }
+  /* Scheme A: brique, soleil, firouzeh, encre. */
   .mosaic > span:nth-child(1) {
-    background: var(--color-coral);
+    background: var(--color-brique);
   }
   .mosaic > span:nth-child(2) {
-    background: var(--color-gold);
+    background: var(--color-soleil);
   }
   .mosaic > span:nth-child(3) {
-    background: var(--color-teal);
+    background: var(--color-firouzeh);
   }
   .mosaic > span:nth-child(4) {
-    background: var(--color-terracotta);
+    background: var(--color-primary);
   }
   /* Accent sets for cards and tiles: --accent (shapes, borders), --accent-ink (text-safe
      label colour on paper/cream/white). */
@@ -368,8 +387,14 @@
     transform: none;
   }
   /* Primary: petroleum blue, white text (11.7:1). */
+  /* Main button (scheme A, Oct 29 2026): the organisation colour, brique, white text
+     6.4:1; darker on hover. */
   .btn-primary {
-    @apply bg-primary text-white hover:bg-primary-hover;
+    background: var(--color-brique-ink);
+    color: var(--color-white);
+  }
+  .btn-primary:hover {
+    background: color-mix(in srgb, var(--color-brique-ink) 80%, black);
   }
   /* Secondary: light background, thin gold border, blue text (11.7:1). */
   .btn-outline {
@@ -406,7 +431,12 @@
   }
   .on-terracotta .btn-primary,
   .on-teal .btn-primary {
-    @apply bg-primary text-white hover:bg-primary-hover;
+    background: var(--color-white);
+    color: var(--color-primary);
+  }
+  .on-terracotta .btn-primary:hover,
+  .on-teal .btn-primary:hover {
+    background: var(--color-sable);
   }
   /* Blue bands: gold label, white title, gold main button with blue text (4.6:1). */
   .on-dark .eyebrow {
@@ -416,7 +446,11 @@
     @apply text-white;
   }
   .on-dark .btn-primary {
-    @apply bg-gold text-primary hover:bg-cream;
+    background: var(--color-soleil);
+    color: var(--color-primary);
+  }
+  .on-dark .btn-primary:hover {
+    background: var(--color-sable);
   }
   /* Shared card style: white, softly rounded, a clear warm edge and a very light shadow. */
   .card {
@@ -661,7 +695,7 @@
 .news-band,
 .news-cultural {
   border-block: 6px solid var(--color-gold);
-  background: var(--color-primary);
+  background: var(--color-nuit);
   color: var(--color-white);
 }
 .news-band .section-title,
