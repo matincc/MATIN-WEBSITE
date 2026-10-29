@@ -1,6 +1,6 @@
 /**
  * Matin – website form entries → Google Sheet (owner's request, Oct 27 2026; membership
- * applications added Oct 28 2026: after changing this file, paste it into the Apps Script
+ * applications added Oct 28 2026, volunteer registry and thank-you emails Oct 29 2026: after changing this file, paste it into the Apps Script
  * editor and Deploy → Manage deployments → Edit → New version, keeping the same URL).
  *
  * Web app (Execute as: Me, Who has access: Anyone). The site's Netlify function
@@ -83,6 +83,7 @@ function doPost(e) {
       addToRegistry(data, received);
       sendReceipt(data);
     }
+    if (body.form === 'benevolat') addVolunteer(data, received, id);
     return reply('ok');
   } catch (err) {
     console.error(err);
@@ -210,6 +211,165 @@ function sendReceipt(data) {
   } catch (err) {
     console.error('Receipt not sent: ' + err);
   }
+}
+
+/*
+ * Volunteer registry (owner's request, Oct 29 2026): every volunteer offer from the website
+ * also lands in the sheet « Volunteers - داوطلبان » (tab Volunteers), one row per person.
+ * When an admin ticks Approve (column M), the volunteer gets a volunteer number (VOL-0001…,
+ * column A) and an official thank-you email in French and English (and Persian when they
+ * wrote from the Persian site) that names the area of collaboration: column L when an admin
+ * typed one, otherwise the skills and interests the volunteer wrote. Column N records the
+ * time it was sent, or the error (rows whose N starts with « Error » are tried again).
+ * Nothing is sent before approval. Run setupVolunteerEmails once after pasting this file.
+ */
+const VOL_REGISTRY_ID = '1xKKzk-tlUH4Nf6LjZpL5-VWoW3YKazi73sYCCDOiTUg';
+const VOL_TAB = 'Volunteers';
+const VOL_REPLY_TO = 'info@matincc.ca';
+const VOL_FORMATS = {
+  'Remote / Online': ['En ligne', 'Online', 'آنلاین'],
+  'In person': ['En personne', 'In person', 'حضوری'],
+  Both: ['En ligne et en personne', 'Online and in person', 'آنلاین و حضوری'],
+};
+
+function addVolunteer(data, received, id) {
+  try {
+    const sheet = SpreadsheetApp.openById(VOL_REGISTRY_ID).getSheetByName(VOL_TAB);
+    const v = (f) => clean(data[f]);
+    sheet.appendRow([
+      '', received, v('name'), v('email'), v('country'), v('city'), v('languages'),
+      v('collaboration'), v('skills'), v('additional_info'), v('lang').toUpperCase(),
+      '', false, '', '', id,
+    ]);
+  } catch (err) {
+    console.error('Volunteer registry not updated: ' + err);
+  }
+}
+
+/** Run once by hand: installs the Approve trigger and an hourly retry. */
+function setupVolunteerEmails() {
+  ScriptApp.getProjectTriggers().forEach((t) => {
+    if (['onVolunteerApprove', 'sendVolunteerThanks'].indexOf(t.getHandlerFunction()) !== -1) {
+      ScriptApp.deleteTrigger(t);
+    }
+  });
+  ScriptApp.newTrigger('onVolunteerApprove').forSpreadsheet(VOL_REGISTRY_ID).onEdit().create();
+  ScriptApp.newTrigger('sendVolunteerThanks').timeBased().everyHours(1).create();
+  sendVolunteerThanks();
+}
+
+function onVolunteerApprove(e) {
+  const r = e && e.range;
+  if (r && r.getSheet().getName() === VOL_TAB && r.getColumn() <= 13 && r.getLastColumn() >= 13) {
+    sendVolunteerThanks();
+  }
+}
+
+function sendVolunteerThanks() {
+  const lock = LockService.getScriptLock();
+  if (!lock.tryLock(30000)) return;
+  let sent = 0;
+  try {
+    const sheet = SpreadsheetApp.openById(VOL_REGISTRY_ID).getSheetByName(VOL_TAB);
+    const last = sheet.getLastRow();
+    if (last < 2) return;
+    const rows = sheet.getRange(2, 1, last - 1, 14).getValues();
+    let max = 0;
+    rows.forEach((r) => {
+      const m = /^VOL-(\d+)$/.exec(String(r[0]).trim());
+      if (m && +m[1] > max) max = +m[1];
+    });
+    rows.forEach((r, i) => {
+      const done = String(r[13]).trim();
+      if (r[12] !== true || (done && !/^Error/i.test(done))) return;
+      const row = i + 2;
+      const email = String(r[3]).trim();
+      if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+        sheet.getRange(row, 14).setValue('Error: no valid email');
+        return;
+      }
+      let volId = String(r[0]).trim();
+      if (!volId) {
+        volId = 'VOL-' + String(++max).padStart(4, '0');
+        sheet.getRange(row, 1).setValue(volId);
+      }
+      try {
+        const msg = volunteerEmail(volId, r);
+        const options = { name: 'Institut interculturel Matin', replyTo: VOL_REPLY_TO };
+        GmailApp.sendEmail(email, msg.subject, msg.text, options);
+        sheet.getRange(row, 14).setValue(Utilities.formatDate(new Date(), 'America/Toronto', 'yyyy-MM-dd HH:mm'));
+        sent++;
+      } catch (err) {
+        sheet.getRange(row, 14).setValue('Error: ' + err.message);
+      }
+    });
+  } finally {
+    lock.releaseLock();
+    console.log(sent + ' volunteer thank-you email(s) sent');
+  }
+}
+
+function volunteerEmail(volId, r) {
+  const name = String(r[2]).trim();
+  const area = String(r[11]).trim() || String(r[8]).trim().slice(0, 400);
+  const format = VOL_FORMATS[String(r[7]).trim()] || ['', '', ''];
+  const fa = String(r[10]).trim().toUpperCase() === 'FA';
+  const fr = [
+    'Bonjour' + (name ? ' ' + name : '') + ',',
+    '',
+    "Au nom de l'Institut interculturel Matin, merci de votre volonté de contribuer à nos activités. " +
+      "Nous avons le plaisir de confirmer votre inscription dans l'équipe bénévole de Matin.",
+    '',
+    'Votre numéro de bénévole : ' + volId,
+    area ? 'Domaine de collaboration : ' + area : null,
+    format[0] ? 'Format : ' + format[0] : null,
+    '',
+    'Nous communiquerons avec vous lorsqu\'un projet correspondra à vos intérêts. ' +
+      'Veuillez indiquer votre numéro de bénévole dans vos échanges avec nous.',
+    '',
+    'Avec nos remerciements,',
+    "L'équipe de l'Institut interculturel Matin",
+  ];
+  const en = [
+    'Hello' + (name ? ' ' + name : '') + ',',
+    '',
+    'On behalf of the Matin Intercultural Institute, thank you for offering to contribute to our activities. ' +
+      "We are pleased to confirm that you are now part of Matin's volunteer team.",
+    '',
+    'Your volunteer number: ' + volId,
+    area ? 'Area of collaboration: ' + area : null,
+    format[1] ? 'Format: ' + format[1] : null,
+    '',
+    'We will contact you when a project matches your interests. ' +
+      'Please mention your volunteer number when you write to us.',
+    '',
+    'With our thanks,',
+    'The Matin Intercultural Institute team',
+  ];
+  const faText = [
+    'سلام' + (name ? ' ' + name + ' عزیز' : '') + '،',
+    '',
+    'از طرف مؤسسه میان‌فرهنگی متین، از اینکه می‌خواهید در فعالیت‌های ما همکاری کنید سپاسگزاریم. ' +
+      'با خوشحالی عضویت شما را در تیم داوطلبان متین تأیید می‌کنیم.',
+    '',
+    'شمارهٔ داوطلبی شما: ' + volId,
+    area ? 'حوزهٔ همکاری: ' + area : null,
+    format[2] ? 'نوع همکاری: ' + format[2] : null,
+    '',
+    'هر وقت پروژه‌ای با علاقه‌های شما هماهنگ باشد، با شما تماس می‌گیریم. ' +
+      'لطفاً در نامه‌هایتان به ما شمارهٔ داوطلبی خود را ذکر کنید.',
+    '',
+    'با سپاس،',
+    'تیم مؤسسه میان‌فرهنگی متین',
+  ];
+  const parts = [fr, en].concat(fa ? [faText] : []);
+  const text = parts
+    .map((p) => p.filter((line) => line !== null).join('\n'))
+    .join('\n\n———\n\n') + '\n\nmatincc.ca · Instagram: https://www.instagram.com/matincc.ca/';
+  return {
+    subject: "Bienvenue dans l'équipe bénévole de Matin · Welcome to Matin's volunteer team",
+    text: text,
+  };
 }
 
 function columnNumber(letter) {
