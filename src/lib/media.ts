@@ -129,7 +129,7 @@ export const media = {
   },
   /** Programs, area 2 (shown under area 1 on phones): a crowd on the grass at a Matin
       festival, Matin's own photo (owner's choice, Oct 29 2026, replacing the community
-      garden photo; the story label and thumbnail strip were cropped off). */
+      garden photo; the clean version he sent, Oct 29 2026). */
   areaCommunities: {
     src: areaMatinFestival,
     focus: '50% 40%',
