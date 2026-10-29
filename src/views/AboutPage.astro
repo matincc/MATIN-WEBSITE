@@ -227,14 +227,14 @@ const history = about.history.map((h) => ({
       </ol>
     </div>
   </section>
-  <!-- The President's personal note moved to the homepage letter (owner's request,
-       Oct 29 2026: it was shown twice), so the About page ends with Our Story. Old
-       links to #president land on that letter. -->
-  <span hidden data-letter-href={`${href('home', lang)}#president-letter`}></span>
+  <!-- The President's personal note left the About page (owner's request, Oct 29 2026:
+       it was shown twice); its full text is on the Notes from the President page
+       (#personal-note), with an excerpt on the homepage. Old links to #president land there. -->
+  <span hidden data-letter-href={`${href('notes', lang)}#personal-note`}></span>
 </PageLayout>
 
 <script>
-  // Old links to the President's note (#president) land on the homepage letter.
+  // Old links to the President's note (#president) land on its full text (Notes page).
   const letter = document.querySelector<HTMLElement>('[data-letter-href]')?.dataset.letterHref;
   if (letter && location.hash === '#president') location.replace(letter);
 </script>

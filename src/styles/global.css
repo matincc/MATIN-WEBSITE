@@ -19,6 +19,11 @@
    Caveat for Latin pages (Persian keeps Vazirmatn). Only the President's name and short
    notes use them, never reading text. */
 @import '@fontsource/caveat/600.css';
+/* The Living homepage (owner's brief, Oct 29 2026): Fraunces, a warm editorial serif with
+   soft, rounded terminals, for the homepage section headlines (Latin pages only; Persian
+   keeps Vazirmatn). Variable: weight, optical size, softness. */
+@import '@fontsource-variable/fraunces/full.css';
+@import '@fontsource-variable/fraunces/full-italic.css';
 
 /*
  * Matin colour system. These variables are the ONLY colours on the site (see
@@ -54,6 +59,28 @@
   --alive-gold: #f2bd69; /* soft gold: labels and buttons on dark bands */
   --alive-cream: #f6f0e6; /* warm cream: light bands, text on dark */
   --alive-blue: #294a68; /* cultural blue: Coming up, Cultures on Screen */
+}
+
+/*
+ * Living homepage (owner's "Living Cultural Institution" brief, Oct 29 2026): a warmer
+ * palette for the homepage preview, scoped to `.living`. Warm ivory ground, terracotta,
+ * coral, soft gold and a cultural green, charcoal text. Contrast (checked): charcoal on
+ * ivory 13.0, terracotta-ink on ivory 4.8 / white 5.5, green-ink on ivory 5.9, white on
+ * terracotta-ink 5.5, white on green 4.9, charcoal on gold 8.1, charcoal on coral 5.1.
+ * Terracotta (3.4 on ivory) is for large headlines and shapes only; coral and gold are
+ * shapes and button grounds (with charcoal text), never text on light grounds.
+ */
+:root {
+  --living-ivory: #f5f0e7; /* page ground */
+  --living-sand: #efe5d3; /* a deeper warm ground for alternate sections */
+  --living-terracotta: #c8664c; /* large headlines, shapes */
+  --living-terracotta-ink: #a84f37; /* small text, labels, main buttons (white text) */
+  --living-coral: #e97753; /* shapes, hover grounds (charcoal text) */
+  --living-gold: #e8b953; /* shapes, highlights, button grounds (charcoal text) */
+  --living-green: #367c73; /* cultural green: accents, white text on it */
+  --living-green-ink: #2b655d; /* small green text on light grounds */
+  --living-charcoal: #252927; /* text */
+  --font-editorial: 'Fraunces Variable', 'Georgia', 'Times New Roman', serif;
 }
 
 /*

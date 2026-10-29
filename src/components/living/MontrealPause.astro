@@ -1,0 +1,68 @@
+---
+/**
+ * Living homepage: a full-width photographic pause between sections (owner's brief, Oct 29
+ * 2026: "occasional full-width visual sections"). One wide photo of Montréal (slot
+ * `montrealWide` in src/lib/media.ts) with the positioning line set beside it on the page,
+ * never over faces and never with any shade on the photo.
+ */
+import MediaImage from '@/components/media/MediaImage.astro';
+import type { UiLang } from '@/i18n/routes';
+import { useTranslations } from '@/i18n/ui';
+
+interface Props {
+  lang: UiLang;
+}
+const { lang } = Astro.props;
+const t = useTranslations(lang);
+---
+
+<section class="lpause" aria-label={t('home.positioning')}>
+  <MediaImage
+    slot="montrealWide"
+    lang={lang}
+    ratio={21 / 9}
+    sizes="100vw"
+    widths={[800, 1200, 1600, 2200]}
+    class="lpause__photo"
+  />
+  <div class="container-site">
+    <p class="lpause__line" data-reveal>
+      {t('home.positioning')}
+    </p>
+  </div>
+</section>
+
+<style>
+  .lpause {
+    position: relative;
+  }
+  .lpause :global(.lpause__photo .media__frame) {
+    aspect-ratio: 21 / 9;
+  }
+  @media (max-width: 47.99rem) {
+    .lpause :global(.lpause__photo .media__frame) {
+      aspect-ratio: 4 / 3;
+    }
+  }
+  /* The line sits under the photo, on the page: nothing covers the people in it. */
+  .lpause__line {
+    position: relative;
+    display: block;
+    max-width: 50rem;
+    margin-inline-start: auto;
+    padding-block: 1.5rem 0;
+    text-align: end;
+    font-family: var(--font-editorial);
+    font-style: italic;
+    font-size: clamp(1.6rem, 1.1rem + 2.2vw, 3.2rem);
+    font-variation-settings: 'SOFT' 100;
+    line-height: 1.15;
+    color: var(--living-terracotta);
+  }
+  :global(html[lang='fa']) .lpause__line {
+    font-family: var(--font-display);
+    font-style: normal;
+    font-weight: 800;
+    line-height: 1.6;
+  }
+</style>

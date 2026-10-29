@@ -11,6 +11,7 @@ import type { ImageMetadata } from 'astro';
 import { ArrowRight, ExternalLink } from '@lucide/astro';
 import PageLayout from '@/layouts/PageLayout.astro';
 import NoteCard from '@/components/content/NoteCard.astro';
+import HomeLetter from '@/components/content/HomeLetter.astro';
 import { href, siteAlternates, type UiLang } from '@/i18n/routes';
 import { pick, useTranslations } from '@/i18n/ui';
 import { getNotes, getSingleton } from '@/lib/content';
@@ -38,6 +39,10 @@ const name = lang === 'fa' ? 'رضا معافی' : p.name;
   alternates={siteAlternates('notes')}
   crumbs={[{ label: t('nav.news'), href: href('news', lang) }]}
 >
+  {/* The President's complete personal note (owner's brief, Oct 29 2026: the homepage
+      shows an excerpt and links here). */}
+  <HomeLetter lang={lang} id="personal-note" />
+
   <section class="notes-band on-teal" aria-label={t('notes.title')}>
     <div class="container-site notes-grid">
       <aside class="notes-author" aria-label={t('notes.author')}>
@@ -66,7 +71,7 @@ const name = lang === 'fa' ? 'رضا معافی' : p.name;
               <span class="sr-only">{t('a11y.externalLink')}</span>
             </a>
           )}
-          <a href={`${href('home', lang)}#president-letter`} class="link-arrow notes-author__more">
+          <a href="#personal-note" class="link-arrow notes-author__more">
             {t('president.readMessage')}
             <ArrowRight size={18} class="flip-rtl" aria-hidden="true" />
           </a>
