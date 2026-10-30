@@ -1,0 +1,222 @@
+---
+/**
+ * Programs page, "Our First Initiatives" (owner's request, Oct 30 2026: the Programs page
+ * must show Matin's real activities instead of an empty message). Built only from
+ * approved content already on the site: Matin's own upcoming events
+ * (src/content/events/, kind matin or co-organized) and the "coming soon" posters
+ * (src/content/coming-soon/). No new descriptive copy. Hidden when both are empty.
+ */
+import { Image } from 'astro:assets';
+import { getCollection } from 'astro:content';
+import { ArrowRight, CalendarDays } from '@lucide/astro';
+import { baseLang, href as link, type UiLang } from '@/i18n/routes';
+import { pick, useTranslations } from '@/i18n/ui';
+import { forLang, getUpcomingEvents, isMatinEvent, slugOf } from '@/lib/content';
+import { formatLongDate } from '@/lib/dates';
+
+interface Props {
+  lang: UiLang;
+}
+const { lang } = Astro.props;
+const t = useTranslations(lang);
+
+const events = forLang(await getUpcomingEvents(), lang)
+  .filter((e) => isMatinEvent(e) && e.data.status !== 'cancelled')
+  .map((e) => ({
+    key: e.id,
+    title: pick(e.data.title, lang) ?? '',
+    summary: pick(e.data.summary, lang) ?? '',
+    image: e.data.image,
+    // The official poster: its alt text, else the activity's title.
+    alt: pick(e.data.imageAlt, lang) || pick(e.data.title, lang) || '',
+    when: formatLongDate(e.startDate, lang, e.data.timeZone),
+    end: e.endDate.toISOString(),
+    href: link('events', lang, slugOf(e, baseLang(lang))),
+  }));
+
+const soon = (await getCollection('comingSoon', (c) => c.data.published))
+  .sort((a, b) => a.data.order - b.data.order)
+  .map((c) => ({
+    key: c.id,
+    title: pick(c.data.title, lang)!,
+    summary: pick(c.data.summary, lang)!,
+    image: (lang === 'fa' && c.data.poster.fa) || c.data.poster[lang === 'fa' ? 'en' : lang],
+    alt: pick(c.data.posterAlt, lang)!,
+  }));
+const sizes = '(min-width: 64rem) 24rem, (min-width: 40rem) 46vw, 92vw';
+---
+
+{(events.length > 0 || soon.length > 0) && (
+  <section class="initiatives" aria-labelledby="initiatives-title">
+    <div class="container-site initiatives__inner">
+      <header class="initiatives__head">
+        <h2 id="initiatives-title" class="initiatives__title">{t('programs.initiativesTitle')}</h2>
+        <p class="initiatives__lede">{t('programs.initiativesLede')}</p>
+      </header>
+      <ul class="initiatives__list">
+        {events.map((e) => (
+          <li class="initiative" data-event-end={e.end}>
+            <a href={e.href} class="initiative__link">
+              {e.image && (
+                <span class="initiative__media">
+                  <Image src={e.image} alt={e.alt} sizes={sizes} widths={[400, 800]} class="initiative__img" />
+                </span>
+              )}
+              <span class="initiative__body">
+                <span class="initiative__when">
+                  <CalendarDays size={16} aria-hidden="true" />
+                  {e.when}
+                </span>
+                <span class="initiative__name">{e.title}</span>
+                <span class="initiative__summary">{e.summary}</span>
+                <span class="initiative__cta">
+                  {t('programs.seeActivity')}
+                  <ArrowRight size={16} class="flip-rtl" aria-hidden="true" />
+                </span>
+              </span>
+            </a>
+          </li>
+        ))}
+        {soon.map((s) => (
+          <li class="initiative initiative--soon">
+            <span class="initiative__media">
+              <Image src={s.image} alt={s.alt} sizes={sizes} widths={[400, 800]} class="initiative__img" />
+            </span>
+            <span class="initiative__body">
+              <span class="initiative__when initiative__when--soon">{t('programs.soon')}</span>
+              <span class="initiative__name">{s.title}</span>
+              <span class="initiative__summary">{s.summary}</span>
+            </span>
+          </li>
+        ))}
+      </ul>
+    </div>
+  </section>
+)}
+
+<style>
+  .initiatives {
+    background: var(--matin-sable);
+  }
+  .initiatives__inner {
+    padding-block: 3.5rem 4.5rem;
+  }
+  .initiatives__head {
+    display: grid;
+    gap: 0.75rem;
+    max-width: 46rem;
+    margin-block-end: 2.5rem;
+  }
+  .initiatives__title {
+    font-family: var(--font-display);
+    font-weight: 800;
+    font-size: clamp(1.9rem, 1.4rem + 2vw, 3rem);
+    line-height: 1.15;
+    color: var(--matin-encre);
+  }
+  .initiatives__lede {
+    font-size: 1.15rem;
+    line-height: 1.7;
+    color: var(--matin-ink);
+  }
+  .initiatives__list {
+    display: grid;
+    gap: 2rem;
+    grid-template-columns: repeat(auto-fill, minmax(min(100%, 19rem), 1fr));
+    align-items: start;
+  }
+  /* Every second card sits a little lower, like the rest of the site (stagger). */
+  @media (min-width: 64rem) {
+    .initiative:nth-child(even) {
+      margin-block-start: 2.5rem;
+    }
+  }
+  .initiative {
+    overflow: hidden;
+    background: var(--matin-white);
+    border: 1px solid var(--color-card-edge);
+    border-radius: 0.75rem;
+    /* One deep corner, logical so it mirrors on Persian pages. */
+    border-start-end-radius: 2.5rem;
+    box-shadow: var(--shadow-card);
+    transition: transform 0.3s ease;
+  }
+  .initiative:not(.initiative--soon):hover {
+    transform: translateY(-4px);
+  }
+  .initiative__link {
+    display: block;
+    color: inherit;
+    text-decoration: none;
+  }
+  .initiative__link:focus-visible {
+    outline: 3px solid var(--matin-encre);
+    outline-offset: 3px;
+  }
+  .initiative__media {
+    display: block;
+    background: var(--matin-ivoire);
+  }
+  .initiative__media :global(.initiative__img) {
+    display: block;
+    width: 100%;
+    height: auto;
+  }
+  .initiative__body {
+    display: grid;
+    gap: 0.5rem;
+    padding: 1.25rem 1.5rem 1.6rem;
+  }
+  .initiative__when {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    font-family: var(--font-display);
+    font-size: 0.85rem;
+    font-weight: 800;
+    color: var(--matin-brique-ink);
+  }
+  .initiative__when--soon {
+    justify-self: start;
+    padding: 0.2rem 0.75rem;
+    border-radius: 999px;
+    background: var(--matin-soleil);
+    color: var(--matin-encre);
+  }
+  .initiative__name {
+    font-family: var(--font-display);
+    font-size: 1.3rem;
+    font-weight: 800;
+    line-height: 1.3;
+    color: var(--matin-encre);
+  }
+  .initiative__summary {
+    line-height: 1.6;
+    color: var(--matin-ink);
+  }
+  .initiative__link .initiative__summary {
+    display: -webkit-box;
+    -webkit-line-clamp: 4;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+  .initiative__cta {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    margin-block-start: 0.4rem;
+    font-family: var(--font-display);
+    font-weight: 800;
+    color: var(--matin-firouzeh-ink);
+  }
+  .initiative__link:hover .initiative__cta {
+    text-decoration: underline;
+    text-decoration-color: var(--matin-soleil);
+    text-underline-offset: 0.2em;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .initiative {
+      transition: none;
+    }
+  }
+</style>

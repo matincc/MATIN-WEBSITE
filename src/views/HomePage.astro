@@ -36,6 +36,7 @@ import ExpireEvents from '@/components/content/ExpireEvents.astro';
 import BaseLayout from '@/layouts/BaseLayout.astro';
 import AliveHero from '@/components/brand/AliveHero.astro';
 import UpcomingStrip from '@/components/content/UpcomingStrip.astro';
+import LandAcknowledgement from '@/components/brand/LandAcknowledgement.astro';
 import { href, newsAnchors, siteAlternates, type UiLang } from '@/i18n/routes';
 import { pick, useTranslations } from '@/i18n/ui';
 import { getMatinFeed, type MatinItem } from '@/lib/matin';
@@ -354,6 +355,9 @@ const l = livingStrings(lang);
 
     <!-- Cultural Resources & Organizations: opens the directory -->
     <ResourcesTeaser lang={lang} />
+
+    <!-- Land acknowledgement (owner's request, Oct 30 2026), just above the footer -->
+    <LandAcknowledgement lang={lang} />
   </div>
 
   {/* One viewer for the page: the Matin in Action posters. */}

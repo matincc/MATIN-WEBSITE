@@ -100,6 +100,10 @@ const en: Dictionary = {
       'A Montréal non-profit organization (NGO) where cultures meet, listen, and create together — rooted in Québec, open to the world.',
     whoTitle: 'Who We Are',
     positioning: 'Locally Rooted, Globally Connected',
+    // Land acknowledgement (owner's request, Oct 30 2026; drafted by Claude for his review).
+    landTitle: 'Land Acknowledgement',
+    landText:
+      'Matin Intercultural Institute acknowledges that Tiohtià:ke / Montréal is located on unceded Indigenous lands. The Kanien’kehá:ka Nation is recognized as the custodians of the lands and waters on which we gather today. Tiohtià:ke has long been a place of meeting and exchange among many First Nations. We honour these ties, and we commit to making dialogue between cultures a path towards respect and reconciliation.',
     legalLine: 'Nonprofit corporation incorporated in Québec',
     legalLink: 'Legal Information',
     whoText:
@@ -270,6 +274,10 @@ const en: Dictionary = {
     details: 'At a glance',
     backToPrograms: 'Back to programs',
     otherPrograms: 'Other programs',
+    initiativesTitle: 'Our First Initiatives',
+    initiativesLede: 'What Matin is organizing now, and what is taking shape with the community.',
+    seeActivity: 'Discover the activity',
+    soon: 'Coming soon',
   },
   news: {
     title: 'News',

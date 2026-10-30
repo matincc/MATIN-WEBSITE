@@ -179,3 +179,9 @@ When asked for another page (Programs, Events, News, Get Involved, Contact), wri
 - Never deploy to Netlify manually or with the Netlify CLI. Just push to `main`.
 - Always commit under the GitHub name `matincc` and email `matincc.mtl@gmail.com`, not `imaniman99`.
 - Group several edits into one push when possible, because each push uses Netlify build credits.
+
+## 4e. Owner's requests of Oct 30 2026
+
+- **Land acknowledgement** (`LandAcknowledgement.astro`, strings `home.landTitle` / `home.landText` in FR, EN, FA): the last section of the homepage, just above the footer, on ivory with the rising sun. Text drafted by Claude at the owner's request; he reviews it.
+- **Coming up never shows a past date:** selected (external) events leave the strip once they have begun (they stay on the Events page and in Matin's Picks); Matin's own activities stay until they end and always come first (`UpcomingStrip.astro`).
+- **Programs page « Nos premières initiatives » / "Our First Initiatives" / «نخستین ابتکارهای ما»** (`ProgramInitiatives.astro`): Matin's own upcoming events (poster, date, summary, link) and the coming-soon posters, from approved content only, above the areas of work; the "come back soon" message shows only when there is nothing to present.

@@ -20,15 +20,23 @@ interface Props {
 const { lang, limit = 8 } = Astro.props;
 const t = useTranslations(lang);
 const a = aliveStrings(lang);
+// Owner's request (Oct 30 2026): "Coming up" must never show a date already past.
+// Selected (external) events appear only until they START (a festival under way keeps
+// its place on the Events page and in Matin's Picks); Matin's own activities stay until
+// they end and always come first.
+const now = new Date();
 const events = forLang(await getUpcomingEvents(), lang)
   .filter((e) => e.data.status !== 'cancelled')
+  .filter((e) => isMatinEvent(e) || e.startDate >= now)
+  .sort((x, y) => Number(isMatinEvent(y)) - Number(isMatinEvent(x)))
   .slice(0, limit)
   .map((e) => {
     const ours = isMatinEvent(e);
     return {
       id: e.id,
       ours,
-      end: e.endDate.toISOString(),
+      // Read by ExpireEvents between builds: an external item hides once it has begun.
+      end: (ours ? e.endDate : e.startDate).toISOString(),
       href: ours ? link('events', lang, slugOf(e, baseLang(lang))) : e.data.eventUrl,
       title: pick(e.data.title, lang) ?? '',
       city: cityOf(e, lang),
@@ -46,7 +54,7 @@ const accents = ['coral', 'gold', 'blue', 'green'] as const;
         <span class="upcoming__pulse" aria-hidden="true"></span>
         {a.upcomingTitle}
       </h2>
-      <ul class="upcoming__track" data-upcoming-track>
+      <ul class="upcoming__track" data-upcoming-track data-upcoming-list>
         {events.map((e, i) => (
           <li class="upcoming__item" data-event-end={e.end} data-tone={accents[i % accents.length]}>
             <a

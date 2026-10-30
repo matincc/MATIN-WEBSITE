@@ -1,0 +1,70 @@
+---
+/**
+ * Land acknowledgement (owner's request, Oct 30 2026: « حتماً صفحه اول »). Shown at the
+ * end of the homepage, just above the footer, in FR, EN and FA (`home.landTitle`,
+ * `home.landText`). A quiet band: ivory ground, the sun rising on a thin horizon line,
+ * no photo and no motion.
+ */
+import { useTranslations } from '@/i18n/ui';
+import type { UiLang } from '@/i18n/routes';
+
+interface Props {
+  lang: UiLang;
+}
+const { lang } = Astro.props;
+const t = useTranslations(lang);
+---
+
+<section class="land" aria-labelledby="land-title">
+  <div class="container-site land__inner">
+    <svg class="land__sun" viewBox="0 0 120 40" aria-hidden="true" focusable="false">
+      <path d="M30 40a30 30 0 0 1 60 0Z" />
+      <line x1="0" y1="39.5" x2="120" y2="39.5" />
+    </svg>
+    <h2 id="land-title" class="land__title">{t('home.landTitle')}</h2>
+    <p class="land__text">{t('home.landText')}</p>
+  </div>
+</section>
+
+<style>
+  .land {
+    background: var(--matin-ivoire);
+    border-block-start: 1px solid color-mix(in srgb, var(--matin-encre) 12%, transparent);
+  }
+  .land__inner {
+    display: grid;
+    justify-items: center;
+    gap: 1rem;
+    max-width: 52rem;
+    padding-block: 3.5rem 4rem;
+    text-align: center;
+  }
+  .land__sun {
+    width: 6rem;
+    height: auto;
+  }
+  .land__sun path {
+    fill: var(--matin-soleil);
+  }
+  .land__sun line {
+    stroke: var(--matin-firouzeh);
+    stroke-width: 1;
+  }
+  .land__title {
+    font-family: var(--font-display);
+    font-size: 0.95rem;
+    font-weight: 800;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--matin-firouzeh-ink);
+  }
+  :global(html[lang='fa']) .land__title {
+    letter-spacing: 0;
+    font-size: 1.15rem;
+  }
+  .land__text {
+    font-size: 1.1rem;
+    line-height: 1.85;
+    color: var(--matin-encre);
+  }
+</style>

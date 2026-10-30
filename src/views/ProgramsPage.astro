@@ -6,7 +6,9 @@ import AreasGrid from '@/components/content/AreasGrid.astro';
 import SectionHeader from '@/components/ui/SectionHeader.astro';
 import { siteAlternates, type UiLang } from '@/i18n/routes';
 import { useTranslations } from '@/i18n/ui';
-import { getPrograms } from '@/lib/content';
+import ProgramInitiatives from '@/components/content/ProgramInitiatives.astro';
+import { getCollection } from 'astro:content';
+import { getPrograms, getUpcomingEvents, isMatinEvent } from '@/lib/content';
 
 interface Props {
   lang: UiLang;
@@ -15,6 +17,11 @@ const { lang } = Astro.props;
 const t = useTranslations(lang);
 const programs = await getPrograms();
 const present = [...new Set(programs.map((p) => p.data.category))];
+// Owner's request (Oct 30 2026): Matin's real initiatives first; the "come back soon"
+// message shows only when there is nothing at all to present.
+const hasInitiatives =
+  (await getUpcomingEvents()).some(isMatinEvent) ||
+  (await getCollection('comingSoon', (c) => c.data.published)).length > 0;
 ---
 
 <PageLayout
@@ -24,8 +31,10 @@ const present = [...new Set(programs.map((p) => p.data.category))];
   alternates={siteAlternates('programs')}
   searchable={false}
 >
+  <ProgramInitiatives lang={lang} />
+
   <!-- The three areas of work frame the programs (same cards as on the homepage). -->
-  <section class="container-site pt-4 pb-20" aria-labelledby="areas-title">
+  <section class="container-site pt-16 pb-20" aria-labelledby="areas-title">
     <SectionHeader
       id="areas-title"
       eyebrow={t('home.areasEyebrow')}
@@ -38,6 +47,7 @@ const present = [...new Set(programs.map((p) => p.data.category))];
     <AreasGrid lang={lang} linked={false} />
   </section>
 
+  {(programs.length > 0 || !hasInitiatives) && (
   <section class="container-site pt-6 pb-24">
     {present.length > 1 && (
       <FilterBar
@@ -47,7 +57,7 @@ const present = [...new Set(programs.map((p) => p.data.category))];
         options={present.map((c) => ({ value: c, label: t(`categories.${c}`) }))}
       />
     )}
-    {programs.length === 0 && <p class="empty-state">{t('programs.empty')}</p>}
+    {programs.length === 0 && !hasInitiatives && <p class="empty-state">{t('programs.empty')}</p>}
     <ul id="program-list" class="stagger-grid grid gap-x-8 gap-y-12 md:grid-cols-2 lg:grid-cols-3">
       {programs.map((program) => (
         <li data-category={program.data.category}>
@@ -59,4 +69,5 @@ const present = [...new Set(programs.map((p) => p.data.category))];
       {t('programs.noResults')}
     </p>
   </section>
+  )}
 </PageLayout>

@@ -104,6 +104,10 @@ const fr = {
     // Secondary positioning line (owner's decision, Oct 24 2026); never replaces the
     // slogan « Cultures en dialogue ».
     positioning: 'Ancré localement, relié au monde',
+    // Land acknowledgement (owner's request, Oct 30 2026; drafted by Claude for his review).
+    landTitle: 'Reconnaissance territoriale',
+    landText:
+      "L’Institut interculturel Matin reconnaît que Tiohtià:ke / Montréal est située sur un territoire autochtone non cédé. La nation Kanien’kehá:ka est reconnue comme gardienne des terres et des eaux sur lesquelles nous nous réunissons aujourd’hui. Tiohtià:ke est depuis longtemps un lieu de rencontre et d’échange entre de nombreuses Premières Nations. Nous honorons ces liens et nous nous engageons à faire du dialogue entre les cultures un chemin vers le respect et la réconciliation.",
     legalLine: 'Organisme sans but lucratif (OSBL) constitué au Québec',
     legalLink: 'Informations légales',
     whoText:
@@ -275,6 +279,10 @@ const fr = {
     details: 'En bref',
     backToPrograms: 'Retour aux programmes',
     otherPrograms: 'Autres programmes',
+    initiativesTitle: 'Nos premières initiatives',
+    initiativesLede: 'Ce que Matin organise maintenant, et ce qui se prépare avec la communauté.',
+    seeActivity: 'Découvrir l’activité',
+    soon: 'Bientôt',
   },
   news: {
     title: 'Actualités',
