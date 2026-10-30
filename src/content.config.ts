@@ -146,6 +146,9 @@ const events = defineCollection({
         /** Where the information was checked, and when (YYYY-MM-DD). */
         sourceUrl: z.url().optional(),
         lastVerified: isoDate.optional(),
+        /** Day the event was announced and registration opened (YYYY-MM-DD): Google's
+            `offers.validFrom`. Fill it for every event (owner's rule, Oct 30 2026). */
+        announced: isoDate.optional(),
         /** "Matin's Picks": shown in the highlights row until this date (YYYY-MM-DD). */
         featuredUntil: isoDate.optional(),
         /** Large banner at the top of the homepage events section, until the event ends. */

@@ -69,6 +69,12 @@ const photos = await Promise.all(
   })),
 );
 const icsHref = `/ics/${event.id}-${calLang}.ics`;
+// The event's own image (the poster when there is one) for Google; the default card otherwise.
+const ldImage = d.image
+  ? new URL((await getImage({ src: d.image, width: Math.min(1200, d.image.width), format: 'jpg' })).src, site).href
+  : new URL('/og-default.jpg', site).href;
+const matinOrg = { '@id': new URL('/#organization', site).href };
+const otherOrg = { '@type': 'Organization', name: d.organizer.name, url: d.organizer.url };
 
 const jsonLd = {
   '@context': 'https://schema.org',
@@ -89,7 +95,7 @@ const jsonLd = {
   }[d.format],
   inLanguage: lang === 'fr' ? 'fr-CA' : lang === 'fa' ? 'fa' : 'en-CA',
   url,
-  image: [new URL('/og-default.jpg', site).href],
+  image: [ldImage],
   location: online
     ? { '@type': 'VirtualLocation', url: d.registrationUrl ?? url }
     : {
@@ -103,15 +109,20 @@ const jsonLd = {
         },
       },
   organizer:
-    d.kind === 'co-organized'
-      ? [
-          { '@id': new URL('/#organization', site).href },
-          { '@type': 'Organization', name: d.organizer.name, url: d.organizer.url },
-        ]
-      : { '@id': new URL('/#organization', site).href },
+    d.kind === 'co-organized' ? [matinOrg, otherOrg] : d.kind === 'matin' ? matinOrg : otherOrg,
+  // Who leads the event: Matin for its own events, the organizer otherwise.
+  performer:
+    d.kind === 'co-organized' ? [matinOrg, otherOrg] : d.kind === 'matin' ? matinOrg : otherOrg,
   // Price details only when stated; never guessed.
   ...(d.price.type === 'free' && {
-    offers: { '@type': 'Offer', price: 0, priceCurrency: 'CAD', url: d.registrationUrl ?? url },
+    offers: {
+      '@type': 'Offer',
+      price: 0,
+      priceCurrency: 'CAD',
+      url: d.registrationUrl ?? url,
+      availability: 'https://schema.org/InStock',
+      ...(d.announced && { validFrom: d.announced }),
+    },
     isAccessibleForFree: true,
   }),
 };

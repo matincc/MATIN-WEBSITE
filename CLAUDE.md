@@ -159,6 +159,10 @@ A new homepage design system, homepage only for now (other pages follow after th
 
 When asked for another page (Programs, Events, News, Get Involved, Contact), write its content in both English and French, in the same tone and design, following every rule above, especially the banned-words rule.
 
+## 7. Complete information for Google (owner's rule, Oct 30 2026)
+
+Every event, and every other page that carries structured data (JSON-LD), must give Google complete information, in all three languages. For events (`src/views/EventDetailPage.astro`) that means name, description, start and end, status, attendance mode, location, image (the event's own poster when there is one), organizer, performer, and `offers` with price, currency, availability, `validFrom` and URL. When adding an event, always fill `announced` (the day it was announced, YYYY-MM-DD) and the price; if Search Console reports missing fields, fix them without waiting to be asked. The NEQ, incorporation date and street-address rules in section 1 still apply to structured data.
+
 ---
 
 ## How the project is organized
