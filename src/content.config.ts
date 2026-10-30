@@ -399,6 +399,12 @@ const settings = defineCollection({
       .optional(),
     charityNumber: z.string().optional(),
     donateUrl: z.url(),
+    donations: z
+      .object({
+        interacEmail: z.email().or(z.literal('')).default(''),
+        onlineDonationUrl: z.url().or(z.literal('')).default(''),
+      })
+      .optional(),
     /** Law 25: person in charge of the protection of personal information. */
     privacyOfficer: z
       .object({

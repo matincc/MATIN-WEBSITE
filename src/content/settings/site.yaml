@@ -34,6 +34,12 @@ social:
   instagram: https://www.instagram.com/matincc.ca/
 charityNumber: ''
 donateUrl: https://www.zeffy.com/
+# Donations (owner's request, Oct 30 2026). Interac e-Transfer: the email registered for
+# Autodeposit on Matin's bank account. onlineDonationUrl: Matin's own donation form
+# (e.g. Zeffy, free for nonprofits) once it exists; empty hides the card button.
+donations:
+  interacEmail: admin@matincc.ca
+  onlineDonationUrl: ''
 # Turn on (true) only once form submissions really reach Matin: Netlify →
 # Forms → "Enable form detection", then set up notification emails and redeploy.
 formsEnabled: true

@@ -6,10 +6,21 @@
  * claims charity status: the note says plainly that no tax receipts can be issued.
  * Texts drafted by Claude for the owner's review (`support.*` in FR, EN, FA).
  */
-import { ArrowRight, Handshake, HandHeart, HeartHandshake, UserPlus } from '@lucide/astro';
+import {
+  ArrowRight,
+  Building2,
+  Copy,
+  CreditCard,
+  Handshake,
+  HandHeart,
+  HeartHandshake,
+  Landmark,
+  UserPlus,
+} from '@lucide/astro';
 import PageLayout from '@/layouts/PageLayout.astro';
 import { href, siteAlternates, type UiLang } from '@/i18n/routes';
 import { useTranslations } from '@/i18n/ui';
+import { getSettings } from '@/lib/content';
 
 interface Props {
   lang: UiLang;
@@ -17,6 +28,11 @@ interface Props {
 const { lang } = Astro.props;
 const t = useTranslations(lang);
 const contact = href('contact', lang);
+// Donations (owner's request, Oct 30 2026): Interac e-Transfer, Matin's own online form
+// once it exists, and « write to us » for businesses and other ways, like other NGOs.
+const settings = await getSettings();
+const interacEmail = settings.donations?.interacEmail ?? '';
+const onlineUrl = settings.donations?.onlineDonationUrl ?? '';
 const ways = [
   {
     icon: UserPlus,
@@ -72,22 +88,78 @@ const ways = [
       ))}
     </ul>
 
-    <div class="donate" aria-labelledby="donate-title">
+    <div class="donate" id="don" aria-labelledby="donate-title">
       <span class="donate__icon" aria-hidden="true">
         <HeartHandshake size={30} />
       </span>
       <div class="donate__body">
         <h2 id="donate-title" class="donate__title">{t('support.donateTitle')}</h2>
         <p class="donate__text">{t('support.donateText')}</p>
+        <ul class="donate__ways">
+          {interacEmail && (
+            <li class="give give--main">
+              <span class="give__icon" aria-hidden="true"><Landmark size={22} /></span>
+              <h3 class="give__title">{t('support.donateInteracTitle')}</h3>
+              <p class="give__text">{t('support.donateInteracText')}</p>
+              <p class="give__email">
+                <span dir="ltr">{interacEmail}</span>
+                <button
+                  type="button"
+                  class="give__copy"
+                  data-copy={interacEmail}
+                  data-done={t('support.donateCopied')}
+                >
+                  <Copy size={16} aria-hidden="true" />
+                  <span>{t('support.donateCopy')}</span>
+                </button>
+              </p>
+            </li>
+          )}
+          {onlineUrl && (
+            <li class="give">
+              <span class="give__icon" aria-hidden="true"><CreditCard size={22} /></span>
+              <h3 class="give__title">{t('support.donateOnlineTitle')}</h3>
+              <p class="give__text">{t('support.donateOnlineText')}</p>
+              <a href={onlineUrl} class="btn-primary give__btn" target="_blank" rel="noopener">
+                {t('support.donateOnlineCta')}
+                <ArrowRight size={18} class="flip-rtl" aria-hidden="true" />
+              </a>
+            </li>
+          )}
+          <li class="give">
+            <span class="give__icon" aria-hidden="true"><Building2 size={22} /></span>
+            <h3 class="give__title">{t('support.donateOtherTitle')}</h3>
+            <p class="give__text">{t('support.donateOtherText')}</p>
+            <a href={`${contact}#write`} class="give__link">
+              {t('support.donateCta')}
+              <ArrowRight size={16} class="flip-rtl" aria-hidden="true" />
+            </a>
+          </li>
+        </ul>
         <p class="donate__note">{t('support.donateNote')}</p>
-        <a href={`${contact}#write`} class="btn-primary donate__btn">
-          {t('support.donateCta')}
-          <ArrowRight size={18} class="flip-rtl" aria-hidden="true" />
-        </a>
       </div>
     </div>
   </section>
 </PageLayout>
+
+<script>
+  // Copy the Interac address; the button says so for two seconds.
+  for (const btn of document.querySelectorAll<HTMLButtonElement>('[data-copy]')) {
+    const label = btn.querySelector('span');
+    const original = label?.textContent ?? '';
+    btn.addEventListener('click', async () => {
+      try {
+        await navigator.clipboard.writeText(btn.dataset.copy ?? '');
+        if (label) label.textContent = btn.dataset.done ?? original;
+        setTimeout(() => {
+          if (label) label.textContent = original;
+        }, 2000);
+      } catch {
+        /* Clipboard unavailable: the address stays visible to copy by hand. */
+      }
+    });
+  }
+</script>
 
 <style>
   .support {
@@ -210,12 +282,96 @@ const ways = [
     line-height: 1.6;
     color: var(--matin-ink);
   }
-  .donate__btn {
+  .donate {
+    scroll-margin-top: 7rem;
+  }
+  .donate__body {
+    max-width: none;
+  }
+  .donate__ways {
+    display: grid;
+    gap: 1.25rem;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 16rem), 1fr));
+    margin-block: 0.75rem 0.5rem;
+  }
+  .give {
+    display: grid;
+    align-content: start;
+    gap: 0.6rem;
+    padding: 1.5rem;
+    background: var(--matin-white);
+    border-radius: 0.75rem;
+    border-end-end-radius: 2rem;
+    border-block-start: 5px solid var(--matin-firouzeh);
+  }
+  .give--main {
+    border-block-start-color: var(--matin-brique);
+  }
+  .give__icon {
+    display: grid;
+    place-items: center;
+    width: 2.75rem;
+    height: 2.75rem;
+    border-radius: 50%;
+    background: var(--matin-ivoire);
+    color: var(--matin-brique-ink);
+  }
+  .give__title {
+    font-family: var(--font-display);
+    font-size: 1.2rem;
+    font-weight: 800;
+    color: var(--matin-encre);
+  }
+  .give__text {
+    line-height: 1.65;
+    color: var(--matin-ink);
+  }
+  .give__email {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.5rem 0.9rem;
+    padding: 0.75rem 1rem;
+    background: var(--matin-ivoire);
+    border-radius: 0.6rem;
+    font-family: var(--font-display);
+    font-size: 1.15rem;
+    font-weight: 800;
+    color: var(--matin-encre);
+    word-break: break-all;
+  }
+  .give__copy {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    padding: 0.35rem 0.8rem;
+    border-radius: 999px;
+    background: var(--matin-brique-ink);
+    color: var(--matin-white);
+    font-size: 0.9rem;
+    cursor: pointer;
+  }
+  .give__copy:hover {
+    background: var(--matin-encre);
+  }
+  .give__copy:focus-visible,
+  .give__link:focus-visible {
+    outline: 3px solid var(--matin-encre);
+    outline-offset: 3px;
+  }
+  .give__btn {
     justify-self: start;
     display: inline-flex;
     align-items: center;
     gap: 0.4rem;
-    margin-block-start: 0.4rem;
+  }
+  .give__link {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    font-family: var(--font-display);
+    font-weight: 800;
+    color: var(--matin-firouzeh-ink);
   }
   @media (max-width: 40rem) {
     .donate {
