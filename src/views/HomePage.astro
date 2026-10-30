@@ -25,7 +25,6 @@ import Lightbox from '@/components/ui/Lightbox.astro';
 import LivingIntro from '@/components/living/LivingIntro.astro';
 import PresidentExcerpt from '@/components/living/PresidentExcerpt.astro';
 import PicksGallery from '@/components/living/PicksGallery.astro';
-import MontrealPause from '@/components/living/MontrealPause.astro';
 import LivingPrograms from '@/components/living/LivingPrograms.astro';
 import { livingStrings } from '@/i18n/living';
 import NewsRegionTabs from '@/components/content/NewsRegionTabs.astro';
@@ -95,7 +94,8 @@ const matinNews = news
   .filter((p) => p.data.category === 'matin-news' && articleHref(p, lang) !== featured?.url)
   .slice(0, 3);
 // Notes from the President (owner's request, Oct 27 2026): the two latest, on a deep terracotta band.
-const notes = await getNotes(2);
+// Oct 30 2026 (owner: shorter homepage): two stories per region and the latest note only.
+const notes = await getNotes(1);
 const l = livingStrings(lang);
 ---
 
@@ -248,9 +248,7 @@ const l = livingStrings(lang);
     <PicksGallery lang={lang} />
     <ExpireEvents />
 
-    <!-- A full-width pause: Montréal -->
-    <MontrealPause lang={lang} />
-
+    {/* The full-width Montréal pause was removed (owner's request, Oct 30 2026: shorter homepage). */}
     <!-- Programs and Participation -->
     <LivingPrograms lang={lang} />
 
@@ -283,7 +281,7 @@ const l = livingStrings(lang);
           <NewsRegionTabs
             lang={lang}
             posts={culturalNews}
-            perTab={4}
+            perTab={2}
             id="home-cultural"
             level={4}
           />

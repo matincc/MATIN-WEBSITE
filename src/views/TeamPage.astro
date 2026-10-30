@@ -52,6 +52,20 @@ const tones: Record<string, string> = {
   '03-hakan': 'caramel',
   '04-benoit-akpaki': 'cocoa',
 };
+// Board of Directors (owner's word, Oct 30 2026): the three founding members. Names and
+// photos come from their existing team entries; only the board role is set here.
+const board = (
+  [
+    ['01-reza-moafi-executive-director', 'team.boardPresident'],
+    ['02-mina-karimian', 'team.boardDirectorF'],
+    ['04-benoit-akpaki', 'team.boardDirectorM'],
+  ] as const
+)
+  .map(([id, role]) => {
+    const m = team.find((x) => x.id === id);
+    return m && { id, role: t(role), name: (lang === 'fa' && m.data.nameFa) || m.data.name, photo: m.data.photo };
+  })
+  .filter((m) => m !== undefined);
 const voiceIds = new Set(cultureVoices.map((v) => v.member));
 const volunteerHref = `${href('contact', lang)}#${lang === 'fr' ? 'benevolat' : 'volunteer'}`;
 const joinWays = [
@@ -150,6 +164,36 @@ const joinWays = [
           })}
         </ul>
       </section>
+
+      {board.length > 0 && (
+        <section id="board" class="board scroll-mt-24" aria-labelledby="board-title">
+          <header class="board__head">
+            <h2 id="board-title" class="board__title">{t('team.boardTitle')}</h2>
+            <p class="board__lede">{t('team.boardLede')}</p>
+          </header>
+          <ul class="board__list">
+            {board.map((m) => (
+              <li class="board__member">
+                {m.photo ? (
+                  <Image
+                    src={m.photo}
+                    alt={t('team.photoAlt', { name: m.name })}
+                    widths={[160, 240]}
+                    sizes="7.5rem"
+                    class="board__photo"
+                  />
+                ) : (
+                  <span class="board__photo board__initials" aria-hidden="true">
+                    {initials(m.name)}
+                  </span>
+                )}
+                <span class="board__name">{m.name}</span>
+                <span class="board__role">{m.role}</span>
+              </li>
+            ))}
+          </ul>
+        </section>
+      )}
 
       <CultureVoices lang={lang} />
 
@@ -569,5 +613,69 @@ const joinWays = [
     .team-join__ways li:hover {
       translate: 0 -0.3rem;
     }
+  }
+  /* Board of Directors (Oct 30 2026): three round portraits on sable, one deep corner. */
+  .board {
+    padding: clamp(2rem, 4vw, 3.5rem);
+    background: var(--matin-sable);
+    border-radius: 1rem;
+    border-start-end-radius: 3rem;
+  }
+  .board__head {
+    display: grid;
+    gap: 0.6rem;
+    max-width: 46rem;
+    margin-block-end: 2rem;
+  }
+  .board__title {
+    font-family: var(--font-display);
+    font-size: clamp(1.8rem, 1.3rem + 2vw, 2.75rem);
+    font-weight: 800;
+    color: var(--matin-encre);
+  }
+  .board__lede {
+    font-size: 1.1rem;
+    line-height: 1.7;
+    color: var(--matin-ink);
+  }
+  .board__list {
+    display: grid;
+    gap: 2rem;
+    grid-template-columns: repeat(auto-fit, minmax(11rem, 1fr));
+  }
+  .board__member {
+    display: grid;
+    justify-items: center;
+    gap: 0.35rem;
+    text-align: center;
+  }
+  .board__member :global(.board__photo),
+  .board__initials {
+    width: 7.5rem;
+    height: 7.5rem;
+    margin-block-end: 0.6rem;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 4px solid var(--matin-white);
+    box-shadow: 0 0 0 3px var(--matin-soleil);
+  }
+  .board__initials {
+    display: grid;
+    place-items: center;
+    background: var(--matin-encre);
+    color: var(--matin-white);
+    font-family: var(--font-display);
+    font-size: 1.8rem;
+    font-weight: 800;
+  }
+  .board__name {
+    font-family: var(--font-display);
+    font-size: 1.2rem;
+    font-weight: 800;
+    color: var(--matin-encre);
+  }
+  .board__role {
+    font-weight: 600;
+    color: var(--matin-brique-ink);
   }
 </style>

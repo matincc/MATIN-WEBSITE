@@ -1,0 +1,225 @@
+---
+/**
+ * Support Matin (owner's request, Oct 30 2026). Three ways to help today (membership,
+ * volunteering, partnership), then online donations, which open once Matin's bank account
+ * and payment service are set up: until then the panel invites people to write. Never
+ * claims charity status: the note says plainly that no tax receipts can be issued.
+ * Texts drafted by Claude for the owner's review (`support.*` in FR, EN, FA).
+ */
+import { ArrowRight, Handshake, HandHeart, HeartHandshake, UserPlus } from '@lucide/astro';
+import PageLayout from '@/layouts/PageLayout.astro';
+import { href, siteAlternates, type UiLang } from '@/i18n/routes';
+import { useTranslations } from '@/i18n/ui';
+
+interface Props {
+  lang: UiLang;
+}
+const { lang } = Astro.props;
+const t = useTranslations(lang);
+const contact = href('contact', lang);
+const ways = [
+  {
+    icon: UserPlus,
+    tone: 'brique',
+    title: t('support.memberTitle'),
+    text: t('support.memberText'),
+    cta: t('support.memberCta'),
+    href: href('membership', lang),
+  },
+  {
+    icon: HandHeart,
+    tone: 'firouzeh',
+    title: t('support.volunteerTitle'),
+    text: t('support.volunteerText'),
+    cta: t('support.volunteerCta'),
+    href: `${contact}#${lang === 'fr' ? 'benevolat' : 'volunteer'}`,
+  },
+  {
+    icon: Handshake,
+    tone: 'encre',
+    title: t('support.partnerTitle'),
+    text: t('support.partnerText'),
+    cta: t('support.partnerCta'),
+    href: `${contact}#write`,
+  },
+];
+---
+
+<PageLayout
+  lang={lang}
+  title={t('support.title')}
+  description={t('support.metaDescription')}
+  lede={t('support.lede')}
+  ledeStrong
+  accent="brique"
+  alternates={siteAlternates('support')}
+>
+  <section class="container-site support" aria-labelledby="ways-title">
+    <h2 id="ways-title" class="support__title">{t('support.waysTitle')}</h2>
+    <ul class="support__ways">
+      {ways.map((w) => (
+        <li class="way" data-tone={w.tone}>
+          <span class="way__icon" aria-hidden="true">
+            <w.icon size={26} />
+          </span>
+          <h3 class="way__title">{w.title}</h3>
+          <p class="way__text">{w.text}</p>
+          <a href={w.href} class="way__cta">
+            {w.cta}
+            <ArrowRight size={16} class="flip-rtl" aria-hidden="true" />
+          </a>
+        </li>
+      ))}
+    </ul>
+
+    <div class="donate" aria-labelledby="donate-title">
+      <span class="donate__icon" aria-hidden="true">
+        <HeartHandshake size={30} />
+      </span>
+      <div class="donate__body">
+        <h2 id="donate-title" class="donate__title">{t('support.donateTitle')}</h2>
+        <p class="donate__text">{t('support.donateText')}</p>
+        <p class="donate__note">{t('support.donateNote')}</p>
+        <a href={`${contact}#write`} class="btn-primary donate__btn">
+          {t('support.donateCta')}
+          <ArrowRight size={18} class="flip-rtl" aria-hidden="true" />
+        </a>
+      </div>
+    </div>
+  </section>
+</PageLayout>
+
+<style>
+  .support {
+    padding-block: 3rem 5rem;
+  }
+  .support__title {
+    margin-block-end: 2rem;
+    font-family: var(--font-display);
+    font-size: clamp(1.8rem, 1.3rem + 2vw, 2.75rem);
+    font-weight: 800;
+    color: var(--matin-encre);
+  }
+  .support__ways {
+    display: grid;
+    gap: 1.75rem;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 17rem), 1fr));
+    align-items: start;
+  }
+  @media (min-width: 64rem) {
+    .way:nth-child(2) {
+      margin-block-start: 2rem;
+    }
+  }
+  .way {
+    display: grid;
+    gap: 0.75rem;
+    padding: 1.75rem;
+    background: var(--matin-white);
+    border: 1px solid var(--color-card-edge);
+    border-block-start: 6px solid var(--tone);
+    border-radius: 0.75rem;
+    border-end-start-radius: 2.5rem;
+    box-shadow: var(--shadow-card);
+  }
+  [data-tone='brique'] {
+    --tone: var(--matin-brique);
+    --tone-ink: var(--matin-brique-ink);
+  }
+  [data-tone='firouzeh'] {
+    --tone: var(--matin-firouzeh);
+    --tone-ink: var(--matin-firouzeh-ink);
+  }
+  [data-tone='encre'] {
+    --tone: var(--matin-encre);
+    --tone-ink: var(--matin-encre);
+  }
+  .way__icon {
+    display: grid;
+    place-items: center;
+    width: 3.25rem;
+    height: 3.25rem;
+    border-radius: 50%;
+    background: var(--tone);
+    color: var(--matin-white);
+  }
+  .way__title {
+    font-family: var(--font-display);
+    font-size: 1.35rem;
+    font-weight: 800;
+    color: var(--matin-encre);
+  }
+  .way__text {
+    line-height: 1.65;
+    color: var(--matin-ink);
+  }
+  .way__cta {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    font-family: var(--font-display);
+    font-weight: 800;
+    color: var(--tone-ink);
+  }
+  .way__cta:hover {
+    text-decoration: underline;
+    text-decoration-color: var(--matin-soleil);
+    text-underline-offset: 0.2em;
+  }
+  .way__cta:focus-visible {
+    outline: 3px solid var(--matin-encre);
+    outline-offset: 3px;
+  }
+  .donate {
+    display: grid;
+    grid-template-columns: auto minmax(0, 1fr);
+    gap: 1.5rem;
+    margin-block-start: 3.5rem;
+    padding: clamp(1.75rem, 4vw, 3rem);
+    background: var(--matin-sable);
+    border-radius: 1rem;
+    border-start-end-radius: 3rem;
+  }
+  .donate__icon {
+    display: grid;
+    place-items: center;
+    width: 4rem;
+    height: 4rem;
+    border-radius: 50%;
+    background: var(--matin-soleil);
+    color: var(--matin-encre);
+  }
+  .donate__body {
+    display: grid;
+    gap: 0.8rem;
+    max-width: 46rem;
+  }
+  .donate__title {
+    font-family: var(--font-display);
+    font-size: clamp(1.5rem, 1.2rem + 1.2vw, 2.1rem);
+    font-weight: 800;
+    color: var(--matin-encre);
+  }
+  .donate__text {
+    font-size: 1.1rem;
+    line-height: 1.7;
+    color: var(--matin-encre);
+  }
+  .donate__note {
+    font-size: 0.95rem;
+    line-height: 1.6;
+    color: var(--matin-ink);
+  }
+  .donate__btn {
+    justify-self: start;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    margin-block-start: 0.4rem;
+  }
+  @media (max-width: 40rem) {
+    .donate {
+      grid-template-columns: minmax(0, 1fr);
+    }
+  }
+</style>

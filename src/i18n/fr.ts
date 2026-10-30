@@ -55,6 +55,7 @@ const fr = {
     contactMembership: 'Adhésion',
     careers: 'Emplois',
     membership: 'Devenir membre',
+    support: 'Soutenir Matin',
     faq: 'FAQ',
     privacy: 'Politique de confidentialité',
     terms: "Conditions d'utilisation",
@@ -376,6 +377,12 @@ const fr = {
     copied: 'Lien copié!',
   },
   team: {
+    // Board of Directors (owner's word, Oct 30 2026: the three founders form the board).
+    boardTitle: 'Conseil d’administration',
+    boardLede: 'Les trois membres fondateurs de Matin forment son conseil d’administration.',
+    boardPresident: 'Président',
+    boardDirectorF: 'Administratrice',
+    boardDirectorM: 'Administrateur',
     executiveLede: "Les personnes qui coordonnent et gèrent les activités courantes de l'Institut.",
     executiveEmpty:
       "Notre équipe de direction se constitue actuellement. Les profils seront publiés ici au fur et à mesure, avec l'accord des personnes concernées.",
@@ -666,6 +673,26 @@ const fr = {
     volunteerText:
       'Matin accueille aussi des bénévoles qui veulent contribuer à ses activités culturelles.',
     volunteerCta: 'Rejoindre l’équipe de bénévoles',
+  },
+  // Support Matin page (owner's request, Oct 30 2026; texts drafted by Claude for his review).
+  support: {
+    title: 'Soutenir Matin',
+    metaDescription: 'Les façons de soutenir l’Institut interculturel Matin : adhésion, bénévolat, partenariat et, bientôt, dons en ligne.',
+    lede: 'Chaque geste de soutien aide Matin à créer des occasions de dialogue entre les cultures, à Montréal et au-delà.',
+    waysTitle: 'Soutenir Matin dès aujourd’hui',
+    memberTitle: 'Devenir membre',
+    memberText: 'L’adhésion est gratuite jusqu’au 31 décembre 2027. Les membres reçoivent nos nouvelles et participent à la vie de l’Institut.',
+    memberCta: 'Demander mon adhésion',
+    volunteerTitle: 'Offrir votre temps',
+    volunteerText: 'Vos compétences, votre expérience et vos idées sont précieuses, en personne à Montréal ou en ligne.',
+    volunteerCta: 'Rejoindre les bénévoles',
+    partnerTitle: 'Devenir partenaire',
+    partnerText: 'Organismes, entreprises et institutions : associez-vous à un projet de Matin ou commanditez une activité.',
+    partnerCta: 'Proposer un partenariat',
+    donateTitle: 'Dons en ligne',
+    donateText: 'Les dons en ligne seront bientôt possibles sur cette page. Si vous souhaitez faire un don dès maintenant, écrivez-nous.',
+    donateNote: 'Matin est un organisme sans but lucratif du Québec. Il n’est pas un organisme de bienfaisance enregistré et ne peut donc pas remettre de reçus aux fins de l’impôt.',
+    donateCta: 'Nous écrire',
   },
   membership: {
     title: 'Devenir membre',

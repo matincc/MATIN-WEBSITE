@@ -54,6 +54,7 @@ const en: Dictionary = {
     contactMembership: 'Membership',
     careers: 'Careers',
     membership: 'Become a Member',
+    support: 'Support Matin',
     faq: 'FAQ',
     privacy: 'Privacy Policy',
     terms: 'Terms of Use',
@@ -371,6 +372,12 @@ const en: Dictionary = {
     copied: 'Link copied!',
   },
   team: {
+    // Board of Directors (owner's word, Oct 30 2026: the three founders form the board).
+    boardTitle: 'Board of Directors',
+    boardLede: 'Matin’s three founding members form its Board of Directors.',
+    boardPresident: 'President',
+    boardDirectorF: 'Director',
+    boardDirectorM: 'Director',
     executiveLede: "The people who coordinate and manage the institute's day-to-day work.",
     executiveEmpty:
       'Our executive team is being formed. Profiles will be published here as members join, with their consent.',
@@ -656,6 +663,26 @@ const en: Dictionary = {
     volunteerText:
       'Matin also welcomes volunteers who want to contribute to its cultural activities.',
     volunteerCta: 'Join our volunteer team',
+  },
+  // Support Matin page (owner's request, Oct 30 2026; texts drafted by Claude for his review).
+  support: {
+    title: 'Support Matin',
+    metaDescription: 'Ways to support Matin Intercultural Institute: membership, volunteering, partnership and, soon, online donations.',
+    lede: 'Every act of support helps Matin create opportunities for dialogue between cultures, in Montréal and beyond.',
+    waysTitle: 'Support Matin Today',
+    memberTitle: 'Become a Member',
+    memberText: 'Membership is free until December 31, 2027. Members receive our news and take part in the life of the Institute.',
+    memberCta: 'Apply for membership',
+    volunteerTitle: 'Give Your Time',
+    volunteerText: 'Your skills, experience and ideas are valuable, in person in Montréal or online.',
+    volunteerCta: 'Join our volunteers',
+    partnerTitle: 'Become a Partner',
+    partnerText: 'Organizations, businesses and institutions: join one of Matin’s projects or sponsor an activity.',
+    partnerCta: 'Propose a partnership',
+    donateTitle: 'Online Donations',
+    donateText: 'Online donations will soon be possible on this page. If you would like to make a donation now, please write to us.',
+    donateNote: 'Matin is a Québec nonprofit organization. It is not a registered charity, so it cannot issue receipts for income tax purposes.',
+    donateCta: 'Write to us',
   },
   membership: {
     title: 'Become a Member',
