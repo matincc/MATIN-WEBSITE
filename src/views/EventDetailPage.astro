@@ -16,6 +16,7 @@ import CoverArt from '@/components/content/CoverArt.astro';
 import Prose from '@/components/ui/Prose.astro';
 import ShareButtons from '@/components/ui/ShareButtons.astro';
 import Lightbox from '@/components/ui/Lightbox.astro';
+import EventRsvpForm from '@/components/forms/EventRsvpForm.astro';
 import { baseLang, href, path, type Alternates, type UiLang } from '@/i18n/routes';
 import { useTranslations, pick } from '@/i18n/ui';
 import { cityOf, placeName, renderMarkdown, slugOf, type EventEntry } from '@/lib/content';
@@ -331,6 +332,11 @@ const jsonLd = {
           </div>
         )}
       </div>
+
+      {/* « Je participe » (owner's request, Oct 30 2026) */}
+      {!ended && !d.registrationUrl && d.status !== 'cancelled' && (
+        <EventRsvpForm lang={lang} eventId={event.id} eventTitle={title} />
+      )}
 
       {!ended && (
         <div class="card p-6">

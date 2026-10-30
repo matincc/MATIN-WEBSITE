@@ -12,6 +12,8 @@ const fr = {
   heroLine: 'Relier les personnes, les cultures et les communautés.',
   heroCtaPrimary: 'Découvrir Matin',
   heroCtaSecondary: 'Rejoindre la conversation',
+  // Oct 30 2026: while Matin has an upcoming activity, the second hero button leads to it.
+  heroCtaNext: 'Prochaine activité · {date}',
 
   upcomingTitle: 'À venir',
   upcomingMatin: 'Matin',
@@ -84,6 +86,7 @@ const en: AliveDict = {
   heroLine: 'Connecting people, cultures, and communities.',
   heroCtaPrimary: 'Explore Matin',
   heroCtaSecondary: 'Join the Conversation',
+  heroCtaNext: 'Next activity · {date}',
 
   upcomingTitle: 'Coming up',
   upcomingMatin: 'Matin',
@@ -154,6 +157,7 @@ const fa: AliveDict = {
   heroLine: 'پیوند میان مردم، فرهنگ‌ها و جامعه‌ها.',
   heroCtaPrimary: 'با متین آشنا شوید',
   heroCtaSecondary: 'به گفت‌وگو بپیوندید',
+  heroCtaNext: 'برنامهٔ بعدی · {date}',
 
   upcomingTitle: 'رویدادهای پیش رو',
   upcomingMatin: 'متین',

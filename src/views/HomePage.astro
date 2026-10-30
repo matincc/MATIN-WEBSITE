@@ -36,6 +36,7 @@ import BaseLayout from '@/layouts/BaseLayout.astro';
 import AliveHero from '@/components/brand/AliveHero.astro';
 import UpcomingStrip from '@/components/content/UpcomingStrip.astro';
 import LandAcknowledgement from '@/components/brand/LandAcknowledgement.astro';
+import HomeNewsletter from '@/components/content/HomeNewsletter.astro';
 import { href, newsAnchors, siteAlternates, type UiLang } from '@/i18n/routes';
 import { pick, useTranslations } from '@/i18n/ui';
 import { getMatinFeed, type MatinItem } from '@/lib/matin';
@@ -251,6 +252,9 @@ const l = livingStrings(lang);
     {/* The full-width Montréal pause was removed (owner's request, Oct 30 2026: shorter homepage). */}
     <!-- Programs and Participation -->
     <LivingPrograms lang={lang} />
+
+    <!-- Newsletter (owner's request, Oct 30 2026) -->
+    <HomeNewsletter lang={lang} />
 
     <!-- News, set like a cultural publication: Cultural News in region tabs, then Matin News -->
     <section id="latest-news" class="lnews scroll-mt-24" aria-labelledby="latest-news-title">

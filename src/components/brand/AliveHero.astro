@@ -21,10 +21,12 @@ import '@fontsource/playfair-display/800-italic.css';
 import { Picture } from 'astro:assets';
 import { ArrowRight } from '@lucide/astro';
 import PhotoCredit from '@/components/media/PhotoCredit.astro';
-import { href, type UiLang } from '@/i18n/routes';
+import { baseLang, href, type UiLang } from '@/i18n/routes';
 import { useTranslations } from '@/i18n/ui';
 import { aliveStrings } from '@/i18n/alive';
 import { heroPhoto } from '@/lib/heroMedia';
+import { forLang, getUpcomingEvents, isMatinEvent, slugOf } from '@/lib/content';
+import { dateBadge } from '@/lib/dates';
 
 interface Props {
   lang: UiLang;
@@ -32,6 +34,21 @@ interface Props {
 const { lang } = Astro.props;
 const t = useTranslations(lang);
 const a = aliveStrings(lang);
+// Owner's request (Oct 30 2026): while Matin has an upcoming activity, the second button
+// leads straight to it (its « Je participe » form); otherwise to the volunteer form.
+const next = forLang(await getUpcomingEvents(), lang).find(
+  (e) => isMatinEvent(e) && e.data.status !== 'cancelled',
+);
+const nextBadge = next && dateBadge(next.startDate, lang, next.data.timeZone);
+const secondary = next
+  ? {
+      href: `${href('events', lang, slugOf(next, baseLang(lang)))}#rsvp-title`,
+      label: a.heroCtaNext.replace('{date}', `${nextBadge!.day} ${nextBadge!.month}`),
+    }
+  : {
+      href: `${href('contact', lang)}#${lang === 'fr' ? 'benevolat' : 'volunteer'}`,
+      label: a.heroCtaSecondary,
+    };
 ---
 
 <section class="ahero" aria-labelledby="hero-title">
@@ -67,12 +84,9 @@ const a = aliveStrings(lang);
           {a.heroCtaPrimary}
           <ArrowRight size={18} class="flip-rtl ahero__arrow" aria-hidden="true" />
         </a>
-        {/* Straight to the volunteer form (owner's request, Oct 28 2026). */}
-        <a
-          href={`${href('contact', lang)}#${lang === 'fr' ? 'benevolat' : 'volunteer'}`}
-          class="ahero__btn ahero__btn--ghost"
-        >
-          {a.heroCtaSecondary}
+        {/* The next Matin activity, else the volunteer form (Oct 28 and Oct 30 2026). */}
+        <a href={secondary.href} class="ahero__btn ahero__btn--ghost">
+          {secondary.label}
         </a>
       </div>
     </div>

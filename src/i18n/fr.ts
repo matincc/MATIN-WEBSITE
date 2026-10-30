@@ -627,6 +627,14 @@ const fr = {
     volunteerSuccess:
       'Merci! Votre candidature a bien été envoyée. Nous l’examinerons et vous écrirons par courriel.',
     volunteerSubmit: 'Envoyer ma candidature',
+    // Event RSVP (owner's request, Oct 30 2026; drafted by Claude for his review).
+    rsvpTitle: 'Je participe',
+    rsvpLede: 'Dites-nous que vous venez : cela nous aide à bien vous accueillir. L’activité reste gratuite et ouverte à toutes et à tous.',
+    rsvpPeople: 'Nombre de personnes',
+    rsvpSubmit: 'Confirmer ma présence',
+    rsvpSuccess: 'Merci! Votre présence est bien notée. Au plaisir de vous rencontrer!',
+    consentRsvp:
+      "J'accepte que Matin utilise ces renseignements uniquement pour organiser cette activité et me joindre à son sujet, conformément à sa",
     motivation: 'Pourquoi souhaitez-vous vous impliquer?',
     any: 'Peu importe',
     errTooMany:

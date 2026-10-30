@@ -1,0 +1,77 @@
+---
+/**
+ * « Je participe » (owner's request, Oct 30 2026): a short RSVP on each of Matin's own
+ * upcoming events, so Matin knows how many people to expect. Netlify form « inscription »
+ * (one form for every event; the hidden `event` field says which). Asks only a name, an
+ * email and the number of people. Hidden once the event has ended or when the event has
+ * its own registration link.
+ */
+import FormShell from './FormShell.astro';
+import Field from './Field.astro';
+import type { UiLang } from '@/i18n/routes';
+import { useTranslations } from '@/i18n/ui';
+
+interface Props {
+  lang: UiLang;
+  /** Event identifier sent with the form (the event's file name). */
+  eventId: string;
+  /** The event's title, sent too so the notification email is readable. */
+  eventTitle: string;
+}
+const { lang, eventId, eventTitle } = Astro.props;
+const t = useTranslations(lang);
+---
+
+<section class="card rsvp p-6" aria-labelledby="rsvp-title">
+  <h2 id="rsvp-title" class="rsvp__title">{t('form.rsvpTitle')}</h2>
+  <p class="rsvp__lede">{t('form.rsvpLede')}</p>
+  <FormShell
+    lang={lang}
+    name="inscription"
+    id="rsvp"
+    submitLabel={t('form.rsvpSubmit')}
+    consentText={t('form.consentRsvp')}
+    successMessage={t('form.rsvpSuccess')}
+  >
+    <input type="hidden" name="event" value={`${eventTitle} (${eventId})`} />
+    <input type="hidden" name="language" value={lang} />
+    <div class="grid gap-4">
+      <Field lang={lang} id="rsvp-name" name="name" label={t('form.name')} required autocomplete="name" />
+      <Field
+        lang={lang}
+        id="rsvp-email"
+        name="email"
+        type="email"
+        label={t('form.email')}
+        required
+        autocomplete="email"
+      />
+      <Field
+        lang={lang}
+        id="rsvp-people"
+        name="people"
+        as="select"
+        label={t('form.rsvpPeople')}
+        options={['1', '2', '3', '4', '5', '6']}
+        required
+      />
+    </div>
+  </FormShell>
+</section>
+
+<style>
+  .rsvp {
+    border-block-start: 6px solid var(--matin-brique);
+  }
+  .rsvp__title {
+    font-family: var(--font-display);
+    font-size: 1.5rem;
+    font-weight: 800;
+    color: var(--matin-encre);
+  }
+  .rsvp__lede {
+    margin-block: 0.5rem 1.25rem;
+    line-height: 1.6;
+    color: var(--matin-ink);
+  }
+</style>

@@ -1,0 +1,91 @@
+---
+/**
+ * Newsletter on the homepage (owner's request, Oct 30 2026; it had been footer-only since
+ * Oct 25 2026). The approved `newsletter.*` texts and the shared NewsletterForm, on a
+ * pale turquoise panel with one deep corner and the rising sun.
+ */
+import NewsletterForm from '@/components/forms/NewsletterForm.astro';
+import type { UiLang } from '@/i18n/routes';
+import { useTranslations } from '@/i18n/ui';
+
+interface Props {
+  lang: UiLang;
+}
+const { lang } = Astro.props;
+const t = useTranslations(lang);
+---
+
+<section id="stay-in-touch" class="hnews scroll-mt-24" aria-labelledby="hnews-title">
+  <div class="container-site">
+    <div class="hnews__panel" data-reveal>
+      <svg class="hnews__sun" viewBox="0 0 120 60" aria-hidden="true" focusable="false">
+        <path d="M20 60a40 40 0 0 1 80 0Z" />
+      </svg>
+      <div class="hnews__text">
+        <h2 id="hnews-title" class="hnews__title">{t('newsletter.title')}</h2>
+        <p class="hnews__lede">{t('newsletter.text')}</p>
+        <p class="hnews__note">{t('newsletter.privacyNote')}</p>
+      </div>
+      <div class="hnews__form">
+        <NewsletterForm lang={lang} id="home-newsletter" />
+      </div>
+    </div>
+  </div>
+</section>
+
+<style>
+  .hnews {
+    padding-block: 3.5rem;
+  }
+  .hnews__panel {
+    position: relative;
+    overflow: hidden;
+    display: grid;
+    gap: 1.75rem;
+    padding: clamp(1.75rem, 4vw, 3.25rem);
+    background: var(--matin-firouzeh-pale);
+    border-radius: 1rem;
+    border-start-end-radius: 3.5rem;
+  }
+  @media (min-width: 64rem) {
+    .hnews__panel {
+      grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr);
+      align-items: center;
+      gap: 3rem;
+    }
+  }
+  .hnews__sun {
+    position: absolute;
+    inset-block-end: 0;
+    inset-inline-end: 1.5rem;
+    width: 8rem;
+    opacity: 0.35;
+  }
+  .hnews__sun path {
+    fill: var(--matin-soleil);
+  }
+  .hnews__text {
+    position: relative;
+    display: grid;
+    gap: 0.8rem;
+  }
+  .hnews__title {
+    font-family: var(--font-display);
+    font-size: clamp(1.8rem, 1.3rem + 2vw, 2.75rem);
+    font-weight: 800;
+    line-height: 1.15;
+    color: var(--matin-encre);
+  }
+  .hnews__lede {
+    font-size: 1.12rem;
+    line-height: 1.7;
+    color: var(--matin-encre);
+  }
+  .hnews__note {
+    font-size: 0.95rem;
+    color: var(--matin-firouzeh-ink);
+  }
+  .hnews__form {
+    position: relative;
+  }
+</style>

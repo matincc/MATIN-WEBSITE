@@ -621,6 +621,14 @@ const en: Dictionary = {
     volunteerSuccess:
       'Thank you! Your application has been sent. We will review it and write to you by email.',
     volunteerSubmit: 'Send my application',
+    // Event RSVP (owner's request, Oct 30 2026; drafted by Claude for his review).
+    rsvpTitle: 'I’m Coming',
+    rsvpLede: 'Let us know you are coming: it helps us welcome everyone well. The activity remains free and open to all.',
+    rsvpPeople: 'Number of people',
+    rsvpSubmit: 'Confirm my attendance',
+    rsvpSuccess: 'Thank you! Your attendance is noted. We look forward to meeting you!',
+    consentRsvp:
+      'I agree that Matin may use this information only to organize this activity and contact me about it, in accordance with its',
     motivation: 'Why would you like to get involved?',
     any: 'No preference',
     errTooMany:
