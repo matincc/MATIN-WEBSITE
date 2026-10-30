@@ -1,0 +1,418 @@
+---
+/**
+ * "Through Montréal's calendar" (owner's idea, Oct 30 2026): the homepage reacts to the
+ * real life of the city. Each occasion in src/content/seasons/ (Canadian days and the
+ * celebrations of Montréal's communities, all greeted alike) shows by itself between its
+ * `showFrom` and `showUntil` days, with a warm greeting and, when there are some, a few
+ * FREE public activities from municipal or public bodies, clearly marked as not Matin's.
+ *
+ * The site is rebuilt only when something is published, so every occasion still to come
+ * is in the page and the script below shows the ones of the visitor's day (Montréal
+ * time). Without the script, the occasions of the build day stay visible. Activities
+ * that are over disappear by themselves.
+ */
+import { getCollection } from 'astro:content';
+import { CalendarDays, ExternalLink, Info, MapPin } from '@lucide/astro';
+import type { UiLang } from '@/i18n/routes';
+import { useTranslations } from '@/i18n/ui';
+import { seasonStrings } from '@/i18n/seasons';
+import { formatWhen, montrealTime, TIME_ZONE } from '@/lib/dates';
+import { typo } from '@/lib/frenchTypo';
+import SeasonMotif from './SeasonMotif.astro';
+
+interface Props {
+  lang: UiLang;
+}
+const { lang } = Astro.props;
+const t = useTranslations(lang);
+const s = seasonStrings(lang);
+const tx = (v: { fr: string; en: string; fa: string }) => typo(v[lang], lang);
+
+/** Today's date in Montréal, YYYY-MM-DD. */
+const montrealDay = (d: Date) => d.toLocaleDateString('en-CA', { timeZone: TIME_ZONE });
+const today = montrealDay(new Date());
+
+const seasons = (await getCollection('seasons'))
+  .filter((e) => e.data.showUntil >= today)
+  .sort((a, b) => a.data.showFrom.localeCompare(b.data.showFrom))
+  .map((e) => {
+    const d = e.data;
+    const active = d.showFrom <= today;
+    const events = d.events
+      .map((ev) => ({ ...ev, startAt: montrealTime(ev.start), endAt: montrealTime(ev.end) }))
+      // LaSalle, Matin's own borough, first (owner's request); then by date.
+      .sort(
+        (a, b) =>
+          Number(b.place.area === 'LaSalle') - Number(a.place.area === 'LaSalle') ||
+          a.startAt.getTime() - b.startAt.getTime(),
+      );
+    return { id: e.id, d, active, events };
+  });
+
+/** Complete schema.org Event data (owner's rule, Oct 30 2026), for the occasions of the
+    build day only: the organizer is the public body, never Matin. */
+const jsonLd = (ev: (typeof seasons)[number]['events'][number]) => {
+  const org = { '@type': 'Organization', name: ev.organizer.name, url: ev.organizer.url };
+  const partner = ev.partner && {
+    '@type': 'Organization',
+    name: ev.partner.name,
+    ...(ev.partner.url && { url: ev.partner.url }),
+  };
+  return {
+    '@context': 'https://schema.org',
+    '@type': 'Event',
+    name: ev.title.fr,
+    description: ev.summary.fr,
+    startDate: ev.startAt.toISOString(),
+    endDate: ev.endAt.toISOString(),
+    eventStatus: 'https://schema.org/EventScheduled',
+    eventAttendanceMode: 'https://schema.org/OfflineEventAttendanceMode',
+    isAccessibleForFree: true,
+    inLanguage: 'fr-CA',
+    image: [ev.image],
+    url: ev.url,
+    location: {
+      '@type': 'Place',
+      name: ev.place.name,
+      address: {
+        '@type': 'PostalAddress',
+        streetAddress: ev.place.address,
+        addressLocality: 'Montréal',
+        addressRegion: 'QC',
+        addressCountry: 'CA',
+      },
+    },
+    organizer: partner ? [org, partner] : org,
+    performer: partner ?? org,
+    offers: {
+      '@type': 'Offer',
+      price: 0,
+      priceCurrency: 'CAD',
+      availability: 'https://schema.org/InStock',
+      validFrom: ev.availableFrom ?? ev.lastVerified,
+      url: ev.url,
+    },
+  };
+};
+const ld = (obj: object) => JSON.stringify(obj).replace(/</g, '\\u003c');
+---
+
+{seasons.length > 0 && (
+  <section
+    class="seasons"
+    aria-label={s.label}
+    data-seasons
+    hidden={!seasons.some((x) => x.active)}
+  >
+    <div class="container-site seasons__inner">
+      <p class="seasons__label">
+        <CalendarDays size={18} aria-hidden="true" />
+        {s.label}
+      </p>
+      {seasons.map(({ id, d, active, events }, i) => (
+        <article
+          class:list={['season', `is-${d.tone}`, i % 2 === 1 && 'is-alt']}
+          data-season-from={d.showFrom}
+          data-season-until={d.showUntil}
+          hidden={!active}
+          aria-labelledby={`season-${id}`}
+        >
+          <div class="season__greet">
+            <div class="season__motif">
+              <SeasonMotif motif={d.motif} />
+            </div>
+            <div>
+              <p class="season__kicker">{tx(d.kicker)}</p>
+              <h2 id={`season-${id}`} class="season__title">
+                {tx(d.title)}
+              </h2>
+              <p class="season__text">{tx(d.greeting)}</p>
+            </div>
+          </div>
+
+          {events.length > 0 && (
+            <div class="season__events" data-season-events>
+              <h3 class="season__events-title">{s.eventsTitle}</h3>
+              <ul class="season__list">
+                {events.map((ev) => (
+                  <li class="outing" data-outing-end={ev.endAt.toISOString()}>
+                    <p class="outing__tags">
+                      <span class="outing__tag is-free">{s.free}</span>
+                      {ev.registration && <span class="outing__tag">{s.registration}</span>}
+                      <bdi class="outing__area">{ev.place.area}</bdi>
+                    </p>
+                    <h4 class="outing__title">
+                      <a href={ev.url} target="_blank" rel="noopener noreferrer">
+                        {tx(ev.title)}
+                      </a>
+                    </h4>
+                    <p class="outing__summary">{tx(ev.summary)}</p>
+                    <p class="outing__meta">
+                      <CalendarDays size={16} aria-hidden="true" />
+                      {formatWhen(ev.startAt, ev.endAt, lang)}
+                    </p>
+                    <p class="outing__meta">
+                      <MapPin size={16} aria-hidden="true" />
+                      <bdi>
+                        {ev.place.name}, {ev.place.address}
+                      </bdi>
+                    </p>
+                    <p class="outing__by">
+                      {s.by.split('{name}')[0]}
+                      <bdi>{ev.organizer.name}</bdi>
+                      {s.by.split('{name}')[1]}
+                    </p>
+                    <a class="outing__link" href={ev.url} target="_blank" rel="noopener noreferrer">
+                      {s.details}
+                      <ExternalLink size={15} aria-hidden="true" />
+                      <span class="sr-only">{t('a11y.externalLink')}</span>
+                    </a>
+                    {active && (
+                      <script type="application/ld+json" is:inline set:html={ld(jsonLd(ev))} />
+                    )}
+                  </li>
+                ))}
+              </ul>
+              <p class="season__note">
+                <Info size={18} aria-hidden="true" />
+                <span>{s.notOurs}</span>
+              </p>
+            </div>
+          )}
+        </article>
+      ))}
+    </div>
+  </section>
+)}
+
+<script>
+  // Show the occasions of the visitor's day (Montréal time) and drop finished outings.
+  const today = new Date().toLocaleDateString('en-CA', { timeZone: 'America/Toronto' });
+  const now = Date.now();
+  for (const band of document.querySelectorAll<HTMLElement>('[data-seasons]')) {
+    let shown = 0;
+    for (const season of band.querySelectorAll<HTMLElement>('[data-season-from]')) {
+      const on = season.dataset.seasonFrom! <= today && today <= season.dataset.seasonUntil!;
+      season.hidden = !on;
+      if (!on) continue;
+      shown++;
+      const outings = [...season.querySelectorAll<HTMLElement>('[data-outing-end]')];
+      for (const o of outings) o.hidden = Date.parse(o.dataset.outingEnd!) < now;
+      const box = season.querySelector<HTMLElement>('[data-season-events]');
+      if (box) box.hidden = outings.every((o) => o.hidden);
+    }
+    band.hidden = shown === 0;
+  }
+</script>
+
+<style>
+  .seasons {
+    background: var(--matin-ivoire);
+    padding-block: clamp(2rem, 4vw, 3.5rem);
+  }
+  .seasons__inner {
+    display: grid;
+    gap: 1.5rem;
+  }
+  .seasons__label {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.55rem;
+    font-family: var(--font-display);
+    font-size: 0.9rem;
+    font-weight: 800;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--matin-firouzeh-ink);
+  }
+  :global(html[lang='fa']) .seasons__label {
+    letter-spacing: 0;
+    font-size: 1.05rem;
+  }
+
+  /* One occasion: a warm panel with one deep corner, the greeting beside the outings. */
+  .season {
+    display: grid;
+    gap: clamp(1.5rem, 3vw, 2.75rem);
+    padding: clamp(1.4rem, 3vw, 2.5rem);
+    background: var(--matin-aube);
+    border-radius: 1.25rem;
+    border-start-end-radius: 4.5rem;
+    border-block-start: 5px solid var(--matin-soleil);
+    color: var(--matin-encre);
+  }
+  .season.is-alt {
+    background: var(--matin-firouzeh-pale);
+    border-start-end-radius: 1.25rem;
+    border-end-start-radius: 4.5rem;
+    border-block-start-color: var(--matin-firouzeh);
+  }
+  /* Days of remembrance: quieter ground and edge. */
+  .season.is-solemn {
+    background: var(--matin-sable);
+    border-block-start-color: var(--matin-encre);
+  }
+  @media (min-width: 64rem) {
+    .season:has(.season__events:not([hidden])) {
+      grid-template-columns: minmax(0, 5fr) minmax(0, 7fr);
+      align-items: start;
+    }
+  }
+  .season__greet {
+    display: grid;
+    grid-template-columns: clamp(4.5rem, 9vw, 7.5rem) minmax(0, 1fr);
+    gap: 1.25rem;
+    align-items: start;
+  }
+  .season__kicker {
+    font-family: var(--font-display);
+    font-weight: 800;
+    font-size: 0.95rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--matin-brique-ink);
+  }
+  :global(html[lang='fa']) .season__kicker {
+    letter-spacing: 0;
+  }
+  .season__title {
+    margin-block: 0.25rem 0.75rem;
+    font-family: var(--font-editorial);
+    font-size: clamp(1.9rem, 3.6vw, 2.9rem);
+    font-weight: 700;
+    line-height: 1.1;
+    color: var(--matin-encre);
+  }
+  :global(html[lang='fa']) .season__title {
+    line-height: 1.4;
+  }
+  .season__text {
+    font-size: clamp(1.05rem, 1.4vw, 1.2rem);
+    line-height: 1.75;
+    max-width: 40rem;
+    color: var(--matin-ink);
+  }
+  .season__events-title {
+    font-family: var(--font-display);
+    font-weight: 800;
+    font-size: 1.2rem;
+    margin-block-end: 0.9rem;
+    color: var(--matin-encre);
+  }
+  .season__list {
+    display: grid;
+    gap: 0.9rem;
+  }
+  @media (min-width: 48rem) {
+    .season__list:has(> li:nth-child(2)) {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  }
+
+  .outing {
+    display: flex;
+    flex-direction: column;
+    gap: 0.4rem;
+    padding: 1.1rem 1.2rem 1.2rem;
+    background: var(--matin-white);
+    border: 1px solid var(--color-card-edge, var(--matin-sable));
+    border-radius: 1rem;
+    border-end-end-radius: 2.25rem;
+    box-shadow: var(--shadow-card, none);
+  }
+  .outing__tags {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.4rem;
+    font-family: var(--font-display);
+    font-size: 0.8rem;
+    font-weight: 800;
+  }
+  .outing__tag {
+    padding: 0.15rem 0.6rem;
+    border-radius: 999px;
+    background: var(--matin-sable);
+    color: var(--matin-encre);
+  }
+  .outing__tag.is-free {
+    background: var(--matin-firouzeh-ink);
+    color: var(--matin-white);
+  }
+  .outing__area {
+    color: var(--matin-brique-ink);
+    letter-spacing: 0.04em;
+  }
+  .outing__title {
+    font-family: var(--font-display);
+    font-size: 1.12rem;
+    font-weight: 800;
+    line-height: 1.3;
+  }
+  .outing__title a {
+    color: var(--matin-encre);
+    text-decoration: underline;
+    text-decoration-color: var(--matin-soleil);
+    text-decoration-thickness: 2px;
+    text-underline-offset: 0.2em;
+  }
+  .outing__title a:hover {
+    color: var(--matin-brique-ink);
+  }
+  .outing__summary {
+    font-size: 0.98rem;
+    line-height: 1.6;
+    color: var(--matin-ink);
+  }
+  .outing__meta {
+    display: flex;
+    gap: 0.45rem;
+    align-items: flex-start;
+    font-size: 0.92rem;
+    color: var(--matin-ink);
+  }
+  .outing__meta :global(svg) {
+    flex: none;
+    margin-block-start: 0.2rem;
+    color: var(--matin-firouzeh-ink);
+  }
+  .outing__by {
+    font-size: 0.85rem;
+    color: var(--matin-ink);
+    opacity: 0.85;
+  }
+  .outing__link {
+    margin-block-start: auto;
+    align-self: flex-start;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    padding: 0.45rem 1rem;
+    border-radius: 999px;
+    background: var(--matin-brique-ink);
+    color: var(--matin-white);
+    font-family: var(--font-display);
+    font-weight: 800;
+    font-size: 0.9rem;
+  }
+  .outing__link:hover {
+    background: var(--matin-encre);
+  }
+  .season__note {
+    display: flex;
+    gap: 0.6rem;
+    align-items: flex-start;
+    margin-block-start: 1rem;
+    padding: 0.8rem 1rem;
+    border-radius: 0.9rem;
+    background: color-mix(in srgb, var(--matin-white) 70%, transparent);
+    font-size: 0.92rem;
+    line-height: 1.6;
+    color: var(--matin-encre);
+  }
+  .season__note :global(svg) {
+    flex: none;
+    margin-block-start: 0.15rem;
+    color: var(--matin-firouzeh-ink);
+  }
+</style>

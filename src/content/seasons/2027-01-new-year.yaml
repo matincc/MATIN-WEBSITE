@@ -1,0 +1,19 @@
+# New Year's Day, Friday January 1, 2027. Free public activities: to add once published.
+date: '2027-01-01'
+showFrom: '2026-12-27'
+showUntil: '2027-01-03'
+tone: festive
+motif: sparkle
+dateSource: New Year's Day, January 1 (statutory holiday in Québec and Canada).
+kicker:
+  fr: "1er janvier"
+  en: "January 1"
+  fa: "۱ ژانویه"
+title:
+  fr: "Bonne année 2027 !"
+  en: "Happy New Year 2027!"
+  fa: "سال نو میلادی مبارک!"
+greeting:
+  fr: "Le 1er janvier, Montréal tourne la page et ouvre une nouvelle année. Matin vous souhaite une année de santé, de paix et de belles rencontres entre les cultures."
+  en: "On January 1, Montréal turns the page and opens a new year. Matin wishes you a year of health, peace and good encounters between cultures."
+  fa: "در ۱ ژانویه، مونترال ورق را برمی‌گرداند و سالی تازه را آغاز می‌کند. متین برای شما سالی سرشار از تندرستی، آرامش و دیدارهای زیبا میان فرهنگ‌ها آرزو می‌کند."

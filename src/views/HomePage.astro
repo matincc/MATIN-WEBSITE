@@ -36,6 +36,7 @@ import ExpireEvents from '@/components/content/ExpireEvents.astro';
 import BaseLayout from '@/layouts/BaseLayout.astro';
 import AliveHero from '@/components/brand/AliveHero.astro';
 import UpcomingStrip from '@/components/content/UpcomingStrip.astro';
+import SeasonalBand from '@/components/content/SeasonalBand.astro';
 import { href, newsAnchors, siteAlternates, type UiLang } from '@/i18n/routes';
 import { pick, useTranslations } from '@/i18n/ui';
 import { getMatinFeed, type MatinItem } from '@/lib/matin';
@@ -110,6 +111,10 @@ const l = livingStrings(lang);
     <AliveHero lang={lang} />
     {/* Four dates only (owner's request, Oct 28 2026: fewer identical cards). */}
     <UpcomingStrip lang={lang} limit={4} />
+
+    <!-- Through Montréal's calendar: the occasion of the day, a greeting and free public
+       outings (owner's idea, Oct 30 2026; src/content/seasons/) -->
+    <SeasonalBand lang={lang} />
 
     <!-- Who we are: the approved introduction, set large, beside a photo collage -->
     <LivingIntro lang={lang} />

@@ -1,0 +1,43 @@
+# Diwali, Sunday November 8, 2026. Activity checked on montreal.ca on 2026-10-30.
+date: '2026-11-08'
+showFrom: '2026-11-02'
+showUntil: '2026-11-09'
+tone: festive
+motif: diya
+dateSource: Diwali 2026 falls on Sunday November 8 (published calendars, checked 2026-10-30).
+kicker:
+  fr: "8 novembre"
+  en: "November 8"
+  fa: "۸ نوامبر"
+title:
+  fr: "Joyeuse Divali !"
+  en: "Happy Diwali!"
+  fa: "دیوالی مبارک!"
+greeting:
+  fr: "Le 8 novembre, de nombreuses familles de Montréal, notamment d'origine sud-asiatique, célèbrent Divali, la fête des lumières. Les petites lampes allumées aux fenêtres parlent de lumière, d'espoir et de renouveau. Matin souhaite une fête lumineuse et paisible à toutes celles et à tous ceux qui la célèbrent."
+  en: "On November 8, many Montréal families, especially of South Asian origin, celebrate Diwali, the festival of lights. The small lamps lit in the windows speak of light, hope and renewal. Matin wishes a bright and peaceful celebration to everyone who marks it."
+  fa: "در ۸ نوامبر، بسیاری از خانواده‌های مونترال، به‌ویژه خانواده‌هایی با ریشه در جنوب آسیا، دیوالی، جشن نورها، را جشن می‌گیرند. چراغ‌های کوچکی که پشت پنجره‌ها روشن می‌شوند از روشنایی، امید و نو شدن می‌گویند. متین برای همهٔ کسانی که این جشن را برگزار می‌کنند، جشنی روشن و آرام آرزو می‌کند."
+events:
+  - title:
+      fr: "Découvre la Divali, la fête des lumières"
+      en: "Discover Diwali, the festival of lights"
+      fa: "آشنایی با دیوالی، جشن نورها"
+    summary:
+      fr: "Une activité familiale à la bibliothèque de Saint-Pierre pour découvrir les couleurs et les traditions de Divali. Gratuit, sur inscription."
+      en: "A family activity at Saint-Pierre Library to discover the colours and traditions of Diwali. Free, registration required."
+      fa: "برنامه‌ای خانوادگی در کتابخانهٔ سن‌پیر برای آشنایی با رنگ‌ها و سنت‌های دیوالی. رایگان، با ثبت‌نام."
+    start: '2026-11-07T14:00'
+    end: '2026-11-07T15:30'
+    place:
+      name: Bibliothèque de Saint-Pierre
+      address: 183, rue des Érables, Montréal (Québec) H8R 1B1
+      area: Lachine
+    organizer:
+      name: Arrondissement de Lachine (Ville de Montréal)
+      url: https://montreal.ca/lachine
+    url: https://montreal.ca/evenements/decouvre-la-divali-la-fete-des-lumieres-120438
+    image: https://res.cloudinary.com/villemontreal/image/upload/w_1200,ar_4:3,c_fill/f_auto,dpr_auto,q_auto/v1/portail/kkfc6xebhtmjtuwuh1tt.png
+    free: true
+    registration: true
+    availableFrom: '2026-10-15'
+    lastVerified: '2026-10-30'

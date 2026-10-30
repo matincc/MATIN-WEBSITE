@@ -1,0 +1,43 @@
+# Remembrance Day, Wednesday November 11, 2026. Activity checked on montreal.ca on 2026-10-30.
+date: '2026-11-11'
+showFrom: '2026-11-05'
+showUntil: '2026-11-11'
+tone: solemn
+motif: poppy
+dateSource: Remembrance Day is observed in Canada every November 11 (Veterans Affairs Canada).
+kicker:
+  fr: "11 novembre"
+  en: "November 11"
+  fa: "۱۱ نوامبر"
+title:
+  fr: "Jour du Souvenir : nous nous souvenons"
+  en: "Remembrance Day: we remember"
+  fa: "روز یادبود؛ به یاد می‌آوریم"
+greeting:
+  fr: "Le 11 novembre, à 11 h, le Canada observe deux minutes de silence en hommage à celles et ceux qui ont servi en temps de guerre, de conflit et de paix, et à celles et ceux qui y ont perdu la vie. Le coquelicot, porté sur le cœur, est un geste de mémoire que chacun peut partager, quelle que soit son origine."
+  en: "On November 11 at 11 a.m., Canada observes two minutes of silence to honour those who served in times of war, conflict and peace, and those who gave their lives. The poppy, worn over the heart, is a gesture of memory that anyone can share, whatever their origin."
+  fa: "در ۱۱ نوامبر، ساعت ۱۱ صبح، کانادا دو دقیقه سکوت می‌کند تا یاد کسانی را گرامی بدارد که در دوران جنگ، درگیری و صلح خدمت کردند و کسانی که جان خود را از دست دادند. گل شقایقی که روی قلب زده می‌شود، نشانهٔ یادبودی است که هر کسی، با هر پیشینه‌ای، می‌تواند در آن شریک باشد."
+events:
+  - title:
+      fr: "Cérémonie commémorative du Jour du Souvenir"
+      en: "Remembrance Day Commemorative Ceremony"
+      fa: "مراسم روز یادبود"
+    summary:
+      fr: "Une cérémonie publique au parc Beaudet, à Saint-Laurent, menée par la Légion royale canadienne (filiale 14) avec des escadrons de cadets. Entrée libre."
+      en: "A public ceremony in Parc Beaudet, Saint-Laurent, led by the Royal Canadian Legion (Branch 14) with cadet squadrons. Free entry."
+      fa: "مراسمی عمومی در پارک بوده، محلهٔ سن‌لوران، به رهبری لژیون سلطنتی کانادا (شعبهٔ ۱۴) و با حضور گروه‌های کادت. ورود آزاد."
+    start: '2026-11-07T10:30'
+    end: '2026-11-07T11:30'
+    place:
+      name: Parc Beaudet
+      address: 650, boulevard Décarie, Montréal (Québec) H4N 2B8
+      area: Saint-Laurent
+    organizer:
+      name: Arrondissement de Saint-Laurent (Ville de Montréal)
+      url: https://montreal.ca/saint-laurent
+    partner:
+      name: Légion royale canadienne, filiale 14 RMR
+    url: https://montreal.ca/evenements/ceremonie-commemorative-du-jour-du-souvenir-120672
+    image: https://res.cloudinary.com/villemontreal/image/upload/w_1200,h_630,c_fill/f_auto,dpr_auto,q_auto/v1/portail/otgp9clx3dqeb6wisbkd.jpg
+    free: true
+    lastVerified: '2026-10-30'
