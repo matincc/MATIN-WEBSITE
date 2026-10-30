@@ -56,9 +56,9 @@ const tones: Record<string, string> = {
 // photos come from their existing team entries; only the board role is set here.
 const board = (
   [
-    ['01-reza-moafi-executive-director', 'team.boardPresident'],
-    ['02-mina-karimian', 'team.boardDirectorF'],
-    ['04-benoit-akpaki', 'team.boardDirectorM'],
+    ['01-reza-moafi-executive-director', 'team.boardExecutive'],
+    ['02-mina-karimian', 'team.boardTreasurer'],
+    ['04-benoit-akpaki', 'team.boardSecretary'],
   ] as const
 )
   .map(([id, role]) => {

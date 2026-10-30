@@ -387,9 +387,9 @@ const fa: DeepPartial<Dictionary> = {
     // Board of Directors (owner's word, Oct 30 2026: the three founders form the board).
     boardTitle: 'هیئت‌مدیره',
     boardLede: 'سه عضو مؤسس متین هیئت‌مدیرهٔ آن را تشکیل می‌دهند.',
-    boardPresident: 'رئیس',
-    boardDirectorF: 'عضو هیئت‌مدیره',
-    boardDirectorM: 'عضو هیئت‌مدیره',
+    boardExecutive: 'مدیر اجرایی',
+    boardTreasurer: 'خزانه‌دار',
+    boardSecretary: 'دبیر',
     executiveLede: 'کسانی که فعالیت‌های جاری مؤسسه را هماهنگ و مدیریت می‌کنند.',
     executiveEmpty:
       'تیم اجرایی ما در حال شکل‌گیری است. نمایهٔ اعضا با رضایت خودشان، به‌تدریج در این بخش منتشر می‌شود.',

@@ -380,9 +380,9 @@ const fr = {
     // Board of Directors (owner's word, Oct 30 2026: the three founders form the board).
     boardTitle: 'Conseil d’administration',
     boardLede: 'Les trois membres fondateurs de Matin forment son conseil d’administration.',
-    boardPresident: 'Président',
-    boardDirectorF: 'Administratrice',
-    boardDirectorM: 'Administrateur',
+    boardExecutive: 'Directeur général',
+    boardTreasurer: 'Trésorière',
+    boardSecretary: 'Secrétaire',
     executiveLede: "Les personnes qui coordonnent et gèrent les activités courantes de l'Institut.",
     executiveEmpty:
       "Notre équipe de direction se constitue actuellement. Les profils seront publiés ici au fur et à mesure, avec l'accord des personnes concernées.",
