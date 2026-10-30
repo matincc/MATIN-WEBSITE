@@ -1,0 +1,234 @@
+---
+/**
+ * Partners and supporters (owner's request, Oct 30 2026: « جای حامیان خالی بذار », like the
+ * partners page of other community organizations). Always shown: partner organizations
+ * (NGOs, community councils, cultural organizations; Matin writes to them from Nov 2026)
+ * and supporters / sponsors. Each column lists its entries from src/content/partners/
+ * (logo only with permission) and always ends with an open invitation card, so the empty
+ * places read as an invitation, never as invented names or logos.
+ */
+import { getCollection } from 'astro:content';
+import { Image } from 'astro:assets';
+import { Handshake, HeartHandshake, ArrowRight } from '@lucide/astro';
+import { href, type UiLang } from '@/i18n/routes';
+import { useTranslations } from '@/i18n/ui';
+
+interface Props {
+  lang: UiLang;
+}
+const { lang } = Astro.props;
+const t = useTranslations(lang);
+const all = (await getCollection('partners')).sort((a, b) => a.data.order - b.data.order);
+const groups = [
+  {
+    key: 'org',
+    title: t('home.partnersOrgTitle'),
+    items: all.filter((p) => p.data.kind === 'partner'),
+    empty: t('home.partnersOrgEmpty'),
+    cta: t('home.partnersOrgCta'),
+    link: `${href('contact', lang)}#write`,
+    Icon: Handshake,
+  },
+  {
+    key: 'support',
+    title: t('home.partnersSupportTitle'),
+    items: all.filter((p) => p.data.kind !== 'partner'),
+    empty: t('home.partnersSupportEmpty'),
+    cta: t('home.partnersSupportCta'),
+    link: `${href('support', lang)}#don`,
+    Icon: HeartHandshake,
+  },
+];
+const kindLabel = {
+  partner: t('home.partnerKindPartner'),
+  funder: t('home.partnerKindFunder'),
+  sponsor: t('home.partnerKindSponsor'),
+};
+---
+
+<section id="partenaires" class="partners scroll-mt-24" aria-labelledby="partners-title">
+  <div class="container-site">
+    <header class="partners__head" data-reveal>
+      <h2 id="partners-title" class="partners__title">{t('home.partnersTitle')}</h2>
+      <p class="partners__lede">{t('home.partnersLede')}</p>
+    </header>
+    <div class="partners__grid">
+      {
+        groups.map((g) => (
+          <div class={`partners__group partners__group--${g.key}`} data-reveal>
+            <h3 class="partners__group-title">{g.title}</h3>
+            <ul class="partners__list">
+              {g.items.map((p) => {
+                const inner = (
+                  <>
+                    {p.data.logo ? (
+                      <Image src={p.data.logo} alt={p.data.name} width={240} class="partner__logo" />
+                    ) : (
+                      <span class="partner__name">{p.data.name}</span>
+                    )}
+                    <span class="partner__kind">{kindLabel[p.data.kind]}</span>
+                  </>
+                );
+                return (
+                  <li class="partner">
+                    {p.data.url ? (
+                      <a href={p.data.url} target="_blank" rel="noopener" class="partner__link">
+                        {inner}
+                      </a>
+                    ) : (
+                      inner
+                    )}
+                  </li>
+                );
+              })}
+              <li class="partner partner--open">
+                <g.Icon size={30} class="partner__icon" aria-hidden="true" />
+                <p>{g.empty}</p>
+                <a href={g.link} class="partner__cta">
+                  {g.cta}
+                  <ArrowRight size={18} class="flip-rtl" aria-hidden="true" />
+                </a>
+              </li>
+            </ul>
+          </div>
+        ))
+      }
+    </div>
+  </div>
+</section>
+
+<style>
+  .partners {
+    padding-block: clamp(3rem, 2rem + 3vw, 5rem);
+    background: var(--matin-white);
+  }
+  .partners__head {
+    display: grid;
+    gap: 0.75rem;
+    margin-block-end: 2rem;
+  }
+  @media (min-width: 64rem) {
+    .partners__head {
+      grid-template-columns: minmax(0, 1fr) minmax(0, 1.2fr);
+      align-items: end;
+      gap: 3rem;
+    }
+  }
+  .partners__title {
+    font-family: var(--font-editorial);
+    font-size: clamp(1.9rem, 1.4rem + 1.8vw, 3rem);
+    font-weight: 700;
+    color: var(--matin-encre);
+  }
+  :global(html[lang='fa']) .partners__title {
+    font-weight: 800;
+  }
+  .partners__lede {
+    max-width: 44rem;
+    font-size: 1.1rem;
+    line-height: 1.75;
+    color: var(--matin-ink);
+  }
+  .partners__grid {
+    display: grid;
+    gap: 1.5rem;
+  }
+  @media (min-width: 56rem) {
+    .partners__grid {
+      grid-template-columns: 1fr 1fr;
+    }
+    .partners__group--support {
+      margin-block-start: 2.5rem;
+    }
+  }
+  .partners__group {
+    padding: clamp(1.25rem, 1rem + 1.5vw, 2rem);
+    border-radius: 1.25rem;
+    border-start-end-radius: 3rem;
+    border-block-start: 5px solid var(--matin-firouzeh);
+    background: var(--matin-firouzeh-pale);
+  }
+  .partners__group--support {
+    border-block-start-color: var(--matin-brique);
+    border-start-end-radius: 1.25rem;
+    border-end-start-radius: 3rem;
+    background: color-mix(in srgb, var(--matin-brique) 6%, var(--matin-ivoire));
+  }
+  .partners__group-title {
+    margin-block-end: 1rem;
+    font-family: var(--font-display);
+    font-size: 1.25rem;
+    font-weight: 800;
+    color: var(--matin-encre);
+  }
+  .partners__list {
+    display: grid;
+    gap: 1rem;
+    grid-template-columns: repeat(auto-fill, minmax(min(100%, 12rem), 1fr));
+  }
+  .partner {
+    display: grid;
+    place-items: center;
+    gap: 0.5rem;
+    min-height: 8rem;
+    padding: 1rem;
+    border-radius: 1rem;
+    background: var(--matin-white);
+    border: 1px solid var(--color-card-edge);
+    text-align: center;
+  }
+  .partner__link {
+    display: grid;
+    place-items: center;
+    gap: 0.5rem;
+    color: inherit;
+    text-decoration: none;
+  }
+  .partner :global(.partner__logo) {
+    max-height: 4.5rem;
+    width: auto;
+    object-fit: contain;
+  }
+  .partner__name {
+    font-family: var(--font-display);
+    font-weight: 800;
+    color: var(--matin-encre);
+  }
+  .partner__kind {
+    font-size: 0.85rem;
+    color: var(--matin-firouzeh-ink);
+  }
+  /* The open place: a dashed frame inviting the next partner. */
+  .partner--open {
+    grid-column: 1 / -1;
+    justify-items: start;
+    text-align: start;
+    background: transparent;
+    border: 2px dashed color-mix(in srgb, var(--matin-encre) 30%, transparent);
+    color: var(--matin-encre);
+    font-size: 1.05rem;
+    line-height: 1.7;
+  }
+  .partner--open :global(.partner__icon) {
+    color: var(--matin-firouzeh-ink);
+  }
+  .partners__group--support .partner--open :global(.partner__icon) {
+    color: var(--matin-brique-ink);
+  }
+  .partner__cta {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    padding: 0.6rem 1.3rem;
+    border-radius: 999px;
+    background: var(--matin-brique-ink);
+    color: var(--matin-white);
+    font-family: var(--font-display);
+    font-weight: 800;
+    text-decoration: none;
+  }
+  .partner__cta:hover {
+    background: var(--matin-encre);
+    color: var(--matin-white);
+  }
+</style>

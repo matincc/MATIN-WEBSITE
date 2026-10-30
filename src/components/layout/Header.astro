@@ -1,5 +1,5 @@
 ---
-import { ChevronDown, HeartHandshake, Menu, Search, X } from '@lucide/astro';
+import { ChevronDown, Contrast, HeartHandshake, Menu, Search, Type, UserPlus, X } from '@lucide/astro';
 import Lockup from '@/components/brand/Lockup.astro';
 import LangToggle from './LangToggle.astro';
 import { newsAnchors, href, type Alternates, type RouteKey, type UiLang } from '@/i18n/routes';
@@ -15,18 +15,10 @@ const t = useTranslations(lang);
 /** Adds #id to a page URL. */
 const anchor = (url: string, id: string) => `${url}#${id}`;
 
-// Main menu, in this order (owner's brief, Oct 24 2026): Gallery and Resources join the
-// menu. Get Involved is merged into Contact & Collaboration (Phase 3).
-const items: RouteKey[] = [
-  'about',
-  'team',
-  'programs',
-  'events',
-  'news',
-  'gallery',
-  'resources',
-  'contact',
-];
+// Main menu, in this order (owner's brief, Oct 24 2026). Get Involved is merged into
+// Contact & Collaboration (Phase 3). Lighter menu (owner, Oct 30 2026): the Gallery is no
+// longer a top-level item; its Photos, Videos and Posters sit under Events.
+const items: RouteKey[] = ['about', 'team', 'programs', 'events', 'news', 'resources', 'contact'];
 const links = items.map((key) => ({ key, href: href(key, lang), label: t(`nav.${key}`) }));
 const aboutHref = href('about', lang);
 // Sub-links of "About": only Who We Are (the President's note moved to the homepage
@@ -75,7 +67,8 @@ const galleryLinks = [
   { id: 'photos', label: t('gallery.filterPhotos') },
   { id: 'videos', label: t('gallery.filterVideos') },
   { id: 'posters', label: t('gallery.filterPosters') },
-].map((l) => ({ ...l, href: anchor(galleryHref, l.id) }));
+].map((l) => ({ ...l, label: `${t('nav.gallery')} · ${l.label}`, href: anchor(galleryHref, l.id) }));
+eventsLinks.push(...galleryLinks);
 const resourcesHref = href('resources', lang);
 // Until International Cultural Networks has entries, its link opens the directory's
 // international category instead (the networks section is hidden while empty).
@@ -102,7 +95,6 @@ const subMenus: Partial<Record<RouteKey, { id: string; label: string; links: typ
     team: { id: 'team-submenu', label: t('a11y.teamSubmenu'), links: teamLinks },
     events: { id: 'events-submenu', label: t('a11y.eventsSubmenu'), links: eventsLinks },
     news: { id: 'news-submenu', label: t('a11y.newsSubmenu'), links: newsLinks },
-    gallery: { id: 'gallery-submenu', label: t('a11y.gallerySubmenu'), links: galleryLinks },
     resources: {
       id: 'resources-submenu',
       label: t('a11y.resourcesSubmenu'),
@@ -125,6 +117,22 @@ const isActive = (url: string) => !url.includes('?') && current.startsWith(url);
         <HeartHandshake size={18} aria-hidden="true" />
         <span>{t('nav.donate')}</span>
       </a>
+      <!-- Become a Member (NGO review, Oct 30 2026): beside Donate, on wide screens. -->
+      <a href={href('membership', lang)} class="join-btn">
+        <UserPlus size={18} aria-hidden="true" />
+        <span>{t('nav.join')}</span>
+      </a>
+      <!-- Reading comfort: larger text and high contrast, remembered on this device. -->
+      <div class="display-opts" role="group" aria-label={t('a11y.displayOptions')}>
+        <button type="button" class="menu-btn" data-a11y="large" aria-pressed="false">
+          <Type size={22} aria-hidden="true" />
+          <span class="sr-only">{t('a11y.largerText')}</span>
+        </button>
+        <button type="button" class="menu-btn" data-a11y="contrast" aria-pressed="false">
+          <Contrast size={22} aria-hidden="true" />
+          <span class="sr-only">{t('a11y.highContrast')}</span>
+        </button>
+      </div>
       <a href={href('search', lang)} class="menu-btn">
         <Search size={24} aria-hidden="true" />
         <span class="sr-only">{t('nav.search')}</span>
@@ -209,6 +217,20 @@ const isActive = (url: string) => !url.includes('?') && current.startsWith(url);
         <HeartHandshake size={20} aria-hidden="true" />
         <span>{t('nav.donate')}</span>
       </a>
+      <a href={href('membership', lang)} class="join-btn join-btn--menu">
+        <UserPlus size={20} aria-hidden="true" />
+        <span>{t('nav.join')}</span>
+      </a>
+      <div class="display-opts--menu" role="group" aria-label={t('a11y.displayOptions')}>
+        <button type="button" class="opt-btn" data-a11y="large" aria-pressed="false">
+          <Type size={20} aria-hidden="true" />
+          <span>{t('a11y.largerText')}</span>
+        </button>
+        <button type="button" class="opt-btn" data-a11y="contrast" aria-pressed="false">
+          <Contrast size={20} aria-hidden="true" />
+          <span>{t('a11y.highContrast')}</span>
+        </button>
+      </div>
       <ul>
         <li>
           <a href={href('home', lang)} class="mobile-link">
@@ -243,6 +265,36 @@ const isActive = (url: string) => !url.includes('?') && current.startsWith(url);
 </header>
 
 <script>
+  // Reading comfort (larger text, high contrast): a class on <html>, remembered on this device.
+  const root = document.documentElement;
+  const prefs = ['large', 'contrast'] as const;
+  const read = (k: string) => {
+    try {
+      return localStorage.getItem(`matin-a11y-${k}`) === '1';
+    } catch {
+      return false;
+    }
+  };
+  const apply = (k: string, on: boolean) => {
+    root.classList.toggle(`a11y-${k}`, on);
+    document
+      .querySelectorAll(`[data-a11y="${k}"]`)
+      .forEach((b) => b.setAttribute('aria-pressed', String(on)));
+  };
+  prefs.forEach((k) => apply(k, read(k)));
+  document.querySelectorAll<HTMLButtonElement>('[data-a11y]').forEach((btn) =>
+    btn.addEventListener('click', () => {
+      const k = btn.dataset.a11y!;
+      const on = !root.classList.contains(`a11y-${k}`);
+      apply(k, on);
+      try {
+        localStorage.setItem(`matin-a11y-${k}`, on ? '1' : '0');
+      } catch {
+        /* storage blocked: the choice lasts for this page only */
+      }
+    }),
+  );
+
   const dialog = document.getElementById('mobile-menu') as HTMLDialogElement | null;
   const openBtn = document.querySelector<HTMLButtonElement>('[data-menu-open]');
   openBtn?.addEventListener('click', () => {
@@ -373,6 +425,76 @@ const isActive = (url: string) => !url.includes('?') && current.startsWith(url);
   @media (max-width: 30rem) {
     .header-tools .donate-btn {
       display: none;
+    }
+  }
+  .join-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    min-height: 2.75rem;
+    padding: 0.4rem 1rem;
+    margin-inline-end: 0.25rem;
+    border-radius: 999px;
+    border: 2px solid var(--matin-brique-ink);
+    color: var(--matin-brique-ink);
+    font-family: var(--font-display);
+    font-size: 0.98rem;
+    font-weight: 800;
+    text-decoration: none;
+    white-space: nowrap;
+    transition:
+      background-color 0.3s ease,
+      color 0.3s ease;
+  }
+  .join-btn:hover {
+    background: var(--matin-brique-ink);
+    color: var(--matin-white);
+  }
+  .join-btn--menu {
+    display: flex;
+    justify-content: center;
+    margin: -0.75rem 0 1.25rem;
+    min-height: 3.25rem;
+    font-size: 1.1rem;
+  }
+  .display-opts {
+    display: none;
+  }
+  .display-opts [aria-pressed='true'],
+  .opt-btn[aria-pressed='true'] {
+    background: var(--matin-encre);
+    color: var(--matin-white);
+  }
+  .display-opts--menu {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0.75rem;
+    margin-block-end: 1.5rem;
+  }
+  .opt-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.4rem;
+    min-height: 3rem;
+    padding: 0.5rem;
+    border-radius: 1rem;
+    border: 1px solid var(--color-card-edge);
+    background: var(--matin-white);
+    color: var(--matin-encre);
+    font-family: var(--font-display);
+    font-weight: 700;
+  }
+  /* Wide screens only: on smaller ones the top row has no room, the menu has them. */
+  @media (max-width: 63.99rem) {
+    .header-tools .join-btn {
+      display: none;
+    }
+  }
+  @media (min-width: 64rem) {
+    .display-opts {
+      display: flex;
+      gap: 0.1rem;
     }
   }
   /* The search and language links set the height of the top row. */

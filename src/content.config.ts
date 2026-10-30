@@ -595,6 +595,56 @@ const introVideo = defineCollection({
     }),
 });
 
+/**
+ * Our impact (owner's request, Oct 30 2026, after the NGO review): a few REAL figures from
+ * Matin's own activities (participants, languages, activities…). Never an estimate or an
+ * invented number. The homepage band stays hidden while this folder has no entries.
+ */
+const impact = defineCollection({
+  loader: yaml('impact'),
+  schema: z.object({
+    value: z.string().min(1),
+    label: bi,
+    /** Where the figure comes from (for the team, not shown): e.g. "sign-in sheet, Nov 7 2026". */
+    source: z.string().min(1),
+    order: z.number().default(100),
+  }),
+});
+
+/**
+ * Words of participants (owner's request, Oct 30 2026): a sentence or two said by someone
+ * who took part, published only with their consent, first name only. Written in the
+ * language it was said in (`original`); translations are optional. Hidden while empty.
+ */
+const testimonials = defineCollection({
+  loader: yaml('testimonials'),
+  schema: z.object({
+    quote: z.object({ fr: z.string().optional(), en: z.string().optional(), fa: z.string().optional() }),
+    original: z.enum(['fr', 'en', 'fa']),
+    firstName: z.string().min(1),
+    context: biOpt,
+    consent: z.literal(true),
+    order: z.number().default(100),
+  }),
+});
+
+/**
+ * Partners and supporters (owner's request, Oct 30 2026): only organizations that really
+ * work with or fund Matin, shown with their written permission. Hidden while empty.
+ */
+const partners = defineCollection({
+  loader: yaml('partners'),
+  schema: ({ image }) =>
+    z.object({
+      name: z.string().min(1),
+      kind: z.enum(['partner', 'funder', 'sponsor']),
+      logo: image().optional(),
+      url: z.url().optional(),
+      permission: z.literal(true),
+      order: z.number().default(100),
+    }),
+});
+
 const faq = defineCollection({
   loader: yaml('faq'),
   schema: z.object({
@@ -820,6 +870,9 @@ export const collections = {
   gallery,
   introVideo,
   faq,
+  impact,
+  testimonials,
+  partners,
   resources,
   networks,
   policies,

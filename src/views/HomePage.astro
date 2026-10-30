@@ -37,6 +37,9 @@ import AliveHero from '@/components/brand/AliveHero.astro';
 import UpcomingStrip from '@/components/content/UpcomingStrip.astro';
 import LandAcknowledgement from '@/components/brand/LandAcknowledgement.astro';
 import HomeNewsletter from '@/components/content/HomeNewsletter.astro';
+import ImpactBand from '@/components/trust/ImpactBand.astro';
+import VoicesBand from '@/components/trust/VoicesBand.astro';
+import PartnersSection from '@/components/trust/PartnersSection.astro';
 import { href, newsAnchors, siteAlternates, type UiLang } from '@/i18n/routes';
 import { pick, useTranslations } from '@/i18n/ui';
 import { getMatinFeed, type MatinItem } from '@/lib/matin';
@@ -115,6 +118,9 @@ const l = livingStrings(lang);
 
     <!-- Who we are: the approved introduction, set large, beside a photo collage -->
     <LivingIntro lang={lang} />
+
+    <!-- Our impact: real figures only; Matin's first steps until there are some -->
+    <ImpactBand lang={lang} />
 
     <!-- Matin in Action as visual stories: the featured activity told large, Matin's
        "coming soon" posters beside it at different heights. Only Matin's own content
@@ -245,6 +251,9 @@ const l = livingStrings(lang);
     <!-- A Personal Note from Our President: photo, first paragraph, link to the full note -->
     <PresidentExcerpt lang={lang} />
 
+    <!-- Words of participants, with their consent; an invitation until there are some -->
+    <VoicesBand lang={lang} />
+
     <!-- Matin's Picks: a discovery gallery (same data as the Events page) -->
     <PicksGallery lang={lang} />
     <ExpireEvents />
@@ -357,6 +366,9 @@ const l = livingStrings(lang);
 
     <!-- Cultural Resources & Organizations: opens the directory -->
     <ResourcesTeaser lang={lang} />
+
+    <!-- Partner organizations and supporters: always shown, with open invitations -->
+    <PartnersSection lang={lang} />
 
     <!-- Land acknowledgement (owner's request, Oct 30 2026), just above the footer -->
     <LandAcknowledgement lang={lang} />

@@ -95,6 +95,18 @@ const ways = [
       <div class="donate__body">
         <h2 id="donate-title" class="donate__title">{t('support.donateTitle')}</h2>
         <p class="donate__text">{t('support.donateText')}</p>
+        <!-- Suggested amounts and monthly giving (NGO review, Oct 30 2026). Information only:
+           the amount is chosen in the visitor's own bank or payment page. -->
+        <div class="amounts">
+          <p class="amounts__label">{t('support.donateAmountsLabel')}</p>
+          <ul class="amounts__list">
+            {['20', '50', '100'].map((n) => (
+              <li class="amounts__chip">{lang === 'en' ? `$${n}` : lang === 'fa' ? `${n} دلار` : `${n} $`}</li>
+            ))}
+            <li class="amounts__chip amounts__chip--free">{t('support.donateAmountsOther')}</li>
+          </ul>
+          <p class="amounts__monthly">{t('support.donateMonthly')}</p>
+        </div>
         <ul class="donate__ways">
           {interacEmail && (
             <li class="give give--main">
@@ -276,6 +288,40 @@ const ways = [
     font-size: 1.1rem;
     line-height: 1.7;
     color: var(--matin-encre);
+  }
+  .amounts {
+    display: grid;
+    gap: 0.6rem;
+    margin-block: 1rem 1.5rem;
+  }
+  .amounts__label {
+    font-family: var(--font-display);
+    font-weight: 800;
+    color: var(--matin-encre);
+  }
+  .amounts__list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.6rem;
+  }
+  .amounts__chip {
+    padding: 0.45rem 1.2rem;
+    border-radius: 999px;
+    background: var(--matin-white);
+    border: 2px solid var(--matin-soleil);
+    font-family: var(--font-display);
+    font-size: 1.1rem;
+    font-weight: 800;
+    color: var(--matin-encre);
+  }
+  .amounts__chip--free {
+    border-style: dashed;
+    font-weight: 700;
+  }
+  .amounts__monthly {
+    max-width: 44rem;
+    line-height: 1.7;
+    color: var(--matin-ink);
   }
   .donate__note {
     font-size: 0.95rem;

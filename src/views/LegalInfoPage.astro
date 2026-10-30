@@ -7,7 +7,8 @@
 import PageLayout from '@/layouts/PageLayout.astro';
 import { siteAlternates, type UiLang } from '@/i18n/routes';
 import { useTranslations } from '@/i18n/ui';
-import { getSettings } from '@/lib/content';
+import { getDocuments, getSettings } from '@/lib/content';
+import { pick } from '@/i18n/ui';
 
 interface Props {
   lang: UiLang;
@@ -16,6 +17,9 @@ const { lang } = Astro.props;
 const t = useTranslations(lang);
 const s = await getSettings();
 const legal = s.legal!;
+// Annual reports and governance (NGO review, Oct 30 2026): always shown, with the real
+// documents once published (src/content/documents/), never a sample.
+const docs = (await getDocuments()).filter((d) => d.data.file && !d.data.placeholder);
 const a = legal.registeredAddress;
 const domain = new URL(legal.website).host;
 const email = legal.email;
@@ -111,6 +115,26 @@ const rows: { label: string; value: string; href?: string; ltr?: boolean }[] = [
         </div>
       </dl>
     </section>
+
+    <section id="documents" class="card legal-docs p-6 sm:p-12" aria-labelledby="docs-title">
+      <h2 id="docs-title" class="mb-4 text-3xl font-bold sm:text-4xl">{t('about.documents')}</h2>
+      <p class="text-lg leading-relaxed">{t('about.documentsLede')}</p>
+      {
+        docs.length ? (
+          <ul class="mt-6 space-y-3">
+            {docs.map((d) => (
+              <li>
+                <a href={d.data.file} class="text-lg font-semibold" download>
+                  {pick(d.data.title, lang)} ({d.data.year}) · {t('about.download')}
+                </a>
+              </li>
+            ))}
+          </ul>
+        ) : (
+          <p class="legal-docs__empty mt-6 text-lg leading-relaxed">{t('about.documentsEmpty')}</p>
+        )
+      }
+    </section>
   </div>
 </PageLayout>
 
@@ -137,8 +161,21 @@ const rows: { label: string; value: string; href?: string; ltr?: boolean }[] = [
     .legal-stack > section:first-child {
       margin-inline-end: 4rem;
     }
-    .legal-stack > section:last-child {
+    .legal-stack > section:nth-child(2) {
       margin-inline-start: 4rem;
+    }
+  }
+  .legal-docs {
+    border-block-start: 5px solid var(--color-firouzeh);
+  }
+  .legal-docs__empty {
+    padding: 1rem 1.25rem;
+    border-radius: 1rem;
+    border: 2px dashed color-mix(in srgb, var(--matin-encre) 25%, transparent);
+  }
+  @media (min-width: 48rem) {
+    .legal-stack > section.legal-docs {
+      margin-inline-end: 2rem;
     }
   }
   .legal-list > div {

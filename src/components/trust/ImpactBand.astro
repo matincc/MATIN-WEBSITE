@@ -1,0 +1,126 @@
+---
+/**
+ * Our impact (owner's request, Oct 30 2026, after the NGO review). Real figures only, from
+ * src/content/impact/. While there are none (Matin is a few weeks old), the band shows
+ * Matin's first steps instead: its birth month, its first activity (the earliest Matin
+ * event, linked) and its three languages, never an invented number.
+ */
+import { getCollection } from 'astro:content';
+import { baseLang, href, type UiLang } from '@/i18n/routes';
+import { pick, useTranslations } from '@/i18n/ui';
+import { getEvents, slugOf } from '@/lib/content';
+import { formatDate } from '@/lib/dates';
+
+interface Props {
+  lang: UiLang;
+}
+const { lang } = Astro.props;
+const t = useTranslations(lang);
+const figures = (await getCollection('impact')).sort((a, b) => a.data.order - b.data.order);
+const first = (await getEvents()).sort((a, b) => a.startDate.getTime() - b.startDate.getTime())[0];
+const steps = [
+  { value: t('home.impactStepBorn'), label: t('home.impactStepBornText') },
+  ...(first
+    ? [
+        {
+          value: formatDate(first.startDate, lang, false),
+          label: `${t('home.impactStepFirst')}${lang === 'fr' ? ' : ' : ': '}${pick(first.data.title, lang)}`,
+          href: href('events', lang, slugOf(first, baseLang(lang))),
+        },
+      ]
+    : []),
+  { value: t('home.impactStepLangs'), label: t('home.impactStepLangsText') },
+];
+---
+
+<section class="impact" id="impact" aria-labelledby="impact-title">
+  <div class="container-site">
+    <h2 id="impact-title" class="impact__title">{t('home.impactTitle')}</h2>
+    <p class="impact__lede">{figures.length ? t('home.impactLede') : t('home.impactEmpty')}</p>
+    <ul class="impact__list">
+      {
+        figures.length
+          ? figures.map((f) => (
+              <li class="impact__item">
+                <span class="impact__value">{f.data.value}</span>
+                <span class="impact__label">{pick(f.data.label, lang)}</span>
+              </li>
+            ))
+          : steps.map((s) => (
+              <li class="impact__item impact__item--step">
+                <span class="impact__value">{s.value}</span>
+                {s.href ? (
+                  <a href={s.href} class="impact__label impact__link">
+                    {s.label}
+                  </a>
+                ) : (
+                  <span class="impact__label">{s.label}</span>
+                )}
+              </li>
+            ))
+      }
+    </ul>
+  </div>
+</section>
+
+<style>
+  .impact {
+    padding-block: clamp(3rem, 2rem + 3vw, 5rem);
+    background: var(--matin-sable);
+  }
+  .impact__title {
+    font-family: var(--font-editorial);
+    font-size: clamp(1.9rem, 1.4rem + 1.8vw, 3rem);
+    font-weight: 700;
+    color: var(--matin-encre);
+  }
+  .impact__lede {
+    max-width: 44rem;
+    margin-block: 0.75rem 2rem;
+    font-size: 1.1rem;
+    line-height: 1.7;
+    color: var(--matin-ink);
+  }
+  .impact__list {
+    display: grid;
+    gap: 1.25rem;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 15rem), 1fr));
+  }
+  .impact__item {
+    display: grid;
+    align-content: start;
+    gap: 0.4rem;
+    padding: 1.5rem 1.6rem;
+    background: var(--matin-ivoire);
+    border-radius: 1rem;
+    border-start-start-radius: 2.5rem;
+    border-block-start: 5px solid var(--matin-soleil);
+  }
+  .impact__item:nth-child(2) {
+    border-block-start-color: var(--matin-brique);
+  }
+  .impact__item:nth-child(3) {
+    border-block-start-color: var(--matin-firouzeh);
+  }
+  .impact__value {
+    font-family: var(--font-editorial);
+    font-size: clamp(1.6rem, 1.3rem + 1.2vw, 2.4rem);
+    font-weight: 700;
+    line-height: 1.15;
+    color: var(--matin-brique-ink);
+  }
+  .impact__label {
+    font-size: 1.05rem;
+    line-height: 1.55;
+    color: var(--matin-encre);
+  }
+  .impact__link {
+    text-decoration: underline;
+    text-decoration-color: var(--matin-soleil);
+    text-underline-offset: 0.2em;
+  }
+  :global(html[lang='fa']) .impact__title,
+  :global(html[lang='fa']) .impact__value {
+    font-weight: 800;
+  }
+</style>

@@ -864,3 +864,21 @@
 .is-enhanced .region-panel + .region-panel {
   margin-block-start: 0;
 }
+
+/* Reading comfort (header buttons, Oct 30 2026): larger text scales every rem; high
+   contrast darkens text and whitens the warm grounds, from the palette only. */
+html.a11y-large {
+  font-size: 112.5%;
+}
+html.a11y-contrast {
+  --matin-ink: var(--matin-nuit);
+  --matin-encre: var(--matin-nuit);
+  --matin-ivoire: var(--matin-white);
+  --matin-sable: var(--matin-white);
+  --matin-brique-ink: color-mix(in srgb, var(--matin-brique) 70%, var(--matin-nuit));
+  --matin-firouzeh-ink: color-mix(in srgb, var(--matin-firouzeh) 60%, var(--matin-nuit));
+}
+html.a11y-contrast main a:not([class*='btn']) {
+  text-decoration: underline;
+  text-underline-offset: 0.2em;
+}
