@@ -375,7 +375,7 @@ const en: Dictionary = {
     // Board of Directors (owner's word, Oct 30 2026: the three founders form the board).
     boardTitle: 'Board of Directors',
     boardLede: 'Matin’s three founding members form its Board of Directors.',
-    boardExecutive: 'Executive Director',
+    boardExecutive: 'President',
     boardTreasurer: 'Treasurer',
     boardSecretary: 'Secretary',
     executiveLede: "The people who coordinate and manage the institute's day-to-day work.",
