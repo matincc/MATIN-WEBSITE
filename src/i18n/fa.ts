@@ -67,6 +67,7 @@ const fa: DeepPartial<Dictionary> = {
     legalInfo: 'اطلاعات حقوقی',
     search: 'جست‌وجو',
     resourcesDirectory: 'فهرست سازمان‌ها',
+    localGuide: 'راهنمای محلی',
     story: 'داستان ما',
     team: 'تیم ما',
     teamPresident: 'رئیس',

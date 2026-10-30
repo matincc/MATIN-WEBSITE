@@ -20,6 +20,7 @@ export const routes = {
   notes: { fr: 'notes-du-president', en: 'president-notes' },
   gallery: { fr: 'galerie', en: 'gallery' },
   resources: { fr: 'ressources', en: 'resources' },
+  localGuide: { fr: 'guide-local', en: 'local-guide' },
   contact: { fr: 'contact', en: 'contact' },
   careers: { fr: 'emplois', en: 'careers' },
   membership: { fr: 'adhesion', en: 'membership' },
