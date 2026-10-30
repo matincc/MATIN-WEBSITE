@@ -20,6 +20,10 @@ These rules apply to every page, now and in the future. Read them before changin
 - **Keep the languages in sync:** whenever text changes in one language (English, French or Persian), make the equivalent change in the same place in the other languages, in the same edit. Every page and string has a Persian version (Oct 25 2026).
 - No `[PLACEHOLDER]` tags and no placeholder or sample text anywhere (the gallery's "coming soon" tiles are an empty state, not sample content). Content that is not provided yet is simply not shown (lists show a short empty-state message; optional settings such as address, phone, email and hours are hidden until set).
 
+## 1b. Respect for everyone (owner's standing rule, Oct 30 2026)
+
+The site exists to respect everyone. No text, photo, news item, event or page may offend or single out anyone for religion, faith, ethnicity, race, sex or gender, skin colour or language. Stay strictly neutral on religion and politics. Photos of identifiable people only with their consent; Indigenous people or ceremonies are never shown with generic stock photos (a photo of Kanien'kehá:ka people, a powwow or an Indigenous artwork only with the community's or artist's permission and credit).
+
 ## 2. Typography
 
 - **Nunito** (rounded, warm), via `--font-display`: headings (extra bold), navigation, buttons, small-caps labels, links with arrows, the "Intercultural Institute" lockup text.
@@ -193,3 +197,6 @@ When asked for another page (Programs, Events, News, Get Involved, Contact), wri
 - **Hero second button:** while Matin has an upcoming activity it reads « Prochaine activité · 7 nov. » / "Next activity · …" / «برنامهٔ بعدی · …» (`heroCtaNext` in `alive.ts`) and leads to that event's RSVP; otherwise « Rejoindre la conversation » to the volunteer form, as before.
 - **FAQ** (`src/content/faq/`, seven entries in FR, EN, FA drafted by Claude for the owner's review): what Matin is, who can take part, languages, cost and RSVP, membership, volunteering, donations and tax receipts. The FAQ link shows in the footer now that entries exist.
 - **Newsletter on the homepage again** (`HomeNewsletter.astro`, `#stay-in-touch`, owner's request Oct 30 2026; overrides the Oct 25 2026 removal): after Programs and Participation, pale turquoise panel, approved `newsletter.*` texts; the footer form stays and keeps the old `#newsletter` anchor.
+- **Land acknowledgement over a photo** (later the same day): the text sits on a deep green panel over a wide photo of Tiohtià:ke (slot `montrealWide`, Montréal seen from Mont-Royal, credited). No stock photo of Indigenous people (see 1b); a Kahnawake powwow photo can replace it once its photographer and the community give permission.
+- **Persian display paragraphs are justified** (`.lintro__statement` on the homepage, `.who-text` on About): a neat block instead of ragged lines (owner's request, Oct 30 2026).
+

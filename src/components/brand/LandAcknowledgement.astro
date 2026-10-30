@@ -2,9 +2,16 @@
 /**
  * Land acknowledgement (owner's request, Oct 30 2026: « حتماً صفحه اول »). Shown at the
  * end of the homepage, just above the footer, in FR, EN and FA (`home.landTitle`,
- * `home.landText`). A quiet band: ivory ground, the sun rising on a thin horizon line,
- * no photo and no motion.
+ * `home.landText`).
+ *
+ * Owner's request, Oct 30 2026 (later the same day): the text sits INSIDE a beautiful photo
+ * of Tiohtià:ke, warmer and more human. The photo is a landscape of the place (slot
+ * `montrealWide`: Montréal seen from Mont-Royal, with its small credit), never a stock
+ * picture of Indigenous people: a photo of real Kanien'kehá:ka people or an Indigenous
+ * artwork is used only with their permission and credit. The text sits on a deep green
+ * panel so it stays readable on any photo.
  */
+import MediaImage from '@/components/media/MediaImage.astro';
 import { useTranslations } from '@/i18n/ui';
 import type { UiLang } from '@/i18n/routes';
 
@@ -16,39 +23,74 @@ const t = useTranslations(lang);
 ---
 
 <section class="land" aria-labelledby="land-title">
+  <MediaImage
+    slot="montrealWide"
+    lang={lang}
+    ratio={21 / 9}
+    sizes="100vw"
+    widths={[800, 1200, 1600, 2200]}
+    class="land__photo"
+  />
   <div class="container-site land__inner">
-    <svg class="land__sun" viewBox="0 0 120 40" aria-hidden="true" focusable="false">
-      <path d="M30 40a30 30 0 0 1 60 0Z" />
-      <line x1="0" y1="39.5" x2="120" y2="39.5" />
-    </svg>
-    <h2 id="land-title" class="land__title">{t('home.landTitle')}</h2>
-    <p class="land__text">{t('home.landText')}</p>
+    <div class="land__panel">
+      <svg class="land__sun" viewBox="0 0 120 40" aria-hidden="true" focusable="false">
+        <path d="M30 40a30 30 0 0 1 60 0Z" />
+        <line x1="0" y1="39.5" x2="120" y2="39.5" />
+      </svg>
+      <h2 id="land-title" class="land__title">{t('home.landTitle')}</h2>
+      <p class="land__text">{t('home.landText')}</p>
+    </div>
   </div>
 </section>
 
 <style>
   .land {
-    background: var(--matin-ivoire);
-    border-block-start: 1px solid color-mix(in srgb, var(--matin-encre) 12%, transparent);
+    position: relative;
+    display: grid;
+    min-height: clamp(30rem, 22rem + 22vw, 40rem);
+    isolation: isolate;
+    overflow: hidden;
+    background: var(--living-green-ink, #17423a);
+  }
+  /* The photo fills the whole band, behind the panel. */
+  .land :global(.land__photo) {
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+  }
+  .land :global(.land__photo .media__frame) {
+    height: 100%;
+    aspect-ratio: auto;
   }
   .land__inner {
     display: grid;
+    place-items: center;
+    padding-block: clamp(3rem, 2rem + 4vw, 6rem);
+  }
+  .land__panel {
+    display: grid;
     justify-items: center;
     gap: 1rem;
-    max-width: 52rem;
-    padding-block: 3.5rem 4rem;
+    max-width: 46rem;
+    padding: clamp(1.75rem, 1.2rem + 2.5vw, 3rem);
+    border-radius: 2rem 2rem 2rem 0.5rem;
+    background: color-mix(in srgb, var(--living-green-ink, #17423a) 86%, transparent);
+    backdrop-filter: blur(3px);
+    color: var(--matin-ivoire, #fbf6ec);
     text-align: center;
+    box-shadow: 0 1.5rem 3rem -1.5rem rgb(0 0 0 / 0.45);
   }
   .land__sun {
-    width: 6rem;
+    width: 5.5rem;
     height: auto;
   }
   .land__sun path {
     fill: var(--matin-soleil);
   }
   .land__sun line {
-    stroke: var(--matin-firouzeh);
+    stroke: var(--matin-ivoire, #fbf6ec);
     stroke-width: 1;
+    opacity: 0.7;
   }
   .land__title {
     font-family: var(--font-display);
@@ -56,15 +98,19 @@ const t = useTranslations(lang);
     font-weight: 800;
     letter-spacing: 0.18em;
     text-transform: uppercase;
-    color: var(--matin-firouzeh-ink);
+    color: var(--matin-soleil);
   }
   :global(html[lang='fa']) .land__title {
     letter-spacing: 0;
     font-size: 1.15rem;
   }
   .land__text {
-    font-size: 1.1rem;
+    font-size: clamp(1.05rem, 1rem + 0.3vw, 1.2rem);
     line-height: 1.85;
-    color: var(--matin-encre);
+    color: inherit;
+  }
+  :global(html[lang='fa']) .land__text {
+    text-align: justify;
+    text-align-last: center;
   }
 </style>
