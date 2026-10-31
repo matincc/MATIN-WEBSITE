@@ -13,7 +13,7 @@ import type { UiLang } from '@/i18n/routes';
 
 type Text = Record<UiLang, string>;
 
-export const cultureVoicesStrings: Record<'title' | 'subtitle' | 'question' | 'asked', Text> = {
+export const cultureVoicesStrings: Record<'title' | 'subtitle' | 'question' | 'asked' | 'answer', Text> = {
   title: {
     fr: 'Ce que la culture signifie pour nous',
     en: 'What Culture Means to Us',
@@ -33,6 +33,12 @@ export const cultureVoicesStrings: Record<'title' | 'subtitle' | 'question' | 'a
     fr: 'Dis, pour toi, la culture, c’est quoi ?',
     en: 'Hey, what does culture mean to you?',
     fa: 'راستی، فرهنگ برای تو یعنی چه؟',
+  },
+  // Owner, Oct 31 2026: the question box invites visitors to answer through « Write to us ».
+  answer: {
+    fr: 'Et pour vous ? Écrivez-nous',
+    en: 'And for you? Write to us',
+    fa: 'برای شما چه؟ برای ما بنویسید',
   },
 };
 

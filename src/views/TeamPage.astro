@@ -269,7 +269,16 @@ const joinWays = [
     border-radius: calc(var(--radius-card) * 1.4);
     border-start-start-radius: 8rem;
     border-end-end-radius: 4rem;
-    background: var(--color-sable);
+    /* Warm terracotta with white text (owner, Oct 31 2026: the sable panel was pale). */
+    background: var(--matin-brique-ink);
+    color: var(--matin-white);
+  }
+  .team-join .team-group__title,
+  .team-join .team-join__lede {
+    color: var(--matin-white);
+  }
+  .team-join :focus-visible {
+    outline-color: var(--matin-soleil);
   }
   @media (min-width: 56rem) {
     .team-join {
@@ -298,8 +307,10 @@ const joinWays = [
     font-family: var(--font-display);
     font-size: 0.9375rem;
     font-weight: 700;
-    color: var(--color-firouzeh-ink);
-    background: var(--color-white);
+    /* Light saffron chips with navy text on the terracotta panel, lighter than the saffron
+       button so they read as labels (owner, Oct 31 2026: not white). */
+    color: var(--matin-encre);
+    background: color-mix(in srgb, var(--matin-soleil) 45%, var(--matin-ivoire));
   }
   .team-join__ways li:nth-child(2n) {
     translate: 0 0.4rem;

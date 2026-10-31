@@ -17,7 +17,7 @@
  * Never: speech bubbles, wobbly photo frames, designed signatures (owner, Oct 28 2026).
  */
 import { Image } from 'astro:assets';
-import type { UiLang } from '@/i18n/routes';
+import { href, type UiLang } from '@/i18n/routes';
 import { pick } from '@/i18n/ui';
 import { forLang, getTeam } from '@/lib/content';
 import { cultureVoices, cultureVoicesStrings as s } from '@/lib/cultureVoices';
@@ -65,10 +65,14 @@ const voices = cultureVoices.flatMap((v) => {
         </h2>
         <p class="voices__subtitle">{pick(s.subtitle, lang)}</p>
       </div>
-      <p class="voices__asked" data-reveal>
+      <a class="voices__asked" href={`${href('contact', lang)}#write`} data-reveal>
         <span class="voices__asked-label">{pick(s.asked, lang)}</span>
         <span class="voices__asked-q">{pick(s.question, lang)}</span>
-      </p>
+        <span class="voices__asked-cta">
+          {pick(s.answer, lang)}
+          <span aria-hidden="true" class="voices__asked-arrow">{lang === 'fa' ? '←' : '→'}</span>
+        </span>
+      </a>
     </header>
 
     <div class="voices__body">
@@ -166,17 +170,64 @@ const voices = cultureVoices.flatMap((v) => {
     color: var(--color-ink);
     text-wrap: pretty;
   }
-  /* The question, as if jotted on a slip and taped to the page. */
+  /* The question, as if jotted on a slip and taped to the page. Turquoise, and a link to
+     « Write to us » so visitors can answer it (owner, Oct 31 2026). */
   .voices__asked {
     position: relative;
+    display: block;
     justify-self: start;
     max-width: 24rem;
     padding: 1.4rem 1.6rem 1.3rem;
     border-radius: 0.4rem 1.6rem 0.4rem 1.6rem;
-    background-color: var(--color-white);
-    background-image: var(--v-grain);
+    background-color: var(--matin-firouzeh-ink);
+    color: var(--matin-white);
+    text-decoration: none;
     box-shadow: 0 0.9rem 1.8rem -1.1rem var(--v-shadow);
     rotate: -1.6deg;
+    transition:
+      rotate 0.3s ease,
+      translate 0.3s ease,
+      background-color 0.3s ease;
+  }
+  .voices__asked:hover {
+    rotate: 0deg;
+    translate: 0 -3px;
+    background-color: var(--matin-encre);
+  }
+  .voices__asked:focus-visible {
+    outline: 3px solid var(--matin-soleil);
+    outline-offset: 3px;
+  }
+  .voices__asked-cta {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.45rem;
+    margin-block-start: 1rem;
+    padding: 0.5rem 1.1rem;
+    border-radius: 999px;
+    background: var(--btn-primary-bg, var(--matin-soleil));
+    color: var(--btn-primary-fg, var(--matin-encre));
+    font-family: var(--font-display);
+    font-weight: 800;
+    font-size: 1rem;
+  }
+  .voices__asked:hover .voices__asked-arrow {
+    translate: 3px 0;
+  }
+  :global([dir='rtl']) .voices__asked:hover .voices__asked-arrow {
+    translate: -3px 0;
+  }
+  .voices__asked-arrow {
+    transition: translate 0.3s ease;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .voices__asked,
+    .voices__asked-arrow {
+      transition: none;
+    }
+    .voices__asked:hover {
+      translate: none;
+    }
   }
   @media (min-width: 56rem) {
     .voices__asked {
@@ -207,7 +258,7 @@ const voices = cultureVoices.flatMap((v) => {
     font-weight: 800;
     letter-spacing: 0.14em;
     text-transform: uppercase;
-    color: var(--color-brique-ink);
+    color: var(--matin-white);
   }
   :global(html[lang='fa']) .voices__asked-label {
     letter-spacing: 0;
@@ -223,7 +274,7 @@ const voices = cultureVoices.flatMap((v) => {
       'SOFT' 100,
       'opsz' 48;
     line-height: 1.3;
-    color: var(--color-primary);
+    color: var(--matin-white);
   }
   :global(html[lang='fa']) .voices__asked-q {
     font-weight: 700;
