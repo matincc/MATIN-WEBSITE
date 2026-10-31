@@ -938,56 +938,28 @@ html.a11y-contrast .ground {
   background-image: none;
 }
 
-/* PREVIEW ONLY: Canada proposals (?leaf=a|b|c|d, src/scripts/leafPreview.ts). Remove with the
-   switch once the owner chooses. Maple red (--matin-red) is the Canadian identity colour. */
-.leafopt { display: none; }
-html[data-leaf='a'] .leafopt--hero,
-html[data-leaf='d'] .leafopt--hero { display: inline; }
-html[data-leaf='a'] svg.leafopt--hero,
-html[data-leaf='d'] svg.leafopt--hero {
+/* Canada at first sight (owner's choice D, Oct 31 2026): a red maple leaf and « Canada »
+   in the hero label, a red leaf on the logo rule and a larger one after the slogan.
+   Maple red (--matin-red) is the Canadian identity colour. */
+svg.leafopt--hero {
   display: inline-block;
   flex: none;
   color: var(--matin-red);
   filter: drop-shadow(0 0 2px var(--matin-ivoire)) drop-shadow(0 0 3px var(--matin-ivoire));
 }
-html[data-leaf='a'] .ahero__place,
-html[data-leaf='d'] .ahero__place { gap: 0.6rem; }
-html[data-leaf='b'] svg.leafopt--slogan,
-html[data-leaf='d'] svg.leafopt--slogan {
+.ahero__place { gap: 0.6rem; }
+svg.leafopt--slogan {
   display: inline-block;
-  width: 1.5rem;
-  height: 1.5rem;
+  width: 1.85rem;
+  height: 1.85rem;
   margin-inline-start: 0.5rem;
-  vertical-align: -0.25em;
+  vertical-align: -0.3em;
   color: var(--matin-red);
 }
-html[data-leaf='b'] .lockup__leaf,
-html[data-leaf='d'] .lockup__leaf {
-  color: var(--matin-red) !important;
-  background: none !important;
-  padding: 0 !important;
-  width: 11px !important;
-  height: 11px !important;
+.site-header .lockup__leaf:not(#o) {
+  color: var(--matin-red);
+  background: none;
+  padding: 0;
+  width: 11px;
+  height: 11px;
 }
-.leaf-ground {
-  position: absolute;
-  inset: 0;
-  z-index: -1;
-  overflow: hidden;
-  pointer-events: none;
-}
-.leaf-ground svg {
-  position: absolute;
-  inset-block-start: 8%;
-  inset-inline-end: -4rem;
-  width: clamp(14rem, 26vw, 24rem);
-  height: auto;
-  fill: color-mix(in srgb, var(--matin-red) 13%, transparent);
-  rotate: -14deg;
-}
-.leaf-ground[data-side='start'] svg {
-  inset-inline-end: auto;
-  inset-inline-start: -4rem;
-  rotate: 12deg;
-}
-
