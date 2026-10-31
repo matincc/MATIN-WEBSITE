@@ -484,7 +484,7 @@ const l = livingStrings(lang);
   :global([dir='rtl']) .living :global(.living-link:hover svg) {
     translate: -4px 0;
   }
-  /* Main button: deep terracotta with white text (5.5:1), coral with charcoal on hover. */
+  /* Main button: the site's primary button tokens (saffron, navy text). */
   .living :global(.living-btn) {
     display: inline-flex;
     align-items: center;
@@ -492,8 +492,8 @@ const l = livingStrings(lang);
     min-height: 3rem;
     padding: 0.75rem 1.6rem;
     border-radius: 999px;
-    background: var(--living-terracotta-ink);
-    color: var(--matin-white);
+    background: var(--btn-primary-bg);
+    color: var(--btn-primary-fg);
     font-family: var(--font-display);
     font-size: 1.05rem;
     font-weight: 800;
@@ -504,8 +504,8 @@ const l = livingStrings(lang);
       transform 0.3s cubic-bezier(0.2, 0.7, 0.2, 1);
   }
   .living :global(.living-btn:hover) {
-    background: var(--living-coral);
-    color: var(--living-charcoal);
+    background: var(--btn-primary-bg-hover);
+    color: var(--btn-primary-fg);
     transform: translateY(-2px);
   }
   .living :global(:focus-visible) {
@@ -837,15 +837,6 @@ const l = livingStrings(lang);
     }
   }
 
-  /* The resources band closes the page on the same warm ground, with the warm button. */
-  .living :global(.btn-primary) {
-    background: var(--living-terracotta-ink);
-    color: var(--matin-white);
-  }
-  .living :global(.btn-primary:hover) {
-    background: var(--living-coral);
-    color: var(--living-charcoal);
-  }
   .living :global(.bg-paper) {
     background: var(--living-ivory);
   }

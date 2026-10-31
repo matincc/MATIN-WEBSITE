@@ -272,12 +272,12 @@ const secondary = next
   .ahero__btn--primary {
     padding: 0.7rem 1.5rem;
     border-radius: 999px;
-    background: var(--matin-brique-ink);
-    color: var(--matin-white);
+    background: var(--btn-primary-bg);
+    color: var(--btn-primary-fg);
   }
   .ahero__btn--primary:hover {
-    background: var(--alive-gold);
-    color: var(--matin-encre);
+    background: var(--btn-primary-bg-hover);
+    color: var(--btn-primary-fg);
     transform: translateY(-2px);
   }
   .ahero__btn :global(.ahero__arrow) {
@@ -289,18 +289,17 @@ const secondary = next
   :global([dir='rtl']) .ahero__btn--primary:hover :global(.ahero__arrow) {
     translate: -4px 0;
   }
-  /* The second action reads as a link with a gold rule that fills in on hover. */
+  /* The second action: the turquoise secondary button (design system, Oct 31 2026). */
   .ahero__btn--ghost {
-    padding-block: 0.4rem;
     padding: 0.7rem 1.5rem;
     border-radius: 999px;
-    background: var(--matin-brique-ink);
-    color: var(--matin-white);
+    background: var(--btn-secondary-bg);
+    color: var(--btn-secondary-fg);
     text-shadow: none;
   }
   .ahero__btn--ghost:hover {
-    background: var(--alive-gold);
-    color: var(--matin-blue);
+    background: var(--btn-secondary-bg-hover);
+    color: var(--btn-secondary-fg);
     transform: translateY(-2px);
   }
   .ahero__btn:focus-visible {
