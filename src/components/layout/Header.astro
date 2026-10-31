@@ -12,6 +12,9 @@ interface Props {
 }
 const { lang, alternates } = Astro.props;
 const t = useTranslations(lang);
+// Header signature (design-system brief, Oct 31 2026): the slogan in the page's language
+// and, under it, the Persian institutional slogan, always in Persian.
+const faSlogan = useTranslations('fa')('home.positioning');
 /** Adds #id to a page URL. */
 const anchor = (url: string, id: string) => `${url}#${id}`;
 
@@ -110,7 +113,13 @@ const isActive = (url: string) => !url.includes('?') && current.startsWith(url);
 
 <header class="site-header" data-header>
   <div class="header-row">
-    <Lockup lang={lang} size="large" />
+    <div class="brand-block">
+      <Lockup lang={lang} size="large" />
+      <p class="header-slogan">
+        <span class="header-slogan__main">{t('brand.tagline')}</span>
+        <span class="header-slogan__fa" lang="fa" dir="rtl">{faSlogan}</span>
+      </p>
+    </div>
 
     <div class="header-tools gap-1 sm:gap-2">
       <!-- Donate (owner's request, Oct 30 2026), like other NGOs: always in the top row. -->
@@ -211,6 +220,10 @@ const isActive = (url: string) => !url.includes('?') && current.startsWith(url);
       </button>
     </div>
     <nav aria-label={t('a11y.mainNav')} class="px-5 pt-2 pb-10">
+      <p class="header-slogan header-slogan--menu">
+        <span class="header-slogan__main">{t('brand.tagline')}</span>
+        <span class="header-slogan__fa" lang="fa" dir="rtl">{faSlogan}</span>
+      </p>
       <div class="mb-6 rounded-2xl bg-tint px-4 py-3">
         <LangToggle lang={lang} alternates={alternates} large />
       </div>
@@ -368,11 +381,12 @@ const isActive = (url: string) => !url.includes('?') && current.startsWith(url);
 </script>
 
 <style>
+  /* Cream header, navy menu band (design-system brief, Oct 31 2026). */
   .site-header {
     position: sticky;
     top: 0;
     z-index: 40;
-    background: var(--color-white);
+    background: var(--matin-ivoire);
     border-block-end: 1px solid transparent;
     transition:
       box-shadow 0.25s,
@@ -394,6 +408,54 @@ const isActive = (url: string) => !url.includes('?') && current.startsWith(url);
     margin-inline: auto;
     padding-inline: 1.25rem;
   }
+  .brand-block {
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+    min-width: 0;
+  }
+  /* The slogans beside the logo, from wide screens (the top row has room there). */
+  .header-slogan {
+    display: none;
+    flex-direction: column;
+    gap: 0.2rem;
+    padding-inline-start: 1.5rem;
+    border-inline-start: 1px solid color-mix(in srgb, var(--matin-brique) 45%, transparent);
+    line-height: 1.15;
+  }
+  @media (min-width: 84rem) {
+    .header-slogan {
+      display: flex;
+    }
+  }
+  /* In the phone and tablet menu, the slogans open the panel. */
+  .header-slogan--menu {
+    display: flex;
+    margin-block-end: 1.25rem;
+    padding-inline-start: 1rem;
+    border-inline-start-width: 3px;
+    border-inline-start-color: var(--matin-soleil);
+  }
+  .header-slogan__main {
+    font-family: 'Fraunces Variable', Georgia, serif;
+    font-style: italic;
+    font-weight: 700;
+    font-size: 1.6rem;
+    color: var(--matin-encre);
+    white-space: nowrap;
+  }
+  :global([dir='rtl']) .header-slogan__main {
+    font-family: 'Vazirmatn Variable', Tahoma, sans-serif;
+    font-style: normal;
+    font-size: 1.35rem;
+  }
+  .header-slogan__fa {
+    font-family: 'Vazirmatn Variable', Tahoma, sans-serif;
+    font-weight: 700;
+    font-size: 1.1rem;
+    color: var(--matin-brique-ink);
+    white-space: nowrap;
+  }
   .donate-btn {
     display: inline-flex;
     align-items: center;
@@ -402,8 +464,8 @@ const isActive = (url: string) => !url.includes('?') && current.startsWith(url);
     padding: 0.45rem 1.05rem;
     margin-inline-end: 0.5rem;
     border-radius: 999px;
-    background: var(--matin-brique-ink);
-    color: var(--matin-white);
+    background: var(--btn-accent-bg);
+    color: var(--btn-accent-fg);
     font-family: var(--font-display);
     font-size: 0.98rem;
     font-weight: 800;
@@ -412,8 +474,8 @@ const isActive = (url: string) => !url.includes('?') && current.startsWith(url);
     transition: background-color 0.3s ease;
   }
   .donate-btn:hover {
-    background: var(--matin-encre);
-    color: var(--matin-white);
+    background: var(--btn-accent-bg-hover);
+    color: var(--btn-accent-fg);
   }
   /* Phones: the top row has no room (it would wrap), so the button opens the menu instead. */
   .donate-btn--menu {
@@ -436,8 +498,8 @@ const isActive = (url: string) => !url.includes('?') && current.startsWith(url);
     padding: 0.4rem 1rem;
     margin-inline-end: 0.25rem;
     border-radius: 999px;
-    border: 2px solid var(--matin-brique-ink);
-    color: var(--matin-brique-ink);
+    border: 2px solid var(--btn-secondary-bg);
+    color: var(--btn-secondary-bg);
     font-family: var(--font-display);
     font-size: 0.98rem;
     font-weight: 800;
@@ -448,8 +510,8 @@ const isActive = (url: string) => !url.includes('?') && current.startsWith(url);
       color 0.3s ease;
   }
   .join-btn:hover {
-    background: var(--matin-brique-ink);
-    color: var(--matin-white);
+    background: var(--btn-secondary-bg);
+    color: var(--btn-secondary-fg);
   }
   .join-btn--menu {
     display: flex;
@@ -525,10 +587,13 @@ const isActive = (url: string) => !url.includes('?') && current.startsWith(url);
     .site-header {
       top: -5.5rem;
     }
+    /* The menu row is a full-width navy band. */
     .desktop-nav {
       display: block;
       flex-basis: 100%;
-      border-block-start: 1px solid var(--color-line);
+      background: var(--matin-encre);
+      box-shadow: 0 0 0 100vmax var(--matin-encre);
+      clip-path: inset(0 -100vmax);
     }
     .desktop-nav > ul {
       justify-content: center;
@@ -551,16 +616,20 @@ const isActive = (url: string) => !url.includes('?') && current.startsWith(url);
     font-weight: 700;
     font-size: 1rem;
     white-space: nowrap;
-    color: var(--color-primary);
+    color: var(--matin-white);
     text-decoration: none;
     border-radius: 999px;
+  }
+  .nav-link:hover,
+  .nav-link.is-active {
+    color: var(--matin-soleil);
   }
   @media (min-width: 90rem) {
     .nav-link {
       --nav-pad: 0.9rem;
     }
   }
-  /* Thin gold underline: grows in on hover, stays on the current page. */
+  /* Thin saffron underline: grows in on hover, stays (terracotta-edged) on the current page. */
   .nav-link::after {
     content: '';
     position: absolute;
@@ -587,11 +656,15 @@ const isActive = (url: string) => !url.includes('?') && current.startsWith(url);
     height: 2.25rem;
     margin-inline-start: -0.4rem;
     border-radius: 999px;
-    color: var(--color-primary);
+    color: var(--matin-white);
     cursor: pointer;
   }
   .sub-toggle:hover {
-    background: var(--color-tint);
+    color: var(--matin-soleil);
+    background: color-mix(in srgb, var(--matin-white) 10%, transparent);
+  }
+  .desktop-nav :focus-visible {
+    outline-color: var(--matin-soleil);
   }
   .sub-toggle[aria-expanded='true'] :global(svg) {
     transform: rotate(180deg);
@@ -634,8 +707,13 @@ const isActive = (url: string) => !url.includes('?') && current.startsWith(url);
   }
   .submenu-link:hover,
   .submenu-link:focus-visible {
-    background: var(--color-tint);
+    background: var(--matin-sable);
     color: var(--color-primary);
+    box-shadow: inset 3px 0 0 var(--matin-brique);
+  }
+  :global([dir='rtl']) .submenu-link:hover,
+  :global([dir='rtl']) .submenu-link:focus-visible {
+    box-shadow: inset -3px 0 0 var(--matin-brique);
   }
 
   .menu-btn {
@@ -666,7 +744,7 @@ const isActive = (url: string) => !url.includes('?') && current.startsWith(url);
     border: 0;
     padding: 0;
     color: var(--color-ink);
-    background: var(--color-white);
+    background: var(--matin-ivoire);
   }
   .mobile-menu::backdrop {
     background: color-mix(in srgb, var(--color-ink) 40%, transparent);
@@ -693,7 +771,7 @@ const isActive = (url: string) => !url.includes('?') && current.startsWith(url);
   .mobile-link:hover,
   .mobile-link[aria-current='page'] {
     text-decoration: underline;
-    text-decoration-color: var(--color-gold);
+    text-decoration-color: var(--matin-soleil);
     text-decoration-thickness: 2px;
   }
   .mobile-sub {

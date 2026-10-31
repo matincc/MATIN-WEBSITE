@@ -252,7 +252,7 @@ const tabs = newsRegions.map((region) => {
   .wire__item--lead .wire__excerpt {
     font-size: 1.125rem;
   }
-  /* « Lire la suite à la source »: a filled pill, clearly a button (white on terracotta 6.4:1). */
+  /* « Lire la suite à la source »: a filled terracotta pill, clearly a button (white 5.9:1). */
   .wire__source {
     display: inline-flex;
     align-items: center;
@@ -260,16 +260,16 @@ const tabs = newsRegions.map((region) => {
     margin-block-start: 1.1rem;
     padding: 0.5rem 1.1rem;
     border-radius: 999px;
-    background: var(--color-terracotta-deep);
+    background: var(--btn-accent-bg);
     font-family: var(--font-display);
     font-weight: 800;
     font-size: 0.9375rem;
-    color: var(--color-white);
+    color: var(--btn-accent-fg);
     text-decoration: none;
     transition: background-color 0.2s;
   }
   .wire__source:hover {
-    background: var(--color-primary);
+    background: var(--btn-accent-bg-hover);
   }
   @media (prefers-reduced-motion: reduce) {
     .wire__title a,

@@ -76,7 +76,8 @@ const t = useTranslations(lang);
     padding-block-start: clamp(3rem, 2.5rem + 3vw, 4.5rem);
     /* An arch, like the rising sun, instead of a rectangle (owner, Oct 31 2026). */
     border-radius: 50% 50% 2rem 2rem / 8rem 8rem 2rem 2rem;
-    background: var(--matin-firouzeh-ink);
+    /* Deep turquoise: the saffron title reads at 4.8:1. */
+    background: color-mix(in srgb, var(--matin-firouzeh-ink) 65%, black);
     color: var(--matin-white);
     border: 3px solid var(--matin-soleil);
     text-align: center;

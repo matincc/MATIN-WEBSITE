@@ -15,6 +15,8 @@ interface Props {
 const { lang, showNewsletter = true } = Astro.props;
 const t = useTranslations(lang);
 const s = await getSettings();
+// The Persian institutional slogan, always in Persian (design-system brief, Oct 31 2026).
+const faSlogan = useTranslations('fa')('home.positioning');
 
 // Same order as the header menu; the FAQ (left out until it has questions), Become a Member
 // (Oct 28 2026) and Careers (owner's request, Oct 27 2026; neither in the header menu) sit
@@ -51,18 +53,18 @@ const hasContact = Boolean(a || s.phone || s.email);
 ---
 
 <footer class="footer on-dark text-white">
-  <div class="mosaic footer-mosaic" aria-hidden="true">
-    <span></span>
-    <span></span>
-    <span></span>
-    <span></span>
+  <!-- Terracotta and saffron edge (design-system brief, Oct 31 2026). -->
+  <div class="footer-edge" aria-hidden="true"><span></span><span></span></div>
+  <!-- Signature: logo and name, then the two slogans, as in the header. -->
+  <div class="container-site footer-sign">
+    <Lockup lang={lang} variant="dark" />
+    <p class="footer-slogan">
+      <span class="footer-slogan__main">{t('brand.tagline')}</span>
+      <span class="footer-slogan__fa" lang="fa" dir="rtl">{faSlogan}</span>
+    </p>
   </div>
-  <div class="container-site grid gap-12 pt-16 pb-12 md:grid-cols-2 lg:grid-cols-12">
+  <div class="container-site grid gap-12 pt-10 pb-12 md:grid-cols-2 lg:grid-cols-12">
     <div class:list={[hasContact || s.hours ? 'lg:col-span-3 2xl:col-span-4' : 'lg:col-span-5']}>
-      <div class="mb-6">
-        <Lockup lang={lang} variant="dark" />
-      </div>
-      <p class="mb-4 font-display text-[1.75rem] font-extrabold text-white">{t('brand.tagline')}</p>
       <p class="footer-about">{t('footer.about')}</p>
       {!hasContact && <SocialLinks lang={lang} social={s.social} class="mt-6" />}
     </div>
@@ -181,25 +183,86 @@ const hasContact = Boolean(a || s.phone || s.email);
       </nav>
     </div>
   </div>
+  <!-- Two soft waves, terracotta and saffron, close the page. -->
+  <svg
+    class="footer-waves"
+    viewBox="0 0 1440 48"
+    preserveAspectRatio="none"
+    aria-hidden="true"
+    focusable="false"
+  >
+    <path class="footer-waves__terra" d="M0 48 V24 C260 2 520 4 760 20 C1000 36 1220 32 1440 8 V48 Z"></path>
+    <path class="footer-waves__saffron" d="M0 48 V38 C320 20 600 22 860 32 C1100 42 1280 36 1440 22 V48 Z"></path>
+  </svg>
 </footer>
 
 <style>
-  /* The four-colour mosaic as the footer's top edge. */
-  .footer-mosaic {
-    gap: 0;
-    height: 0.4rem;
-  }
-  .footer-mosaic > span {
-    border-radius: 0;
-  }
-  /* Night footer (scheme A, Oct 29 2026): the site opens with the morning and ends with
-     Montréal at night. White text 14.9:1 on nuit, soleil 7.6:1. */
+  /* Navy footer (design-system brief, Oct 31 2026): white text 11.6:1, saffron 5.5:1. */
   .footer {
+    background: var(--matin-encre);
+  }
+  .footer-edge {
+    display: flex;
+    height: 0.35rem;
+  }
+  .footer-edge > span:first-child {
+    flex: 3;
+    background: var(--matin-brique);
+  }
+  .footer-edge > span:last-child {
+    flex: 2;
+    background: var(--matin-soleil);
+  }
+  .footer-sign {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 1.25rem 2rem;
+    padding-block: 2.75rem 2.25rem;
+    border-block-end: 1px solid color-mix(in srgb, var(--matin-white) 14%, transparent);
+  }
+  .footer-slogan {
+    display: flex;
+    flex-direction: column;
+    gap: 0.3rem;
+    padding-inline-start: 2rem;
+    border-inline-start: 1px solid color-mix(in srgb, var(--matin-soleil) 55%, transparent);
+    line-height: 1.2;
+  }
+  .footer-slogan__main {
+    font-family: 'Fraunces Variable', Georgia, serif;
+    font-style: italic;
+    font-weight: 700;
+    font-size: clamp(1.5rem, 1.2rem + 1vw, 2rem);
+    color: var(--matin-soleil);
+  }
+  :global([dir='rtl']) .footer-slogan__main {
+    font-family: 'Vazirmatn Variable', Tahoma, sans-serif;
+    font-style: normal;
+  }
+  /* Light terracotta on navy, 5.3:1. */
+  .footer-slogan__fa {
+    font-family: 'Vazirmatn Variable', Tahoma, sans-serif;
+    font-weight: 700;
+    font-size: 1.25rem;
+    color: color-mix(in srgb, var(--matin-brique) 60%, white);
+  }
+  /* The copyright bar: the deeper navy the city stands on. */
+  .footer-base {
     background: var(--color-nuit);
   }
-  /* Deeper night under the skyline. */
-  .footer-base {
-    background: color-mix(in srgb, var(--color-nuit) 70%, black);
+  .footer-waves {
+    display: block;
+    width: 100%;
+    height: clamp(2rem, 1.2rem + 2vw, 3.5rem);
+    margin-block-start: -1px;
+    background: var(--color-nuit);
+  }
+  .footer-waves__terra {
+    fill: var(--matin-brique);
+  }
+  .footer-waves__saffron {
+    fill: var(--matin-soleil);
   }
   /* The introduction under "Cultures in Dialogue": more room and air (owner's brief,
      Oct 24 2026). */

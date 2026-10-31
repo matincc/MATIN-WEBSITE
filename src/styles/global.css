@@ -26,32 +26,35 @@
 @import '@fontsource-variable/fraunces/full-italic.css';
 
 /*
- * Matin colour system, scheme A « Brique & Firouzeh » (owner's decision, Oct 29 2026).
- * "Matin" is the morning: the colours of dawn over two cultures. Brique (Montréal brick,
- * Persian brick and pottery) is the organisation colour; Firouzeh (Persian turquoise
- * tiles, the St. Lawrence) its companion; Soleil the logo's sun; Encre the logo's navy
- * for text; Ivoire and Sable the grounds; Nuit one dark moment per page and the footer.
- * Seven colours. These are the ONLY colours on the site (see CLAUDE.md); every older
- * name below is an alias of one of them, so no page keeps a colour of its own.
- * Contrast (checked, WCAG AA): encre on ivoire 10.6 / sable 9.4 / white 11.9;
- * brique-ink on ivoire 5.7; firouzeh-ink on ivoire 6.4; white on brique 5.0, on
- * brique-ink 6.4, on firouzeh 5.0, on firouzeh-ink 7.2, on nuit 14.9; soleil on nuit 7.6;
- * encre on soleil 6.1. Brique and firouzeh (4.5 on ivoire) for large text, shapes and
- * button grounds; soleil never as text on light grounds.
+ * Matin colour system: the official palette of the design-system brief (Oct 31 2026),
+ * kept under the scheme A names so every component follows it. Brique = Terracotta
+ * #B9674D, Soleil = Saffron #E2AA36, Firouzeh = Turquoise #3C9290, Encre = Navy Blue
+ * #243B50, Ivoire = Warm Cream #F5EFE3; Sable and Nuit are mixed from them.
+ * These are the ONLY colours on the site (see CLAUDE.md); every older name below is an
+ * alias of one of them, so no page keeps a colour of its own.
+ * Contrast (checked, WCAG AA): encre on ivoire 10.1 / white 11.6; brique-ink on ivoire
+ * 5.2; firouzeh-ink on ivoire 5.2; white on brique-ink 5.9, on firouzeh-ink 5.9, on
+ * encre 11.6; soleil on encre 5.5; encre on soleil 5.5. Brique (3.6) and firouzeh (3.2)
+ * on ivoire only for large text, shapes and decoration; white text never on plain
+ * brique or firouzeh (use the -ink shades); soleil never as text on light grounds.
  */
 :root {
-  --matin-brique: #b5513a; /* organisation colour: main buttons, large titles, shapes */
-  --matin-brique-ink: #9c4430; /* brique for small text and labels */
-  --matin-firouzeh: #1e7a8a; /* companion: links, labels, one section per page */
-  --matin-firouzeh-ink: #17606d; /* firouzeh for small text */
-  --matin-soleil: #e8b04a; /* the sun: highlights, sun shapes, rules, never text on light */
-  --matin-encre: #193a53; /* the logo's navy: headings, menu, text */
-  --matin-ivoire: #f7f2ea; /* page ground */
-  --matin-sable: #eee4d3; /* second ground, to set sections apart */
-  --matin-nuit: #13293a; /* one dark moment per page, the footer */
+  /* Official palette (owner's design-system brief, Oct 31 2026): Terracotta, Saffron,
+     Turquoise, Navy Blue and Warm Cream. Cream dominates, navy gives structure,
+     terracotta and saffron warmth, turquoise balance. The -ink shades are the same hues
+     darkened for small text and button grounds (WCAG AA). */
+  --matin-brique: #b9674d; /* Terracotta: section accents, highlights, decorative shapes */
+  --matin-brique-ink: #94523e; /* terracotta for small text, the Donate button (white 5.9) */
+  --matin-firouzeh: #3c9290; /* Turquoise: interactive elements, shapes */
+  --matin-firouzeh-ink: #2d6e6c; /* turquoise for links, labels, secondary buttons (white 5.9) */
+  --matin-soleil: #e2aa36; /* Saffron: primary buttons, highlights, icons; never text on light */
+  --matin-encre: #243b50; /* Navy Blue: navigation, headings, footer, important text */
+  --matin-ivoire: #f5efe3; /* Warm Cream: the dominant page ground */
+  --matin-sable: color-mix(in srgb, var(--matin-brique) 8%, var(--matin-ivoire)); /* second ground */
+  --matin-nuit: color-mix(in srgb, var(--matin-encre) 80%, black); /* deeper navy, one dark moment */
   /* Two light grounds mixed from the colours above for the homepage rhythm (Oct 29 2026,
      owner: the homepage ground was not yet inviting): apricot dawn and pale turquoise. */
-  --matin-aube: color-mix(in srgb, var(--matin-soleil) 30%, var(--matin-ivoire));
+  --matin-aube: color-mix(in srgb, var(--matin-soleil) 20%, var(--matin-ivoire));
   /* A soft brick tint (owner, Oct 29 2026: the Executive Team panel warmer, brick). */
   --matin-brique-pale: color-mix(in srgb, var(--matin-brique) 18%, var(--matin-ivoire));
   /* Leaning to blue, never a pale green (owner, Oct 25 2026). */
@@ -90,6 +93,18 @@
   --living-green: var(--matin-firouzeh);
   --living-green-ink: var(--matin-firouzeh-ink);
   --living-charcoal: var(--matin-ink);
+  /* Buttons, set once for the whole site (design-system brief, Oct 31 2026): primary =
+     saffron with navy text (5.5:1), secondary = turquoise, giving = terracotta. Every
+     button-like class on the site reads these, so a palette change is made here. */
+  --btn-primary-bg: var(--matin-soleil);
+  --btn-primary-fg: var(--matin-encre);
+  --btn-primary-bg-hover: color-mix(in srgb, var(--matin-soleil) 80%, var(--matin-brique));
+  --btn-secondary-bg: var(--matin-firouzeh-ink);
+  --btn-secondary-fg: var(--matin-white);
+  --btn-secondary-bg-hover: var(--matin-encre);
+  --btn-accent-bg: var(--matin-brique-ink);
+  --btn-accent-fg: var(--matin-white);
+  --btn-accent-bg-hover: var(--matin-encre);
   --font-editorial: 'Fraunces Variable', 'Georgia', 'Times New Roman', serif;
 }
 
@@ -378,19 +393,20 @@
     --accent: var(--color-primary);
     --accent-ink: var(--color-primary);
   }
-  /* Buttons: primary = blue with white text (11.6:1), secondary = blue outline.
-     Gold appears only as the hover border/underline accent. */
+  /* Buttons (design-system brief, Oct 31 2026): pill-shaped, a subtle lift on hover.
+     .btn-primary = saffron, navy text; .btn-secondary = turquoise, white text;
+     .btn-outline = turquoise outline; .btn-accent = terracotta (giving). */
   .btn {
     @apply inline-flex min-h-13 items-center justify-center gap-2 rounded-full px-8 py-3 font-display font-extrabold no-underline;
     font-size: 1.1875rem;
     line-height: 1.3;
     letter-spacing: 0.01em;
     transition:
-      background-color 0.2s,
-      border-color 0.2s,
-      color 0.2s,
-      transform 0.2s,
-      box-shadow 0.2s;
+      background-color 0.25s ease,
+      border-color 0.25s ease,
+      color 0.25s ease,
+      transform 0.25s ease,
+      box-shadow 0.25s ease;
   }
   /* Subtle lift on hover (the global reduced-motion rule removes the motion). */
   .btn:hover {
@@ -400,19 +416,39 @@
   .btn:active {
     transform: none;
   }
-  /* Primary: petroleum blue, white text (11.7:1). */
-  /* Main button (scheme A, Oct 29 2026): the organisation colour, brique, white text
-     6.4:1; darker on hover. */
   .btn-primary {
-    background: var(--color-brique-ink);
-    color: var(--color-white);
+    background: var(--btn-primary-bg);
+    color: var(--btn-primary-fg);
   }
   .btn-primary:hover {
-    background: color-mix(in srgb, var(--color-brique-ink) 80%, black);
+    background: var(--btn-primary-bg-hover);
+    color: var(--btn-primary-fg);
   }
-  /* Secondary: light background, thin gold border, blue text (11.7:1). */
+  .btn-secondary {
+    background: var(--btn-secondary-bg);
+    color: var(--btn-secondary-fg);
+  }
+  .btn-secondary:hover {
+    background: var(--btn-secondary-bg-hover);
+    color: var(--btn-secondary-fg);
+  }
+  .btn-accent {
+    background: var(--btn-accent-bg);
+    color: var(--btn-accent-fg);
+  }
+  .btn-accent:hover {
+    background: var(--btn-accent-bg-hover);
+    color: var(--btn-accent-fg);
+  }
+  /* Secondary on light grounds: turquoise outline and text, filled on hover. */
   .btn-outline {
-    @apply border-[1.5px] border-gold bg-white text-primary hover:bg-cream;
+    border: 2px solid var(--btn-secondary-bg);
+    background: transparent;
+    color: var(--btn-secondary-bg);
+  }
+  .btn-outline:hover {
+    background: var(--btn-secondary-bg);
+    color: var(--btn-secondary-fg);
   }
   /* On coloured bands: transparent button with a light border and white text. */
   .on-dark .btn-outline,
@@ -443,28 +479,12 @@
   .on-teal .lede {
     color: var(--color-white);
   }
-  .on-terracotta .btn-primary,
-  .on-teal .btn-primary {
-    background: var(--color-white);
-    color: var(--color-primary);
-  }
-  .on-terracotta .btn-primary:hover,
-  .on-teal .btn-primary:hover {
-    background: var(--color-sable);
-  }
   /* Blue bands: gold label, white title, gold main button with blue text (4.6:1). */
   .on-dark .eyebrow {
     @apply text-gold;
   }
   .on-dark .section-title {
     @apply text-white;
-  }
-  .on-dark .btn-primary {
-    background: var(--color-soleil);
-    color: var(--color-primary);
-  }
-  .on-dark .btn-primary:hover {
-    background: var(--color-sable);
   }
   /* Shared card style: white, softly rounded, a clear warm edge and a very light shadow. */
   .card {
@@ -881,4 +901,39 @@ html.a11y-contrast {
 html.a11y-contrast main a:not([class*='btn']) {
   text-decoration: underline;
   text-underline-offset: 0.2em;
+}
+
+/*
+ * Page grounds « Soleil et arche » (owner's choice, Oct 31 2026): the light top-level
+ * sections (tagged by pageGrounds.ts) alternate pale saffron, turquoise and terracotta
+ * grounds with large flat sun and arch shapes at their edges (hard-edged circles, no blur).
+ */
+.ground {
+  background-color: color-mix(in srgb, var(--matin-soleil) 8%, #f5efe3);
+  background-repeat: no-repeat;
+}
+.ground[data-ground='0'] {
+  background-image:
+    radial-gradient(circle at 100% 0, color-mix(in srgb, var(--matin-soleil) 30%, transparent) 0 14rem, transparent 14rem),
+    radial-gradient(circle at 0 100%, color-mix(in srgb, var(--matin-firouzeh) 16%, transparent) 0 9rem, transparent 9rem);
+}
+.ground[data-ground='1'] {
+  background-color: color-mix(in srgb, var(--matin-firouzeh) 12%, #f5efe3);
+  background-image:
+    radial-gradient(circle at 0 0, color-mix(in srgb, var(--matin-brique) 18%, transparent) 0 12rem, transparent 12rem),
+    radial-gradient(circle at 96% 100%, color-mix(in srgb, var(--matin-soleil) 30%, transparent) 0 7rem, transparent 7rem);
+}
+.ground[data-ground='2'] {
+  background-image:
+    radial-gradient(ellipse 18rem 22rem at 100% 100%, color-mix(in srgb, var(--matin-firouzeh) 18%, transparent) 0 100%, transparent 100%),
+    radial-gradient(circle at 0 10%, color-mix(in srgb, var(--matin-soleil) 26%, transparent) 0 8rem, transparent 8rem);
+}
+.ground[data-ground='3'] {
+  background-color: color-mix(in srgb, var(--matin-brique) 12%, #f5efe3);
+  background-image:
+    radial-gradient(circle at 100% 30%, color-mix(in srgb, var(--matin-soleil) 30%, transparent) 0 10rem, transparent 10rem);
+}
+html.a11y-contrast .ground {
+  background-color: var(--matin-white);
+  background-image: none;
 }

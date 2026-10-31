@@ -53,12 +53,12 @@ const { class: className = '' } = Astro.props;
     width: 100%;
     height: 100%;
   }
-  /* Shades of the footer's deep terracotta: lighter hill, darker city that matches the
-     copyright bar it stands on. */
+  /* Shades of the footer's navy: a turquoise-tinted hill, and a darker city that
+     matches the copyright bar it stands on. */
   .skyline__far {
-    fill: color-mix(in srgb, var(--color-firouzeh) 30%, var(--color-nuit));
+    fill: color-mix(in srgb, var(--color-firouzeh) 25%, var(--matin-encre));
   }
   .skyline__near {
-    fill: color-mix(in srgb, var(--color-nuit) 70%, black);
+    fill: var(--color-nuit);
   }
 </style>
