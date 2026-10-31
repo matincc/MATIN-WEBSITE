@@ -68,6 +68,8 @@ const trail = [
   ...crumbs,
   { label: title, href: alternates[lang] ?? alternates.en },
 ];
+// A title alone (About, Our Team): a shorter banner, less empty space (owner, Oct 31 2026).
+const compact = !lede && !Astro.slots.has('hero');
 ---
 
 <BaseLayout
@@ -88,7 +90,11 @@ const trail = [
     ...jsonLd,
   ]}
 >
-  <section class="page-head mb-12" data-accent-ground={accent} aria-labelledby="page-title">
+  <section
+    class:list={['page-head', compact ? 'page-head--compact' : 'mb-12']}
+    data-accent-ground={accent}
+    aria-labelledby="page-title"
+  >
     <div class="container-site page-head__inner">
       <nav aria-label={t('a11y.breadcrumbs')} class="mb-8">
         <ol class="flex flex-wrap items-center gap-x-1.5 gap-y-1 text-[0.95rem] text-muted">
@@ -226,6 +232,16 @@ const trail = [
     width: calc(var(--sun) * 0.76);
     height: calc(var(--sun) * 0.76);
     background: var(--head-accent);
+  }
+  .page-head--compact .page-head__inner,
+  .page-head--compact .page-head__inner:not(#o) {
+    padding-block: 1.5rem 2.25rem;
+  }
+  .page-head--compact nav {
+    margin-block-end: 1rem;
+  }
+  .page-head--compact .page-head__art {
+    --sun: clamp(5rem, 3rem + 6vw, 10rem);
   }
   @media (prefers-reduced-motion: no-preference) {
     .page-head__sun {

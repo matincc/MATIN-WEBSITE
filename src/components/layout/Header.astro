@@ -487,8 +487,11 @@ const isActive = (url: string) => !url.includes('?') && current.startsWith(url);
     padding: 0.4rem 1rem;
     margin-inline-end: 0.25rem;
     border-radius: 999px;
-    border: 2px solid var(--btn-secondary-bg);
-    color: var(--btn-secondary-bg);
+    /* Filled turquoise, so it reads as a button beside the terracotta Donate
+       (owner, Oct 31 2026: it looked empty). White on firouzeh-ink 5.9:1. */
+    border: 2px solid var(--matin-firouzeh-ink);
+    background: var(--matin-firouzeh-ink);
+    color: var(--color-white);
     font-family: var(--font-display);
     font-size: 0.98rem;
     font-weight: 800;
@@ -499,8 +502,9 @@ const isActive = (url: string) => !url.includes('?') && current.startsWith(url);
       color 0.3s ease;
   }
   .join-btn:hover {
-    background: var(--btn-secondary-bg);
-    color: var(--btn-secondary-fg);
+    border-color: var(--matin-encre);
+    background: var(--matin-encre);
+    color: var(--color-white);
   }
   .join-btn--menu {
     display: flex;

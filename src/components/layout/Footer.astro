@@ -1,4 +1,5 @@
 ---
+import MapleLeaf from '@/components/brand/MapleLeaf.astro';
 import { MapPin, Phone, Mail, Clock } from '@lucide/astro';
 import Lockup from '@/components/brand/Lockup.astro';
 import MontrealSkyline from '@/components/brand/MontrealSkyline.astro';
@@ -66,7 +67,7 @@ const hasContact = Boolean(a || s.phone || s.email);
   <div class="container-site footer-sign">
     <Lockup lang={lang} variant="dark" />
     <p class="footer-slogan">
-      <span class="footer-slogan__main">{t('brand.tagline')}</span>
+      <span class="footer-slogan__main">{t('brand.tagline')}<MapleLeaf size={24} class="footer-leaf" /></span>
       {lang === 'fa' && <span class="footer-slogan__fa" lang="fa" dir="rtl">{faSlogan}</span>}
     </p>
   </div>
@@ -250,6 +251,16 @@ const hasContact = Boolean(a || s.phone || s.email);
     padding-inline-start: 2rem;
     border-inline-start: 1px solid color-mix(in srgb, var(--matin-soleil) 55%, transparent);
     line-height: 1.2;
+  }
+  /* The red maple leaf after the slogan, as in the header (owner, Oct 31 2026). */
+  .footer-slogan__main :global(.footer-leaf) {
+    display: inline-block;
+    width: 1.6rem;
+    height: 1.6rem;
+    margin-inline-start: 0.5rem;
+    vertical-align: -0.25em;
+    color: var(--matin-red);
+    filter: drop-shadow(0 0 1.5px var(--matin-ivoire)) drop-shadow(0 0 1px var(--matin-ivoire));
   }
   .footer-slogan__main {
     font-family: 'Fraunces Variable', Georgia, serif;
