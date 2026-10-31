@@ -113,10 +113,13 @@ const segments = whoText.split(pattern).map((text, i) => {
   /* Warm terracotta ground with flat turquoise and saffron shapes (owner, Oct 31 2026:
      this section was colourless and lifeless). */
   .lintro {
-    background-color: color-mix(in srgb, var(--matin-brique) 22%, var(--matin-ivoire));
+    /* Deep turquoise with saffron and terracotta suns (owner, Oct 31 2026: the pale
+       terracotta ground was « colourless and lifeless »). White text (5.9:1). */
+    background-color: var(--matin-firouzeh-ink);
     background-image:
-      radial-gradient(circle at 0 100%, color-mix(in srgb, var(--matin-firouzeh) 45%, transparent) 0 11rem, transparent 11rem),
-      radial-gradient(circle at 100% 0, color-mix(in srgb, var(--matin-soleil) 70%, transparent) 0 8rem, transparent 8rem);
+      radial-gradient(circle at 0 100%, var(--matin-brique) 0 11rem, transparent 11rem),
+      radial-gradient(circle at 100% 0, var(--matin-soleil) 0 8rem, transparent 8rem);
+    color: var(--matin-white);
     background-repeat: no-repeat;
     padding-block: clamp(4rem, 3rem + 5vw, 8rem) clamp(3rem, 2rem + 3vw, 5rem);
   }
@@ -140,8 +143,7 @@ const segments = whoText.split(pattern).map((text, i) => {
       'opsz' 144;
     line-height: 1.02;
     letter-spacing: -0.02em;
-    /* Navy, not terracotta: it disappeared on the terracotta ground (owner, Oct 31 2026). */
-    color: var(--matin-encre);
+    color: var(--matin-white);
   }
   :global(html[lang='fa']) .lintro__title {
     font-family: var(--font-display);
@@ -158,7 +160,7 @@ const segments = whoText.split(pattern).map((text, i) => {
     font-size: clamp(1.25rem, 1.1rem + 0.6vw, 1.6rem);
     font-weight: 400;
     line-height: 1.75;
-    color: var(--matin-encre);
+    color: var(--matin-white);
     text-wrap: pretty;
   }
   :global(html[lang='fa']) .lintro__statement {
@@ -178,7 +180,7 @@ const segments = whoText.split(pattern).map((text, i) => {
     box-decoration-break: clone;
   }
   .lintro__way--firouzeh {
-    background: color-mix(in srgb, var(--matin-firouzeh) 32%, var(--matin-white));
+    background: color-mix(in srgb, var(--matin-firouzeh) 22%, var(--matin-white));
   }
   .lintro__way--soleil {
     background: color-mix(in srgb, var(--matin-soleil) 55%, var(--matin-white));
@@ -189,14 +191,28 @@ const segments = whoText.split(pattern).map((text, i) => {
   }
   .lintro__aim {
     font-weight: 700;
-    color: var(--matin-encre);
+    color: var(--matin-white);
     text-decoration: underline;
     text-decoration-color: var(--matin-soleil);
     text-decoration-thickness: 3px;
     text-underline-offset: 0.25em;
   }
   :global(.living) .lintro :global(.living-kicker) {
-    color: var(--matin-firouzeh-ink);
+    color: var(--matin-soleil);
+  }
+  .lintro :global(.lintro__credits),
+  .lintro :global(.lintro__credits a) {
+    color: color-mix(in srgb, var(--matin-white) 85%, transparent);
+  }
+  :global(.living) .lintro :global(.living-link) {
+    color: var(--matin-white);
+    text-decoration-color: var(--matin-soleil);
+  }
+  :global(.living) .lintro :global(.living-link svg) {
+    color: var(--matin-soleil);
+  }
+  :global(.living) .lintro :global(:focus-visible) {
+    outline-color: var(--matin-soleil);
   }
   .lintro__text :global(.living-link) {
     margin-block-start: 2rem;
