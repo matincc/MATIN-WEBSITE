@@ -25,6 +25,7 @@
 import type { ImageMetadata } from 'astro';
 import { photos } from '@/lib/photos';
 import whoFriendsGroup from '@/assets/photos/who-friends-group.jpg';
+import introWorldFlags from '@/assets/photos/intro-world-flags.jpg';
 import areaCulturalMapping from '@/assets/photos/area-cultural-mapping.jpg';
 import introParticipatoryBudget from '@/assets/photos/intro-participatory-budget.jpg';
 import areaMatinFestival from '@/assets/photos/area-matin-festival.jpg';
@@ -86,14 +87,14 @@ export const media = {
     shows: 'A diverse group of adults listening attentively at a talk.',
     credit: unsplashCredit('wes lewis', 'westhmus', 'diverse-group-at-professional-seminar-zt6OxRORM2g'),
   },
-  /** Who we are, second photo of the collage: the flags of many nations side by side in the
-      sky (owner's request, Oct 31 2026), no ceremony or rally. */
+  /** Who we are, second image of the collage: the national flags of 49 countries from every
+      continent laid side by side (owner's request, Oct 31 2026), Canada at the centre.
+      Composed for Matin from the flag-icons graphics (MIT licence, github.com/lipis/flag-icons). */
   introMaking: {
-    unsplash: 'photo-1763811939066-e984d42551e7',
+    src: introWorldFlags,
     focus: '50% 50%',
-    temporary: true,
-    shows: 'Flags of many nations waving side by side against a blue sky.',
-    credit: unsplashCredit('rishi', 'beingabstrac', 'flags-of-many-nations-waving-against-a-blue-sky-zyDsvyEVZ1s'),
+    temporary: false,
+    shows: 'The flags of many countries laid side by side, Canada at the centre.',
   },
   /** Who we are, third photo of the collage: three people in front of a participatory budget
       board in Montréal (photo chosen by the owner, Oct 29 2026, replacing the gallery photo;
