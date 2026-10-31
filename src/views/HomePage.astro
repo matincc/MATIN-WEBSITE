@@ -252,14 +252,13 @@ const l = livingStrings(lang);
 
 
     <!-- News: Matin News first, then Cultural News in region tabs (owner, Oct 31 2026) -->
-    <section id="latest-news" class="lnews scroll-mt-24" aria-labelledby="latest-news-title">
+    <section id="latest-news" class="lnews scroll-mt-24" aria-labelledby="latest-news-title" data-own-ground>
       <div class="container-site">
         <header class="lnews__head" data-reveal>
           <div>
             <h2 id="latest-news-title" class="living-title">
               {t('home.newsTitle')}
             </h2>
-            <p class="living-lede">{t('news.lede')}</p>
           </div>
           <a href={href('news', lang)} class="living-link">
             {t('home.newsAll')}
@@ -269,7 +268,10 @@ const l = livingStrings(lang);
         {matinNews.length > 0 && (
           <div class="lnews__matin">
             <div class="lnews__sub">
-              <h3 class="lnews__subtitle">{t('news.matinTitle')}</h3>
+              <div>
+                <h3 class="lnews__subtitle">{t('news.matinTitle')}</h3>
+                <p class="lnews__sublede">{t('news.matinLede')}</p>
+              </div>
               <a
                 href={`${newsHref}#${newsAnchors['matin-news']}`}
                 class="living-link living-link--small"
@@ -299,7 +301,10 @@ const l = livingStrings(lang);
         )}
         <div class="news-wire">
           <div class="lnews__sub">
-            <h3 class="lnews__subtitle">{t('news.culturalTitle')}</h3>
+            <div>
+              <h3 class="lnews__subtitle">{t('news.culturalTitle')}</h3>
+              <p class="lnews__sublede">{t('news.culturalLede')}</p>
+            </div>
             <a
               href={`${newsHref}#${newsAnchors.recommends}`}
               class="living-link living-link--small"
@@ -775,6 +780,64 @@ const l = livingStrings(lang);
   .lnews :global(.wire__source:hover) {
     background: transparent;
     color: var(--living-charcoal);
+  }
+
+
+  /* News in two clearly separate panels (owner, Oct 31 2026: « pale, everything mixed »):
+     Matin News on warm terracotta, Cultural News on turquoise, each with its own title,
+     one-line explanation and link; the stories sit on white. */
+  .lnews {
+    background: var(--matin-ivoire);
+  }
+  .lnews__matin,
+  .lnews :global(.news-wire) {
+    padding: clamp(1.5rem, 1rem + 2.5vw, 3rem);
+    border-radius: 1.5rem 1.5rem 1.5rem clamp(3rem, 6vw, 6rem);
+  }
+  .lnews__matin {
+    background: color-mix(in srgb, var(--matin-brique) 22%, var(--matin-ivoire));
+    border-block-start: 8px solid var(--matin-brique-ink);
+  }
+  .lnews :global(.news-wire) {
+    background: color-mix(in srgb, var(--matin-firouzeh) 20%, var(--matin-ivoire));
+    border-block-start: 8px solid var(--matin-firouzeh-ink);
+  }
+  .lnews__sub {
+    align-items: flex-end;
+    margin-block-end: clamp(1.5rem, 1rem + 1.5vw, 2.25rem);
+  }
+  .lnews__subtitle {
+    font-family: var(--font-editorial);
+    font-size: clamp(1.9rem, 1.4rem + 1.8vw, 2.9rem);
+    font-weight: 600;
+    font-variation-settings: 'SOFT' 100, 'opsz' 144;
+    line-height: 1.1;
+  }
+  :global(html[lang='fa']) .lnews__subtitle {
+    font-family: var(--font-display);
+    font-weight: 900;
+    font-size: clamp(1.7rem, 1.3rem + 1.4vw, 2.4rem);
+  }
+  .lnews__matin .lnews__subtitle {
+    color: var(--matin-brique-ink);
+  }
+  .lnews :global(.news-wire) .lnews__subtitle {
+    color: var(--matin-firouzeh-ink);
+  }
+  .lnews__sublede {
+    max-width: 44rem;
+    margin-block-start: 0.5rem;
+    font-size: 1.1rem;
+    line-height: 1.55;
+    color: var(--matin-encre);
+  }
+  .lnews :global(.news-wire .wire__item) {
+    padding: 1.25rem 1.25rem 1.5rem;
+    border-radius: 1rem;
+    background: var(--matin-white);
+  }
+  .lnews :global(.news-wire .wire__item--lead) {
+    background: var(--matin-white);
   }
 
   /* ================= Notes from the President (when there are notes) ================= */
