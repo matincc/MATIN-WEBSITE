@@ -21,6 +21,13 @@ const faSlogan = useTranslations('fa')('home.positioning');
 // Same order as the header menu; the FAQ (left out until it has questions), Become a Member
 // (Oct 28 2026) and Careers (owner's request, Oct 27 2026; neither in the header menu) sit
 // before Contact.
+// Help when a click on the address opens no mail app (owner, Oct 31 2026): copy it, or
+// write through the site's own form.
+const mailHelp = {
+  fr: { copy: 'Copier l’adresse', copied: 'Adresse copiée', form: 'ou écrivez-nous ici' },
+  en: { copy: 'Copy address', copied: 'Address copied', form: 'or write to us here' },
+  fa: { copy: 'کپی نشانی', copied: 'نشانی کپی شد', form: 'یا از اینجا برای ما بنویسید' },
+}[lang];
 const empty = await emptySections();
 const explore = (
   [
@@ -114,9 +121,24 @@ const hasContact = Boolean(a || s.phone || s.email);
               {s.email && (
                 <p class="flex gap-3">
                   <Mail size={18} class="mt-1 shrink-0 text-soleil" aria-hidden="true" />
-                  <a href={`mailto:${s.email}`} class="footer-link whitespace-nowrap" dir="ltr">
-                    {s.email}
-                  </a>
+                  <span class="flex flex-col gap-1.5">
+                    <a href={`mailto:${s.email}`} class="footer-link whitespace-nowrap" dir="ltr">
+                      {s.email}
+                    </a>
+                    <span class="mail-help">
+                      <button
+                        type="button"
+                        class="mail-help__copy"
+                        data-copy-email={s.email}
+                        data-copied={mailHelp.copied}
+                      >
+                        {mailHelp.copy}
+                      </button>
+                      <a href={`${href('contact', lang)}#write`} class="footer-link">
+                        {mailHelp.form}
+                      </a>
+                    </span>
+                  </span>
                 </p>
               )}
             </address>
@@ -297,3 +319,46 @@ const hasContact = Boolean(a || s.phone || s.email);
     font-size: 1.1875rem;
   }
 </style>
+
+<style>
+  .mail-help {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.4rem 0.9rem;
+    font-size: 0.95rem;
+  }
+  .mail-help__copy {
+    padding: 0.2rem 0.75rem;
+    border-radius: 999px;
+    border: 1.5px solid var(--matin-soleil);
+    color: var(--matin-soleil);
+    font-family: var(--font-display);
+    font-weight: 700;
+    cursor: pointer;
+  }
+  .mail-help__copy:hover,
+  .mail-help__copy[data-done] {
+    background: var(--matin-soleil);
+    color: var(--matin-encre);
+  }
+</style>
+
+<script>
+  document.querySelectorAll<HTMLButtonElement>('[data-copy-email]').forEach((btn) => {
+    const label = btn.textContent;
+    btn.addEventListener('click', async () => {
+      try {
+        await navigator.clipboard.writeText(btn.dataset.copyEmail!);
+        btn.textContent = btn.dataset.copied!;
+        btn.setAttribute('data-done', '');
+        setTimeout(() => {
+          btn.textContent = label;
+          btn.removeAttribute('data-done');
+        }, 2500);
+      } catch {
+        /* clipboard blocked: the address stays visible to copy by hand */
+      }
+    });
+  });
+</script>

@@ -139,23 +139,47 @@ const rows: { label: string; value: string; href?: string; ltr?: boolean }[] = [
 </PageLayout>
 
 <style>
-  /* Less regular (owner's request, Oct 29 2026): the two cards are offset from each
-     other, the first one on a sand ground with the sun in its corner. */
-  .legal-stack > section:first-child {
+  /* Three boxes, three colours, three shapes (owner, Oct 31 2026: "three rectangles are
+     repetitive"). Legal status: navy arch with the sun. Organization details: pale turquoise
+     leaf (two opposite deep corners). Documents: pale saffron with a terracotta edge,
+     slightly tilted. Offset from each other on wide screens. */
+  .legal-stack > section.card.card {
     position: relative;
     overflow: hidden;
-    background: var(--color-sable);
-    border-color: transparent;
+    border: 0;
+  }
+  .legal-stack > section:first-child.card.card {
+    background: var(--matin-encre);
+    color: var(--matin-white);
+    border-radius: 1.5rem;
+    border-start-start-radius: 9rem;
+    padding-block-start: clamp(3rem, 2rem + 3vw, 4.5rem);
+  }
+  .legal-stack > section:first-child h2 {
+    color: var(--matin-white);
+  }
+  .legal-stack > section:first-child a {
+    color: var(--matin-soleil);
   }
   .legal-stack > section:first-child::after {
     content: '';
     position: absolute;
     inset-block-end: -2.5rem;
     inset-inline-end: 2.5rem;
-    width: 5rem;
+    width: 6rem;
     aspect-ratio: 1;
     border-radius: 50%;
     background: var(--color-soleil);
+  }
+  .legal-stack > section:nth-child(2).card.card {
+    background: color-mix(in srgb, var(--matin-firouzeh) 20%, var(--matin-white));
+    border-radius: 1.25rem;
+    border-start-end-radius: 6rem;
+    border-end-start-radius: 6rem;
+    border-inline-start: 8px solid var(--matin-firouzeh-ink);
+  }
+  .legal-stack > section:nth-child(2) .legal-list > div {
+    border-top-color: color-mix(in srgb, var(--matin-firouzeh-ink) 30%, transparent);
   }
   @media (min-width: 48rem) {
     .legal-stack > section:first-child {
@@ -165,8 +189,12 @@ const rows: { label: string; value: string; href?: string; ltr?: boolean }[] = [
       margin-inline-start: 4rem;
     }
   }
-  .legal-docs {
-    border-block-start: 5px solid var(--color-firouzeh);
+  .legal-stack > section.legal-docs.card.card {
+    background: color-mix(in srgb, var(--matin-soleil) 28%, var(--matin-white));
+    border-radius: 3rem;
+    border-end-end-radius: 1rem;
+    border-block-start: 8px solid var(--matin-brique);
+    rotate: -0.6deg;
   }
   .legal-docs__empty {
     padding: 1rem 1.25rem;
@@ -176,6 +204,14 @@ const rows: { label: string; value: string; href?: string; ltr?: boolean }[] = [
   @media (min-width: 48rem) {
     .legal-stack > section.legal-docs {
       margin-inline-end: 2rem;
+    }
+  }
+  @media (prefers-reduced-motion: no-preference) {
+    .legal-stack > section.legal-docs.card.card {
+      transition: rotate 0.3s ease;
+    }
+    .legal-stack > section.legal-docs.card.card:hover {
+      rotate: 0deg;
     }
   }
   .legal-list > div {
