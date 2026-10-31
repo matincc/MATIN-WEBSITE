@@ -75,7 +75,7 @@ const fa: DeepPartial<Dictionary> = {
     resourcesDirectory: 'فهرست سازمان‌ها',
     story: 'داستان ما',
     team: 'تیم ما',
-    teamPresident: 'رئیس',
+    teamPresident: 'بنیان‌گذار و رئیس',
     teamMembers: 'تیم',
     teamBoard: 'هیئت‌مدیره',
     teamExecutive: 'تیم اجرایی',

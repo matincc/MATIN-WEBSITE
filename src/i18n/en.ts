@@ -68,7 +68,7 @@ const en: Dictionary = {
     join: 'Become a Member',
     story: 'Our Story',
     team: 'Our Team',
-    teamPresident: 'President',
+    teamPresident: 'Founder and President',
     teamMembers: 'Team',
     teamBoard: 'Board of Directors',
     teamExecutive: 'Executive Team',

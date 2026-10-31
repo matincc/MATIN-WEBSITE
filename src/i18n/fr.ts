@@ -69,7 +69,7 @@ const fr = {
     join: 'Devenir membre',
     story: 'Notre histoire',
     team: 'Notre équipe',
-    teamPresident: 'Président',
+    teamPresident: 'Fondateur et président',
     teamMembers: 'Équipe',
     teamBoard: 'Conseil d’administration',
     teamExecutive: 'Équipe de direction',
