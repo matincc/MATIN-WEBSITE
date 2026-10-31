@@ -25,6 +25,8 @@
 import type { ImageMetadata } from 'astro';
 import { photos } from '@/lib/photos';
 import whoFriendsGroup from '@/assets/photos/who-friends-group.jpg';
+import whoBookstoreGathering from '@/assets/photos/who-bookstore-gathering.jpg';
+import introFlagsPuzzle from '@/assets/photos/intro-flags-puzzle.jpg';
 import areaCulturalMapping from '@/assets/photos/area-cultural-mapping.jpg';
 import introParticipatoryBudget from '@/assets/photos/intro-participatory-budget.jpg';
 import areaMatinFestival from '@/assets/photos/area-matin-festival.jpg';
@@ -78,22 +80,21 @@ export const media = {
       sitting together outdoors (photo chosen by the owner, Oct 29 2026; source not yet
       known, so no credit is shown until it is). */
   introConversation: {
-    src: whoFriendsGroup,
-    focus: '50% 30%',
+    // Preview (owner, Oct 31 2026): an audience of different ages and origins at a bookstore
+    // talk, photo sent by the owner; source and permission still to confirm before release.
+    src: whoBookstoreGathering,
+    focus: '50% 45%',
     temporary: true,
-    shows: 'Eight smiling young friends of different origins sitting together outdoors.',
+    shows: 'An audience of different ages and origins listening and smiling at a bookstore talk.',
   },
   /** Who we are, second photo of the collage: people making pottery around a table. */
   introMaking: {
-    unsplash: 'photo-1682868067843-11fbc221174a',
+    // Original artwork made for Matin (owner's idea, Oct 31 2026): a puzzle of imaginary
+    // flags in the Matin palette; no real country's flag, so none is singled out or left out.
+    src: introFlagsPuzzle,
     focus: '50% 50%',
-    temporary: true,
-    shows: 'A group of women working on pottery around a table.',
-    credit: unsplashCredit(
-      'Sander Breneman',
-      'brenesan',
-      'a-group-of-women-sitting-at-a-table-working-on-pottery-kJiPUr1KQSE',
-    ),
+    temporary: false,
+    shows: 'A colourful puzzle whose pieces are imaginary flags in the Matin colours.',
   },
   /** Who we are, third photo of the collage: three people in front of a participatory budget
       board in Montréal (photo chosen by the owner, Oct 29 2026, replacing the gallery photo;
