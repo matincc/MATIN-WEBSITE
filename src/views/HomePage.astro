@@ -25,7 +25,6 @@ import Lightbox from '@/components/ui/Lightbox.astro';
 import LivingIntro from '@/components/living/LivingIntro.astro';
 import LivingPrograms from '@/components/living/LivingPrograms.astro';
 import { livingStrings } from '@/i18n/living';
-import NewsRegionTabs from '@/components/content/NewsRegionTabs.astro';
 import PostCard from '@/components/content/PostCard.astro';
 import ExpireEvents from '@/components/content/ExpireEvents.astro';
 import BaseLayout from '@/layouts/BaseLayout.astro';
@@ -88,7 +87,6 @@ const leadSizes = '(min-width: 64rem) 26rem, (min-width: 40rem) 46vw, 82vw';
 // region tabs, then Matin News, leaving out the article already featured in Matin in Action.
 const newsHref = href('news', lang);
 const news = forLang(await getNews(), lang);
-const culturalNews = news.filter((p) => p.data.category === 'recommends');
 const matinNews = news
   .filter((p) => p.data.category === 'matin-news' && articleHref(p, lang) !== featured?.url)
   .slice(0, 3);
@@ -251,7 +249,7 @@ const l = livingStrings(lang);
     <UpcomingStrip lang={lang} limit={4} />
 
 
-    <!-- News: Matin News first, then Cultural News in region tabs (owner, Oct 31 2026) -->
+    <!-- News: Matin News only; Cultural News lives on the News page (owner, Oct 31 2026) -->
     <section id="latest-news" class="lnews scroll-mt-24" aria-labelledby="latest-news-title" data-own-ground>
       <div class="container-site">
         <header class="lnews__head" data-reveal>
@@ -299,28 +297,7 @@ const l = livingStrings(lang);
             </ul>
           </div>
         )}
-        <div class="news-wire">
-          <div class="lnews__sub">
-            <div>
-              <h3 class="lnews__subtitle">{t('news.culturalTitle')}</h3>
-              <p class="lnews__sublede">{t('news.culturalLede')}</p>
-            </div>
-            <a
-              href={`${newsHref}#${newsAnchors.recommends}`}
-              class="living-link living-link--small"
-            >
-              {t('news.allCultural')}
-              <ArrowRight size={18} class="flip-rtl" aria-hidden="true" />
-            </a>
-          </div>
-          <NewsRegionTabs
-            lang={lang}
-            posts={culturalNews}
-            perTab={2}
-            id="home-cultural"
-            level={4}
-          />
-        </div>
+        {/* Cultural News is shown only on the News page (owner, Oct 31 2026). */}
       </div>
     </section>
 
@@ -794,6 +771,9 @@ const l = livingStrings(lang);
   .lnews :global(.news-wire) {
     padding: clamp(1.5rem, 1rem + 2.5vw, 3rem);
     border-radius: 1.5rem 1.5rem 1.5rem clamp(3rem, 6vw, 6rem);
+  }
+  .lnews__matin:last-child {
+    margin-block-end: 0;
   }
   .lnews__matin {
     background: color-mix(in srgb, var(--matin-brique) 22%, var(--matin-ivoire));
