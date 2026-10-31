@@ -249,24 +249,13 @@ const l = livingStrings(lang);
 
 
     <!-- News: Matin News only; Cultural News lives on the News page (owner, Oct 31 2026) -->
+    {matinNews.length > 0 && (
     <section id="latest-news" class="lnews scroll-mt-24" aria-labelledby="latest-news-title" data-own-ground>
       <div class="container-site">
-        <header class="lnews__head" data-reveal>
-          <div>
-            <h2 id="latest-news-title" class="living-title">
-              {t('home.newsTitle')}
-            </h2>
-          </div>
-          <a href={href('news', lang)} class="living-link">
-            {t('home.newsAll')}
-            <ArrowRight size={20} class="flip-rtl" aria-hidden="true" />
-          </a>
-        </header>
-        {matinNews.length > 0 && (
           <div class="lnews__matin">
             <div class="lnews__sub">
               <div>
-                <h3 class="lnews__subtitle">{t('news.matinTitle')}</h3>
+                <h2 id="latest-news-title" class="lnews__subtitle">{t('news.matinTitle')}</h2>
                 <p class="lnews__sublede">{t('news.matinLede')}</p>
               </div>
               <a
@@ -288,17 +277,18 @@ const l = livingStrings(lang);
                   <PostCard
                     post={post}
                     lang={lang}
-                    headingLevel="h4"
+                    headingLevel="h3"
                     featured={matinNews.length === 1}
                   />
                 </li>
               ))}
             </ul>
           </div>
-        )}
-        {/* Cultural News is shown only on the News page (owner, Oct 31 2026). */}
+        {/* Cultural News is shown only on the News page (owner, Oct 31 2026); no
+            separate "News" heading above the box (owner, Oct 31 2026). */}
       </div>
     </section>
+    )}
 
     <!-- Through Montréal's calendar: the occasion of the day, a greeting and free public
        outings (owner's idea, Oct 30 2026; src/content/seasons/) -->
