@@ -25,8 +25,6 @@
 import type { ImageMetadata } from 'astro';
 import { photos } from '@/lib/photos';
 import whoFriendsGroup from '@/assets/photos/who-friends-group.jpg';
-import whoBookstoreGathering from '@/assets/photos/who-bookstore-gathering.jpg';
-import introFlagsPuzzle from '@/assets/photos/intro-flags-puzzle.jpg';
 import areaCulturalMapping from '@/assets/photos/area-cultural-mapping.jpg';
 import introParticipatoryBudget from '@/assets/photos/intro-participatory-budget.jpg';
 import areaMatinFestival from '@/assets/photos/area-matin-festival.jpg';
@@ -80,21 +78,22 @@ export const media = {
       sitting together outdoors (photo chosen by the owner, Oct 29 2026; source not yet
       known, so no credit is shown until it is). */
   introConversation: {
-    // Preview (owner, Oct 31 2026): an audience of different ages and origins at a bookstore
-    // talk, photo sent by the owner; source and permission still to confirm before release.
-    src: whoBookstoreGathering,
+    // Preview (owner, Oct 31 2026): an audience of different origins listening at a talk,
+    // replacing the friends photo (the bookstore photo he first sent is © Concordia).
+    unsplash: 'photo-1603478804503-dc909c7f5ce5',
     focus: '50% 45%',
     temporary: true,
-    shows: 'An audience of different ages and origins listening and smiling at a bookstore talk.',
+    shows: 'A diverse group of adults listening attentively at a talk.',
+    credit: unsplashCredit('wes lewis', 'westhmus', 'diverse-group-at-professional-seminar-zt6OxRORM2g'),
   },
-  /** Who we are, second photo of the collage: people making pottery around a table. */
+  /** Who we are, second photo of the collage: the flags of many nations side by side in the
+      sky (owner's request, Oct 31 2026), no ceremony or rally. */
   introMaking: {
-    // Original artwork made for Matin (owner's idea, Oct 31 2026): a puzzle of imaginary
-    // flags in the Matin palette; no real country's flag, so none is singled out or left out.
-    src: introFlagsPuzzle,
+    unsplash: 'photo-1763811939066-e984d42551e7',
     focus: '50% 50%',
-    temporary: false,
-    shows: 'A colourful puzzle whose pieces are imaginary flags in the Matin colours.',
+    temporary: true,
+    shows: 'Flags of many nations waving side by side against a blue sky.',
+    credit: unsplashCredit('rishi', 'beingabstrac', 'flags-of-many-nations-waving-against-a-blue-sky-zyDsvyEVZ1s'),
   },
   /** Who we are, third photo of the collage: three people in front of a participatory budget
       board in Montréal (photo chosen by the owner, Oct 29 2026, replacing the gallery photo;
