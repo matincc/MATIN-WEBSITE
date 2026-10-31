@@ -1,9 +1,19 @@
 ---
-import { ChevronDown, Contrast, HeartHandshake, Menu, Search, Type, UserPlus, X } from '@lucide/astro';
+import {
+  ChevronDown,
+  Contrast,
+  HeartHandshake,
+  Menu,
+  Search,
+  Type,
+  UserPlus,
+  X,
+} from '@lucide/astro';
 import Lockup from '@/components/brand/Lockup.astro';
 import LangToggle from './LangToggle.astro';
 import { newsAnchors, href, type Alternates, type RouteKey, type UiLang } from '@/i18n/routes';
 import { useTranslations } from '@/i18n/ui';
+import { strings as cultureMapStrings } from '@/lib/cultureMap';
 import { getNetworks, getUpcomingEvents, picksOf } from '@/lib/content';
 import { guideStrings } from '@/lib/localGuide';
 
@@ -72,7 +82,11 @@ const galleryLinks = [
   { id: 'photos', label: t('gallery.filterPhotos') },
   { id: 'videos', label: t('gallery.filterVideos') },
   { id: 'posters', label: t('gallery.filterPosters') },
-].map((l) => ({ ...l, label: `${t('nav.gallery')} · ${l.label}`, href: anchor(galleryHref, l.id) }));
+].map((l) => ({
+  ...l,
+  label: `${t('nav.gallery')} · ${l.label}`,
+  href: anchor(galleryHref, l.id),
+}));
 eventsLinks.push(...galleryLinks);
 const resourcesHref = href('resources', lang);
 // Until International Cultural Networks has entries, its link opens the directory's
@@ -90,6 +104,12 @@ resourcesLinks.push({
   id: 'local-guide',
   label: guideStrings(lang).title,
   href: href('localGuide', lang),
+});
+// Living map of cultures (owner's request, Oct 31 2026): its own page, LaSalle first.
+resourcesLinks.push({
+  id: 'culture-map',
+  label: cultureMapStrings.nav[lang],
+  href: href('cultureMap', lang),
 });
 // Sub-links of "Contact & Collaboration" (owner's request, Oct 29 2026), in his order:
 // Write to us, Membership, Join Matin's Volunteer Team, all sections of the Contact page.

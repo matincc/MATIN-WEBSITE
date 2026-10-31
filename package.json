@@ -29,6 +29,7 @@
     "@netlify/blobs": "^11.1.6",
     "@tailwindcss/vite": "^4.3.3",
     "astro": "^7.3.5",
+    "leaflet": "1.9.4",
     "marked": "^18.0.14",
     "simple-icons": "^16.34.0",
     "tailwindcss": "^4.3.3"
@@ -37,6 +38,7 @@
     "@astrojs/check": "^0.9.10",
     "@eslint/js": "^10.0.1",
     "@netlify/functions": "^6.0.2",
+    "@types/leaflet": "1.9.22",
     "@types/node": "^22.20.5",
     "eslint": "^10.12.0",
     "eslint-plugin-astro": "^3.2.1",
