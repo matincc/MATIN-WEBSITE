@@ -125,6 +125,13 @@ const ADVISOR_CONSENTS: [string, string][] = [
 function asAdvisorRow(raw: Record<string, unknown>, fields: Record<string, unknown>) {
   const given = ADVISOR_CONSENTS.filter(([key]) => raw[key]).map(([, label]) => label);
   const data: Record<string, unknown> = { ...fields, cv: fileLink(raw.cv) };
+  // Country code chosen beside the number (« +98 IR »): kept with it, as « +98 912 … ».
+  const code = String(fields.phone_code ?? '').split(' ')[0];
+  const phone = String(fields.phone ?? '').trim();
+  // The national « 0 » prefix is dropped, except for Italy, San Marino and the Vatican, where it is dialled.
+  const local = ['+39', '+378'].includes(code) ? phone : phone.replace(/^0+/, '');
+  data.phone = phone && code && !phone.startsWith('+') ? `${code} ${local}` : phone;
+  delete data.phone_code;
   for (const [key] of ADVISOR_CONSENTS) delete data[key];
   data.consents = given.length ? `${given.join(', ')} · ${new Date().toISOString().slice(0, 10)}` : '';
   return data;
