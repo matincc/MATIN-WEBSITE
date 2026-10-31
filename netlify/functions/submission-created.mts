@@ -24,7 +24,7 @@ const SHEET_WEBHOOK_URL =
   'https://script.google.com/macros/s/AKfycbw-Tpom1Ejxw9H0fOnyzp7YjM9_yLqtwFWjUcokD9vgYjRMqOHI9NcQyqn5bQuKbZq4EQ/exec';
 
 /** Forms copied to the Sheet; anything else is ignored there. */
-const SHEET_FORMS = new Set(['benevolat', 'contact', 'newsletter', 'emplois', 'adhesion']);
+const SHEET_FORMS = new Set(['benevolat', 'contact', 'newsletter', 'emplois', 'adhesion', 'conseillers']);
 
 /** Never sent to the Sheet: spam-filter internals and the visitor's network details. */
 const PRIVATE_FIELDS = new Set([
@@ -110,13 +110,37 @@ function asContactRow(data: Record<string, unknown>) {
   };
 }
 
+/**
+ * Advisory Circle applications (« conseillers », Oct 31 2026): the CV becomes a link the web
+ * app copies into Drive, and the four required commitments (terms, no employment, three-year
+ * register, privacy) are recorded as one « Consents » value instead of separate fields.
+ */
+const ADVISOR_CONSENTS: [string, string][] = [
+  ['accept_terms', 'Terms'],
+  ['no_employment', 'No employment'],
+  ['retention', 'Kept 3 years'],
+  ['consent', 'Privacy (Law 25)'],
+];
+
+function asAdvisorRow(raw: Record<string, unknown>, fields: Record<string, unknown>) {
+  const given = ADVISOR_CONSENTS.filter(([key]) => raw[key]).map(([, label]) => label);
+  const data: Record<string, unknown> = { ...fields, cv: fileLink(raw.cv) };
+  for (const [key] of ADVISOR_CONSENTS) delete data[key];
+  data.consents = given.length ? `${given.join(', ')} · ${new Date().toISOString().slice(0, 10)}` : '';
+  return data;
+}
+
 async function copyToSheet(payload: Payload) {
   if (!SHEET_WEBHOOK_URL || !SHEET_FORMS.has(payload.form_name)) return;
   const fields = Object.fromEntries(
     Object.entries(payload.data ?? {}).filter(([key]) => !PRIVATE_FIELDS.has(key)),
   );
   const job = payload.form_name === 'emplois';
-  const data = job ? asContactRow(fields) : fields;
+  const data = job
+    ? asContactRow(fields)
+    : payload.form_name === 'conseillers'
+      ? asAdvisorRow(payload.data ?? {}, fields)
+      : fields;
   try {
     const res = await fetch(SHEET_WEBHOOK_URL, {
       method: 'POST',

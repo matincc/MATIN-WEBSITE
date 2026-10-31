@@ -1,3 +1,4 @@
+// Matin forms web app v6 (My Story uploads, clean HTML emails, Advisory Circle, Oct 31 2026)
 /**
  * Matin – website form entries → Google Sheet (owner's request, Oct 27 2026; membership
  * applications added Oct 28 2026, volunteer registry and thank-you emails Oct 29 2026: after changing this file, paste it into the Apps Script
@@ -57,6 +58,7 @@ function doPost(e) {
     if (!paired) props.setProperty('PAIR_SECRET', secret);
     else if (paired !== secret) return reply('forbidden');
 
+    if (body.form === 'conseillers') return reply(addAdvisor(body));
     const form = FORMS[body.form];
     if (!form) return reply('ignored');
     const sheet = SpreadsheetApp.openById(SHEET_ID).getSheetByName(form.tab);
@@ -212,6 +214,7 @@ function sendReceipt(data) {
     ].join('\n');
     const options = { name: 'Institut interculturel Matin', replyTo: MEMBERS_FROM };
     if (GmailApp.getAliases().indexOf(MEMBERS_FROM) !== -1) options.from = MEMBERS_FROM;
+    options.htmlBody = emailHtml(text);
     GmailApp.sendEmail(email, "Votre demande d'adhésion a été reçue · Your membership application has been received", text, options);
   } catch (err) {
     console.error('Receipt not sent: ' + err);
@@ -307,7 +310,7 @@ function sendVolunteerThanks() {
       }
       try {
         const msg = volunteerEmail(volId, r);
-        const options = { name: 'Institut interculturel Matin', replyTo: VOL_REPLY_TO };
+        const options = { name: 'Institut interculturel Matin', replyTo: VOL_REPLY_TO, htmlBody: emailHtml(msg.text) };
         GmailApp.sendEmail(email, msg.subject, msg.text, options);
         sheet.getRange(row, 14).setValue(Utilities.formatDate(new Date(), 'America/Toronto', 'yyyy-MM-dd HH:mm'));
         sent++;
@@ -377,7 +380,7 @@ function volunteerEmail(volId, r) {
   const parts = [fr, en].concat(fa ? [faText] : []);
   const text = parts
     .map((p) => p.filter((line) => line !== null).join('\n'))
-    .join('\n\n———\n\n') + '\n\nmatincc.ca · Instagram: https://www.instagram.com/matincc.ca/';
+    .join('\n\n———\n\n') + '\n\nhttps://matincc.ca · Instagram: https://www.instagram.com/matincc.ca/';
   return {
     subject: "Bienvenue dans l'équipe bénévole de Matin · Welcome to Matin's volunteer team",
     text: text,
@@ -433,10 +436,307 @@ function sendContactAck(data) {
     GmailApp.sendEmail(email, 'Nous avons bien reçu votre message · We have received your message', text, {
       name: 'Institut interculturel Matin',
       replyTo: CONTACT_REPLY_TO,
+      htmlBody: emailHtml(text),
     });
   } catch (err) {
     console.error('Contact acknowledgement not sent: ' + err);
   }
+}
+
+/*
+ * Clean HTML copy of a plain-text email (Oct 31 2026). Without it, mail apps cut long
+ * plain-text lines at a fixed width, so sentences broke in the middle. Blank lines become
+ * paragraphs, « ——— » a thin rule, links are clickable, Persian paragraphs read right to
+ * left. The plain text is still sent alongside, for mail apps that show text only.
+ */
+function emailHtml(text) {
+  const esc = (t) => t.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+  const link = (t) => t
+    .replace(/(https:\/\/[^\s<]+[^\s<.,;:!?)])/g, '<a href="$1" style="color:#1f3a68">$1</a>')
+    .replace(/([\w.+-]+@[\w-]+\.[\w.-]*\w)/g, '<a href="mailto:$1" style="color:#1f3a68">$1</a>');
+  const sections = String(text).split(/\n*———\n*/).map((sec) => sec.trim().split(/\n{2,}/).map((para) => {
+    const rtl = /^[\u0600-\u06FF]/.test(para.trim());
+    const body = para.split('\n').map((line) => link(esc(line))).join('<br>');
+    return '<p style="margin:0 0 14px' + (rtl ? ';text-align:right' : '') + '"' + (rtl ? ' dir="rtl"' : '') + '>' + body + '</p>';
+  }).join(''));
+  return '<div style="font-family:Arial,Helvetica,sans-serif;font-size:15px;line-height:1.55;color:#222;max-width:600px">' +
+    sections.join('<hr style="border:none;border-top:1px solid #ddd;margin:22px 0">') + '</div>';
+}
+
+/*
+ * Matin Advisory Circle (owner's request, Oct 31 2026): « Cercle des conseillers de Matin » /
+ * "Matin Advisory Circle" / «حلقهٔ مشاوران متین». Each application from the Contact page
+ * (Netlify form « conseillers ») becomes one row of the sheet « Advisors - مشاوران »
+ * (tab Advisors). The CV is copied from Netlify into the private Drive folder
+ * « CV conseillers · Advisor CVs » next to that sheet (created on first use); if the copy
+ * fails, the Netlify link is kept instead. The applicant gets an immediate receipt
+ * (French, English, and Persian from the Persian site). When an admin ticks Approve
+ * (column T), the advisor gets a number (ADV-0001…, column A) and a welcome email; column U
+ * records the time it was sent, or the error (rows whose U starts with « Error » are tried
+ * again). Joining the circle creates no employment: any paid work needs a separate written
+ * contract. Run setupAdvisorEmails once after pasting this file.
+ */
+const ADV_REGISTRY_ID = '1rWfbevGWZ3mcXEGi9qprhx-9syMjzKsrZeDH4FEQ-z8';
+const ADV_TAB = 'Advisors';
+const ADV_FOLDER_NAME = 'CV conseillers · Advisor CVs';
+const ADV_REPLY_TO = 'info@matincc.ca';
+const ADV_COLS = 22; // A Advisor ID … V Submission ID
+const ADV_APPROVE = 20; // T
+const ADV_SENT = 21; // U
+
+function addAdvisor(body) {
+  try {
+    const sheet = SpreadsheetApp.openById(ADV_REGISTRY_ID).getSheetByName(ADV_TAB);
+    const id = clean(body.id);
+    const last = Math.max(sheet.getLastRow(), 1);
+    if (id && last > 1) {
+      const found = sheet.getRange(2, ADV_COLS, last - 1, 1)
+        .createTextFinder(id).matchEntireCell(true).findNext();
+      if (found) return 'duplicate';
+    }
+    const data = body.data || {};
+    const v = (f) => clean(data[f]);
+    const received = body.created_at ? new Date(body.created_at) : new Date();
+    const cv = saveAdvisorCv(v('cv'), v('first_name') + ' ' + v('last_name'), received);
+    // Approve checkboxes are pre-filled down the sheet, so the new row is the first one
+    // whose Received cell (B) is empty, never appendRow.
+    const dates = sheet.getRange(1, 2, last, 1).getValues();
+    let row = dates.findIndex((r, i) => i > 0 && String(r[0]).trim() === '') + 1;
+    if (row < 2) row = last + 1;
+    sheet.getRange(row, 1, 1, 19).setValues([[
+      '', received, v('first_name'), v('last_name'), v('email'), v('phone'), v('country'),
+      v('city'), v('degree'), v('discipline'), v('expertise'), v('areas'), v('languages'),
+      v('linkedin'), v('motivation'), cv, v('lang').toUpperCase(), v('consents'), '',
+    ]]);
+    sheet.getRange(row, ADV_COLS).setValue(id);
+    if (row > last) sheet.getRange(row, ADV_APPROVE).insertCheckboxes();
+    sendAdvisorReceipt(data);
+    return 'ok';
+  } catch (err) {
+    console.error('Advisor registry not updated: ' + err);
+    return 'error';
+  }
+}
+
+/** Copies the CV into the private Drive folder; returns its Drive link, or the original link. */
+function saveAdvisorCv(url, name, received) {
+  if (!/^https:\/\//.test(url)) return url;
+  try {
+    const res = UrlFetchApp.fetch(url, { muteHttpExceptions: true, followRedirects: true });
+    if (res.getResponseCode() !== 200) return url;
+    const blob = res.getBlob();
+    if (blob.getBytes().length > 6 * 1024 * 1024) return url;
+    const ext = (/\.(pdf|docx?)(\?|$)/i.exec(url) || [, 'pdf'])[1].toLowerCase();
+    const day = Utilities.formatDate(received, 'America/Toronto', 'yyyy-MM-dd');
+    const safe = name.replace(/[^\p{L}\p{N} .-]/gu, '').trim().slice(0, 80) || 'CV';
+    blob.setName(day + ' ' + safe + '.' + ext);
+    return advisorFolder().createFile(blob).getUrl();
+  } catch (err) {
+    console.error('Advisor CV not copied: ' + err);
+    return url;
+  }
+}
+
+function advisorFolder() {
+  const props = PropertiesService.getScriptProperties();
+  const known = props.getProperty('ADV_FOLDER_ID');
+  if (known) {
+    try { return DriveApp.getFolderById(known); } catch (err) { /* recreated below */ }
+  }
+  const parents = DriveApp.getFileById(ADV_REGISTRY_ID).getParents();
+  const parent = parents.hasNext() ? parents.next() : DriveApp.getRootFolder();
+  const existing = parent.getFoldersByName(ADV_FOLDER_NAME);
+  const folder = existing.hasNext() ? existing.next() : parent.createFolder(ADV_FOLDER_NAME);
+  props.setProperty('ADV_FOLDER_ID', folder.getId());
+  return folder;
+}
+
+function sendAdvisorReceipt(data) {
+  try {
+    const email = clean(data.email);
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) return;
+    const name = clean(data.first_name);
+    const parts = [
+      [
+        'Bonjour' + (name ? ' ' + name : '') + ',',
+        '',
+        "Merci de votre intérêt pour le Cercle des conseillers de l'Institut interculturel Matin. " +
+          'Nous avons bien reçu votre candidature et votre CV.',
+        '',
+        'Notre équipe étudiera votre profil et vous écrira après son examen. ' +
+          "Pour rappel, l'inscription au Cercle est gratuite et ne crée aucun lien d'emploi : " +
+          'toute collaboration rémunérée fera l’objet d’un contrat écrit distinct, projet par projet.',
+        '',
+        'Cordialement,',
+        "L'équipe de l'Institut interculturel Matin",
+      ],
+      [
+        'Hello' + (name ? ' ' + name : '') + ',',
+        '',
+        "Thank you for your interest in the Matin Intercultural Institute's Advisory Circle. " +
+          'We have received your application and your CV.',
+        '',
+        'Our team will review your profile and write to you once the review is complete. ' +
+          'As a reminder, joining the Circle is free and creates no employment relationship: ' +
+          'any paid collaboration will be set out in a separate written contract, project by project.',
+        '',
+        'Best regards,',
+        'The Matin Intercultural Institute team',
+      ],
+    ];
+    if (clean(data.lang).toUpperCase() === 'FA') {
+      parts.push([
+        'سلام' + (name ? ' ' + name + ' عزیز' : '') + '،',
+        '',
+        'از علاقهٔ شما به حلقهٔ مشاوران مؤسسه میان‌فرهنگی متین سپاسگزاریم. ' +
+          'درخواست و رزومهٔ شما به دست ما رسید.',
+        '',
+        'تیم ما مشخصات شما را بررسی می‌کند و پس از بررسی برایتان می‌نویسد. ' +
+          'یادآوری می‌کنیم که پیوستن به حلقه رایگان است و هیچ رابطهٔ استخدامی ایجاد نمی‌کند؛ ' +
+          'هر همکاری با دستمزد در قراردادی کتبی و جداگانه، برای هر پروژه، مشخص می‌شود.',
+        '',
+        'با احترام،',
+        'تیم مؤسسه میان‌فرهنگی متین',
+      ]);
+    }
+    const text = parts.map((p) => p.join('\n')).join('\n\n———\n\n') +
+      '\n\n' + ADV_REPLY_TO + ' · https://matincc.ca';
+    GmailApp.sendEmail(
+      email,
+      'Candidature reçue · Cercle des conseillers de Matin · Application received · Matin Advisory Circle',
+      text,
+      { name: 'Institut interculturel Matin', replyTo: ADV_REPLY_TO, htmlBody: emailHtml(text) },
+    );
+  } catch (err) {
+    console.error('Advisor receipt not sent: ' + err);
+  }
+}
+
+/** Run once by hand: installs the Approve trigger and an hourly retry. */
+function setupAdvisorEmails() {
+  ScriptApp.getProjectTriggers().forEach((t) => {
+    if (['onAdvisorApprove', 'sendAdvisorWelcome'].indexOf(t.getHandlerFunction()) !== -1) {
+      ScriptApp.deleteTrigger(t);
+    }
+  });
+  ScriptApp.newTrigger('onAdvisorApprove').forSpreadsheet(ADV_REGISTRY_ID).onEdit().create();
+  ScriptApp.newTrigger('sendAdvisorWelcome').timeBased().everyHours(1).create();
+  advisorFolder();
+  sendAdvisorWelcome();
+}
+
+function onAdvisorApprove(e) {
+  const r = e && e.range;
+  if (r && r.getSheet().getName() === ADV_TAB && r.getColumn() <= ADV_APPROVE && r.getLastColumn() >= ADV_APPROVE) {
+    sendAdvisorWelcome();
+  }
+}
+
+function sendAdvisorWelcome() {
+  const lock = LockService.getScriptLock();
+  if (!lock.tryLock(30000)) return;
+  let sent = 0;
+  try {
+    const sheet = SpreadsheetApp.openById(ADV_REGISTRY_ID).getSheetByName(ADV_TAB);
+    const last = sheet.getLastRow();
+    if (last < 2) return;
+    const rows = sheet.getRange(2, 1, last - 1, ADV_SENT).getValues();
+    let max = 0;
+    rows.forEach((r) => {
+      const m = /^ADV-(\d+)$/.exec(String(r[0]).trim());
+      if (m && +m[1] > max) max = +m[1];
+    });
+    rows.forEach((r, i) => {
+      const done = String(r[ADV_SENT - 1]).trim();
+      if (r[ADV_APPROVE - 1] !== true || (done && !/^Error/i.test(done))) return;
+      const row = i + 2;
+      const email = String(r[4]).trim();
+      if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+        sheet.getRange(row, ADV_SENT).setValue('Error: no valid email');
+        return;
+      }
+      let advId = String(r[0]).trim();
+      if (!advId) {
+        advId = 'ADV-' + String(++max).padStart(4, '0');
+        sheet.getRange(row, 1).setValue(advId);
+      }
+      try {
+        const msg = advisorWelcomeEmail(advId, String(r[2]).trim(), String(r[16]).trim().toUpperCase() === 'FA');
+        GmailApp.sendEmail(email, msg.subject, msg.text, {
+          name: 'Institut interculturel Matin',
+          replyTo: ADV_REPLY_TO,
+          htmlBody: emailHtml(msg.text),
+        });
+        sheet.getRange(row, ADV_SENT).setValue(Utilities.formatDate(new Date(), 'America/Toronto', 'yyyy-MM-dd HH:mm'));
+        sent++;
+      } catch (err) {
+        sheet.getRange(row, ADV_SENT).setValue('Error: ' + err.message);
+      }
+    });
+  } finally {
+    lock.releaseLock();
+    console.log(sent + ' advisor welcome email(s) sent');
+  }
+}
+
+function advisorWelcomeEmail(advId, name, fa) {
+  const fr = [
+    'Bonjour' + (name ? ' ' + name : '') + ',',
+    '',
+    "Au nom de l'Institut interculturel Matin, nous avons le plaisir de vous accueillir au sein du " +
+      'Cercle des conseillers de Matin. Merci de mettre votre expertise au service du dialogue entre les cultures.',
+    '',
+    'Votre numéro de conseiller : ' + advId,
+    '',
+    'Lorsqu’un projet correspondra à votre expertise, nous vous écrirons pour vous le présenter. ' +
+      'Toute collaboration rémunérée sera précisée dans un contrat écrit distinct, et les honoraires seront ' +
+      'versés après la réalisation du travail, selon ce contrat. Votre nom ne sera publié qu’avec votre accord écrit.',
+    '',
+    'Veuillez indiquer votre numéro de conseiller dans vos échanges avec nous.',
+    '',
+    'Avec nos remerciements,',
+    "L'équipe de l'Institut interculturel Matin",
+  ];
+  const en = [
+    'Hello' + (name ? ' ' + name : '') + ',',
+    '',
+    'On behalf of the Matin Intercultural Institute, we are pleased to welcome you to the Matin Advisory Circle. ' +
+      'Thank you for offering your expertise to dialogue between cultures.',
+    '',
+    'Your advisor number: ' + advId,
+    '',
+    'When a project matches your expertise, we will write to present it to you. ' +
+      'Any paid collaboration will be set out in a separate written contract, and fees will be paid ' +
+      'once the work is completed, as that contract provides. Your name will be published only with your written agreement.',
+    '',
+    'Please mention your advisor number when you write to us.',
+    '',
+    'With our thanks,',
+    'The Matin Intercultural Institute team',
+  ];
+  const faText = [
+    'سلام' + (name ? ' ' + name + ' عزیز' : '') + '،',
+    '',
+    'از طرف مؤسسه میان‌فرهنگی متین، با خوشحالی پیوستن شما را به حلقهٔ مشاوران متین خوشامد می‌گوییم. ' +
+      'سپاسگزاریم که تخصص خود را در خدمت گفت‌وگوی میان فرهنگ‌ها قرار می‌دهید.',
+    '',
+    'شمارهٔ مشاور شما: ' + advId,
+    '',
+    'هر وقت پروژه‌ای با تخصص شما هماهنگ باشد، برایتان می‌نویسیم و آن را معرفی می‌کنیم. ' +
+      'هر همکاری با دستمزد در قراردادی کتبی و جداگانه مشخص می‌شود و دستمزد پس از انجام کار، طبق همان قرارداد، پرداخت می‌شود. ' +
+      'نام شما فقط با موافقت کتبی خودتان منتشر می‌شود.',
+    '',
+    'لطفاً در نامه‌هایتان به ما شمارهٔ مشاور خود را ذکر کنید.',
+    '',
+    'با سپاس،',
+    'تیم مؤسسه میان‌فرهنگی متین',
+  ];
+  const parts = [fr, en].concat(fa ? [faText] : []);
+  return {
+    subject: 'Bienvenue au Cercle des conseillers de Matin · Welcome to the Matin Advisory Circle',
+    text: parts.map((p) => p.join('\n')).join('\n\n———\n\n') +
+      '\n\nhttps://matincc.ca · ' + ADV_REPLY_TO,
+  };
 }
 
 function columnNumber(letter) {
@@ -650,7 +950,19 @@ function storyDone(info, fileId) {
         'Vidéo · Video: ' + link,
         'Rien n’est publié sans votre accord. · Nothing is published without your approval.',
       ].join('\n'),
-      { name: 'Site web Matin' },
+      { name: 'Site web Matin', htmlBody: emailHtml([
+        'Une nouvelle vidéo attend votre validation. · A new video is waiting for your review.',
+        '',
+        'Prénom · First name: ' + r[0],
+        'Ville · City: ' + r[1],
+        'Langue · Language: ' + r[2],
+        'Question: ' + r[3],
+        'Format: ' + r[4] + (r[5] ? ' · ' + r[5] + ' s' : ''),
+        'Courriel · Email: ' + r[6],
+        '',
+        'Vidéo · Video: ' + link,
+        'Rien n’est publié sans votre accord. · Nothing is published without your approval.',
+      ].join('\n')) },
     );
   } catch (err) {
     console.error('Story notification not sent: ' + err);

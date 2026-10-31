@@ -1,4 +1,5 @@
 ---
+import { advisorStrings, advisorsAnchor } from '@/i18n/advisors';
 import {
   ChevronDown,
   HeartHandshake,
@@ -121,6 +122,8 @@ const contactLinks = [
   { id: 'write', label: t('contact.formTitle') },
   { id: lang === 'fr' ? 'adhesion' : 'membership', label: t('nav.contactMembership') },
   { id: lang === 'fr' ? 'benevolat' : 'volunteer', label: t('involved.volunteerTitle') },
+  // Matin Advisory Circle (owner's request, Oct 31 2026).
+  { id: advisorsAnchor(lang), label: advisorStrings(lang).nav },
 ].map((l) => ({ ...l, href: anchor(contactHref, l.id) }));
 // Menu items that open a dropdown.
 const subMenus: Partial<Record<RouteKey, { id: string; label: string; links: typeof aboutLinks }>> =

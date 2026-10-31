@@ -16,6 +16,8 @@ import SectionHeader from '@/components/ui/SectionHeader.astro';
 import ContactForm from '@/components/forms/ContactForm.astro';
 import VolunteerForm from '@/components/forms/VolunteerForm.astro';
 import MembershipForm from '@/components/forms/MembershipForm.astro';
+import AdvisorForm from '@/components/forms/AdvisorForm.astro';
+import { advisorStrings, advisorsAnchor } from '@/i18n/advisors';
 import MapFacade from '@/components/ui/MapFacade.astro';
 import SocialLinks from '@/components/ui/SocialLinks.astro';
 import { href, siteAlternates, type UiLang } from '@/i18n/routes';
@@ -34,6 +36,9 @@ const hasVolunteer = true;
 const volunteerId = lang === 'fr' ? 'benevolat' : 'volunteer';
 // Membership form right after « Write to us » (owner's request, Oct 29 2026).
 const membershipId = lang === 'fr' ? 'adhesion' : 'membership';
+// Matin Advisory Circle (owner's request, Oct 31 2026), after the volunteer section.
+const adv = advisorStrings(lang);
+const advisorsId = advisorsAnchor(lang);
 // Each detail appears only once it is set in the site settings.
 const a = s.address;
 const address = a && `${a.street}, ${a.city} (${a.region}) ${a.postalCode}`;
@@ -193,6 +198,32 @@ const details = [
       </div>
     </section>
   )}
+  <section
+    id={advisorsId}
+    class="advisors-band scroll-mt-24 py-16 sm:py-20"
+    aria-labelledby="advisors-title"
+  >
+    <div class="container-site">
+      <SectionHeader align="start" id="advisors-title" title={adv.title} subtitle={adv.lede} />
+      <ol class="adv-steps">
+        {[
+          [adv.how1Title, adv.how1Text],
+          [adv.how2Title, adv.how2Text],
+          [adv.how3Title, adv.how3Text],
+        ].map(([title, text], i) => (
+          <li class="adv-step">
+            <span class="adv-step__n" aria-hidden="true">{lang === 'fa' ? ['۱', '۲', '۳'][i] : i + 1}</span>
+            <h3 class="adv-step__title">{title}</h3>
+            <p>{text}</p>
+          </li>
+        ))}
+      </ol>
+      <div class="card form-panel form-panel--advisors p-6 sm:p-10">
+        <h3 class="mb-6 text-2xl font-bold">{adv.formTitle}</h3>
+        <AdvisorForm lang={lang} />
+      </div>
+    </div>
+  </section>
 </PageLayout>
 
 <style>
@@ -284,5 +315,60 @@ const details = [
     border-block-start-color: var(--matin-soleil);
     border-start-end-radius: 6rem;
     background: color-mix(in srgb, var(--matin-brique) 22%, var(--matin-ivoire));
+  }
+  .advisors-band {
+    background: color-mix(in srgb, var(--matin-encre) 10%, var(--matin-ivoire));
+  }
+  .adv-steps {
+    display: grid;
+    gap: 1rem;
+    margin-block: 0 2.5rem;
+    max-width: 72rem;
+  }
+  @media (min-width: 56rem) {
+    .adv-steps {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+  }
+  .adv-step {
+    position: relative;
+    padding: 1.4rem 1.5rem 1.5rem;
+    border-radius: 1rem;
+    border-start-end-radius: 2.75rem;
+    background: var(--matin-encre);
+    color: var(--color-white);
+  }
+  .adv-step:nth-child(2) {
+    background: var(--matin-firouzeh-ink);
+  }
+  .adv-step:nth-child(3) {
+    background: var(--matin-brique-ink);
+  }
+  .adv-step__n {
+    display: inline-grid;
+    place-items: center;
+    width: 2.4rem;
+    height: 2.4rem;
+    margin-block-end: 0.75rem;
+    border-radius: 50%;
+    background: var(--matin-soleil);
+    color: var(--matin-encre);
+    font-family: var(--font-display);
+    font-weight: 800;
+  }
+  .adv-step__title:not(#o) {
+    margin-block-end: 0.35rem;
+    font-size: 1.25rem;
+    font-weight: 800;
+    color: var(--color-white);
+  }
+  .adv-step p {
+    line-height: 1.6;
+  }
+  .form-panel--advisors:not(#o) {
+    max-width: 60rem;
+    border-block-start-color: var(--matin-encre);
+    border-start-end-radius: 6rem;
+    background: color-mix(in srgb, var(--matin-firouzeh) 20%, var(--matin-ivoire));
   }
 </style>

@@ -1,0 +1,111 @@
+---
+/**
+ * Homepage invitation to the Matin Advisory Circle (owner's request, Oct 31 2026: « the main
+ * button goes on the homepage »). A navy panel with a saffron sun and the button to the
+ * form on the Contact page.
+ */
+import { ArrowRight, Lightbulb } from '@lucide/astro';
+import { href, type UiLang } from '@/i18n/routes';
+import { advisorStrings, advisorsAnchor } from '@/i18n/advisors';
+
+interface Props {
+  lang: UiLang;
+}
+const { lang } = Astro.props;
+const a = advisorStrings(lang);
+const link = `${href('contact', lang)}#${advisorsAnchor(lang)}`;
+---
+
+<section class="advinv" aria-labelledby="advinv-title">
+  <div class="container-site">
+    <div class="advinv__panel" data-reveal>
+      <span class="advinv__sun" aria-hidden="true"></span>
+      <span class="advinv__icon" aria-hidden="true"><Lightbulb size={30} /></span>
+      <div class="advinv__text">
+        <p class="advinv__kicker">{a.homeKicker}</p>
+        <h2 id="advinv-title" class="advinv__title">{a.title}</h2>
+        <p class="advinv__lede">{a.homeText}</p>
+      </div>
+      <a href={link} class="btn btn-primary advinv__cta">
+        {a.homeCta}
+        <ArrowRight size={18} class="flip-rtl" aria-hidden="true" />
+      </a>
+    </div>
+  </div>
+</section>
+
+<style>
+  .advinv {
+    padding-block: 3rem;
+  }
+  .advinv__panel {
+    position: relative;
+    overflow: hidden;
+    display: grid;
+    gap: 1.25rem;
+    align-items: center;
+    padding: clamp(1.75rem, 4vw, 3rem);
+    border-radius: 1.25rem;
+    border-start-start-radius: 4rem;
+    background: var(--matin-encre);
+    color: var(--color-white);
+  }
+  @media (min-width: 64rem) {
+    .advinv__panel {
+      grid-template-columns: auto minmax(0, 1fr) auto;
+      gap: 2.25rem;
+    }
+  }
+  .advinv__sun {
+    position: absolute;
+    inset-block-start: -4rem;
+    inset-inline-end: -3rem;
+    width: 11rem;
+    aspect-ratio: 1;
+    border-radius: 50%;
+    background: color-mix(in srgb, var(--matin-soleil) 85%, var(--matin-encre));
+    opacity: 0.9;
+  }
+  .advinv__icon {
+    position: relative;
+    display: grid;
+    place-items: center;
+    width: 4.5rem;
+    height: 4.5rem;
+    border-radius: 50%;
+    background: var(--matin-firouzeh);
+    color: var(--color-white);
+  }
+  .advinv__text {
+    position: relative;
+  }
+  .advinv__kicker {
+    font-family: var(--font-display);
+    font-size: 0.9rem;
+    font-weight: 800;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--matin-soleil);
+  }
+  :global(html[lang='fa']) .advinv__kicker {
+    letter-spacing: 0;
+    font-size: 1rem;
+  }
+  .advinv__title:not(#o) {
+    margin-block: 0.3rem 0.5rem;
+    font-family: var(--font-editorial);
+    font-size: clamp(1.8rem, 1.4rem + 1.5vw, 2.6rem);
+    font-weight: 700;
+    line-height: 1.15;
+    color: var(--color-white);
+  }
+  .advinv__lede {
+    max-width: 42rem;
+    font-size: 1.125rem;
+    line-height: 1.65;
+  }
+  .advinv__cta {
+    position: relative;
+    justify-self: start;
+  }
+</style>

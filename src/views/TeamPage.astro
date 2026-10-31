@@ -68,12 +68,16 @@ const board = (
   .filter((m) => m !== undefined);
 const voiceIds = new Set(cultureVoices.map((v) => v.member));
 const volunteerHref = `${href('contact', lang)}#${lang === 'fr' ? 'benevolat' : 'volunteer'}`;
+// Experts join the Advisory Circle (owner's request, Oct 31 2026).
+const advisorsHref = `${href('contact', lang)}#${advisorsAnchor(lang)}`;
+const advCta = advisorStrings(lang).teamCta;
 const joinWays = [
   { icon: MapPin, label: t('team.joinWayInPerson') },
   { icon: Globe, label: t('team.joinWayOnline') },
   { icon: HandHeart, label: t('team.joinWayVolunteer') },
   { icon: Lightbulb, label: t('team.joinWayAdvisor') },
 ];
+import { advisorStrings, advisorsAnchor } from '@/i18n/advisors';
 ---
 
 <PageLayout accent="encre" lang={lang} title={t('nav.team')} alternates={siteAlternates('team')}>
@@ -220,6 +224,10 @@ const joinWays = [
           </ul>
           <a href={volunteerHref} class="btn btn-primary team-join__cta">
             {t('team.joinCta')}
+            <ArrowRight size={18} aria-hidden="true" class="rtl:-scale-x-100" />
+          </a>
+          <a href={advisorsHref} class="btn btn-secondary team-join__cta team-join__cta--adv">
+            {advCta}
             <ArrowRight size={18} aria-hidden="true" class="rtl:-scale-x-100" />
           </a>
         </div>
@@ -823,6 +831,15 @@ const joinWays = [
   @keyframes board-drift {
     50% {
       transform: translateY(-0.6rem) rotate(calc((var(--i) - 1) * 0.8deg));
+    }
+  }
+  .team-join__cta--adv {
+    margin-inline-start: 0.75rem;
+  }
+  @media (max-width: 40rem) {
+    .team-join__cta--adv {
+      margin-inline-start: 0;
+      margin-block-start: 0.75rem;
     }
   }
 </style>
