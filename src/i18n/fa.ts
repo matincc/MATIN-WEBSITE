@@ -57,7 +57,7 @@ const fa: DeepPartial<Dictionary> = {
     eventsArchive: 'رویدادهای گذشته',
     news: 'اخبار',
     gallery: 'گالری',
-    stories: 'داستان من در ۱۰ ثانیه',
+    stories: 'داستان من در ۱۵ ثانیه',
     getInvolved: 'مشارکت',
     resources: 'منابع',
     contact: 'تماس و همکاری',

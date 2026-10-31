@@ -1,6 +1,6 @@
 /**
- * Strings of « Mon histoire en 10 secondes » / "My Story in 10 Seconds" /
- * «داستان من در ۱۰ ثانیه» (owner's request, Oct 31 2026): the page, its upload form and the
+ * Strings of « Mon histoire en 15 secondes » / "My Story in 15 Seconds" /
+ * «داستان من در ۱۵ ثانیه» (owner's request, Oct 31 2026): the page, its upload form and the
  * clips on the homepage band « In Their Words ». Drafted by Claude for the owner's review.
  * Every string exists in the three languages.
  */
@@ -8,8 +8,8 @@ import type { UiLang } from './routes';
 import { typo } from '@/lib/frenchTypo';
 
 const fr = {
-  nav: 'Mon histoire en 10 secondes',
-  title: 'Mon histoire en 10 secondes',
+  nav: 'Mon histoire en 15 secondes',
+  title: 'Mon histoire en 15 secondes',
   metaDescription:
     'Prenez votre téléphone, répondez à une question simple en quelques secondes et ajoutez votre voix au portrait de Montréal que dessine l’Institut interculturel Matin.',
   lede: 'Montréal est faite de milliers de parcours. Prenez votre téléphone, répondez à une question simple en quelques secondes et ajoutez votre voix au portrait de notre ville.',
@@ -91,8 +91,8 @@ const fr = {
 type StoriesDict = typeof fr;
 
 const en: StoriesDict = {
-  nav: 'My Story in 10 Seconds',
-  title: 'My Story in 10 Seconds',
+  nav: 'My Story in 15 Seconds',
+  title: 'My Story in 15 Seconds',
   metaDescription:
     'Pick up your phone, answer one simple question in a few seconds, and add your voice to the portrait of Montréal that Matin Intercultural Institute is drawing.',
   lede: 'Montréal is made of thousands of journeys. Pick up your phone, answer one simple question in a few seconds, and add your voice to the portrait of our city.',
@@ -168,8 +168,8 @@ const en: StoriesDict = {
 };
 
 const fa: StoriesDict = {
-  nav: 'داستان من در ۱۰ ثانیه',
-  title: 'داستان من در ۱۰ ثانیه',
+  nav: 'داستان من در ۱۵ ثانیه',
+  title: 'داستان من در ۱۵ ثانیه',
   metaDescription:
     'گوشی‌تان را بردارید، در چند ثانیه به یک پرسش ساده پاسخ دهید و صدای خود را به تصویری که مؤسسه میان‌فرهنگی متین از مونترال می‌سازد بیفزایید.',
   lede: 'مونترال از هزاران مسیر زندگی ساخته شده است. گوشی‌تان را بردارید، در چند ثانیه به یک پرسش ساده پاسخ دهید و صدای خود را به تصویر شهرمان بیفزایید.',

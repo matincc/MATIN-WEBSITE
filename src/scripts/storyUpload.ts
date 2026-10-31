@@ -1,5 +1,5 @@
 /**
- * « My Story in 10 Seconds »: checks the form and the video in the browser, then sends the
+ * « My Story in 15 Seconds »: checks the form and the video in the browser, then sends the
  * video to the forms web app in 8 MB pieces (see google-sheets/Code.gs, storyRequest). The
  * web app answers with JSON; a dropped piece is retried from where Drive stopped.
  */

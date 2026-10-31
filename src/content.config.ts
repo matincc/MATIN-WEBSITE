@@ -632,7 +632,7 @@ const testimonials = defineCollection({
 });
 
 /**
- * « Mon histoire en 10 secondes » / "My Story in 10 Seconds" (owner's request, Oct 31 2026):
+ * « Mon histoire en 15 secondes » / "My Story in 15 Seconds" (owner's request, Oct 31 2026):
  * short videos visitors sent, published only after Matin approved them and put them on its
  * YouTube channel. First name only, the person's written consent (form on the page), no
  * minors. `archived: true` takes one off the site (removal on request).

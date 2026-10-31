@@ -1,5 +1,5 @@
 /**
- * « My Story in 10 Seconds » (owner's request, Oct 31 2026): published clips and the
+ * « My Story in 15 Seconds » (owner's request, Oct 31 2026): published clips and the
  * address the upload form sends videos to.
  */
 import { getCollection } from 'astro:content';

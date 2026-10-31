@@ -41,7 +41,7 @@ const FORMS = {
 };
 
 function doPost(e) {
-  // « My Story in 10 Seconds » uploads come straight from visitors' browsers (see below).
+  // « My Story in 15 Seconds » uploads come straight from visitors' browsers (see below).
   const story = storyRequest(e);
   if (story) return story;
 
@@ -455,7 +455,7 @@ function reply(text) {
 }
 
 /*
- * « Mon histoire en 10 secondes » / "My Story in 10 Seconds" / «داستان من در ۱۰ ثانیه»
+ * « Mon histoire en 15 secondes » / "My Story in 15 Seconds" / «داستان من در ۱۵ ثانیه»
  * (owner's request, Oct 31 2026). Visitors send a short phone video (up to 15 s for the
  * site, or up to 1 minute for a YouTube Short) from the page /en/my-story/. The browser
  * talks to this web app directly, because Netlify Forms cannot take files this large:

@@ -70,7 +70,7 @@ const galleryLinks = [
   { id: 'videos', label: t('gallery.filterVideos') },
   { id: 'posters', label: t('gallery.filterPosters') },
 ].map((l) => ({ ...l, label: `${t('nav.gallery')} · ${l.label}`, href: anchor(galleryHref, l.id) }));
-// « My Story in 10 Seconds » (owner's request, Oct 31 2026) sits right after Gallery · Videos.
+// « My Story in 15 Seconds » (owner's request, Oct 31 2026) sits right after Gallery · Videos.
 const videosAt = galleryLinks.findIndex((l) => l.id === 'videos') + 1;
 galleryLinks.splice(videosAt, 0, {
   id: 'my-story',

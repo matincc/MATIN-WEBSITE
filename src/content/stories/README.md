@@ -1,4 +1,4 @@
-# My Story in 10 Seconds (« Mon histoire en 10 secondes »)
+# My Story in 15 Seconds (« Mon histoire en 15 secondes »)
 
 Visitors send their video from the page `/en/my-story/`. It lands in Drive
 (50_Members_Volunteers › « Histoires vidéo · Video Stories (à valider) ») and in the tab
