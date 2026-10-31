@@ -68,6 +68,21 @@ export function googleCalendarUrl(event: EventEntry, lang: Lang, url: string): s
   return `https://calendar.google.com/calendar/render?${params}`;
 }
 
+/** Outlook (Outlook.com and Microsoft 365) "add event" link, opened in the browser. */
+export function outlookCalendarUrl(event: EventEntry, lang: Lang, url: string): string {
+  const d = event.data;
+  const params = new URLSearchParams({
+    path: '/calendar/action/compose',
+    rru: 'addevent',
+    subject: d.title[lang],
+    startdt: event.startDate.toISOString(),
+    enddt: event.endDate.toISOString(),
+    body: `${d.summary[lang]}\n\n${url}`,
+    location: placeOf(event, lang),
+  });
+  return `https://outlook.live.com/calendar/0/deeplink/compose?${params}`;
+}
+
 /** Venue, address and city on one line; "Online" events have only their city. */
 function placeOf(event: EventEntry, lang: Lang): string {
   const { location, format } = event.data;

@@ -156,14 +156,22 @@ const tabs = newsRegions.map((region) => {
     color: var(--color-ink);
     box-shadow: 0 18px 40px -22px color-mix(in srgb, black 60%, transparent);
   }
+  /* Coloured stories (owner, Oct 31 2026: « این کادرها رنگی شوند »): each card takes a
+     pale fill of its edge colour, navy and ink text stay above 7:1. */
+  .wire__item {
+    background: color-mix(in srgb, var(--matin-brique) 22%, var(--matin-ivoire));
+  }
   .wire__item:nth-child(4n + 2) {
-    border-block-start-color: var(--color-teal);
+    border-block-start-color: var(--matin-firouzeh-ink);
+    background: color-mix(in srgb, var(--matin-firouzeh) 24%, var(--matin-ivoire));
   }
   .wire__item:nth-child(4n + 3) {
-    border-block-start-color: var(--color-gold);
+    border-block-start-color: var(--matin-soleil);
+    background: color-mix(in srgb, var(--matin-soleil) 32%, var(--matin-ivoire));
   }
   .wire__item:nth-child(4n + 4) {
-    border-block-start-color: var(--color-coral);
+    border-block-start-color: var(--matin-brique-ink);
+    background: color-mix(in srgb, var(--matin-firouzeh) 40%, var(--matin-ivoire));
   }
   /* Equal cards: the « read at source » button lines up at the bottom of each row. */
   .wire:not(.wire--lead) .wire__source {
@@ -173,8 +181,9 @@ const tabs = newsRegions.map((region) => {
     margin-block-end: 1.1rem;
   }
   /* The lead story: a warm ivory card, so it reads first. */
-  .wire__item--lead {
-    background: var(--color-ivory);
+  .wire__item.wire__item--lead {
+    border-block-start-color: var(--matin-soleil);
+    background: color-mix(in srgb, var(--matin-soleil) 38%, var(--matin-ivoire));
   }
   .wire__kicker {
     display: flex;

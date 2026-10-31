@@ -23,7 +23,7 @@ import { cityOf, placeName, renderMarkdown, slugOf, type EventEntry } from '@/li
 import { formatWhen } from '@/lib/dates';
 import { posterFile } from '@/lib/poster';
 import { subjectCover } from '@/lib/taxonomy';
-import { googleCalendarUrl, mapUrl } from '@/lib/calendar';
+import { googleCalendarUrl, mapUrl, outlookCalendarUrl } from '@/lib/calendar';
 
 interface Props {
   lang: UiLang;
@@ -203,7 +203,7 @@ const jsonLd = {
           {t('events.posterDownload', { format: poster.format })}
         </a>
       )}
-      <Prose html={renderMarkdown(pick(d.body, lang) ?? '', lang)} class="text-lg" />
+      <Prose html={renderMarkdown(pick(d.body, lang) ?? '', lang)} class="event-body text-lg" />
       {report && (
         <section class="mt-14" aria-labelledby="report-title">
           <h2 id="report-title" class="mb-5 text-3xl font-bold">
@@ -269,8 +269,8 @@ const jsonLd = {
       </div>
     </article>
 
-    <aside class="space-y-6 lg:sticky lg:top-28 lg:self-start">
-      <div class="card overflow-hidden">
+    <aside class="event-side space-y-6 lg:sticky lg:top-28 lg:self-start">
+      <div class="card event-facts overflow-hidden">
         <ul class="divide-y divide-line/70 px-6">
           <li class="flex gap-3 py-5">
             <Clock size={20} class="mt-0.5 shrink-0 text-ink" aria-hidden="true" />
@@ -350,25 +350,36 @@ const jsonLd = {
       )}
 
       {!ended && (
-        <div class="card p-6">
-          <h2 class="mb-4 flex items-center gap-2 font-sans text-sm font-bold tracking-[0.15em] text-ink uppercase">
-            <CalendarPlus size={18} class="text-gold-dark" aria-hidden="true" />
+        <div class="card cal-card p-6">
+          <h2 class="cal-card__title mb-4 flex items-center gap-2 font-sans text-sm font-bold tracking-[0.15em] uppercase">
+            <CalendarPlus size={18} aria-hidden="true" />
             {t('events.addToCalendar')}
           </h2>
           <div class="flex flex-col gap-2">
-            <a href={icsHref} class="btn btn-outline" download>
-              <Download size={16} aria-hidden="true" />
-              {t('events.icsDownload')}
-            </a>
             <a
               href={googleCalendarUrl(event, calLang, url)}
-              class="btn btn-outline"
+              class="btn btn-outline cal-btn"
               target="_blank"
               rel="noopener noreferrer"
             >
               {t('events.googleCalendar')}
               <ExternalLink size={16} aria-hidden="true" />
               <span class="sr-only">{t('a11y.externalLink')}</span>
+            </a>
+            <a
+              href={outlookCalendarUrl(event, calLang, url)}
+              class="btn btn-outline cal-btn"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              {t('events.outlookCalendar')}
+              <ExternalLink size={16} aria-hidden="true" />
+              <span class="sr-only">{t('a11y.externalLink')}</span>
+            </a>
+            {/* Apple Calendar opens the event file directly on iPhone and Mac. */}
+            <a href={icsHref} class="btn btn-outline cal-btn" download>
+              <CalendarPlus size={16} aria-hidden="true" />
+              {t('events.icsDownload')}
             </a>
           </div>
         </div>
@@ -383,6 +394,53 @@ const jsonLd = {
 </PageLayout>
 
 <style>
+  /* Owner, Oct 31 2026: larger text under the poster; coloured side boxes, not white. */
+  :global(.event-body) {
+    font-size: clamp(1.2rem, 1.1rem + 0.45vw, 1.45rem);
+    color: var(--matin-encre);
+  }
+  :global(.event-body p) {
+    margin-block-end: 0.9rem;
+  }
+  .event-side .event-facts.card {
+    border: 0;
+    background: var(--matin-encre);
+    color: var(--matin-white);
+  }
+  .event-side .event-facts :global(*) {
+    color: var(--matin-white);
+  }
+  .event-side .event-facts :global(p.uppercase) {
+    color: var(--matin-soleil);
+  }
+  .event-side .event-facts :global(a) {
+    color: var(--matin-soleil);
+  }
+  .event-side .event-facts ul {
+    border-color: color-mix(in srgb, var(--matin-white) 25%, transparent);
+  }
+  .event-side .event-facts ul > li + li {
+    border-color: color-mix(in srgb, var(--matin-white) 25%, transparent);
+  }
+  .event-side .event-facts .btn-primary {
+    color: var(--btn-primary-fg);
+  }
+  .event-side :global(.rsvp.card) {
+    border: 0;
+    background: color-mix(in srgb, var(--matin-soleil) 22%, var(--matin-white));
+    border-block-start: 6px solid var(--matin-brique);
+  }
+  .event-side .cal-card.card {
+    border: 0;
+    background: color-mix(in srgb, var(--matin-firouzeh) 22%, var(--matin-white));
+    border-block-start: 6px solid var(--matin-firouzeh-ink);
+  }
+  .cal-card__title {
+    color: var(--matin-encre);
+  }
+  .cal-card .cal-btn {
+    background: var(--matin-white);
+  }
   /* The poster opens full screen; a gentle zoom on hover says so. */
   .poster-zoom {
     position: relative;
