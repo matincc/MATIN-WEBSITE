@@ -156,22 +156,21 @@ const tabs = newsRegions.map((region) => {
     color: var(--color-ink);
     box-shadow: 0 18px 40px -22px color-mix(in srgb, black 60%, transparent);
   }
-  /* Coloured stories (owner, Oct 31 2026: « این کادرها رنگی شوند »): each card takes a
-     pale fill of its edge colour, navy and ink text stay above 7:1. */
+  /* Coloured stories (owner's choice B, Oct 31 2026): every card cream, with a thick
+     coloured ribbon on the start side (terracotta, turquoise, saffron, deep terracotta). */
   .wire__item {
-    background: color-mix(in srgb, var(--matin-brique) 22%, var(--matin-ivoire));
+    border-block-start: none;
+    border-inline-start: 14px solid var(--matin-brique);
+    background: var(--matin-ivoire);
   }
   .wire__item:nth-child(4n + 2) {
-    border-block-start-color: var(--matin-firouzeh-ink);
-    background: color-mix(in srgb, var(--matin-firouzeh) 24%, var(--matin-ivoire));
+    border-inline-start-color: var(--matin-firouzeh);
   }
   .wire__item:nth-child(4n + 3) {
-    border-block-start-color: var(--matin-soleil);
-    background: color-mix(in srgb, var(--matin-soleil) 32%, var(--matin-ivoire));
+    border-inline-start-color: var(--matin-soleil);
   }
   .wire__item:nth-child(4n + 4) {
-    border-block-start-color: var(--matin-brique-ink);
-    background: color-mix(in srgb, var(--matin-firouzeh) 40%, var(--matin-ivoire));
+    border-inline-start-color: var(--matin-brique-ink);
   }
   /* Equal cards: the « read at source » button lines up at the bottom of each row. */
   .wire:not(.wire--lead) .wire__source {
@@ -182,8 +181,7 @@ const tabs = newsRegions.map((region) => {
   }
   /* The lead story: a warm ivory card, so it reads first. */
   .wire__item.wire__item--lead {
-    border-block-start-color: var(--matin-soleil);
-    background: color-mix(in srgb, var(--matin-soleil) 38%, var(--matin-ivoire));
+    border-inline-start-color: var(--matin-soleil);
   }
   .wire__kicker {
     display: flex;

@@ -36,15 +36,3 @@ if (!/(^|\.)matincc\.ca$/.test(location.hostname)) {
   }
 }
 
-/* PREVIEW ONLY (owner, Oct 31 2026: "I don't like the news card colours"): `?cards=a|b|c`
-   shows one of three colour options for the Cultural News cards; delete once he chooses. */
-if (!/(^|\.)matincc\.ca$/.test(location.hostname)) {
-  let cards = new URLSearchParams(location.search).get('cards');
-  try {
-    if (cards) sessionStorage.setItem('matin-cards', cards);
-    else cards = sessionStorage.getItem('matin-cards');
-  } catch {
-    /* storage blocked */
-  }
-  if (cards && /^[abc]$/.test(cards)) document.documentElement.dataset.cards = cards;
-}
