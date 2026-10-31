@@ -51,6 +51,7 @@ const en: Dictionary = {
     eventsArchive: 'Past Events',
     news: 'News',
     gallery: 'Gallery',
+    stories: 'My Story in 10 Seconds',
     getInvolved: 'Get Involved',
     resources: 'Resources',
     contact: 'Contact & Collaboration',

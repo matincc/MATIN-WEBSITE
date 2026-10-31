@@ -60,7 +60,9 @@ export default defineConfig({
         "default-src 'self'",
         "img-src 'self' data: https://images.unsplash.com https://2026.tiff-jp.net https://festivalofauthors.ca https://static.wixstatic.com https://www.unesco.org https://*.google-analytics.com https://*.googletagmanager.com",
         "font-src 'self' data:",
-        "connect-src 'self' https://plausible.io https://*.google-analytics.com https://*.analytics.google.com https://*.googletagmanager.com https://challenges.cloudflare.com",
+        // blob: lets « My Story in 10 Seconds » read the length of the visitor's own video.
+        "media-src 'self' blob:",
+        "connect-src 'self' https://plausible.io https://*.google-analytics.com https://*.analytics.google.com https://*.googletagmanager.com https://challenges.cloudflare.com https://script.google.com https://script.googleusercontent.com",
         'frame-src https://www.youtube-nocookie.com https://www.google.com https://challenges.cloudflare.com',
         "form-action 'self'",
         "base-uri 'self'",

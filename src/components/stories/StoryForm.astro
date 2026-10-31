@@ -1,0 +1,296 @@
+---
+/**
+ * Upload form of « My Story in 10 Seconds » (owner's request, Oct 31 2026). Not a Netlify
+ * form: Netlify Forms cannot take videos this large, so src/scripts/storyUpload.ts sends
+ * the video from the browser to the institute's forms web app (google-sheets/Code.gs) in
+ * 8 MB pieces, which stores it in a Drive folder only the team can open and adds a row
+ * to the « Histoires · Stories » tab. Nothing is published automatically.
+ */
+import { Send } from '@lucide/astro';
+import { href, type UiLang } from '@/i18n/routes';
+import { storyLanguageOptions, storyPrompt, storyPrompts, storyStrings } from '@/i18n/stories';
+import { STORY_UPLOAD_URL } from '@/lib/stories';
+
+interface Props {
+  lang: UiLang;
+}
+const { lang } = Astro.props;
+const s = storyStrings(lang);
+const req = ` (${s.required})`;
+const checks = [
+  { name: 'confirm_age', label: s.consentAge },
+  { name: 'confirm_people', label: s.consentPeople },
+  { name: 'confirm_publish', label: s.consentPublish },
+];
+---
+
+<form
+  class="story-form space-y-5"
+  novalidate
+  data-story-form
+  data-endpoint={STORY_UPLOAD_URL}
+  data-lang={lang}
+  data-msg={JSON.stringify({
+    errorsIntro: s.errorsIntro,
+    errRequired: s.errRequired,
+    errEmail: s.errEmail,
+    errConsent: s.errConsent,
+    errVideo: s.errVideo,
+    errType: s.errType,
+    errTooShort: s.errTooShort,
+    errTooLongShort: s.errTooLongShort,
+    errTooLongLong: s.errTooLongLong,
+    errTooBig: s.errTooBig,
+    sending: s.sending,
+    keepOpen: s.keepOpen,
+    success: s.success,
+    error: s.error,
+    busy: s.busy,
+  })}
+>
+  <p class="hidden" aria-hidden="true">
+    <label>
+      Ne pas remplir / Do not fill <input name="bot-field" tabindex="-1" autocomplete="off" />
+    </label>
+  </p>
+  <div class="error-summary" tabindex="-1" role="alert" hidden data-error-summary></div>
+
+  <div class="grid gap-5 sm:grid-cols-2">
+    <div class="field">
+      <label for="story-first" class="field-label">
+        {s.firstName}
+        <span class="req">{req}</span>
+      </label>
+      <input
+        id="story-first"
+        name="first_name"
+        class="input"
+        required
+        autocomplete="given-name"
+        maxlength="60"
+        aria-describedby="story-first-hint story-first-error"
+      />
+      <p id="story-first-hint" class="story-hint">
+        {s.firstNameHint}
+      </p>
+      <p id="story-first-error" class="field-error" hidden></p>
+    </div>
+    <div class="field">
+      <label for="story-city" class="field-label">
+        {s.city}
+        <span class="req">{req}</span>
+      </label>
+      <input
+        id="story-city"
+        name="city"
+        class="input"
+        required
+        autocomplete="address-level2"
+        maxlength="80"
+        aria-describedby="story-city-hint story-city-error"
+      />
+      <p id="story-city-hint" class="story-hint">
+        {s.cityHint}
+      </p>
+      <p id="story-city-error" class="field-error" hidden></p>
+    </div>
+    <div class="field">
+      <label for="story-email" class="field-label">
+        {s.email}
+        <span class="req">{req}</span>
+      </label>
+      <input
+        id="story-email"
+        name="email"
+        type="email"
+        class="input"
+        required
+        autocomplete="email"
+        maxlength="120"
+        aria-describedby="story-email-hint story-email-error"
+      />
+      <p id="story-email-hint" class="story-hint">
+        {s.emailHint}
+      </p>
+      <p id="story-email-error" class="field-error" hidden></p>
+    </div>
+    <div class="field">
+      <label for="story-language" class="field-label">
+        {s.language}
+        <span class="req">{req}</span>
+      </label>
+      <select
+        id="story-language"
+        name="language"
+        class="input"
+        required
+        aria-describedby="story-language-error"
+      >
+        {storyLanguageOptions(lang).map((o) => (
+          <option value={o.value} selected={o.value === lang}>
+            {o.label}
+          </option>
+        ))}
+      </select>
+      <p id="story-language-error" class="field-error" hidden></p>
+    </div>
+  </div>
+
+  <div class="field">
+    <label for="story-prompt" class="field-label">
+      {s.prompt}
+      <span class="req">{req}</span>
+    </label>
+    <select
+      id="story-prompt"
+      name="prompt"
+      class="input"
+      required
+      aria-describedby="story-prompt-error"
+    >
+      {storyPrompts.map((p) => (
+        <option value={p}>{storyPrompt(p, lang)}</option>
+      ))}
+    </select>
+    <p id="story-prompt-error" class="field-error" hidden></p>
+  </div>
+
+  <fieldset class="field story-format">
+    <legend class="field-label">
+      {s.format}
+      <span class="req">{req}</span>
+    </legend>
+    <label class="story-choice">
+      <input type="radio" name="format" value="short" checked />
+      <span>{s.formatShort}</span>
+    </label>
+    <label class="story-choice">
+      <input type="radio" name="format" value="long" />
+      <span>{s.formatLong}</span>
+    </label>
+  </fieldset>
+
+  <div class="field">
+    <label for="story-video" class="field-label">
+      {s.video}
+      <span class="req">{req}</span>
+    </label>
+    <input
+      id="story-video"
+      name="video"
+      type="file"
+      accept="video/*"
+      class="input story-file"
+      required
+      aria-describedby="story-video-hint story-video-error"
+    />
+    <p id="story-video-hint" class="story-hint">
+      {s.videoHint}
+    </p>
+    <p id="story-video-error" class="field-error" hidden></p>
+  </div>
+
+  <div class="story-consents">
+    {checks.map((c) => (
+      <div class="field">
+        <div class="flex items-start gap-3">
+          <input
+            id={`story-${c.name}`}
+            type="checkbox"
+            name={c.name}
+            required
+            class="mt-1 size-5 shrink-0 accent-primary"
+            aria-describedby={`story-${c.name}-error`}
+          />
+          <label for={`story-${c.name}`} class="text-sm leading-relaxed">
+            {c.label} <span class="text-muted">({s.required})</span>
+          </label>
+        </div>
+        <p id={`story-${c.name}-error`} class="field-error" hidden></p>
+      </div>
+    ))}
+    <div class="field">
+      <div class="flex items-start gap-3">
+        <input
+          id="story-consent"
+          type="checkbox"
+          name="consent"
+          required
+          class="mt-1 size-5 shrink-0 accent-primary"
+          aria-describedby="story-consent-error"
+        />
+        {/* One line on purpose: keeps the period glued to the link. */}
+        <!-- prettier-ignore -->
+        <label for="story-consent" class="text-sm leading-relaxed">{s.consentPrivacy} <a href={href('privacy', lang)}>{s.privacyLink}</a>. <span class="text-muted">({s.required})</span></label>
+      </div>
+      <p id="story-consent-error" class="field-error" hidden></p>
+    </div>
+  </div>
+
+  <button type="submit" class="btn btn-primary self-start" data-story-submit>
+    <Send size={18} aria-hidden="true" />
+    {s.submit}
+  </button>
+  <div class="story-progress" hidden data-story-progress>
+    <progress max="100" value="0"></progress>
+    <p class="story-hint" data-story-keep>
+      {s.keepOpen}
+    </p>
+  </div>
+  <p class="form-status" role="status" aria-live="polite" tabindex="-1" data-form-status></p>
+</form>
+
+<script>
+  import { enhanceStoryForm } from '@/scripts/storyUpload';
+  document.querySelectorAll<HTMLFormElement>('[data-story-form]').forEach(enhanceStoryForm);
+</script>
+
+<style>
+  .story-hint {
+    margin-block-start: 0.35rem;
+    font-size: 0.9rem;
+    color: var(--matin-ink);
+    opacity: 0.85;
+  }
+  .story-format {
+    display: grid;
+    gap: 0.6rem;
+    border: 0;
+    padding: 0;
+    margin: 0;
+  }
+  .story-choice {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.75rem;
+    padding: 0.85rem 1rem;
+    border: 1px solid var(--color-card-edge);
+    border-radius: 0.9rem;
+    background: var(--matin-white);
+    cursor: pointer;
+    line-height: 1.5;
+  }
+  .story-choice:has(input:checked) {
+    border-color: var(--matin-firouzeh-ink);
+    box-shadow: inset 0 0 0 1px var(--matin-firouzeh-ink);
+  }
+  .story-choice input {
+    margin-block-start: 0.3rem;
+    width: 1.1rem;
+    height: 1.1rem;
+    accent-color: var(--matin-firouzeh-ink);
+  }
+  .story-file {
+    padding-block: 0.7rem;
+    background: var(--matin-white);
+  }
+  .story-consents {
+    display: grid;
+    gap: 0.9rem;
+  }
+  .story-progress progress {
+    width: 100%;
+    height: 0.75rem;
+    accent-color: var(--matin-firouzeh-ink);
+  }
+</style>

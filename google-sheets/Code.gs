@@ -41,6 +41,10 @@ const FORMS = {
 };
 
 function doPost(e) {
+  // « My Story in 10 Seconds » uploads come straight from visitors' browsers (see below).
+  const story = storyRequest(e);
+  if (story) return story;
+
   const lock = LockService.getScriptLock();
   lock.waitLock(25000);
   try {
@@ -448,4 +452,211 @@ function clean(value) {
 
 function reply(text) {
   return ContentService.createTextOutput(text);
+}
+
+/*
+ * « Mon histoire en 10 secondes » / "My Story in 10 Seconds" / «داستان من در ۱۰ ثانیه»
+ * (owner's request, Oct 31 2026). Visitors send a short phone video (up to 15 s for the
+ * site, or up to 1 minute for a YouTube Short) from the page /en/my-story/. The browser
+ * talks to this web app directly, because Netlify Forms cannot take files this large:
+ *
+ *   story-start  checks the form, opens a resumable upload in the Drive folder below and
+ *                returns a one-time token (valid 6 hours);
+ *   story-chunk  receives one 8 MB piece (base64) and passes it on to Drive; the last piece
+ *                adds the row to the « Histoires · Stories » tab and emails the admin inbox;
+ *   story-status tells the browser where to resume after a dropped connection.
+ *
+ * Nothing is published: an admin watches the video, and only an approved clip goes to
+ * Matin's YouTube channel and onto the site (a YAML file in src/content/stories/).
+ * No email is sent to the visitor. A clip that is not published is deleted from the folder.
+ * Abuse limits: video files only, at most 250 MB, at most STORY_DAILY_MAX uploads a day.
+ */
+const STORY_FOLDER_ID = '1rSsYz4D8IautFj3XqIwYWFI1krWDFUGq'; // 50_Members_Volunteers › Histoires vidéo
+const STORY_TAB = 'Histoires · Stories';
+const STORY_HEADERS = [
+  'Reçu · Received', 'Prénom · First name', 'Ville / quartier · City', 'Langue · Language',
+  'Question', 'Format', 'Durée (s) · Length', 'Courriel · Email', 'Vidéo · Video (Drive)',
+  'Langue du site · Site language', 'Statut · Status', 'YouTube', 'Notes', 'ID',
+];
+const STORY_MAX_BYTES = 250 * 1024 * 1024;
+const STORY_CHUNK = 8 * 1024 * 1024; // a multiple of 256 KB, as Drive requires
+const STORY_DAILY_MAX = 40;
+const STORY_ADMIN = 'matincc.mtl@gmail.com';
+
+function storyRequest(e) {
+  let body;
+  try {
+    body = JSON.parse(e.postData.contents);
+  } catch (err) {
+    return null;
+  }
+  const action = String(body.action || '');
+  if (action.indexOf('story-') !== 0) return null;
+  try {
+    if (action === 'story-start') return json(storyStart(body));
+    if (action === 'story-chunk') return json(storyChunk(body));
+    if (action === 'story-status') return json(storyStatus(body));
+    return json({ ok: false, error: 'unknown' });
+  } catch (err) {
+    console.error('Story ' + action + ': ' + err);
+    return json({ ok: false, error: 'server' });
+  }
+}
+
+function storyStart(body) {
+  if (clean(body['bot-field'])) return { ok: false, error: 'invalid' };
+  const d = body.data || {};
+  const v = (f) => clean(d[f]).slice(0, 200);
+  const size = Number(body.size);
+  const type = String(body.type || '');
+  if (!v('first_name') || !v('city') || !v('language') || !v('prompt')) return { ok: false, error: 'invalid' };
+  if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v('email'))) return { ok: false, error: 'invalid' };
+  if (['short', 'long'].indexOf(v('format')) === -1) return { ok: false, error: 'invalid' };
+  if (d.confirm_age !== true || d.confirm_people !== true || d.confirm_publish !== true || d.consent !== true) {
+    return { ok: false, error: 'invalid' };
+  }
+  if (!/^video\//.test(type) || !(size > 0) || size > STORY_MAX_BYTES) return { ok: false, error: 'file' };
+
+  // Daily limit, counted in Montréal time.
+  const props = PropertiesService.getScriptProperties();
+  const day = Utilities.formatDate(new Date(), 'America/Toronto', 'yyyy-MM-dd');
+  const count = props.getProperty('STORY_DAY') === day ? Number(props.getProperty('STORY_COUNT') || 0) : 0;
+  if (count >= STORY_DAILY_MAX) return { ok: false, error: 'busy' };
+  props.setProperties({ STORY_DAY: day, STORY_COUNT: String(count + 1) });
+
+  const id = Utilities.getUuid();
+  const stamp = Utilities.formatDate(new Date(), 'America/Toronto', 'yyyy-MM-dd HHmm');
+  const ext = (String(body.name || '').match(/\.([a-z0-9]{2,4})$/i) || [, 'mp4'])[1].toLowerCase();
+  const res = UrlFetchApp.fetch(
+    'https://www.googleapis.com/upload/drive/v3/files?uploadType=resumable&supportsAllDrives=true',
+    {
+      method: 'post',
+      contentType: 'application/json; charset=UTF-8',
+      headers: {
+        Authorization: 'Bearer ' + ScriptApp.getOAuthToken(),
+        'X-Upload-Content-Type': type,
+        'X-Upload-Content-Length': String(size),
+      },
+      payload: JSON.stringify({
+        name: stamp + ' · ' + v('first_name') + ' · ' + v('city') + ' (' + v('format') + ').' + ext,
+        parents: [STORY_FOLDER_ID],
+        mimeType: type,
+        description: 'À valider · To review · ' + id,
+      }),
+      muteHttpExceptions: true,
+    },
+  );
+  const session = res.getHeaders().Location || res.getHeaders().location;
+  if (res.getResponseCode() !== 200 || !session) {
+    console.error('Story session not opened: ' + res.getResponseCode() + ' ' + res.getContentText().slice(0, 300));
+    return { ok: false, error: 'server' };
+  }
+  const info = {
+    session: session,
+    size: size,
+    id: id,
+    row: [
+      v('first_name'), v('city'), v('language'), v('prompt'), v('format'),
+      Math.round(Number(body.duration) || 0) || '', v('email'),
+    ],
+    lang: v('lang').toUpperCase(),
+  };
+  CacheService.getScriptCache().put('story:' + id, JSON.stringify(info), 21600);
+  return { ok: true, token: id, chunk: STORY_CHUNK };
+}
+
+function storyInfo(body) {
+  const cached = CacheService.getScriptCache().get('story:' + String(body.token || ''));
+  return cached ? JSON.parse(cached) : null;
+}
+
+function storyChunk(body) {
+  const info = storyInfo(body);
+  if (!info) return { ok: false, error: 'expired' };
+  const offset = Number(body.offset);
+  const bytes = Utilities.base64Decode(String(body.data || ''));
+  if (!(offset >= 0) || !bytes.length || offset + bytes.length > info.size) return { ok: false, error: 'invalid' };
+  const end = offset + bytes.length - 1;
+  const res = UrlFetchApp.fetch(info.session, {
+    method: 'put',
+    contentType: 'application/octet-stream',
+    headers: { 'Content-Range': 'bytes ' + offset + '-' + end + '/' + info.size },
+    payload: bytes,
+    muteHttpExceptions: true,
+  });
+  const code = res.getResponseCode();
+  if (code === 308) return { ok: true, next: nextByte(res) };
+  if (code === 200 || code === 201) {
+    const file = JSON.parse(res.getContentText());
+    storyDone(info, file.id);
+    CacheService.getScriptCache().remove('story:' + info.id);
+    return { ok: true, done: true };
+  }
+  console.error('Story chunk failed: ' + code + ' ' + res.getContentText().slice(0, 300));
+  return { ok: false, error: 'server' };
+}
+
+/** Where to resume: asks Drive how many bytes it already has. */
+function storyStatus(body) {
+  const info = storyInfo(body);
+  if (!info) return { ok: false, error: 'expired' };
+  const res = UrlFetchApp.fetch(info.session, {
+    method: 'put',
+    headers: { 'Content-Range': 'bytes */' + info.size },
+    muteHttpExceptions: true,
+  });
+  if (res.getResponseCode() === 308) return { ok: true, next: nextByte(res) };
+  return { ok: false, error: 'server' };
+}
+
+function nextByte(res) {
+  const range = res.getHeaders().Range || res.getHeaders().range;
+  const m = range && String(range).match(/bytes=0-(\d+)/);
+  return m ? Number(m[1]) + 1 : 0;
+}
+
+function storyDone(info, fileId) {
+  const link = 'https://drive.google.com/file/d/' + fileId + '/view';
+  const lock = LockService.getScriptLock();
+  lock.waitLock(25000);
+  try {
+    const book = SpreadsheetApp.openById(SHEET_ID);
+    let sheet = book.getSheetByName(STORY_TAB);
+    if (!sheet) {
+      sheet = book.insertSheet(STORY_TAB);
+      sheet.appendRow(STORY_HEADERS);
+      sheet.setFrozenRows(1);
+      sheet.getRange(1, 1, 1, STORY_HEADERS.length).setFontWeight('bold');
+    }
+    sheet.appendRow([new Date()].concat(info.row, [link, info.lang, STATUS_NEW, '', '', info.id]));
+  } finally {
+    lock.releaseLock();
+  }
+  try {
+    const r = info.row;
+    GmailApp.sendEmail(
+      STORY_ADMIN,
+      '[MATIN WEBSITE] Nouvelle histoire vidéo · New video story: ' + r[0] + ' (' + r[1] + ')',
+      [
+        'Une nouvelle vidéo attend votre validation. · A new video is waiting for your review.',
+        '',
+        'Prénom · First name: ' + r[0],
+        'Ville · City: ' + r[1],
+        'Langue · Language: ' + r[2],
+        'Question: ' + r[3],
+        'Format: ' + r[4] + (r[5] ? ' · ' + r[5] + ' s' : ''),
+        'Courriel · Email: ' + r[6],
+        '',
+        'Vidéo · Video: ' + link,
+        'Rien n’est publié sans votre accord. · Nothing is published without your approval.',
+      ].join('\n'),
+      { name: 'Site web Matin' },
+    );
+  } catch (err) {
+    console.error('Story notification not sent: ' + err);
+  }
+}
+
+function json(value) {
+  return ContentService.createTextOutput(JSON.stringify(value)).setMimeType(ContentService.MimeType.JSON);
 }

@@ -632,6 +632,32 @@ const testimonials = defineCollection({
 });
 
 /**
+ * « Mon histoire en 10 secondes » / "My Story in 10 Seconds" (owner's request, Oct 31 2026):
+ * short videos visitors sent, published only after Matin approved them and put them on its
+ * YouTube channel. First name only, the person's written consent (form on the page), no
+ * minors. `archived: true` takes one off the site (removal on request).
+ */
+const stories = defineCollection({
+  loader: yaml('stories'),
+  schema: z.object({
+    firstName: z.string().min(1),
+    /** City or neighbourhood, as the person wrote it. */
+    city: z.string().min(1),
+    /** Language spoken in the video. */
+    language: z.enum(['fr', 'en', 'fa', 'other']),
+    /** The question answered (see storyPrompts in src/i18n/stories.ts). */
+    prompt: z.enum(['home', 'word', 'sound', 'advice', 'free']),
+    youtube,
+    /** Day it was published on the site (YYYY-MM-DD), newest first. */
+    published: z.coerce.date(),
+    /** Optional one-line caption in the video's language or translated. */
+    caption: biOpt,
+    consent: z.literal(true),
+    archived: z.boolean().default(false),
+  }),
+});
+
+/**
  * Partners and supporters (owner's request, Oct 30 2026): only organizations that really
  * work with or fund Matin, shown with their written permission. Hidden while empty.
  */
@@ -875,6 +901,7 @@ export const collections = {
   faq,
   impact,
   testimonials,
+  stories,
   partners,
   resources,
   networks,

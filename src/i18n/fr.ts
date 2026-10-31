@@ -52,6 +52,7 @@ const fr = {
     eventsArchive: 'Événements passés',
     news: 'Actualités',
     gallery: 'Galerie',
+    stories: 'Mon histoire en 10 secondes',
     getInvolved: "S'impliquer",
     resources: 'Ressources',
     contact: 'Contact et collaboration',
