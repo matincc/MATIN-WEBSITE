@@ -186,13 +186,16 @@ const trail = [
     display: grid;
     gap: 1.75rem;
   }
-  .page-head__lede {
-    max-width: 40rem;
-  }
+  /* The line beside the big title, larger so the two balance (owner, Oct 31 2026: it was
+     far too small next to the title). */
+  .page-head__lede,
   .page-head__lede--strong {
-    font-size: clamp(1.1875rem, 1.08rem + 0.5vw, 1.5rem);
+    max-width: 40rem;
+    font-size: clamp(1.3rem, 1.05rem + 1vw, 1.95rem);
     font-weight: 500;
-    line-height: 1.6;
+    line-height: 1.5;
+    color: var(--matin-encre);
+    text-wrap: pretty;
   }
   /* The sun and its companion circle sit on the horizon, cut by it: a sunrise. */
   .page-head__art {
