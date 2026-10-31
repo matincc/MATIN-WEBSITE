@@ -24,6 +24,21 @@
    keeps Vazirmatn). Variable: weight, optical size, softness. */
 @import '@fontsource-variable/fraunces/full.css';
 @import '@fontsource-variable/fraunces/full-italic.css';
+/* The slogan "Cultures in Dialogue / Cultures en dialogue" in the header and footer
+   (speed work, Oct 31 2026). Same Fraunces bold italic, cut down to what the slogan
+   needs: weight 700 only, Latin letters only, optical size kept. 38 KB instead of the
+   146 KB full italic, which most pages then never download. Made with fontTools from
+   @fontsource-variable/fraunces fraunces-latin-full-italic.woff2:
+   instancer wght=700 SOFT=0 WONK=1, then subset U+0020-007E, U+00A0-00FF, U+2013,
+   U+2014, U+2019 with all layout features. */
+@font-face {
+  font-family: 'Fraunces Slogan';
+  font-style: italic;
+  font-weight: 700;
+  font-display: swap;
+  src: url('../assets/fonts/fraunces-slogan-italic-700.woff2') format('woff2');
+  unicode-range: U+0020-007E, U+00A0-00FF, U+2013-2014, U+2019;
+}
 
 /*
  * Matin colour system: the official palette of the design-system brief (Oct 31 2026),

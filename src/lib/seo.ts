@@ -24,7 +24,12 @@ export function organizationJsonLd(
     '@type': 'NGO',
     '@id': new URL('/#organization', site).href,
     name: names[lang],
-    alternateName: (['fr', 'en', 'fa'] as const).filter((l) => l !== lang).map((l) => names[l]),
+    alternateName: [
+      ...(['fr', 'en', 'fa'] as const).filter((l) => l !== lang).map((l) => names[l]),
+      // How people actually search for the institute (owner's request, Oct 31 2026).
+      'Matin Montréal',
+      'مؤسسه میانفرهنگی متین',
+    ],
     ...(legal
       ? {
           legalName: names.fr,

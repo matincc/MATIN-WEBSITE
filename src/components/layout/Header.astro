@@ -412,7 +412,9 @@ const isActive = (url: string) => !url.includes('?') && current.startsWith(url);
     border-inline-start: 1px solid color-mix(in srgb, var(--matin-brique) 45%, transparent);
     line-height: 1.15;
   }
-  @media (min-width: 84rem) {
+  /* 86rem, not 84rem: between 1344 and 1375px the French slogan made the top row wrap
+     onto two lines once its font loaded, so the whole page jumped down (Oct 31 2026). */
+  @media (min-width: 86rem) {
     .header-slogan {
       display: flex;
     }
@@ -426,7 +428,7 @@ const isActive = (url: string) => !url.includes('?') && current.startsWith(url);
     border-inline-start-color: var(--matin-soleil);
   }
   .header-slogan__main {
-    font-family: 'Fraunces Variable', Georgia, serif;
+    font-family: 'Fraunces Slogan', 'Fraunces Variable', Georgia, serif;
     font-style: italic;
     font-weight: 700;
     font-size: 1.6rem;
