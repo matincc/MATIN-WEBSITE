@@ -1,11 +1,9 @@
 ---
 import {
   ChevronDown,
-  Contrast,
   HeartHandshake,
   Menu,
   Search,
-  Type,
   UserPlus,
   X,
 } from '@lucide/astro';
@@ -163,17 +161,6 @@ const isActive = (url: string) => !url.includes('?') && current.startsWith(url);
         <UserPlus size={18} aria-hidden="true" />
         <span>{t('nav.join')}</span>
       </a>
-      <!-- Reading comfort: larger text and high contrast, remembered on this device. -->
-      <div class="display-opts" role="group" aria-label={t('a11y.displayOptions')}>
-        <button type="button" class="menu-btn" data-a11y="large" aria-pressed="false">
-          <Type size={22} aria-hidden="true" />
-          <span class="sr-only">{t('a11y.largerText')}</span>
-        </button>
-        <button type="button" class="menu-btn" data-a11y="contrast" aria-pressed="false">
-          <Contrast size={22} aria-hidden="true" />
-          <span class="sr-only">{t('a11y.highContrast')}</span>
-        </button>
-      </div>
       <a href={href('search', lang)} class="menu-btn">
         <Search size={24} aria-hidden="true" />
         <span class="sr-only">{t('nav.search')}</span>
@@ -266,16 +253,6 @@ const isActive = (url: string) => !url.includes('?') && current.startsWith(url);
         <UserPlus size={20} aria-hidden="true" />
         <span>{t('nav.join')}</span>
       </a>
-      <div class="display-opts--menu" role="group" aria-label={t('a11y.displayOptions')}>
-        <button type="button" class="opt-btn" data-a11y="large" aria-pressed="false">
-          <Type size={20} aria-hidden="true" />
-          <span>{t('a11y.largerText')}</span>
-        </button>
-        <button type="button" class="opt-btn" data-a11y="contrast" aria-pressed="false">
-          <Contrast size={20} aria-hidden="true" />
-          <span>{t('a11y.highContrast')}</span>
-        </button>
-      </div>
       <ul>
         <li>
           <a href={href('home', lang)} class="mobile-link">
@@ -310,35 +287,13 @@ const isActive = (url: string) => !url.includes('?') && current.startsWith(url);
 </header>
 
 <script>
-  // Reading comfort (larger text, high contrast): a class on <html>, remembered on this device.
-  const root = document.documentElement;
-  const prefs = ['large', 'contrast'] as const;
-  const read = (k: string) => {
-    try {
-      return localStorage.getItem(`matin-a11y-${k}`) === '1';
-    } catch {
-      return false;
-    }
-  };
-  const apply = (k: string, on: boolean) => {
-    root.classList.toggle(`a11y-${k}`, on);
-    document
-      .querySelectorAll(`[data-a11y="${k}"]`)
-      .forEach((b) => b.setAttribute('aria-pressed', String(on)));
-  };
-  prefs.forEach((k) => apply(k, read(k)));
-  document.querySelectorAll<HTMLButtonElement>('[data-a11y]').forEach((btn) =>
-    btn.addEventListener('click', () => {
-      const k = btn.dataset.a11y!;
-      const on = !root.classList.contains(`a11y-${k}`);
-      apply(k, on);
-      try {
-        localStorage.setItem(`matin-a11y-${k}`, on ? '1' : '0');
-      } catch {
-        /* storage blocked: the choice lasts for this page only */
-      }
-    }),
-  );
+  // The reading-comfort toggles were removed (owner, Oct 31 2026); forget any stored choice.
+  try {
+    localStorage.removeItem('matin-a11y-large');
+    localStorage.removeItem('matin-a11y-contrast');
+  } catch {
+    /* storage blocked: nothing stored */
+  }
 
   const dialog = document.getElementById('mobile-menu') as HTMLDialogElement | null;
   const openBtn = document.querySelector<HTMLButtonElement>('[data-menu-open]');
@@ -551,44 +506,10 @@ const isActive = (url: string) => !url.includes('?') && current.startsWith(url);
     min-height: 3.25rem;
     font-size: 1.1rem;
   }
-  .display-opts {
-    display: none;
-  }
-  .display-opts [aria-pressed='true'],
-  .opt-btn[aria-pressed='true'] {
-    background: var(--matin-encre);
-    color: var(--matin-white);
-  }
-  .display-opts--menu {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 0.75rem;
-    margin-block-end: 1.5rem;
-  }
-  .opt-btn {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 0.4rem;
-    min-height: 3rem;
-    padding: 0.5rem;
-    border-radius: 1rem;
-    border: 1px solid var(--color-card-edge);
-    background: var(--matin-white);
-    color: var(--matin-encre);
-    font-family: var(--font-display);
-    font-weight: 700;
-  }
   /* Wide screens only: on smaller ones the top row has no room, the menu has them. */
   @media (max-width: 63.99rem) {
     .header-tools .join-btn {
       display: none;
-    }
-  }
-  @media (min-width: 64rem) {
-    .display-opts {
-      display: flex;
-      gap: 0.1rem;
     }
   }
   /* The search and language links set the height of the top row. */
