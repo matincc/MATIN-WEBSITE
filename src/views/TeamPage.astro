@@ -31,7 +31,7 @@ import CultureVoices from '@/components/content/CultureVoices.astro';
 import { cultureVoices } from '@/lib/cultureVoices';
 import { teamText } from '@/lib/teamStrings';
 import '@/styles/name-tag.css';
-import CommunityIllustration from '@/components/brand/CommunityIllustration.astro';
+import teamCollabPhoto from '@/assets/photos/team-collaboration.jpg';
 import Prose from '@/components/ui/Prose.astro';
 import { href, siteAlternates, type UiLang } from '@/i18n/routes';
 import { useTranslations, pick } from '@/i18n/ui';
@@ -224,7 +224,13 @@ const joinWays = [
           </a>
         </div>
         <figure class="team-join__art" aria-hidden="true">
-          <CommunityIllustration class="team-join__img" />
+          <Image
+            src={teamCollabPhoto}
+            alt=""
+            widths={[480, 800, 1200]}
+            sizes="(min-width: 56rem) 40vw, 92vw"
+            class="team-join__img team-join__photo"
+          />
           <span class="team-join__block"></span>
         </figure>
       </section>
@@ -328,6 +334,20 @@ const joinWays = [
   .team-join__art :global(.team-join__img) {
     position: relative;
     z-index: 1;
+  }
+  /* The owner's photo of people working together (Oct 31 2026), in place of the drawing:
+     rounded, one deep corner, a white mount, the saffron sun behind it. */
+  .team-join__art :global(.team-join__photo) {
+    display: block;
+    width: 100%;
+    height: auto;
+    aspect-ratio: 4 / 3;
+    object-fit: cover;
+    object-position: 55% 40%;
+    border: 6px solid var(--matin-ivoire);
+    border-radius: 1.25rem;
+    border-start-end-radius: 4rem;
+    box-shadow: 0 18px 36px -20px color-mix(in srgb, var(--matin-encre) 70%, transparent);
   }
   .team-join__block {
     position: absolute;
