@@ -11,11 +11,20 @@
  * Cultural Networks (#networks, src/content/networks/, shown once entries exist) and
  * Cultural Policy & Strategic Documents (#policy, src/content/policies/). FR, EN and FA.
  */
-import { ArrowDown, BookOpen, CircleAlert, FileText, ListFilter } from '@lucide/astro';
+import {
+  ArrowDown,
+  ArrowRight,
+  BookOpen,
+  CircleAlert,
+  FileText,
+  ListFilter,
+  MapPin,
+} from '@lucide/astro';
 import OrgCard from '@/components/content/OrgCard.astro';
 import SectionHeader from '@/components/ui/SectionHeader.astro';
 import PageLayout from '@/layouts/PageLayout.astro';
-import { baseLang, siteAlternates, type UiLang } from '@/i18n/routes';
+import { baseLang, href, siteAlternates, type UiLang } from '@/i18n/routes';
+import { guideStrings } from '@/lib/localGuide';
 import { useTranslations, pick } from '@/i18n/ui';
 import { getNetworks, getPolicies, getResources, orgName } from '@/lib/content';
 import { resourceCategories } from '@/lib/taxonomy';
@@ -64,6 +73,14 @@ const groups = resourceCategories
       </span>
       {t('resources.policyTitle')}
       <ArrowDown size={16} class="res-jump__arrow" aria-hidden="true" />
+    </a>
+    <!-- The Local Guide (Oct 30 2026): its own page. -->
+    <a href={href('localGuide', lang)} class="res-jump__link" data-accent="teal">
+      <span class="res-jump__icon" aria-hidden="true">
+        <MapPin size={18} />
+      </span>
+      {guideStrings(lang).title}
+      <ArrowRight size={16} class="res-jump__arrow flip-rtl" aria-hidden="true" />
     </a>
   </nav>
 

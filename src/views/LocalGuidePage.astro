@@ -1,0 +1,869 @@
+---
+/**
+ * Local Guide (owner's request, Oct 30 2026): a "smart directory" for visitors, LaSalle first
+ * (where Matin works), then Montréal, Québec and Canada. Verified figures (Statistics Canada
+ * through the City of Montréal's profiles) and official places, each with its source link;
+ * data and texts in src/lib/localGuide.ts. A note in the team's own voice opens the page;
+ * a search field and kind chips filter the places; figures count up once when they scroll
+ * into view (the final value is in the HTML; nothing moves under reduced motion).
+ * FR, EN and FA (Persian texts are drafts until the owner reviews them).
+ */
+import {
+  ArrowDown,
+  BookOpen,
+  ChartColumn,
+  Drama,
+  ExternalLink,
+  HandHelping,
+  Search,
+  Send,
+  Trees,
+  Users,
+} from '@lucide/astro';
+import Scribble from '@/components/ui/Scribble.astro';
+import PageLayout from '@/layouts/PageLayout.astro';
+import { href, siteAlternates, type UiLang } from '@/i18n/routes';
+import { typo } from '@/lib/frenchTypo';
+import {
+  checkedOn,
+  guideStrings,
+  regions,
+  urlFor,
+  type GuideFigure,
+  type GuideSource,
+  type PlaceKind,
+} from '@/lib/localGuide';
+
+interface Props {
+  lang: UiLang;
+}
+const { lang } = Astro.props;
+const s = Object.fromEntries(
+  Object.entries(guideStrings(lang)).map(([k, v]) => [k, typo(v, lang)]),
+) as ReturnType<typeof guideStrings>;
+const tx = (v: Record<UiLang, string>) => typo(v[lang], lang);
+
+const locale = lang === 'fa' ? 'fa-IR' : lang === 'fr' ? 'fr-CA' : 'en-CA';
+const fmt = (f: Pick<GuideFigure, 'value' | 'decimals' | 'unit'>) => {
+  const n = new Intl.NumberFormat(locale, {
+    minimumFractionDigits: f.decimals ?? 0,
+    maximumFractionDigits: f.decimals ?? 0,
+  }).format(f.value);
+  if (f.unit === '%') return lang === 'fr' ? `${n}\u00a0%` : lang === 'fa' ? `${n}٪` : `${n}%`;
+  return n;
+};
+/** French « Source : », elsewhere 'Source:'. */
+const sourceLead = lang === 'fr' ? `${s.source}\u00a0: ` : `${s.source}: `;
+const dateLabel = new Intl.DateTimeFormat(lang === 'fa' ? 'fa-IR-u-ca-gregory' : locale, {
+  dateStyle: 'long',
+  timeZone: 'UTC',
+}).format(new Date(`${checkedOn}T12:00:00Z`));
+
+const kindIcons = {
+  culture: Drama,
+  library: BookOpen,
+  park: Trees,
+  community: Users,
+  services: HandHelping,
+  data: ChartColumn,
+} satisfies Record<PlaceKind, unknown>;
+const kinds = (Object.keys(kindIcons) as PlaceKind[]).filter((k) =>
+  regions.some((r) => r.places.some((p) => p.kind === k)),
+);
+/** Sources of a region's figures, each once. */
+const sourcesOf = (figures: GuideFigure[]) => [
+  ...new Map(figures.map((f) => [urlFor(f.source.url, lang), f.source])).values(),
+];
+const ext = { target: '_blank', rel: 'noopener noreferrer' };
+
+const site = Astro.site ?? new URL(Astro.url.origin);
+const pageUrl = new URL(href('localGuide', lang), site).href;
+const schemaType: Record<PlaceKind, string> = {
+  culture: 'Place',
+  library: 'Library',
+  park: 'Park',
+  community: 'Organization',
+  services: 'GovernmentOrganization',
+  data: 'GovernmentOrganization',
+};
+const jsonLd = [
+  {
+    '@context': 'https://schema.org',
+    '@type': 'CollectionPage',
+    '@id': `${pageUrl}#page`,
+    url: pageUrl,
+    name: s.metaTitle,
+    description: s.lede,
+    inLanguage: lang === 'fr' ? 'fr-CA' : lang === 'en' ? 'en-CA' : 'fa',
+    dateModified: checkedOn,
+    isPartOf: { '@type': 'WebSite', url: site.href },
+    publisher: { '@type': 'NGO', name: 'Matin', url: site.href },
+    about: regions.map((r) => ({
+      '@type':
+        r.id === 'lasalle' || r.id === 'montreal'
+          ? 'City'
+          : r.id === 'quebec'
+            ? 'State'
+            : 'Country',
+      name: r.title.fr,
+    })),
+    mainEntity: {
+      '@type': 'ItemList',
+      numberOfItems: regions.reduce((n, r) => n + r.places.length, 0),
+      itemListElement: regions
+        .flatMap((r) => r.places)
+        .map((p, i) => ({
+          '@type': 'ListItem',
+          position: i + 1,
+          item: {
+            '@type': schemaType[p.kind],
+            name: p.name,
+            description: p.note[lang],
+            url: urlFor(p.url, lang),
+          },
+        })),
+    },
+  },
+];
+---
+
+<PageLayout
+  accent="firouzeh"
+  lang={lang}
+  title={s.title}
+  metaTitle={s.metaTitle}
+  lede={s.lede}
+  alternates={siteAlternates('localGuide')}
+  jsonLd={jsonLd}
+>
+  <nav slot="hero" class="guide-jump" aria-label={s.jumpLabel}>
+    {regions.map((r) => (
+      <a href={`#${r.id}`} class="guide-jump__link" data-region={r.id}>
+        <span class="guide-jump__dot" aria-hidden="true" />
+        {tx(r.title)}
+        <ArrowDown size={16} aria-hidden="true" />
+      </a>
+    ))}
+  </nav>
+
+  <!-- The team's own note: why this guide exists. -->
+  <div class="container-site">
+    <aside class="guide-why" aria-labelledby="guide-why-title" data-reveal>
+      <span class="guide-why__sun" aria-hidden="true"></span>
+      <h2 id="guide-why-title" class="guide-why__title">
+        {s.whyTitle}
+      </h2>
+      <p class="guide-why__text">{s.whyText}</p>
+      <p class="guide-why__sign">
+        <span>— {s.whySign}</span>
+        <span class="guide-why__date">{s.checked.replace('{date}', dateLabel)}</span>
+      </p>
+    </aside>
+
+    <!-- Search and kind filter (hidden without JavaScript: every place is then shown). -->
+    <div class="guide-filter invisible" data-guide-filter>
+      <label class="guide-filter__search">
+        <span class="sr-only">{s.filterLabel}</span>
+        <Search size={20} aria-hidden="true" />
+        <input type="search" placeholder={s.filterPlaceholder} data-guide-q autocomplete="off" />
+      </label>
+      <div class="guide-filter__chips" role="group" aria-label={s.filterLabel}>
+        <button type="button" class="guide-chip" aria-pressed="true" data-kind="">
+          {s.kindAll}
+        </button>
+        {kinds.map((k) => {
+          const Icon = kindIcons[k];
+          return (
+            <button type="button" class="guide-chip" aria-pressed="false" data-kind={k}>
+              <Icon size={16} aria-hidden="true" />
+              {s[`kind_${k}`]}
+            </button>
+          );
+        })}
+      </div>
+      <p class="guide-filter__none" hidden data-guide-none role="status">
+        {s.filterNone}
+      </p>
+    </div>
+  </div>
+
+  {regions.map((r, ri) => {
+    const sources: GuideSource[] = sourcesOf(r.figures);
+    return (
+      <section
+        id={r.id}
+        class:list={['guide-region scroll-mt-28', `guide-region--${r.id}`]}
+        aria-labelledby={`${r.id}-title`}
+        data-guide-region
+      >
+        <div class="container-site">
+          <header class="guide-region__head" data-reveal>
+            <p class="eyebrow eyebrow--teal">{tx(r.kicker)}</p>
+            <h2 id={`${r.id}-title`} class="guide-region__title">
+              {tx(r.title)}
+            </h2>
+            {ri === 0 && <Scribble class="guide-region__scribble" color="var(--matin-soleil)" />}
+            <p class="guide-region__intro">
+              {tx(r.intro)}
+              {r.introSource && (
+                <a class="guide-cite" href={urlFor(r.introSource.url, lang)} {...ext}>
+                  {s.source}
+                  <span class="sr-only">
+                    : {tx(r.introSource.label)} {s.opensNewTab}
+                  </span>
+                </a>
+              )}
+            </p>
+          </header>
+
+          <h3 class="sr-only">{s.inNumbers}</h3>
+          <ul class:list={['guide-figures', r.figures.length === 3 && 'guide-figures--three']}>
+            {r.figures.map((f, i) => (
+              <li class="guide-figure" data-reveal style={`--reveal-delay:${i * 90}ms`}>
+                <span
+                  class="guide-figure__value"
+                  data-count={f.value}
+                  data-decimals={f.decimals ?? 0}
+                  data-unit={f.unit ?? ''}
+                  data-locale={locale}
+                  data-lang={lang}
+                >
+                  {fmt(f)}
+                </span>
+                <span class="guide-figure__label">{tx(f.label)}</span>
+              </li>
+            ))}
+          </ul>
+          <p class="guide-sources">
+            {sourceLead}
+            {sources.map((src, i) => (
+              <>
+                {i > 0 && ' · '}
+                <a href={urlFor(src.url, lang)} {...ext}>
+                  {tx(src.label)}
+                  <span class="sr-only"> {s.opensNewTab}</span>
+                </a>
+              </>
+            ))}
+          </p>
+
+          {(r.shares || r.facts) && (
+            <div class="guide-pair">
+              {r.shares && (
+                <figure class="guide-shares" data-reveal>
+                  <figcaption class="guide-sub">{tx(r.shares.title)}</figcaption>
+                  <ul>
+                    {r.shares.items.map((it) => (
+                      <li class="guide-share">
+                        <span class="guide-share__label">{tx(it.label)}</span>
+                        <span class="guide-share__bar" aria-hidden="true">
+                          <span style={`--share:${it.value}%`} />
+                        </span>
+                        <span class="guide-share__value">
+                          {fmt({ value: it.value, decimals: 1, unit: '%' })}
+                        </span>
+                      </li>
+                    ))}
+                  </ul>
+                  <p class="guide-sources">
+                    {sourceLead}
+                    <a href={urlFor(r.shares.source.url, lang)} {...ext}>
+                      {tx(r.shares.source.label)}
+                      <span class="sr-only"> {s.opensNewTab}</span>
+                    </a>
+                  </p>
+                </figure>
+              )}
+              {r.facts && (
+                <div class="guide-facts" data-reveal style="--reveal-delay:120ms">
+                  <h3 class="guide-sub">{s.keyFacts}</h3>
+                  <ul>
+                    {r.facts.map((f) => (
+                      <li>{tx(f.text)}</li>
+                    ))}
+                  </ul>
+                  {r.factsSource && (
+                    <p class="guide-sources">
+                      {sourceLead}
+                      <a href={urlFor(r.factsSource.url, lang)} {...ext}>
+                        {tx(r.factsSource.label)}
+                        <span class="sr-only"> {s.opensNewTab}</span>
+                      </a>
+                    </p>
+                  )}
+                </div>
+              )}
+            </div>
+          )}
+
+          <h3 class="guide-sub guide-sub--places">{s.places}</h3>
+          <ul class="guide-places stagger-grid">
+            {r.places.map((p) => {
+              const Icon = kindIcons[p.kind];
+              return (
+                <li
+                  class="card guide-place"
+                  data-guide-place
+                  data-kind={p.kind}
+                  data-text={`${p.name} ${p.note.fr} ${p.note.en} ${p.note.fa} ${s[`kind_${p.kind}`]}`.toLowerCase()}
+                >
+                  <span class="guide-place__kind" data-kind={p.kind}>
+                    <Icon size={16} aria-hidden="true" />
+                    {s[`kind_${p.kind}`]}
+                  </span>
+                  <h4 class="guide-place__name">{p.name}</h4>
+                  <p class="guide-place__note">{tx(p.note)}</p>
+                  <a class="guide-place__link" href={urlFor(p.url, lang)} {...ext}>
+                    {s.visit}
+                    <ExternalLink size={15} aria-hidden="true" />
+                    <span class="sr-only">
+                      : {p.name} {s.opensNewTab}
+                    </span>
+                  </a>
+                </li>
+              );
+            })}
+          </ul>
+        </div>
+      </section>
+    );
+  })}
+
+  <div class="container-site pb-20">
+    <p class="guide-note">{s.censusNote}</p>
+    <p class="guide-note">{s.notice}</p>
+
+    <aside class="guide-suggest" aria-labelledby="guide-suggest-title" data-reveal>
+      <div>
+        <h2 id="guide-suggest-title" class="guide-suggest__title">
+          {s.suggestTitle}
+        </h2>
+        <p>{s.suggestText}</p>
+      </div>
+      <a href={`${href('contact', lang)}#write`} class="btn-primary">
+        <Send size={18} aria-hidden="true" />
+        {s.suggestButton}
+      </a>
+    </aside>
+  </div>
+</PageLayout>
+
+<script>
+  // Search and kind chips: hide the places that do not match, and a region with none left.
+  const bar = document.querySelector<HTMLElement>('[data-guide-filter]');
+  if (bar) {
+    bar.classList.remove('invisible');
+    const input = bar.querySelector<HTMLInputElement>('[data-guide-q]')!;
+    const chips = [...bar.querySelectorAll<HTMLButtonElement>('[data-kind]')];
+    const none = bar.querySelector<HTMLElement>('[data-guide-none]')!;
+    const places = [...document.querySelectorAll<HTMLElement>('[data-guide-place]')];
+    const regionsEls = [...document.querySelectorAll<HTMLElement>('[data-guide-region]')];
+    let kind = '';
+    const fold = (v: string) => v.toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g, '');
+    const apply = () => {
+      const q = fold(input.value.trim());
+      let shown = 0;
+      places.forEach((p) => {
+        const ok =
+          (!kind || p.dataset.kind === kind) && (!q || fold(p.dataset.text ?? '').includes(q));
+        p.hidden = !ok;
+        if (ok) shown++;
+      });
+      const filtering = Boolean(q || kind);
+      regionsEls.forEach((r) => {
+        const any = r.querySelector('[data-guide-place]:not([hidden])');
+        r.classList.toggle('is-filtered', filtering);
+        r.hidden = filtering && !any;
+      });
+      none.hidden = shown > 0;
+    };
+    input.addEventListener('input', apply);
+    chips.forEach((c) =>
+      c.addEventListener('click', () => {
+        kind = c.dataset.kind ?? '';
+        chips.forEach((b) => b.setAttribute('aria-pressed', String(b === c)));
+        apply();
+      }),
+    );
+  }
+
+  // Figures count up once when they come into view (never under reduced motion).
+  if (
+    'IntersectionObserver' in window &&
+    !window.matchMedia('(prefers-reduced-motion: reduce)').matches
+  ) {
+    const els = [...document.querySelectorAll<HTMLElement>('[data-count]')];
+    const format = (el: HTMLElement, v: number) => {
+      const d = Number(el.dataset.decimals ?? 0);
+      const n = new Intl.NumberFormat(el.dataset.locale, {
+        minimumFractionDigits: d,
+        maximumFractionDigits: d,
+      }).format(v);
+      if (el.dataset.unit !== '%') return n;
+      return el.dataset.lang === 'fr'
+        ? `${n}\u00a0%`
+        : el.dataset.lang === 'fa'
+          ? `${n}٪`
+          : `${n}%`;
+    };
+    const io = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((e) => {
+          if (!e.isIntersecting) return;
+          io.unobserve(e.target);
+          const el = e.target as HTMLElement;
+          const target = Number(el.dataset.count);
+          const start = performance.now();
+          const step = (now: number) => {
+            const t = Math.min(1, (now - start) / 1400);
+            const eased = 1 - Math.pow(1 - t, 3);
+            el.textContent = format(el, t < 1 ? target * eased : target);
+            if (t < 1) requestAnimationFrame(step);
+          };
+          requestAnimationFrame(step);
+        });
+      },
+      { threshold: 0.6 },
+    );
+    els.forEach((el) => io.observe(el));
+  }
+</script>
+
+<style>
+  /* Quick links under the title, one dot colour per region. */
+  .guide-jump {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.6rem;
+    margin-top: 2rem;
+  }
+  .guide-jump__link {
+    --dot: var(--matin-brique);
+    display: inline-flex;
+    align-items: center;
+    gap: 0.55rem;
+    min-height: 2.75rem;
+    padding: 0.45rem 1.1rem;
+    border: 1.5px solid var(--color-card-edge);
+    border-radius: 999px;
+    background: var(--color-white);
+    color: var(--matin-encre);
+    font-family: var(--font-display);
+    font-weight: 700;
+    text-decoration: none;
+    transition:
+      transform 0.2s,
+      border-color 0.2s;
+  }
+  .guide-jump__link:hover {
+    transform: translateY(-2px);
+    border-color: var(--dot);
+  }
+  .guide-jump__link[data-region='montreal'] {
+    --dot: var(--matin-firouzeh);
+  }
+  .guide-jump__link[data-region='quebec'] {
+    --dot: var(--matin-encre);
+  }
+  .guide-jump__link[data-region='canada'] {
+    --dot: var(--matin-soleil);
+  }
+  .guide-jump__dot {
+    width: 0.7rem;
+    height: 0.7rem;
+    border-radius: 50%;
+    background: var(--dot);
+  }
+
+  /* The team's note: warm paper, slightly off-straight, a sun in its corner. */
+  .guide-why {
+    position: relative;
+    max-width: 52rem;
+    margin: 0 auto 3rem;
+    padding: 2.25rem 2.5rem 2rem;
+    border-radius: 0.5rem 2.5rem 0.5rem 0.5rem;
+    border-start-start-radius: 2.5rem;
+    border-start-end-radius: 0.5rem;
+    background: var(--matin-aube, var(--matin-sable));
+    box-shadow: 0 1.25rem 2.5rem -1.75rem color-mix(in srgb, var(--matin-encre) 45%, transparent);
+    rotate: -0.6deg;
+  }
+  .guide-why__sun {
+    position: absolute;
+    inset-block-start: -1.1rem;
+    inset-inline-end: 2rem;
+    width: 3rem;
+    height: 3rem;
+    border-radius: 50%;
+    background: var(--matin-soleil);
+  }
+  .guide-why__title {
+    font-family: var(--font-editorial);
+    font-size: clamp(1.6rem, 2.6vw, 2.1rem);
+    font-weight: 700;
+    color: var(--matin-brique-ink);
+    margin-bottom: 0.75rem;
+  }
+  .guide-why__text {
+    font-size: clamp(1.1rem, 1.6vw, 1.25rem);
+    line-height: 1.8;
+    color: var(--matin-encre);
+  }
+  .guide-why__sign {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    gap: 0.5rem 1.5rem;
+    margin-top: 1.25rem;
+    font-family: var(--font-display);
+    font-weight: 700;
+    color: var(--matin-encre);
+  }
+  .guide-why__date {
+    font-weight: 600;
+    color: var(--matin-firouzeh-ink);
+    font-size: 0.95rem;
+  }
+
+  /* Search and chips. */
+  .guide-filter {
+    display: grid;
+    gap: 1rem;
+    margin-bottom: 1rem;
+  }
+  .guide-filter__search {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    max-width: 34rem;
+    padding: 0 1.1rem;
+    border: 1.5px solid var(--color-card-edge);
+    border-radius: 999px;
+    background: var(--color-white);
+    color: var(--matin-firouzeh-ink);
+  }
+  .guide-filter__search:focus-within {
+    outline: 3px solid var(--matin-encre);
+    outline-offset: 2px;
+  }
+  .guide-filter__search input {
+    flex: 1;
+    min-height: 3rem;
+    border: 0;
+    background: transparent;
+    font-size: 1.05rem;
+    color: var(--matin-encre);
+    outline: none;
+  }
+  .guide-filter__chips {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+  }
+  .guide-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    min-height: 2.6rem;
+    padding: 0.4rem 1rem;
+    border: 1.5px solid var(--color-card-edge);
+    border-radius: 999px;
+    background: var(--matin-ivoire);
+    color: var(--matin-encre);
+    font-family: var(--font-display);
+    font-weight: 700;
+    cursor: pointer;
+  }
+  .guide-chip[aria-pressed='true'] {
+    background: var(--matin-firouzeh-ink);
+    border-color: var(--matin-firouzeh-ink);
+    color: var(--color-white);
+  }
+  .guide-filter__none {
+    font-weight: 600;
+    color: var(--matin-brique-ink);
+  }
+
+  /* Regions: grounds change by region, LaSalle first and warmest. */
+  .guide-region {
+    padding-block: clamp(3rem, 6vw, 5rem);
+  }
+  .guide-region--lasalle {
+    background: var(--matin-firouzeh-pale);
+    border-start-start-radius: clamp(2rem, 6vw, 5rem);
+  }
+  .guide-region--quebec {
+    background: var(--matin-sable);
+    border-start-end-radius: clamp(2rem, 6vw, 5rem);
+  }
+  .guide-region.is-filtered .guide-figures,
+  .guide-region.is-filtered .guide-sources,
+  .guide-region.is-filtered .guide-pair {
+    display: none;
+  }
+  .guide-region__head {
+    max-width: 52rem;
+    margin-bottom: 2rem;
+  }
+  .guide-region__title {
+    font-family: var(--font-editorial);
+    font-size: clamp(2.6rem, 6vw, 4.5rem);
+    font-weight: 800;
+    line-height: 1.05;
+    color: var(--matin-encre);
+  }
+  .guide-region--lasalle .guide-region__title {
+    color: var(--matin-brique-ink);
+  }
+  .guide-region__scribble {
+    width: min(14rem, 60%);
+    height: 1rem;
+    margin-top: 0.35rem;
+  }
+  .guide-region__intro {
+    margin-top: 1rem;
+    font-size: clamp(1.1rem, 1.7vw, 1.3rem);
+    line-height: 1.75;
+  }
+  .guide-cite {
+    margin-inline-start: 0.5rem;
+    font-size: 0.85rem;
+    font-weight: 700;
+    color: var(--matin-firouzeh-ink);
+    text-decoration: underline;
+    text-underline-offset: 3px;
+  }
+
+  /* Large figures: no boxes, a sun-coloured rule over each. */
+  .guide-figures {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(13rem, 1fr));
+    gap: 1.5rem 2.5rem;
+  }
+  .guide-figure {
+    display: grid;
+    gap: 0.35rem;
+    padding-top: 1rem;
+    border-top: 4px solid var(--matin-soleil);
+  }
+  .guide-figure:nth-child(2n) {
+    border-top-color: var(--matin-brique);
+  }
+  .guide-figure:nth-child(3n) {
+    border-top-color: var(--matin-firouzeh);
+  }
+  .guide-figure__value {
+    font-family: var(--font-editorial);
+    font-size: clamp(2.2rem, 4.5vw, 3.4rem);
+    font-weight: 800;
+    line-height: 1.05;
+    color: var(--matin-encre);
+    font-variant-numeric: tabular-nums;
+  }
+  .guide-figure__label {
+    font-size: 1.05rem;
+    color: var(--matin-encre);
+  }
+  .guide-sources {
+    margin-top: 1rem;
+    font-size: 0.85rem;
+    line-height: 1.6;
+    color: var(--color-ink);
+  }
+  .guide-sources a {
+    color: var(--matin-firouzeh-ink);
+    text-decoration: underline;
+    text-underline-offset: 3px;
+  }
+
+  .guide-pair {
+    display: grid;
+    gap: 2rem;
+    margin-top: 2.5rem;
+  }
+  @media (min-width: 56rem) {
+    .guide-pair {
+      grid-template-columns: 3fr 2fr;
+      align-items: start;
+    }
+  }
+  .guide-sub {
+    font-family: var(--font-display);
+    font-size: 1.2rem;
+    font-weight: 800;
+    color: var(--matin-encre);
+    margin-bottom: 1rem;
+  }
+  .guide-sub--places {
+    margin-top: 3rem;
+  }
+  .guide-shares,
+  .guide-facts {
+    padding: 1.5rem 1.75rem;
+    border-radius: 0.5rem;
+    border-start-end-radius: 2rem;
+    background: var(--color-white);
+    border: 1.5px solid var(--color-card-edge);
+  }
+  .guide-facts {
+    rotate: 0.6deg;
+    border-start-end-radius: 0.5rem;
+    border-end-start-radius: 2rem;
+  }
+  .guide-share {
+    display: grid;
+    grid-template-columns: minmax(8rem, 12rem) 1fr auto;
+    align-items: center;
+    gap: 0.75rem;
+    padding-block: 0.4rem;
+  }
+  .guide-share__bar {
+    height: 0.75rem;
+    border-radius: 999px;
+    background: var(--matin-sable);
+    overflow: hidden;
+  }
+  .guide-share__bar span {
+    display: block;
+    height: 100%;
+    width: var(--share);
+    border-radius: inherit;
+    background: var(--matin-firouzeh);
+  }
+  .guide-share:nth-child(2) .guide-share__bar span {
+    background: var(--matin-brique);
+  }
+  .guide-share:nth-child(3) .guide-share__bar span {
+    background: var(--matin-soleil);
+  }
+  .guide-share:nth-child(4) .guide-share__bar span {
+    background: var(--matin-encre);
+  }
+  .guide-share__value {
+    font-weight: 700;
+    font-variant-numeric: tabular-nums;
+    color: var(--matin-encre);
+  }
+  @media (max-width: 30rem) {
+    .guide-share {
+      grid-template-columns: 1fr auto;
+    }
+    .guide-share__bar {
+      grid-column: 1 / -1;
+      order: 3;
+    }
+  }
+  .guide-facts ul {
+    display: grid;
+    gap: 0.6rem;
+  }
+  .guide-facts li {
+    position: relative;
+    padding-inline-start: 1.6rem;
+    font-size: 1.05rem;
+  }
+  .guide-facts li::before {
+    content: '';
+    position: absolute;
+    inset-inline-start: 0;
+    top: 0.45em;
+    width: 0.8rem;
+    height: 0.8rem;
+    border-radius: 50%;
+    background: var(--matin-soleil);
+  }
+
+  /* Places: shared organic card base (one deep corner, gentle tilt, lift on hover). */
+  .guide-places {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(min(100%, 19rem), 1fr));
+    gap: 1.5rem;
+  }
+  .guide-place {
+    display: flex;
+    flex-direction: column;
+    gap: 0.6rem;
+    padding: 1.5rem;
+  }
+  .guide-place__kind {
+    --kind: var(--matin-firouzeh-ink);
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    align-self: flex-start;
+    padding: 0.2rem 0.7rem;
+    border-radius: 999px;
+    background: color-mix(in srgb, var(--kind) 12%, white);
+    color: var(--kind);
+    font-family: var(--font-display);
+    font-size: 0.85rem;
+    font-weight: 800;
+  }
+  .guide-place__kind[data-kind='culture'] {
+    --kind: var(--matin-brique-ink);
+  }
+  .guide-place__kind[data-kind='community'],
+  .guide-place__kind[data-kind='services'] {
+    --kind: var(--matin-encre);
+  }
+  .guide-place__name {
+    font-family: var(--font-editorial);
+    font-size: 1.3rem;
+    font-weight: 700;
+    line-height: 1.25;
+    color: var(--matin-encre);
+  }
+  .guide-place__note {
+    flex: 1;
+    line-height: 1.65;
+  }
+  .guide-place__link {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    align-self: flex-start;
+    font-family: var(--font-display);
+    font-weight: 800;
+    color: var(--matin-brique-ink);
+    text-decoration: underline;
+    text-decoration-color: var(--matin-soleil);
+    text-decoration-thickness: 2px;
+    text-underline-offset: 4px;
+  }
+
+  .guide-note {
+    max-width: 52rem;
+    margin-top: 1rem;
+    font-size: 0.95rem;
+    line-height: 1.7;
+    color: var(--color-ink);
+  }
+  .guide-suggest {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1.5rem;
+    margin-top: 3rem;
+    padding: 2rem 2.25rem;
+    border-radius: 0.5rem;
+    border-end-end-radius: 2.5rem;
+    background: var(--matin-sable);
+  }
+  .guide-suggest > div {
+    max-width: 40rem;
+  }
+  .guide-suggest__title {
+    font-family: var(--font-editorial);
+    font-size: clamp(1.5rem, 2.5vw, 2rem);
+    font-weight: 700;
+    color: var(--matin-encre);
+    margin-bottom: 0.4rem;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .guide-why,
+    .guide-facts {
+      rotate: none;
+    }
+  }
+</style>

@@ -73,6 +73,7 @@ const fa: DeepPartial<Dictionary> = {
     donate: 'کمک مالی',
     join: 'عضو شوید',
     resourcesDirectory: 'فهرست سازمان‌ها',
+    localGuide: 'راهنمای محلی',
     story: 'داستان ما',
     team: 'تیم ما',
     teamPresident: 'بنیان‌گذار و رئیس',

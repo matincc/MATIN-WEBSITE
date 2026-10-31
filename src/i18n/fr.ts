@@ -75,6 +75,7 @@ const fr = {
     teamExecutive: 'Équipe de direction',
     teamAdvisors: 'Collaborer avec Matin',
     resourcesDirectory: 'Répertoire des organismes',
+    localGuide: 'Guide local',
     president: 'Un mot personnel de notre président',
     ourPresident: 'Notre président',
     notes: 'Notes du président',

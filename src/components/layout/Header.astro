@@ -5,6 +5,7 @@ import LangToggle from './LangToggle.astro';
 import { newsAnchors, href, type Alternates, type RouteKey, type UiLang } from '@/i18n/routes';
 import { useTranslations } from '@/i18n/ui';
 import { getNetworks, getUpcomingEvents, picksOf } from '@/lib/content';
+import { guideStrings } from '@/lib/localGuide';
 
 interface Props {
   lang: UiLang;
@@ -84,6 +85,12 @@ const resourcesLinks = [
     : { id: 'cat-international', label: t('resources.international') },
   { id: 'policy', label: t('resources.policyTitle') },
 ].map((l) => ({ ...l, href: anchor(resourcesHref, l.id) }));
+// The Local Guide (owner's request, Oct 30 2026): its own page, under Resources.
+resourcesLinks.push({
+  id: 'local-guide',
+  label: guideStrings(lang).title,
+  href: href('localGuide', lang),
+});
 // Sub-links of "Contact & Collaboration" (owner's request, Oct 29 2026), in his order:
 // Write to us, Membership, Join Matin's Volunteer Team, all sections of the Contact page.
 const contactHref = href('contact', lang);

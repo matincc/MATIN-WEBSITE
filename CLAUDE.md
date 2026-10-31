@@ -149,6 +149,12 @@ A new homepage design system, homepage only for now (other pages follow after th
 - **Motion:** scroll reveals (`data-reveal`), gentle image zoom and poster straightening on hover (desktop pointer only), sideways galleries with arrow buttons; nothing moves on its own; everything stops under reduced motion.
 - **Strings:** `src/i18n/living.ts` (interface words only, FR/EN/FA). Section texts are the approved strings and content files; no new section copy was written.
 
+## 4e. Local Guide (owner's request, Oct 30 2026: "the site should also be a smart directory")
+
+- **Page** `LocalGuidePage.astro` (`/fr/guide-local/`, `/en/local-guide/`, `/fa/local-guide/`, route `localGuide`), linked last in the Resources dropdown and from the Resources page quick links. LaSalle first (where Matin works), then Montréal, Québec and Canada.
+- **Data and texts** in `src/lib/localGuide.ts`: every figure and place comes from an official source linked beside it (Statistics Canada through the City of Montréal's « Montréal en statistiques » profiles, Statistics Canada, montreal.ca, quebec.ca, canada.ca). Never add a number or a place without its official source; never estimate. `checkedOn` is the last verification date shown on the page. When the 2026 Census is published, replace the 2021 figures and sources. Persian texts are drafts until the owner reviews them.
+- **Design:** the team's note « Pourquoi ce guide ? » on apricot paper (slightly tilted, a sun), a search field and kind chips that filter the places, then one section per region (LaSalle on pale turquoise with the hand-drawn line, Québec on sable): large figures in the editorial serif under coloured rules that count up once in view (final value in the HTML, nothing moves under reduced motion), labelled share bars and « En bref » facts, and place cards (shared organic `.card`, kind tag, official name never translated, « Site officiel » link in a new tab). Ends with the census note, the no-affiliation notice and « Proposer un lieu » to `contact#write`. Structured data: `CollectionPage` with an `ItemList` of the places.
+
 ## 5. Accessibility and responsiveness
 
 - Real heading hierarchy: one `h1` per page, then `h2`/`h3` in order.
