@@ -740,7 +740,7 @@ const jsonLd = [
     border-radius: 50%;
   }
   :global(.cmap-pin__dot[data-kind='heritage']) {
-    --k: var(--color-brique);
+    --k: var(--matin-brique-ink);
     --k-text: var(--matin-white);
   }
   :global(.cmap-pin__dot[data-kind='venue']) {
@@ -752,8 +752,11 @@ const jsonLd = [
     --k-text: var(--matin-encre);
   }
   :global(.cmap-pin__dot[data-kind='welcome']) {
-    --k: var(--color-firouzeh);
+    --k: var(--matin-firouzeh-ink);
     --k-text: var(--matin-white);
+  }
+  :global(.cmap .leaflet-control-attribution a) {
+    color: var(--matin-encre);
   }
   :global(.cmap .leaflet-tooltip) {
     font-family: var(--font-display);
