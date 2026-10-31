@@ -14,8 +14,16 @@ import { livingStrings } from '@/i18n/living';
 
 interface Props {
   lang: UiLang;
+  /**
+   * « areas »: the three areas only; « join »: the participation invitation only, in its own
+   * section (owner's homepage order, Oct 31 2026: News right after the areas, the invitation
+   * after Notes from the President). Default: both, as before.
+   */
+  part?: 'all' | 'areas' | 'join';
 }
-const { lang } = Astro.props;
+const { lang, part = 'all' } = Astro.props;
+const showAreas = part !== 'join';
+const showJoin = part !== 'areas';
 const t = useTranslations(lang);
 const l = livingStrings(lang);
 const areas: { title: string; text: string; slot: MediaSlot; tone: string }[] = [
@@ -42,8 +50,13 @@ const ways = [
 ];
 ---
 
-<section id="programs" class="lprog scroll-mt-24" aria-labelledby="lprog-title">
+<section
+  id={showAreas ? 'programs' : 'participation'}
+  class:list={['lprog scroll-mt-24', { 'lprog--join': !showAreas }]}
+  aria-labelledby={showAreas ? 'lprog-title' : 'ljoin-title'}
+>
   <div class="container-site">
+    {showAreas && (<Fragment>
     <header class="lprog__head" data-reveal>
       <p class="living-kicker">{t('home.areasEyebrow')}</p>
       <h2 id="lprog-title" class="living-title">
@@ -77,11 +90,17 @@ const ways = [
         <ArrowRight size={18} class="flip-rtl" aria-hidden="true" />
       </a>
     </p>
+    </Fragment>)}
 
+    {showJoin && (<Fragment>
     <!-- Participation: the approved invitation of Our Team (owner, Oct 28 2026). -->
     <div class="ljoin" id="participate" data-reveal>
       <div class="ljoin__text">
-        <h3 class="ljoin__title">{t('team.joinTitle')}</h3>
+        {showAreas ? (
+          <h3 class="ljoin__title">{t('team.joinTitle')}</h3>
+        ) : (
+          <h2 id="ljoin-title" class="ljoin__title">{t('team.joinTitle')}</h2>
+        )}
         <p class="ljoin__body">{t('team.joinText')}</p>
         <ul class="ljoin__ways">
           {ways.map((w) => (
@@ -107,6 +126,7 @@ const ways = [
         class="ljoin__photo"
       />
     </div>
+    </Fragment>)}
   </div>
 </section>
 
@@ -115,6 +135,12 @@ const ways = [
     padding-block: clamp(4rem, 3rem + 4vw, 7rem);
     background: var(--matin-sable);
     border-start-end-radius: clamp(3rem, 8vw, 9rem);
+  }
+  .lprog--join {
+    padding-block: clamp(3rem, 2rem + 3vw, 5rem);
+  }
+  .lprog--join .ljoin {
+    margin-block-start: 0;
   }
   .lprog__head {
     max-width: 52rem;

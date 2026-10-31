@@ -265,12 +265,10 @@ const l = livingStrings(lang);
     <ExpireEvents />
 
     {/* The full-width Montréal pause was removed (owner's request, Oct 30 2026: shorter homepage). */}
-    <!-- Programs and Participation -->
-    <LivingPrograms lang={lang} />
-    <AdvisoryInvite lang={lang} />
-
-    <!-- Newsletter (owner's request, Oct 30 2026) -->
-    <HomeNewsletter lang={lang} />
+    <!-- Programs: the three areas of work. Homepage order (owner's request, Oct 31 2026):
+         areas → News → Notes from the President → Share Your Expertise → Advisory Circle →
+         Newsletter → Cultural Resources → Partners and supporters → land acknowledgement. -->
+    <LivingPrograms lang={lang} part="areas" />
 
     <!-- News, set like a cultural publication: Cultural News in region tabs, then Matin News -->
     <section id="latest-news" class="lnews scroll-mt-24" aria-labelledby="latest-news-title">
@@ -370,6 +368,13 @@ const l = livingStrings(lang);
         </div>
       </section>
     )}
+
+    <!-- Participation: Share Your Expertise with Matin, then the Advisory Circle -->
+    <LivingPrograms lang={lang} part="join" />
+    <AdvisoryInvite lang={lang} />
+
+    <!-- Newsletter (owner's request, Oct 30 2026) -->
+    <HomeNewsletter lang={lang} />
 
     <!-- Cultural Resources & Organizations: opens the directory -->
     <ResourcesTeaser lang={lang} />
