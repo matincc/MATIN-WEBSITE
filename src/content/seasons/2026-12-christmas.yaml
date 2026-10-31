@@ -1,19 +1,20 @@
-# Christmas, Friday December 25, 2026. Free public activities: to add once published.
+# The holiday season (« le temps des Fêtes »), around December 25, 2026: a civic, non-religious
+# greeting (owner's rule, Oct 31 2026: no religious occasions). Free public activities: to add once published.
 date: '2026-12-25'
 showFrom: '2026-12-19'
 showUntil: '2026-12-26'
 tone: festive
 motif: tree
-dateSource: Christmas Day, December 25 (statutory holiday in Québec and Canada).
+dateSource: December 25 is a statutory holiday in Québec and Canada; the holiday season runs around it.
 kicker:
   fr: "25 décembre"
   en: "December 25"
   fa: "۲۵ دسامبر"
 title:
-  fr: "Joyeux Noël !"
-  en: "Merry Christmas!"
-  fa: "کریسمس مبارک!"
+  fr: "Joyeuses Fêtes !"
+  en: "Happy Holidays!"
+  fa: "تعطیلات خوش!"
 greeting:
-  fr: "Le 25 décembre, les familles chrétiennes de Montréal célèbrent Noël, et toute la ville s'illumine. Pour beaucoup, c'est le temps de se retrouver, de partager et de penser aux autres. Matin souhaite un joyeux Noël à celles et à ceux qui le célèbrent, et de belles fêtes à tous."
-  en: "On December 25, Montréal's Christian families celebrate Christmas, and the whole city lights up. For many, it is a time to come together, to share and to think of others. Matin wishes a merry Christmas to all who celebrate it, and happy holidays to everyone."
-  fa: "در ۲۵ دسامبر، خانواده‌های مسیحی مونترال کریسمس را جشن می‌گیرند و همهٔ شهر چراغانی می‌شود. برای بسیاری، این روزها زمان دور هم بودن، سهیم شدن و به فکر دیگران بودن است. متین کریسمس را به همهٔ کسانی که آن را جشن می‌گیرند تبریک می‌گوید و برای همه روزهای خوشی آرزو می‌کند."
+  fr: "Au temps des Fêtes, Montréal s'illumine et la ville ralentit un peu. C'est un moment pour se retrouver, partager et penser aux autres. Matin souhaite à toutes et à tous de joyeuses Fêtes et de beaux moments avec leurs proches."
+  en: "During the holiday season, Montréal lights up and the city slows down a little. It is a time to come together, to share and to think of others. Matin wishes everyone happy holidays and warm moments with their loved ones."
+  fa: "در روزهای تعطیلات پایان سال، مونترال چراغانی می‌شود و شهر کمی آرام‌تر می‌شود. این روزها زمان دور هم بودن، سهیم شدن و به فکر دیگران بودن است. متین برای همه تعطیلاتی خوش و لحظه‌هایی گرم در کنار عزیزانشان آرزو می‌کند."

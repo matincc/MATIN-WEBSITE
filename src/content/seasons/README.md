@@ -8,8 +8,11 @@ every future occasion is already in the page and the visitor's browser picks the
 
 ## Rules
 
-- Greet every community and faith alike, warmly and briefly: no theology, no politics,
-  nothing that could hurt anyone (religion, origin, sex, colour, language). No LGBTQ
+- No religious occasions (owner's rule, Oct 31 2026: Matin stays out of religious matters):
+  only civic days, seasons and cultural celebrations (no Diwali, Hanukkah, Eid, Easter,
+  Passover, Vaisakhi; the end of December is greeted as the holiday season, not Christmas).
+  Warm and brief, no politics, nothing that could hurt anyone (religion, origin, sex,
+  colour, language). No LGBTQ
   content (owner's standing rule). Days of remembrance use `tone: solemn`.
 - Never invent an occasion, a date or an activity. Check the date (`dateSource`).
 - Outings: FREE only, from municipal or public bodies only (LaSalle borough first, then the
@@ -22,6 +25,5 @@ every future occasion is already in the page and the visitor's browser picks the
 
 ## Planned next (dates to check before adding)
 
-Lunar New Year, Valentine's Day, March 8, Nowruz, Eid al-Fitr, Easter, Passover,
-Vaisakhi, National Indigenous Peoples Day (June 21), Fête nationale (June 24),
-Canada Day (July 1), Eid al-Adha, Mid-Autumn Festival.
+Lunar New Year, March 8, Nowruz, National Indigenous Peoples Day (June 21),
+Fête nationale (June 24), Canada Day (July 1), Mid-Autumn Festival.
