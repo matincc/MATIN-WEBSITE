@@ -370,6 +370,8 @@ const isActive = (url: string) => !url.includes('?') && current.startsWith(url);
 <style>
   /* Cream header, navy menu band (design-system brief, Oct 31 2026). */
   .site-header {
+    /* The gold leaf on the logo rule sits on the cream header, not on a white patch. */
+    --lockup-bg: var(--matin-ivoire);
     position: sticky;
     top: 0;
     z-index: 40;

@@ -955,14 +955,19 @@ html[data-leaf='d'] .ahero__place { gap: 0.6rem; }
 html[data-leaf='b'] svg.leafopt--slogan,
 html[data-leaf='d'] svg.leafopt--slogan {
   display: inline-block;
-  margin-inline-start: 0.45rem;
-  vertical-align: -0.1em;
+  width: 1.5rem;
+  height: 1.5rem;
+  margin-inline-start: 0.5rem;
+  vertical-align: -0.25em;
   color: var(--matin-red);
 }
 html[data-leaf='b'] .lockup__leaf,
 html[data-leaf='d'] .lockup__leaf {
   color: var(--matin-red) !important;
-  scale: 1.5;
+  background: none !important;
+  padding: 0 !important;
+  width: 11px !important;
+  height: 11px !important;
 }
 .leaf-ground {
   position: absolute;
