@@ -54,6 +54,7 @@ const fr = {
     gallery: 'Galerie',
     getInvolved: "S'impliquer",
     resources: 'Ressources',
+    cultureMap: 'Carte vivante des cultures',
     contact: 'Contact et collaboration',
     contactMembership: 'Adhésion',
     careers: 'Emplois',

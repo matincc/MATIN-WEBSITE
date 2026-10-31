@@ -1,0 +1,770 @@
+---
+/**
+ * Living map of cultures (owner's request, Oct 31 2026), LaSalle first. An OpenStreetMap
+ * map (Leaflet, bundled, tiles from tile.openstreetmap.org, allowed in the CSP img-src)
+ * beside a numbered list of the same places, so everything also works without the map.
+ * Data and texts: `src/lib/cultureMap.ts`. The other regions show as « Bientôt ».
+ */
+import { ArrowUpRight, MapPin } from '@lucide/astro';
+import PageLayout from '@/layouts/PageLayout.astro';
+import { href, siteAlternates, type UiLang } from '@/i18n/routes';
+import {
+  area,
+  boroughDirectory,
+  kinds,
+  sites,
+  strings as s,
+  urlFor,
+  withoutVenue,
+} from '@/lib/cultureMap';
+
+interface Props {
+  lang: UiLang;
+}
+const { lang } = Astro.props;
+const site = Astro.site ?? new URL(Astro.url.origin);
+const pageUrl = new URL(href('cultureMap', lang), site).href;
+
+const pins = sites.map((p, i) => ({
+  id: p.id,
+  n: i + 1,
+  kind: p.kind,
+  lat: p.lat,
+  lon: p.lon,
+  name: p.name,
+  address: p.address,
+}));
+
+const jsonLd = [
+  {
+    '@context': 'https://schema.org',
+    '@type': 'ItemList',
+    name: `${s.title[lang]} · ${area.name[lang]}`,
+    description: s.description[lang],
+    url: pageUrl,
+    inLanguage: lang === 'fr' ? 'fr-CA' : lang === 'en' ? 'en-CA' : 'fa',
+    numberOfItems: sites.length,
+    itemListElement: sites.map((p, i) => ({
+      '@type': 'ListItem',
+      position: i + 1,
+      item: {
+        '@type': p.schemaType,
+        name: p.name,
+        description: p.text[lang],
+        url: urlFor(p.url, lang),
+        address: {
+          '@type': 'PostalAddress',
+          streetAddress: p.address,
+          addressLocality: 'Montréal (LaSalle)',
+          addressRegion: 'QC',
+          addressCountry: 'CA',
+        },
+        geo: { '@type': 'GeoCoordinates', latitude: p.lat, longitude: p.lon },
+      },
+    })),
+  },
+];
+---
+
+<PageLayout
+  lang={lang}
+  title={s.title[lang]}
+  description={s.description[lang]}
+  lede={s.lede[lang]}
+  ledeStrong
+  accent="firouzeh"
+  alternates={siteAlternates('cultureMap')}
+  jsonLd={jsonLd}
+>
+  <section class="container-site cmap" aria-labelledby="cmap-area">
+    <div class="cmap__head">
+      <h2 id="cmap-area" class="cmap__area">
+        <MapPin size={28} aria-hidden="true" />
+        {area.name[lang]}
+      </h2>
+      <ul class="cmap__regions" aria-label={s.soonLabel[lang]}>
+        {s.regions.map((r) => (
+          <li class:list={['cmap__region', !r.live && 'is-soon']}>
+            {r.name[lang]}
+            {!r.live && <span class="cmap__soon">{s.soonLabel[lang]}</span>}
+          </li>
+        ))}
+      </ul>
+    </div>
+
+    <div class="cmap__filters" role="group" aria-label={s.filterLabel[lang]}>
+      <button type="button" class="cmap__chip" data-filter="all" aria-pressed="true">
+        {s.all[lang]}
+      </button>
+      {kinds.map((k) => (
+        <button
+          type="button"
+          class="cmap__chip"
+          data-filter={k.id}
+          data-kind={k.id}
+          aria-pressed="false"
+        >
+          <span class="cmap__dot" aria-hidden="true" />
+          {k.label[lang]}
+        </button>
+      ))}
+    </div>
+
+    <div class="cmap__grid">
+      <div class="cmap__mapwrap">
+        <div
+          id="cmap-map"
+          class="cmap__map"
+          dir="ltr"
+          role="region"
+          aria-label={s.mapLabel[lang]}
+          data-pins={JSON.stringify(pins)}
+          data-center={JSON.stringify(area.center)}
+          data-attribution="© OpenStreetMap"
+        ></div>
+        <p class="cmap__hint">{s.mapHint[lang]}</p>
+        <noscript>
+          <p class="cmap__hint">{s.noScript[lang]}</p>
+        </noscript>
+      </div>
+
+      <ol class="cmap__list">
+        {sites.map((p, i) => (
+          <li class="cmap__card" id={`lieu-${p.id}`} data-kind={p.kind} data-site={p.id}>
+            <button type="button" class="cmap__locate" data-locate={p.id}>
+              <span class="cmap__num" aria-hidden="true">
+                {i + 1}
+              </span>
+              <span class="cmap__cardhead">
+                <span class="cmap__kind">{kinds.find((k) => k.id === p.kind)?.label[lang]}</span>
+                <span class="cmap__name" lang="fr" dir="auto">
+                  {p.name}
+                </span>
+                <span class="cmap__addr" lang="fr" dir="ltr">
+                  {p.address}
+                </span>
+              </span>
+              <span class="sr-only">{s.showOnMap[lang]}</span>
+            </button>
+            <p class="cmap__text">{p.text[lang]}</p>
+            <ul class="cmap__tags">
+              {p.elements.map((e) => (
+                <li>{e[lang]}</li>
+              ))}
+            </ul>
+            {p.orgs && (
+              <div class="cmap__orgs">
+                <p class="cmap__orgs-title">{s.basedHere[lang]}</p>
+                <ul>
+                  {p.orgs.map((o) => (
+                    <li>
+                      <a href={o.url} target="_blank" rel="noopener" lang="fr" dir="auto">
+                        {o.name}
+                        <ArrowUpRight size={16} aria-hidden="true" />
+                      </a>
+                      <span>{o.text[lang]}</span>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            )}
+            <a class="cmap__link" href={urlFor(p.url, lang)} target="_blank" rel="noopener">
+              {s.officialSite[lang]}
+              <ArrowUpRight size={16} aria-hidden="true" />
+            </a>
+          </li>
+        ))}
+      </ol>
+    </div>
+
+    <div class="cmap__more">
+      <div class="cmap__also">
+        <h2 class="cmap__h3">{s.withoutVenueTitle[lang]}</h2>
+        <p>{s.withoutVenueText[lang]}</p>
+        <ul>
+          {withoutVenue.map((o) => (
+            <li>
+              <a href={o.url} target="_blank" rel="noopener" lang="it" dir="auto">
+                {o.name}
+                <ArrowUpRight size={16} aria-hidden="true" />
+              </a>
+              <span>{o.text[lang]}</span>
+            </li>
+          ))}
+        </ul>
+      </div>
+
+      <aside class="cmap__soonpanel" aria-labelledby="cmap-soon">
+        <span class="cmap__soonbadge">{s.soonLabel[lang]}</span>
+        <h2 id="cmap-soon" class="cmap__h3">
+          {s.soonTitle[lang]}
+        </h2>
+        <p>{s.soonText[lang]}</p>
+        <a class="cmap__cta" href={`${href('contact', lang)}#write`}>
+          {s.soonCta[lang]}
+        </a>
+      </aside>
+    </div>
+
+    <footer class="cmap__sources">
+      <h2 class="cmap__h4">{s.sourcesTitle[lang]}</h2>
+      <p>{s.sourcesText[lang]}</p>
+      <p>
+        <a href={boroughDirectory.url} target="_blank" rel="noopener">
+          {boroughDirectory.label[lang]}
+        </a>
+        · {s.checked[lang]}
+      </p>
+    </footer>
+  </section>
+</PageLayout>
+
+<script>
+  import L from 'leaflet';
+  import 'leaflet/dist/leaflet.css';
+
+  type Pin = {
+    id: string;
+    n: number;
+    kind: string;
+    lat: number;
+    lon: number;
+    name: string;
+    address: string;
+  };
+
+  const el = document.getElementById('cmap-map');
+  if (el) {
+    const pins: Pin[] = JSON.parse(el.dataset.pins ?? '[]');
+    const map = L.map(el, {
+      center: JSON.parse(el.dataset.center ?? '[45.43,-73.63]'),
+      zoom: 14,
+      scrollWheelZoom: false,
+      attributionControl: true,
+    });
+    map.attributionControl.setPrefix(false);
+    L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
+      maxZoom: 19,
+      attribution:
+        '© <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener">OpenStreetMap</a>',
+    }).addTo(map);
+    // The wheel zooms only once the visitor has chosen the map (no scroll trap).
+    map.on('click focus', () => map.scrollWheelZoom.enable());
+    map.on('mouseout blur', () => map.scrollWheelZoom.disable());
+
+    const cards = new Map<string, HTMLElement>();
+    document.querySelectorAll<HTMLElement>('.cmap__card').forEach((c) => {
+      if (c.dataset.site) cards.set(c.dataset.site, c);
+    });
+
+    const markers = new Map<string, L.Marker>();
+    const select = (id: string, fromMap: boolean) => {
+      cards.forEach((c, key) => c.classList.toggle('is-active', key === id));
+      markers.forEach((m, key) => m.getElement()?.classList.toggle('is-active', key === id));
+      const m = markers.get(id);
+      if (!m) return;
+      if (fromMap) {
+        cards.get(id)?.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+      } else {
+        map.flyTo(m.getLatLng(), 16, { duration: 0.6 });
+        if (window.matchMedia('(max-width: 63.99rem)').matches) {
+          el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }
+      }
+    };
+
+    for (const p of pins) {
+      const icon = L.divIcon({
+        className: 'cmap-pin',
+        html: `<span class="cmap-pin__dot" data-kind="${p.kind}">${p.n}</span>`,
+        iconSize: [36, 36],
+        iconAnchor: [18, 18],
+      });
+      const m = L.marker([p.lat, p.lon], { icon, title: `${p.n}. ${p.name}`, alt: p.name })
+        .addTo(map)
+        .bindTooltip(`${p.n}. ${p.name}`, { direction: 'top', offset: [0, -16] });
+      m.on('click', () => select(p.id, true));
+      m.on('keypress', () => select(p.id, true));
+      markers.set(p.id, m);
+    }
+    const bounds = L.latLngBounds(pins.map((p) => [p.lat, p.lon] as [number, number]));
+    map.fitBounds(bounds, { padding: [36, 36] });
+
+    document.querySelectorAll<HTMLButtonElement>('[data-locate]').forEach((b) => {
+      b.addEventListener('click', () => select(b.dataset.locate ?? '', false));
+    });
+
+    // Filters: one kind at a time, or everything.
+    const chips = document.querySelectorAll<HTMLButtonElement>('.cmap__chip');
+    chips.forEach((chip) =>
+      chip.addEventListener('click', () => {
+        const f = chip.dataset.filter ?? 'all';
+        chips.forEach((c) => c.setAttribute('aria-pressed', String(c === chip)));
+        const visible: [number, number][] = [];
+        for (const p of pins) {
+          const show = f === 'all' || p.kind === f;
+          cards.get(p.id)?.toggleAttribute('hidden', !show);
+          const m = markers.get(p.id);
+          if (!m) continue;
+          if (show) {
+            m.addTo(map);
+            visible.push([p.lat, p.lon]);
+          } else m.remove();
+        }
+        if (visible.length)
+          map.fitBounds(L.latLngBounds(visible), { padding: [48, 48], maxZoom: 16 });
+      }),
+    );
+  }
+</script>
+
+<style>
+  .cmap {
+    --k-heritage: var(--color-brique);
+    --k-venue: var(--matin-encre);
+    --k-arts: var(--color-soleil);
+    --k-welcome: var(--color-firouzeh);
+    padding-block-end: 4rem;
+  }
+  [data-kind='heritage'] {
+    --k: var(--k-heritage);
+    --k-text: var(--matin-white);
+  }
+  [data-kind='venue'] {
+    --k: var(--k-venue);
+    --k-text: var(--matin-white);
+  }
+  [data-kind='arts'] {
+    --k: var(--k-arts);
+    --k-text: var(--matin-encre);
+  }
+  [data-kind='welcome'] {
+    --k: var(--k-welcome);
+    --k-text: var(--matin-white);
+  }
+
+  .cmap__head {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem 2rem;
+    margin-block-end: 1.25rem;
+  }
+  .cmap__area {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-family: var(--font-editorial);
+    font-size: clamp(2rem, 4vw, 3rem);
+    font-weight: 700;
+    color: var(--matin-encre);
+  }
+  .cmap__area :global(svg) {
+    color: var(--color-brique);
+  }
+  .cmap__regions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+  .cmap__region {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.45rem 1rem;
+    border-radius: 999px;
+    font-family: var(--font-display);
+    font-weight: 700;
+    background: var(--matin-encre);
+    color: var(--matin-white);
+  }
+  .cmap__region.is-soon {
+    background: var(--matin-white);
+    color: var(--matin-encre);
+    border: 1.5px dashed var(--color-firouzeh);
+  }
+  .cmap__soon {
+    font-size: 0.75rem;
+    font-weight: 800;
+    padding: 0.1rem 0.5rem;
+    border-radius: 999px;
+    background: var(--color-soleil);
+    color: var(--matin-encre);
+  }
+
+  .cmap__filters {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin-block-end: 1.5rem;
+  }
+  .cmap__chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.5rem 1rem;
+    border-radius: 999px;
+    border: 1.5px solid var(--color-card-edge);
+    background: var(--matin-white);
+    color: var(--matin-encre);
+    font-family: var(--font-display);
+    font-weight: 700;
+    font-size: 0.95rem;
+    cursor: pointer;
+  }
+  .cmap__chip[aria-pressed='true'] {
+    background: var(--matin-encre);
+    border-color: var(--matin-encre);
+    color: var(--matin-white);
+  }
+  .cmap__dot {
+    width: 0.8rem;
+    height: 0.8rem;
+    border-radius: 50%;
+    background: var(--k);
+    box-shadow: 0 0 0 2px var(--matin-white);
+  }
+  .cmap__chip:focus-visible,
+  .cmap__locate:focus-visible {
+    outline: 3px solid var(--matin-encre);
+    outline-offset: 2px;
+  }
+
+  .cmap__grid {
+    display: grid;
+    gap: 1.5rem;
+  }
+  @media (min-width: 64rem) {
+    .cmap__grid {
+      grid-template-columns: minmax(0, 1.45fr) minmax(0, 1fr);
+      align-items: start;
+    }
+    .cmap__mapwrap {
+      position: sticky;
+      top: 6.5rem;
+    }
+    .cmap__list {
+      max-height: 44rem;
+      overflow-y: auto;
+      padding-inline-end: 0.5rem;
+    }
+  }
+  .cmap__map {
+    height: clamp(22rem, 62vh, 40rem);
+    border-radius: 2rem 0.75rem 2rem 0.75rem;
+    overflow: hidden;
+    border: 2px solid var(--matin-encre);
+    background: var(--matin-sable);
+    box-shadow: 10px 10px 0 var(--color-soleil);
+    z-index: 0;
+  }
+  [dir='rtl'] .cmap__map {
+    box-shadow: -10px 10px 0 var(--color-soleil);
+  }
+  /* Warm the map a little so it sits in the palette. */
+  .cmap__map :global(.leaflet-tile-pane) {
+    filter: saturate(0.7) sepia(0.12);
+  }
+  .cmap__hint {
+    margin-block-start: 1rem;
+    font-size: 0.95rem;
+    color: var(--matin-ink);
+  }
+
+  .cmap__list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: grid;
+    gap: 1rem;
+  }
+  .cmap__card {
+    background: var(--matin-white);
+    border: 1.5px solid var(--color-card-edge);
+    border-inline-start: 6px solid var(--k);
+    border-radius: 0.75rem 1.75rem 0.75rem 0.75rem;
+    padding: 1.1rem 1.25rem;
+    transition:
+      box-shadow 0.2s,
+      transform 0.2s;
+  }
+  .cmap__card:nth-child(even) {
+    border-radius: 1.75rem 0.75rem 0.75rem 0.75rem;
+  }
+  .cmap__card.is-active {
+    box-shadow: 0 0 0 3px var(--k);
+    transform: translateY(-2px);
+  }
+  .cmap__locate {
+    display: flex;
+    gap: 0.85rem;
+    align-items: flex-start;
+    width: 100%;
+    text-align: start;
+    background: none;
+    border: 0;
+    padding: 0;
+    cursor: pointer;
+    color: inherit;
+  }
+  .cmap__num {
+    flex: none;
+    display: grid;
+    place-items: center;
+    width: 2.25rem;
+    height: 2.25rem;
+    border-radius: 50%;
+    background: var(--k);
+    color: var(--k-text);
+    font-family: var(--font-display);
+    font-weight: 800;
+  }
+  .cmap__cardhead {
+    display: grid;
+    gap: 0.1rem;
+  }
+  .cmap__kind {
+    font-family: var(--font-display);
+    font-size: 0.8rem;
+    font-weight: 800;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    color: var(--color-firouzeh-ink);
+  }
+  .cmap__name {
+    font-family: var(--font-editorial);
+    font-size: 1.3rem;
+    font-weight: 700;
+    color: var(--matin-encre);
+    line-height: 1.25;
+  }
+  .cmap__locate:hover .cmap__name {
+    text-decoration: underline;
+    text-decoration-color: var(--color-soleil);
+    text-underline-offset: 4px;
+  }
+  .cmap__addr {
+    font-size: 0.9rem;
+    color: var(--matin-ink);
+  }
+  .cmap__text {
+    margin-block: 0.75rem;
+    font-size: 1rem;
+    line-height: 1.6;
+  }
+  .cmap__tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.4rem;
+    list-style: none;
+    padding: 0;
+    margin: 0 0 0.75rem;
+  }
+  .cmap__tags li {
+    font-size: 0.85rem;
+    padding: 0.2rem 0.65rem;
+    border-radius: 999px;
+    background: var(--matin-ivoire);
+    border: 1px solid var(--color-card-edge);
+    color: var(--matin-encre);
+  }
+  .cmap__orgs {
+    margin-block: 0.25rem 0.85rem;
+    padding: 0.75rem 0.9rem;
+    border-radius: 0.75rem;
+    background: var(--matin-ivoire);
+  }
+  .cmap__orgs-title {
+    font-family: var(--font-display);
+    font-weight: 800;
+    font-size: 0.85rem;
+    color: var(--color-brique-ink);
+    margin-block-end: 0.4rem;
+  }
+  .cmap__orgs ul,
+  .cmap__also ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: grid;
+    gap: 0.6rem;
+  }
+  .cmap__orgs li,
+  .cmap__also li {
+    display: grid;
+    gap: 0.1rem;
+    font-size: 0.95rem;
+    line-height: 1.5;
+  }
+  .cmap__orgs a,
+  .cmap__also a,
+  .cmap__link {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.25rem;
+    font-family: var(--font-display);
+    font-weight: 800;
+    color: var(--color-firouzeh-ink);
+    text-decoration: underline;
+    text-decoration-color: var(--color-soleil);
+    text-underline-offset: 3px;
+  }
+  [dir='rtl'] .cmap__orgs a :global(svg),
+  [dir='rtl'] .cmap__also a :global(svg),
+  [dir='rtl'] .cmap__link :global(svg) {
+    transform: scaleX(-1);
+  }
+
+  .cmap__more {
+    display: grid;
+    gap: 1.5rem;
+    margin-block-start: 3rem;
+  }
+  @media (min-width: 64rem) {
+    .cmap__more {
+      grid-template-columns: 1fr 1fr;
+    }
+  }
+  .cmap__also {
+    padding: 1.5rem;
+    border-radius: 1.75rem 0.75rem 0.75rem 0.75rem;
+    background: var(--matin-white);
+    border: 1.5px solid var(--color-card-edge);
+  }
+  .cmap__also > p {
+    margin-block: 0.4rem 1rem;
+  }
+  .cmap__soonpanel {
+    position: relative;
+    padding: 1.75rem;
+    border-radius: 0.75rem 2.5rem 0.75rem 0.75rem;
+    background: var(--color-firouzeh-ink);
+    color: var(--matin-white);
+    border-block-start: 6px solid var(--color-soleil);
+  }
+  .cmap__soonpanel p {
+    margin-block: 0.5rem 1.25rem;
+    line-height: 1.65;
+  }
+  .cmap__soonpanel .cmap__h3 {
+    color: var(--matin-white);
+  }
+  .cmap__cta {
+    display: inline-flex;
+    align-items: center;
+    padding: 0.7rem 1.5rem;
+    border-radius: 999px;
+    background: var(--color-soleil);
+    color: var(--matin-encre);
+    font-family: var(--font-display);
+    font-weight: 800;
+    text-decoration: none;
+    transition: transform 0.2s;
+  }
+  .cmap__cta:hover {
+    transform: translateY(-2px);
+  }
+  .cmap__cta:focus-visible {
+    outline: 3px solid var(--matin-white);
+    outline-offset: 3px;
+  }
+  .cmap__soonbadge {
+    display: inline-block;
+    margin-block-end: 0.5rem;
+    padding: 0.15rem 0.75rem;
+    border-radius: 999px;
+    background: var(--color-soleil);
+    color: var(--matin-encre);
+    font-family: var(--font-display);
+    font-weight: 800;
+    font-size: 0.85rem;
+  }
+  .cmap__h3 {
+    font-family: var(--font-editorial);
+    font-size: clamp(1.4rem, 2.4vw, 1.8rem);
+    font-weight: 700;
+    color: var(--matin-encre);
+  }
+  .cmap__h4 {
+    font-family: var(--font-display);
+    font-size: 1rem;
+    font-weight: 800;
+    color: var(--matin-encre);
+  }
+  .cmap__sources {
+    margin-block-start: 2.5rem;
+    padding-block-start: 1.25rem;
+    border-block-start: 2px solid var(--color-soleil);
+    font-size: 0.9rem;
+    line-height: 1.6;
+    color: var(--matin-ink);
+    display: grid;
+    gap: 0.4rem;
+  }
+  .cmap__sources a {
+    color: var(--color-firouzeh-ink);
+    text-decoration: underline;
+  }
+
+  /* Pins (Leaflet div icons). */
+  :global(.cmap-pin) {
+    background: none;
+    border: 0;
+  }
+  :global(.cmap-pin__dot) {
+    display: grid;
+    place-items: center;
+    width: 36px;
+    height: 36px;
+    border-radius: 50% 50% 50% 0.35rem;
+    background: var(--k);
+    color: var(--k-text);
+    border: 3px solid var(--matin-white);
+    box-shadow: 0 2px 6px rgb(0 0 0 / 0.25);
+    font-family: var(--font-display);
+    font-weight: 800;
+    font-size: 15px;
+    transition: transform 0.2s;
+  }
+  :global(.cmap-pin.is-active .cmap-pin__dot),
+  :global(.cmap-pin:hover .cmap-pin__dot) {
+    transform: scale(1.2);
+  }
+  :global(.cmap-pin:focus-visible) {
+    outline: 3px solid var(--matin-encre);
+    outline-offset: 2px;
+    border-radius: 50%;
+  }
+  :global(.cmap-pin__dot[data-kind='heritage']) {
+    --k: var(--color-brique);
+    --k-text: var(--matin-white);
+  }
+  :global(.cmap-pin__dot[data-kind='venue']) {
+    --k: var(--matin-encre);
+    --k-text: var(--matin-white);
+  }
+  :global(.cmap-pin__dot[data-kind='arts']) {
+    --k: var(--color-soleil);
+    --k-text: var(--matin-encre);
+  }
+  :global(.cmap-pin__dot[data-kind='welcome']) {
+    --k: var(--color-firouzeh);
+    --k-text: var(--matin-white);
+  }
+  :global(.cmap .leaflet-tooltip) {
+    font-family: var(--font-display);
+    font-weight: 700;
+    color: var(--matin-encre);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .cmap__card,
+    :global(.cmap-pin__dot) {
+      transition: none;
+    }
+  }
+</style>

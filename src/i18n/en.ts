@@ -53,6 +53,7 @@ const en: Dictionary = {
     gallery: 'Gallery',
     getInvolved: 'Get Involved',
     resources: 'Resources',
+    cultureMap: 'Living Map of Cultures',
     contact: 'Contact & Collaboration',
     contactMembership: 'Membership',
     careers: 'Careers',

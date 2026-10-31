@@ -59,6 +59,7 @@ const fa: DeepPartial<Dictionary> = {
     gallery: 'گالری',
     getInvolved: 'مشارکت',
     resources: 'منابع',
+    cultureMap: 'نقشهٔ زندهٔ فرهنگ‌ها',
     contact: 'تماس و همکاری',
     contactMembership: 'عضویت',
     careers: 'فرصت‌های شغلی',
