@@ -71,6 +71,7 @@ const fr = {
     team: 'Notre équipe',
     teamPresident: 'Président',
     teamMembers: 'Équipe',
+    teamBoard: 'Conseil d’administration',
     teamExecutive: 'Équipe de direction',
     teamAdvisors: 'Collaborer avec Matin',
     resourcesDirectory: 'Répertoire des organismes',

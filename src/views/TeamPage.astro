@@ -82,6 +82,43 @@ const joinWays = [
   <!-- "#team" is kept for older links to the team section. -->
   <section id="team" class="team-groups scroll-mt-24" aria-label={t('nav.team')}>
     <div class="container-site team-groups__stack">
+      {/* Board of Directors first, above the Executive Team (owner, Oct 31 2026). */}
+      {board.length > 0 && (
+        <section id="board" class="board scroll-mt-24" aria-labelledby="board-title" data-reveal>
+          <span class="board__sun" aria-hidden="true" />
+          <header class="board__head">
+            <h2 id="board-title" class="board__title">{t('team.boardTitle')}</h2>
+            <p class="board__lede">{t('team.boardLede')}</p>
+          </header>
+          {/* Owner, Oct 31 2026: less rigid. Arched portraits at different heights that slide
+             in and drift gently; a sideways, swipeable row on phones and tablets. */}
+          <ul class="board__list">
+            {board.map((m, i) => (
+              <li class="board__member" style={`--i: ${i}`}>
+                <div class="board__frame">
+                  <span class="board__field" aria-hidden="true" />
+                  {m.photo ? (
+                    <Image
+                      src={m.photo}
+                      alt={t('team.photoAlt', { name: m.name })}
+                      widths={[240, 360, 480]}
+                      sizes="(min-width: 64rem) 16rem, 70vw"
+                      class="board__photo"
+                    />
+                  ) : (
+                    <span class="board__photo board__initials" aria-hidden="true">
+                      {initials(m.name)}
+                    </span>
+                  )}
+                </div>
+                <span class="board__role">{m.role}</span>
+                <span class="board__name">{m.name}</span>
+              </li>
+            ))}
+          </ul>
+        </section>
+      )}
+
       <section id="executive-team" class="crew scroll-mt-24" aria-labelledby="executive-team-title">
         <header class="crew__head">
           <div>
@@ -164,36 +201,6 @@ const joinWays = [
           })}
         </ul>
       </section>
-
-      {board.length > 0 && (
-        <section id="board" class="board scroll-mt-24" aria-labelledby="board-title">
-          <header class="board__head">
-            <h2 id="board-title" class="board__title">{t('team.boardTitle')}</h2>
-            <p class="board__lede">{t('team.boardLede')}</p>
-          </header>
-          <ul class="board__list">
-            {board.map((m) => (
-              <li class="board__member">
-                {m.photo ? (
-                  <Image
-                    src={m.photo}
-                    alt={t('team.photoAlt', { name: m.name })}
-                    widths={[160, 240]}
-                    sizes="7.5rem"
-                    class="board__photo"
-                  />
-                ) : (
-                  <span class="board__photo board__initials" aria-hidden="true">
-                    {initials(m.name)}
-                  </span>
-                )}
-                <span class="board__name">{m.name}</span>
-                <span class="board__role">{m.role}</span>
-              </li>
-            ))}
-          </ul>
-        </section>
-      )}
 
       <CultureVoices lang={lang} />
 
@@ -615,49 +622,118 @@ const joinWays = [
     }
   }
   /* Board of Directors (Oct 30 2026): three round portraits on sable, one deep corner. */
+  /* Board of Directors (owner, Oct 31 2026): a turquoise panel with two deep corners and a
+     rising sun, arched portraits on colour fields at three heights. */
   .board {
+    position: relative;
+    overflow: hidden;
     padding: clamp(2rem, 4vw, 3.5rem);
-    background: var(--matin-sable);
-    border-radius: 1rem;
-    border-start-end-radius: 3rem;
+    background: var(--matin-firouzeh);
+    color: var(--matin-white);
+    border-radius: 4.5rem 1.25rem 4.5rem 1.25rem;
+  }
+  .board__sun {
+    position: absolute;
+    inset-block-start: -4rem;
+    inset-inline-end: 8%;
+    width: 9rem;
+    aspect-ratio: 1;
+    border-radius: 50%;
+    background: var(--matin-soleil);
+    opacity: 0.9;
   }
   .board__head {
+    position: relative;
     display: grid;
     gap: 0.6rem;
     max-width: 46rem;
-    margin-block-end: 2rem;
+    margin-block-end: 2.5rem;
   }
   .board__title {
-    font-family: var(--font-display);
-    font-size: clamp(1.8rem, 1.3rem + 2vw, 2.75rem);
+    font-family: var(--font-editorial);
+    font-size: clamp(1.9rem, 1.3rem + 2vw, 3rem);
+    font-weight: 700;
+    color: var(--matin-white);
+  }
+  :global(html[lang='fa']) .board__title {
     font-weight: 800;
-    color: var(--matin-encre);
   }
   .board__lede {
     font-size: 1.1rem;
     line-height: 1.7;
-    color: var(--matin-ink);
+    color: var(--matin-white);
   }
+  /* Phones and tablets: a sideways row that slides under the finger, one portrait peeking. */
   .board__list {
     display: grid;
-    gap: 2rem;
-    grid-template-columns: repeat(auto-fit, minmax(11rem, 1fr));
+    grid-auto-flow: column;
+    grid-auto-columns: minmax(14rem, 70%);
+    gap: 1.5rem;
+    overflow-x: auto;
+    overscroll-behavior-inline: contain;
+    scroll-snap-type: inline mandatory;
+    padding-block: 0.5rem 1.5rem;
+    padding-inline: 0.25rem;
+    scrollbar-width: thin;
+    scrollbar-color: var(--matin-soleil) transparent;
+  }
+  @media (min-width: 64rem) {
+    .board__list {
+      grid-auto-flow: row;
+      grid-template-columns: repeat(3, 1fr);
+      grid-auto-columns: auto;
+      gap: clamp(2rem, 4vw, 4rem);
+      overflow: visible;
+      padding-inline: 2rem;
+    }
+    /* Three heights, like the Executive Team spread. */
+    .board__member:nth-child(2) {
+      margin-block-start: 3rem;
+    }
+    .board__member:nth-child(3) {
+      margin-block-start: 1.25rem;
+    }
   }
   .board__member {
     display: grid;
     justify-items: center;
-    gap: 0.35rem;
+    gap: 0.5rem;
     text-align: center;
+    scroll-snap-align: center;
   }
-  .board__member :global(.board__photo),
+  .board__frame {
+    position: relative;
+    width: min(100%, 15rem);
+    aspect-ratio: 3 / 4;
+  }
+  /* A colour field offset behind each arch: sun, brick, ivory. */
+  .board__field {
+    position: absolute;
+    inset: 0;
+    translate: 0.9rem 0.9rem;
+    border-radius: 999px 999px 1.5rem 1.5rem;
+    background: var(--matin-soleil);
+  }
+  :global([dir='rtl']) .board__field {
+    translate: -0.9rem 0.9rem;
+  }
+  .board__member:nth-child(2) .board__field {
+    background: var(--matin-brique);
+  }
+  .board__member:nth-child(3) .board__field {
+    background: var(--matin-ivoire);
+  }
+  .board__frame :global(.board__photo),
   .board__initials {
-    width: 7.5rem;
-    height: 7.5rem;
-    margin-block-end: 0.6rem;
-    border-radius: 50%;
+    position: relative;
+    width: 100%;
+    height: 100%;
+    border-radius: 999px 999px 1.5rem 1.5rem;
     object-fit: cover;
-    border: 4px solid var(--matin-white);
-    box-shadow: 0 0 0 3px var(--matin-soleil);
+    border: 5px solid var(--matin-ivoire);
+    transition:
+      transform 0.5s ease,
+      border-radius 0.5s ease;
   }
   .board__initials {
     display: grid;
@@ -665,17 +741,57 @@ const joinWays = [
     background: var(--matin-encre);
     color: var(--matin-white);
     font-family: var(--font-display);
-    font-size: 1.8rem;
+    font-size: 2.4rem;
+    font-weight: 800;
+  }
+  .board__role {
+    position: relative;
+    margin-block-start: -1.4rem;
+    padding: 0.35rem 1.1rem;
+    border-radius: 999px;
+    background: var(--matin-soleil);
+    color: var(--matin-encre);
+    font-family: var(--font-display);
     font-weight: 800;
   }
   .board__name {
     font-family: var(--font-display);
-    font-size: 1.2rem;
+    font-size: 1.25rem;
     font-weight: 800;
-    color: var(--matin-encre);
+    color: var(--matin-white);
   }
-  .board__role {
-    font-weight: 600;
-    color: var(--matin-brique-ink);
+  /* Hover: the portrait rises and its arch opens a little. */
+  @media (hover: hover) {
+    .board__member:hover :global(.board__photo),
+    .board__member:hover .board__initials {
+      transform: translateY(-0.5rem) scale(1.03);
+      border-radius: 999px 999px 3rem 3rem;
+    }
+  }
+  @media (prefers-reduced-motion: no-preference) {
+    /* Each portrait slides in from its side once, then drifts gently up and down. */
+    .board__member {
+      animation: board-in 0.9s cubic-bezier(0.2, 0.7, 0.2, 1) both;
+      animation-delay: calc(var(--i) * 0.18s);
+    }
+    /* Waits until the panel scrolls into view (data-reveal adds .is-visible). */
+    :global(.reveal-ready) .board:not(.is-visible) .board__member {
+      animation-play-state: paused;
+    }
+    .board__frame {
+      animation: board-drift 7s ease-in-out infinite;
+      animation-delay: calc(var(--i) * -2.3s);
+    }
+  }
+  @keyframes board-in {
+    from {
+      opacity: 0;
+      transform: translateX(calc(-3rem + var(--i) * 3rem));
+    }
+  }
+  @keyframes board-drift {
+    50% {
+      transform: translateY(-0.6rem) rotate(calc((var(--i) - 1) * 0.8deg));
+    }
   }
 </style>

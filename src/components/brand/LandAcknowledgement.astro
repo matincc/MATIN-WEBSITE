@@ -8,8 +8,8 @@
  * of Tiohtià:ke, warmer and more human. The photo is a landscape of the place (slot
  * `montrealWide`: Montréal seen from Mont-Royal, with its small credit), never a stock
  * picture of Indigenous people: a photo of real Kanien'kehá:ka people or an Indigenous
- * artwork is used only with their permission and credit. The text sits on a deep green
- * panel so it stays readable on any photo.
+ * artwork is used only with their permission and credit. The text sits on an ivory arch
+ * (owner, Oct 31 2026: not a rectangle, straight text edges) so it reads on any photo.
  */
 import MediaImage from '@/components/media/MediaImage.astro';
 import { useTranslations } from '@/i18n/ui';
@@ -73,10 +73,11 @@ const t = useTranslations(lang);
     gap: 1rem;
     max-width: 46rem;
     padding: clamp(1.75rem, 1.2rem + 2.5vw, 3rem);
-    border-radius: 2rem 2rem 2rem 0.5rem;
-    background: color-mix(in srgb, var(--living-green-ink, #17423a) 86%, transparent);
-    backdrop-filter: blur(3px);
-    color: var(--matin-ivoire, #fbf6ec);
+    padding-block-start: clamp(3rem, 2.5rem + 3vw, 4.5rem);
+    /* An arch, like the rising sun, instead of a rectangle (owner, Oct 31 2026). */
+    border-radius: 50% 50% 2rem 2rem / 8rem 8rem 2rem 2rem;
+    background: color-mix(in srgb, var(--matin-ivoire) 94%, transparent);
+    color: var(--matin-encre);
     text-align: center;
     box-shadow: 0 1.5rem 3rem -1.5rem rgb(0 0 0 / 0.45);
   }
@@ -88,7 +89,7 @@ const t = useTranslations(lang);
     fill: var(--matin-soleil);
   }
   .land__sun line {
-    stroke: var(--matin-ivoire, #fbf6ec);
+    stroke: var(--matin-brique);
     stroke-width: 1;
     opacity: 0.7;
   }
@@ -98,19 +99,31 @@ const t = useTranslations(lang);
     font-weight: 800;
     letter-spacing: 0.18em;
     text-transform: uppercase;
-    color: var(--matin-soleil);
+    color: var(--matin-brique-ink);
   }
   :global(html[lang='fa']) .land__title {
     letter-spacing: 0;
     font-size: 1.15rem;
   }
+  /* Straight edges on both sides (owner, Oct 31 2026: the lines were ragged). */
   .land__text {
+    max-width: 38rem;
     font-size: clamp(1.05rem, 1rem + 0.3vw, 1.2rem);
     line-height: 1.85;
     color: inherit;
-  }
-  :global(html[lang='fa']) .land__text {
     text-align: justify;
     text-align-last: center;
+    hyphens: auto;
+  }
+  /* Phones: too narrow to justify without gaps, so the lines start evenly instead. */
+  @media (max-width: 40rem) {
+    .land__text {
+      text-align: start;
+      text-align-last: auto;
+    }
+  }
+  :global(html[lang='fa']) .land__text {
+    hyphens: none;
+    word-spacing: -0.02em;
   }
 </style>

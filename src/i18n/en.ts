@@ -70,6 +70,7 @@ const en: Dictionary = {
     team: 'Our Team',
     teamPresident: 'President',
     teamMembers: 'Team',
+    teamBoard: 'Board of Directors',
     teamExecutive: 'Executive Team',
     teamAdvisors: 'Collaborate with Matin',
     resourcesDirectory: 'Directory of Organizations',

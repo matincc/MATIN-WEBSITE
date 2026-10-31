@@ -32,11 +32,12 @@ const aboutLinks = [
     href: `${aboutHref}#who-we-are`,
   },
 ];
-// Sub-links of "Our Team" (owner's brief, Oct 24 2026): exactly three, the President,
-// the Executive Team and the invitation to collaborate (Oct 28 2026), on the Our Team page.
+// Sub-links of "Our Team" (owner's brief, Oct 24 2026): the President, the Board of
+// Directors (owner, Oct 31 2026), the Executive Team and the invitation to collaborate (Oct 28 2026), on the Our Team page.
 const teamHref = href('team', lang);
 const teamLinks = [
   { id: 'our-president', label: t('nav.teamPresident') },
+  { id: 'board', label: t('nav.teamBoard') },
   { id: 'executive-team', label: t('nav.teamExecutive') },
   { id: 'advisors', label: t('nav.teamAdvisors') },
 ].map((l) => ({ ...l, href: `${teamHref}#${l.id}` }));
