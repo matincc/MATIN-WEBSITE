@@ -10,7 +10,8 @@
  */
 import { Clock, Mail, MapPin, Phone } from '@lucide/astro';
 import PageLayout from '@/layouts/PageLayout.astro';
-import CommunityIllustration from '@/components/brand/CommunityIllustration.astro';
+import { Image } from 'astro:assets';
+import teamCollabPhoto from '@/assets/photos/team-collaboration.jpg';
 import SectionHeader from '@/components/ui/SectionHeader.astro';
 import ContactForm from '@/components/forms/ContactForm.astro';
 import VolunteerForm from '@/components/forms/VolunteerForm.astro';
@@ -121,11 +122,17 @@ const details = [
           <SocialLinks lang={lang} social={s.social} />
         </section>
 
-        {/* The illustration of the former homepage Get Involved band (owner's brief,
-            Oct 25 2026), with its mustard block. */}
-        <figure class="contact-art" aria-hidden="true">
-          <CommunityIllustration class="contact-art__img" />
-          <span class="contact-art__block"></span>
+        {/* The owner's photo replaces the community illustration (owner, Oct 31 2026),
+            in an arch with a saffron sun behind it. Illustrative photo: alt="". */}
+        <figure class="contact-art">
+          <span class="contact-art__block" aria-hidden="true"></span>
+          <Image
+            src={teamCollabPhoto}
+            alt=""
+            widths={[480, 720, 960]}
+            sizes="(min-width: 1024px) 30rem, 90vw"
+            class="contact-art__img"
+          />
         </figure>
 
         {address && (
@@ -189,56 +196,81 @@ const details = [
 </PageLayout>
 
 <style>
-  /* Scheme A (Oct 29 2026): a sand ground, panels with one deep corner each (less boxed,
-     owner's request), mirrored in Persian. Text stays navy or ink (10:1 or more). */
+  /* Colourful page (owner, Oct 31 2026: « like the other pages, no white »): each band
+     has its own pale ground, each panel a contrasting tint; inputs stay white so the
+     fields read clearly. Text navy or ink on every tint (8:1 or more); white on encre. */
   .write-band {
-    background: var(--color-sable);
+    background: color-mix(in srgb, var(--matin-soleil) 24%, var(--matin-ivoire));
   }
-  .form-panel {
-    background: var(--color-ivory);
-    border-block-start: 6px solid var(--color-gold);
+  .form-panel:not(#o) {
+    border: none;
+    border-block-start: 8px solid var(--matin-firouzeh-ink);
     border-start-end-radius: 5rem;
+    background: color-mix(in srgb, var(--matin-firouzeh) 26%, var(--matin-ivoire));
   }
-  .info-panel {
-    background: var(--color-white);
-    border-block-start: 6px solid var(--color-teal);
+  .info-panel:not(#o) {
+    border: none;
+    border-block-start: 8px solid var(--matin-soleil);
     border-end-end-radius: 4rem;
+    background: var(--matin-encre);
+    color: var(--color-white);
+  }
+  .info-panel :is(h2, h3, p, a, div):not(#o) {
+    color: var(--color-white);
+  }
+  .info-panel :global(svg.text-gold-dark) {
+    color: var(--matin-soleil);
+  }
+  .info-panel a:not(#o):focus-visible {
+    outline-color: var(--matin-soleil);
   }
   .contact-art {
     position: relative;
     max-width: 30rem;
     margin-inline: auto;
-    padding-block-end: 1rem;
+    padding: 1.25rem 1.25rem 0 0;
   }
   .contact-art :global(.contact-art__img) {
     position: relative;
     z-index: 1;
+    display: block;
+    width: 100%;
+    height: auto;
+    aspect-ratio: 4 / 3;
+    object-fit: cover;
+    border-radius: 14rem 14rem 1.5rem 1.5rem;
+    border: 8px solid var(--matin-ivoire);
+    box-shadow: 0 24px 40px -26px color-mix(in srgb, var(--matin-encre) 70%, transparent);
   }
   .contact-art__block {
     position: absolute;
-    inset-block-end: 0;
-    inset-inline-end: -1rem;
-    width: 50%;
+    inset-block-start: 0;
+    inset-inline-end: 0;
+    width: 45%;
     aspect-ratio: 1;
     border-radius: 50%;
-    background: var(--color-gold);
+    background: var(--matin-brique);
   }
   .membership-band {
-    background: var(--color-white);
+    background: color-mix(in srgb, var(--matin-brique) 16%, var(--matin-ivoire));
   }
   .membership-fee {
     margin-block: -0.5rem 1.5rem;
-    font-weight: 700;
+    display: inline-block;
+    padding: 0.4rem 1.1rem;
+    border-radius: 999px;
+    background: var(--matin-ivoire);
+    font-weight: 800;
     color: var(--matin-brique-ink);
   }
-  .form-panel--membership {
+  .form-panel--membership:not(#o) {
     max-width: 60rem;
-    border: 1px solid var(--color-sable);
-    border-block-start: 6px solid var(--matin-brique);
+    border-block-start-color: var(--matin-brique-ink);
     border-start-end-radius: 6rem;
+    background: color-mix(in srgb, var(--matin-soleil) 34%, var(--matin-ivoire));
   }
   .volunteer-band {
-    background: var(--color-paper);
+    background: color-mix(in srgb, var(--matin-firouzeh) 18%, var(--matin-ivoire));
   }
   .careers-note {
     margin-block-start: 1.5rem;
@@ -247,10 +279,10 @@ const details = [
   .careers-note a {
     font-weight: 700;
   }
-  .form-panel--volunteer {
+  .form-panel--volunteer:not(#o) {
     max-width: 60rem;
-    border: 1px solid var(--color-teal-edge);
-    border-block-start: 6px solid var(--color-teal);
+    border-block-start-color: var(--matin-soleil);
     border-start-end-radius: 6rem;
+    background: color-mix(in srgb, var(--matin-brique) 22%, var(--matin-ivoire));
   }
 </style>
