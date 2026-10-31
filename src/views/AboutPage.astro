@@ -113,7 +113,7 @@ const history = about.history.map((h) => ({
   <!-- Who we are: the photo in an arch with the morning sun, the text set like a feature -->
   <section id="who-we-are" class="who scroll-mt-24" aria-labelledby="who-we-are-title">
     <div class="container-site who-grid">
-      <figure class="who-figure" data-reveal>
+      <figure class="who-figure">
         <span class="who-figure__sun" aria-hidden="true"></span>
         <span class="who-figure__dot" aria-hidden="true"></span>
         <div class="who-figure__photo">
@@ -123,6 +123,8 @@ const history = about.history.map((h) => ({
             formats={['avif', 'webp']}
             widths={[720, 1080, 1440, 1920]}
             sizes="(min-width: 64rem) 100rem, 300vw"
+            loading="eager"
+            fetchpriority="high"
             style={`object-position:${photos.tamtams.focus}`}
           />
         </div>

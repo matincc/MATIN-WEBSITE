@@ -97,7 +97,7 @@ const tiles = picks.map((event) => {
     </div>
 
     <ul class="lpicks__track" data-lpicks-track data-upcoming-list>
-      {tiles.map((tile, i) => (
+      {tiles.map((tile) => (
         <li class="lpicks__item" data-region={tile.region}>
           <article class="lpick" data-event-end={tile.event.endDate.toISOString()}>
             <div class="lpick__media">
@@ -108,12 +108,12 @@ const tiles = picks.map((event) => {
                   formats={['avif', 'webp']}
                   widths={[400, 640, 900]}
                   sizes="(min-width: 64rem) 24rem, 78vw"
-                  loading={i < 3 ? 'eager' : 'lazy'}
+                  loading="lazy"
                 />
               ) : tile.event.data.remoteImage ? (
                 <RemoteEventImage
                   image={tile.event.data.remoteImage}
-                  eager={i < 3}
+                  eager={false}
                   class="lpick__remote"
                 >
                   <DialogueArt
