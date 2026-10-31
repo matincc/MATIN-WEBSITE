@@ -1,160 +1,116 @@
-# Politique de confidentialité — ébauche conforme à la Loi 25 (Québec).
-updated: 2026-10-04
+# Politique de confidentialité, version courte et générale (owner, Oct 31 2026: « shorter, in
+# general terms »). Keeps the elements Québec's Law 25 asks for: person in charge, what is
+# collected and why, communication outside Québec, cookies, retention, rights, incidents.
+updated: 2026-10-31
 title:
   fr: Politique de confidentialité
   en: Privacy Policy
-  # Persian: draft translation (Oct 25 2026), to be reviewed by the owner.
+  # Persian: draft translation, to be reviewed by the owner.
   fa: سیاست حفظ حریم خصوصی
 body:
   fr: |
-    L'Institut interculturel Matin (« Matin », « nous ») accorde une grande importance à la protection de vos renseignements personnels. Cette politique explique quels renseignements nous recueillons, pourquoi, comment nous les protégeons et quels sont vos droits, conformément à la *Loi sur la protection des renseignements personnels dans le secteur privé* du Québec, telle que modifiée par la Loi 25.
+    L'Institut interculturel Matin protège vos renseignements personnels conformément à la *Loi sur la protection des renseignements personnels dans le secteur privé* du Québec (Loi 25).
 
-    ## Personne responsable de la protection des renseignements personnels
+    ## Personne responsable
 
     {{privacyOfficer}}
 
-    ## Renseignements recueillis et fins
+    ## Ce que nous recueillons et pourquoi
 
-    Nous recueillons uniquement les renseignements nécessaires aux fins suivantes :
+    Nous recueillons seulement ce que vous nous transmettez par nos formulaires (contact, adhésion, bénévolat, infolettre, inscription à une activité, vidéo « Mon histoire ») : par exemple votre nom, votre courriel et votre message. Ces renseignements servent uniquement à vous répondre, à gérer votre demande et à vous tenir informé si vous l'avez demandé. Nous ne les vendons ni ne les louons jamais.
 
-    - **Formulaire de contact** : nom, courriel, objet et message, pour répondre à votre demande.
-    - **Candidature bénévole** : nom, courriel, téléphone (facultatif), disponibilités, langues et motivation, pour évaluer votre candidature et vous joindre.
-    - **Infolettre** : adresse courriel, pour vous envoyer nos nouvelles. Vous pouvez vous désabonner en tout temps grâce au lien présent dans chaque envoi.
-    - **Statistiques de visite** (seulement avec votre consentement) : données de navigation agrégées et anonymisées, pour améliorer le site.
+    ## Fournisseurs de services
 
-    Nous ne vendons ni ne louons jamais vos renseignements personnels.
+    Pour faire fonctionner le site, nous utilisons quelques fournisseurs reconnus (hébergement du site et des formulaires, courriel et stockage sécurisé de nos dossiers, envoi de l'infolettre). Certains de ces services sont situés à l'extérieur du Québec, notamment aux États-Unis. Nous les choisissons parce qu'ils offrent une protection adéquate de vos renseignements.
 
-    ## Fournisseurs et communication hors Québec
+    ## Témoins (cookies)
 
-    Pour exploiter le site, nous faisons appel aux fournisseurs suivants, qui peuvent traiter vos renseignements à l'extérieur du Québec :
-
-    - **Netlify, Inc.** (hébergement du site et traitement des formulaires de contact et de bénévolat) : les soumissions de formulaires sont stockées sur des serveurs situés principalement aux **États-Unis**.
-    - **Brevo** (envoi de l'infolettre) : serveurs situés dans l'Union européenne.
-    - **Zeffy** (dons en ligne) : plateforme externe régie par sa propre politique de confidentialité.
-    - **Cloudflare, Inc.** (si la protection anti-robot Turnstile est activée sur les formulaires) : vérifie que l’envoi provient d’une personne; serveurs situés notamment aux États-Unis.
-
-    Avant de communiquer des renseignements à l'extérieur du Québec, nous avons évalué que ces fournisseurs offrent une protection adéquate, notamment par des engagements contractuels de confidentialité et de sécurité.
-
-    ## Témoins (cookies) et traceurs
-
-    Le site n'utilise aucun témoin non essentiel avant votre consentement. Les outils de statistiques, les vidéos YouTube et les cartes Google ne sont chargés qu'après votre accord ou un clic explicite de votre part. Vous pouvez modifier vos choix en tout temps grâce au lien « Gérer les témoins » au bas de chaque page.
+    Le site n'utilise aucun témoin non essentiel sans votre consentement. Les vidéos externes ne se chargent que si vous cliquez dessus.
 
     ## Conservation et sécurité
 
-    Les messages de contact sont conservés au plus 2 ans, les candidatures bénévoles au plus 3 ans, puis détruits de façon sécuritaire. L'accès aux renseignements est limité aux personnes qui en ont besoin dans le cadre de leurs fonctions.
+    Nous conservons vos renseignements seulement le temps nécessaire aux fins indiquées, puis nous les détruisons de façon sécuritaire. Seules les personnes qui en ont besoin y ont accès.
 
     ## Vos droits
 
-    Vous pouvez en tout temps demander d'accéder à vos renseignements, de les faire rectifier, de retirer votre consentement ou de demander la portabilité de vos données, en écrivant à la personne responsable ci-dessus. Nous répondrons dans un délai de 30 jours.
+    Vous pouvez demander à consulter, corriger ou supprimer vos renseignements, ou retirer votre consentement, en écrivant à la personne responsable ci-dessus. Nous répondons dans un délai de 30 jours. Vous pouvez aussi vous adresser à la [Commission d'accès à l'information du Québec](https://www.cai.gouv.qc.ca/).
 
-    Si vous n'êtes pas satisfait de notre réponse, vous pouvez porter plainte auprès de la [Commission d'accès à l'information du Québec](https://www.cai.gouv.qc.ca/).
+    ## Incident de confidentialité
 
-    ## Incidents de confidentialité
-
-    En cas d'incident présentant un risque de préjudice sérieux, nous aviserons les personnes concernées et la Commission d'accès à l'information, et tiendrons un registre des incidents.
+    En cas d'incident présentant un risque de préjudice sérieux, nous avisons les personnes concernées et la Commission d'accès à l'information.
 
     ## Modifications
 
-    Toute modification de cette politique sera publiée sur cette page avec sa date de mise à jour.
+    Toute modification de cette politique est publiée sur cette page, avec sa date.
   en: |
-    Matin Intercultural Institute ("Matin", "we") takes the protection of your personal information seriously. This policy explains what information we collect, why, how we protect it and what your rights are, in accordance with Québec's *Act respecting the protection of personal information in the private sector*, as amended by Law 25.
+    Matin Intercultural Institute protects your personal information in accordance with Québec's *Act respecting the protection of personal information in the private sector* (Law 25).
 
-    ## Person in charge of the protection of personal information
+    ## Person in charge
 
     {{privacyOfficer}}
 
-    ## Information collected and purposes
+    ## What we collect and why
 
-    We only collect the information needed for the following purposes:
+    We only collect what you send us through our forms (contact, membership, volunteering, newsletter, event sign-up, "My Story" video): for example your name, your email and your message. This information is used only to answer you, handle your request and keep you informed if you asked us to. We never sell or rent it.
 
-    - **Contact form**: name, email, subject and message, to answer your request.
-    - **Volunteer application**: name, email, phone (optional), availability, languages and motivation, to review your application and contact you.
-    - **Newsletter**: email address, to send you our news. You can unsubscribe at any time using the link in every email.
-    - **Visit statistics** (only with your consent): aggregated, anonymized browsing data, to improve the site.
+    ## Service providers
 
-    We never sell or rent your personal information.
+    To run the website, we use a few well-known providers (website and form hosting, email and secure storage of our records, newsletter delivery). Some of these services are located outside Québec, including in the United States. We choose them because they offer adequate protection of your information.
 
-    ## Service providers and transfers outside Québec
+    ## Cookies
 
-    To run the site, we use the following providers, which may process your information outside Québec:
-
-    - **Netlify, Inc.** (website hosting and processing of the contact and volunteer forms): form submissions are stored on servers located mainly in the **United States**.
-    - **Brevo** (newsletter delivery): servers located in the European Union.
-    - **Zeffy** (online donations): an external platform governed by its own privacy policy.
-    - **Cloudflare, Inc.** (if Turnstile anti-robot protection is enabled on the forms): checks that a submission comes from a person; servers located notably in the United States.
-
-    Before communicating information outside Québec, we assessed that these providers offer adequate protection, including through contractual confidentiality and security commitments.
-
-    ## Cookies and trackers
-
-    The site uses no non-essential cookies before you consent. Analytics tools, YouTube videos and Google Maps only load after your consent or an explicit click. You can change your choices at any time using the "Manage cookies" link at the bottom of every page.
+    The website uses no non-essential cookies without your consent. External videos only load if you click on them.
 
     ## Retention and security
 
-    Contact messages are kept for at most 2 years and volunteer applications for at most 3 years, then securely destroyed. Access to information is limited to people who need it to do their work.
+    We keep your information only as long as needed for the purposes above, then destroy it securely. Only the people who need it have access to it.
 
     ## Your rights
 
-    You may at any time request access to your information, have it corrected, withdraw your consent or request data portability by writing to the person in charge above. We will respond within 30 days.
+    You may ask to see, correct or delete your information, or withdraw your consent, by writing to the person in charge above. We reply within 30 days. You may also contact the [Commission d'accès à l'information du Québec](https://www.cai.gouv.qc.ca/).
 
-    If you are not satisfied with our answer, you may file a complaint with the [Commission d'accès à l'information du Québec](https://www.cai.gouv.qc.ca/).
+    ## Privacy incidents
 
-    ## Confidentiality incidents
-
-    If an incident presents a risk of serious injury, we will notify the people concerned and the Commission d'accès à l'information, and keep a register of incidents.
+    If an incident presents a risk of serious harm, we notify the people concerned and the Commission d'accès à l'information.
 
     ## Changes
 
-    Any change to this policy will be published on this page with its update date.
+    Any change to this policy is published on this page, with its date.
+
+    *In case of any difference between versions, the French version prevails.*
   fa: |
     > این متن ترجمهٔ فارسی برای آگاهی است. در صورت هرگونه اختلاف، نسخهٔ فرانسوی ملاک است.
 
-    مؤسسه میان‌فرهنگی متین («متین»، «ما») حفاظت از اطلاعات شخصی شما را جدی می‌گیرد. این سیاست توضیح می‌دهد چه اطلاعاتی گردآوری می‌کنیم، به چه دلیل، چگونه از آن محافظت می‌کنیم و چه حقوقی دارید؛ مطابق با *قانون حفاظت از اطلاعات شخصی در بخش خصوصی* کبک، با اصلاحات قانون ۲۵ (Loi 25).
+    مؤسسه میان‌فرهنگی متین از اطلاعات شخصی شما مطابق با *قانون حفاظت از اطلاعات شخصی در بخش خصوصی* کبک (قانون ۲۵) محافظت می‌کند.
 
-    ## مسئول حفاظت از اطلاعات شخصی
+    ## مسئول حفاظت از اطلاعات
 
     {{privacyOfficer}}
 
-    ## اطلاعات گردآوری‌شده و اهداف آن
+    ## چه اطلاعاتی گردآوری می‌کنیم و چرا
 
-    ما فقط اطلاعاتی را گردآوری می‌کنیم که برای اهداف زیر لازم است:
+    ما فقط اطلاعاتی را گردآوری می‌کنیم که خودتان از طریق فرم‌های سایت (تماس، عضویت، داوطلبی، خبرنامه، ثبت‌نام در برنامه‌ها، ویدیوی «داستان من») برای ما می‌فرستید؛ برای نمونه نام، ایمیل و پیامتان. این اطلاعات فقط برای پاسخ به شما، پیگیری درخواستتان و در صورت تمایل، باخبر کردن شما به کار می‌رود. ما هرگز آن را نمی‌فروشیم یا اجاره نمی‌دهیم.
 
-    - **فرم تماس**: نام، ایمیل، موضوع و پیام، برای پاسخ به درخواست شما.
-    - **درخواست همکاری داوطلبانه**: نام، ایمیل، تلفن (اختیاری)، زمان‌های در دسترس بودن، زبان‌ها و انگیزه، برای بررسی درخواست و تماس با شما.
-    - **خبرنامه**: نشانی ایمیل، برای فرستادن اخبارمان. هر زمان بخواهید می‌توانید با پیوندی که در هر ایمیل هست اشتراک خود را لغو کنید.
-    - **آمار بازدید** (فقط با رضایت شما): داده‌های تجمیعی و ناشناس مرور، برای بهتر کردن سایت.
+    ## ارائه‌دهندگان خدمات
 
-    ما هرگز اطلاعات شخصی شما را نمی‌فروشیم و اجاره نمی‌دهیم.
+    برای کار کردن سایت از چند ارائه‌دهندهٔ شناخته‌شده استفاده می‌کنیم (میزبانی سایت و فرم‌ها، ایمیل و نگهداری امن پرونده‌ها، ارسال خبرنامه). برخی از این خدمات بیرون از کبک، از جمله در ایالات متحده، قرار دارند. آن‌ها را به این دلیل برگزیده‌ایم که از اطلاعات شما به‌خوبی محافظت می‌کنند.
 
-    ## ارائه‌دهندگان خدمات و انتقال به بیرون از کبک
+    ## کوکی‌ها
 
-    برای اداره سایت از ارائه‌دهندگان زیر استفاده می‌کنیم که ممکن است اطلاعات شما را بیرون از کبک پردازش کنند:
-
-    - **Netlify, Inc.** (میزبانی وب‌سایت و پردازش فرم‌های تماس و داوطلبی): فرم‌های فرستاده‌شده روی سرورهایی ذخیره می‌شوند که عمدتاً در **ایالات متحده** قرار دارند.
-    - **Brevo** (ارسال خبرنامه): سرورهایی در اتحادیهٔ اروپا.
-    - **Zeffy** (کمک‌های مالی برخط): سکویی بیرونی که تابع سیاست حریم خصوصی خود است.
-    - **Cloudflare, Inc.** (اگر محافظت ضدربات Turnstile روی فرم‌ها فعال باشد): بررسی می‌کند که فرم را یک انسان فرستاده است؛ سرورهایی از جمله در ایالات متحده.
-
-    پیش از انتقال اطلاعات به بیرون از کبک، ارزیابی کرده‌ایم که این ارائه‌دهندگان حفاظت کافی فراهم می‌کنند، از جمله از راه تعهدهای قراردادی دربارهٔ محرمانگی و امنیت.
-
-    ## کوکی‌ها و ردیاب‌ها
-
-    این سایت پیش از رضایت شما هیچ کوکی غیرضروری به کار نمی‌برد. ابزارهای تحلیل آمار، ویدیوهای YouTube و Google Maps فقط پس از رضایت شما یا یک کلیک آگاهانه بارگذاری می‌شوند. هر زمان بخواهید می‌توانید با پیوند «مدیریت کوکی‌ها» در پایین هر صفحه انتخاب‌های خود را تغییر دهید.
+    سایت بدون رضایت شما هیچ کوکی غیرضروری‌ای به کار نمی‌برد. ویدیوهای بیرونی فقط وقتی بارگذاری می‌شوند که روی آن‌ها کلیک کنید.
 
     ## نگهداری و امنیت
 
-    پیام‌های تماس حداکثر ۲ سال و درخواست‌های داوطلبی حداکثر ۳ سال نگهداری و سپس به‌صورت ایمن نابود می‌شوند. دسترسی به اطلاعات به کسانی محدود است که برای انجام کارشان به آن نیاز دارند.
+    اطلاعات شما را فقط تا زمانی که برای همین اهداف لازم است نگه می‌داریم و سپس به‌طور امن از بین می‌بریم. فقط کسانی که به آن نیاز دارند به آن دسترسی دارند.
 
     ## حقوق شما
 
-    هر زمان بخواهید می‌توانید با نوشتن به مسئول یادشده در بالا، درخواست دسترسی به اطلاعات خود، اصلاح آن، پس گرفتن رضایت یا انتقال‌پذیری داده‌ها را مطرح کنید. ظرف ۳۰ روز پاسخ می‌دهیم.
+    می‌توانید با نوشتن به مسئول یادشده در بالا، درخواست کنید اطلاعاتتان را ببینید، اصلاح یا حذف کنید، یا رضایت خود را پس بگیرید. ما ظرف ۳۰ روز پاسخ می‌دهیم. همچنین می‌توانید به [کمیسیون دسترسی به اطلاعات کبک](https://www.cai.gouv.qc.ca/) مراجعه کنید.
 
-    اگر از پاسخ ما راضی نبودید، می‌توانید به [کمیسیون دسترسی به اطلاعات کبک](https://www.cai.gouv.qc.ca/) (Commission d'accès à l'information du Québec) شکایت کنید.
+    ## رخداد امنیتی
 
-    ## رخدادهای محرمانگی
-
-    اگر رخدادی خطر آسیب جدی در پی داشته باشد، افراد مربوط و کمیسیون دسترسی به اطلاعات را آگاه می‌کنیم و دفتر ثبت رخدادها را نگه می‌داریم.
+    اگر رخدادی پیش آید که خطر آسیب جدی داشته باشد، به افراد مربوط و کمیسیون دسترسی به اطلاعات اطلاع می‌دهیم.
 
     ## تغییرات
 
-    هر تغییری در این سیاست همراه با تاریخ به‌روزرسانی در همین صفحه منتشر می‌شود.
+    هر تغییری در این سیاست، همراه با تاریخ آن، در همین صفحه منتشر می‌شود.

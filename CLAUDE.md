@@ -20,6 +20,10 @@ These rules apply to every page, now and in the future. Read them before changin
 - **Keep the languages in sync:** whenever text changes in one language (English, French or Persian), make the equivalent change in the same place in the other languages, in the same edit. Every page and string has a Persian version (Oct 25 2026).
 - No `[PLACEHOLDER]` tags and no placeholder or sample text anywhere (the gallery's "coming soon" tiles are an empty state, not sample content). Content that is not provided yet is simply not shown (lists show a short empty-state message; optional settings such as address, phone, email and hours are hidden until set).
 
+## 1a. Québec law first (owner's standing rule, Oct 31 2026)
+
+The website and everything Matin publishes must first comply with Québec's laws and regulations in force: the Charter of the French language (Bill 96: French first and at least as prominent as any other language; French is the reference version of legal texts), Law 25 on personal information (privacy policy, consent, person in charge), and consumer and charity rules (no tax-receipt claims). Check every change against them, and review the whole site for them before each release.
+
 ## 1b. Respect for everyone (owner's standing rule, Oct 30 2026)
 
 The site exists to respect everyone. No text, photo, news item, event or page may offend or single out anyone for religion, faith, ethnicity, race, sex or gender, skin colour or language. Stay strictly neutral on religion and politics. Photos of identifiable people only with their consent; Indigenous people or ceremonies are never shown with generic stock photos (a photo of Kanien'kehá:ka people, a powwow or an Indigenous artwork only with the community's or artist's permission and credit).
