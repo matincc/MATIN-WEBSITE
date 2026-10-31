@@ -48,7 +48,7 @@ const accents = ['coral', 'gold', 'blue', 'green'] as const;
 ---
 
 {events.length > 0 && (
-  <section class="upcoming" aria-labelledby="upcoming-title" data-upcoming>
+  <section class="upcoming" aria-labelledby="upcoming-title" data-upcoming data-own-ground>
     <div class="container-site upcoming__inner">
       <h2 id="upcoming-title" class="upcoming__title">
         <span class="upcoming__pulse" aria-hidden="true"></span>
@@ -340,6 +340,99 @@ const accents = ['coral', 'gold', 'blue', 'green'] as const;
       align-items: center;
       gap: 1rem;
     }
+    .upcoming__nav {
+      display: none;
+    }
+  }
+
+  /* ===== Coming up stands out (owner, Oct 31 2026: « I didn't know this section existed »):
+     a navy band, a large title in the editorial serif, each date on its own white card. ===== */
+  .upcoming {
+    background: var(--matin-encre);
+    color: var(--matin-white);
+  }
+  .upcoming__inner {
+    grid-template-columns: minmax(0, 1fr) auto;
+    gap: 1.5rem 2rem;
+    padding-block: clamp(2.5rem, 2rem + 2vw, 3.75rem);
+    border-block-start: 0;
+  }
+  .upcoming__title {
+    grid-row: 1;
+    grid-column: 1;
+    gap: 0.9rem;
+    font-family: var(--font-editorial);
+    font-size: clamp(2rem, 1.5rem + 2vw, 3rem);
+    font-weight: 600;
+    font-variation-settings: 'SOFT' 100, 'opsz' 144;
+    letter-spacing: -0.01em;
+    text-transform: none;
+    color: var(--matin-white);
+  }
+  :global(html[lang='fa']) .upcoming__title {
+    font-family: var(--font-display);
+    font-size: clamp(1.8rem, 1.4rem + 1.6vw, 2.5rem);
+    font-weight: 900;
+  }
+  .upcoming__pulse {
+    width: 0.9rem;
+    height: 0.9rem;
+    background: var(--matin-soleil);
+  }
+  .upcoming__side {
+    grid-row: 1;
+    grid-column: 2;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+  }
+  .upcoming__track {
+    grid-column: 1 / -1;
+    grid-row: 2;
+    gap: 1rem;
+  }
+  .upcoming__item + .upcoming__item {
+    border-inline-start: 0;
+  }
+  .upcoming__link,
+  .upcoming__item:first-child .upcoming__link {
+    padding: 1rem 2.25rem 1rem 1.1rem;
+    border-radius: 1rem 1rem 2rem 1rem;
+    background: var(--matin-white);
+    color: var(--matin-encre);
+    border-block-start: 5px solid var(--tone);
+  }
+  .upcoming__link:hover {
+    background: var(--matin-ivoire);
+  }
+  .upcoming__link:focus-visible,
+  .upcoming__btn:focus-visible,
+  .upcoming__all:focus-visible {
+    outline: 3px solid var(--matin-soleil);
+  }
+  .upcoming__date,
+  .upcoming__name {
+    color: var(--matin-encre);
+  }
+  .upcoming__month {
+    color: var(--matin-brique-ink);
+  }
+  .upcoming__btn {
+    border-color: var(--matin-white);
+    color: var(--matin-white);
+  }
+  .upcoming__btn:hover {
+    background: var(--matin-soleil);
+    border-color: var(--matin-soleil);
+    color: var(--matin-encre);
+  }
+  .upcoming__all {
+    color: var(--matin-soleil);
+    font-size: 1.05rem;
+    text-decoration: underline;
+    text-underline-offset: 0.3em;
+  }
+  @media (max-width: 63.99rem) {
     .upcoming__nav {
       display: none;
     }

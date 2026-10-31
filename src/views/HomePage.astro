@@ -27,7 +27,6 @@ import LivingPrograms from '@/components/living/LivingPrograms.astro';
 import { livingStrings } from '@/i18n/living';
 import NewsRegionTabs from '@/components/content/NewsRegionTabs.astro';
 import PostCard from '@/components/content/PostCard.astro';
-import ResourcesTeaser from '@/components/content/ResourcesTeaser.astro';
 import ExpireEvents from '@/components/content/ExpireEvents.astro';
 import BaseLayout from '@/layouts/BaseLayout.astro';
 import AliveHero from '@/components/brand/AliveHero.astro';
@@ -111,10 +110,10 @@ const l = livingStrings(lang);
     {/* Homepage order (owner's request, Oct 31 2026: shorter, the institute first, then its
        work): hero → Who we are → impact → Matin in Action → coming up →
        News (Matin News first) → Montréal's calendar → take part →
-       resources → partners → land acknowledgement. The President's note, participants'
+       partners → land acknowledgement. The President's note, participants'
        voices, Notes from the President, the newsletter panel (the footer keeps one) and the
        separate Advisory Circle band are no longer on the homepage; Matin's Picks live on the
-       Events page (#picks); the areas of work moved
+       Events page (#picks); Cultural Resources only on the Resources page; the areas of work moved
        to the About page (#areas, About menu). */}
     <!-- Who we are: the approved introduction, set large, beside a photo collage -->
     <LivingIntro lang={lang} />
@@ -329,9 +328,6 @@ const l = livingStrings(lang);
     <!-- Take part: Share Your Expertise with Matin, with the Advisory Circle button inside -->
     <LivingPrograms lang={lang} part="join" />
 
-    <!-- Cultural Resources & Organizations: opens the directory -->
-    <ResourcesTeaser lang={lang} />
-
     <!-- Partner organizations and supporters: always shown, with open invitations -->
     <PartnersSection lang={lang} />
 
@@ -475,10 +471,6 @@ const l = livingStrings(lang);
   }
   .living :global(:focus-visible) {
     outline-color: var(--living-terracotta-ink);
-  }
-  /* The Coming up strip sits on the same warm ground. */
-  .living :global(.upcoming) {
-    background: var(--living-sand);
   }
 
   /* ================= Matin in Action: stories ================= */
