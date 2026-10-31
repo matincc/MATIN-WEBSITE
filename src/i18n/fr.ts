@@ -44,6 +44,7 @@ const fr = {
     home: 'Accueil',
     about: 'À propos',
     whoWeAre: 'Qui sommes-nous ?',
+    areas: "Nos champs d'action",
     mission: 'Notre mission',
     vision: 'Notre vision',
     values: 'Nos valeurs',

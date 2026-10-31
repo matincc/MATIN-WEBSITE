@@ -43,6 +43,7 @@ const en: Dictionary = {
     home: 'Home',
     about: 'About',
     whoWeAre: 'Who We Are',
+    areas: 'Our Areas of Work',
     mission: 'Our Mission',
     vision: 'Our Vision',
     values: 'Our Values',

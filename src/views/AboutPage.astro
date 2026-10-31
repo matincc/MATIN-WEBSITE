@@ -21,6 +21,7 @@ import {
 import PhotoCredit from '@/components/media/PhotoCredit.astro';
 import { photos } from '@/lib/photos';
 import PageLayout from '@/layouts/PageLayout.astro';
+import LivingPrograms from '@/components/living/LivingPrograms.astro';
 import SectionHeader from '@/components/ui/SectionHeader.astro';
 import { href, siteAlternates, type UiLang } from '@/i18n/routes';
 import { useTranslations, pick } from '@/i18n/ui';
@@ -190,6 +191,12 @@ const history = about.history.map((h) => ({
       </div>
     </div>
   )}
+
+  <!-- Our areas of work: the three areas, moved here from the homepage (owner's request,
+       Oct 31 2026); About menu « Our Areas of Work » points to #areas -->
+  <div class="living about-areas">
+    <LivingPrograms lang={lang} part="areas" sectionId="areas" />
+  </div>
 
   <!-- Our values: six cards at different heights and corners, never a uniform grid -->
   <section id="values" class="values scroll-mt-24" aria-labelledby="values-title">
@@ -842,5 +849,108 @@ const history = about.history.map((h) => ({
     .timeline__year {
       text-align: end;
     }
+  }
+  /* Living styles for the areas of work (same as the homepage, CLAUDE.md 4d). */
+  /* Small label above a title: terracotta ink, spaced capitals (Latin). */
+  .living :global(.living-kicker) {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-family: var(--font-display);
+    font-size: clamp(0.85rem, 0.8rem + 0.2vw, 1rem);
+    font-weight: 800;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--living-terracotta-ink);
+  }
+  :global(html[lang='fa']) .living :global(.living-kicker) {
+    letter-spacing: 0;
+    font-size: 1.05rem;
+  }
+  /* Section headlines: Fraunces, large, soft; Persian keeps Vazirmatn. */
+  .living :global(.living-title) {
+    margin-block-start: 0.5rem;
+    font-family: var(--font-editorial);
+    font-size: clamp(2.5rem, 1.6rem + 3.6vw, 5rem);
+    font-weight: 600;
+    font-variation-settings:
+      'SOFT' 100,
+      'opsz' 144;
+    line-height: 1.02;
+    letter-spacing: -0.025em;
+    color: var(--living-charcoal);
+    text-wrap: balance;
+  }
+  :global(html[lang='fa']) .living :global(.living-title) {
+    font-family: var(--font-display);
+    font-size: clamp(2.1rem, 1.5rem + 2.6vw, 3.75rem);
+    font-weight: 900;
+    line-height: 1.35;
+    letter-spacing: 0;
+  }
+  .living :global(.living-lede) {
+    max-width: 40rem;
+    margin-block-start: 1.1rem;
+    font-size: clamp(1.1rem, 1rem + 0.4vw, 1.35rem);
+    line-height: 1.6;
+    color: var(--living-charcoal);
+  }
+  /* A text link with a gold rule that thickens on hover, and a moving arrow. */
+  .living :global(.living-link) {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-family: var(--font-display);
+    font-size: 1.125rem;
+    font-weight: 800;
+    color: var(--living-charcoal);
+    text-decoration: underline;
+    text-decoration-color: var(--living-gold);
+    text-decoration-thickness: 3px;
+    text-underline-offset: 0.35em;
+    transition: text-decoration-color 0.3s ease;
+  }
+  .living :global(.living-link--small) {
+    font-size: 1rem;
+  }
+  .living :global(.living-link svg) {
+    color: var(--living-terracotta-ink);
+    transition: translate 0.35s cubic-bezier(0.2, 0.7, 0.2, 1);
+  }
+  .living :global(.living-link:hover) {
+    text-decoration-color: var(--living-terracotta);
+  }
+  .living :global(.living-link:hover svg) {
+    translate: 4px 0;
+  }
+  :global([dir='rtl']) .living :global(.living-link:hover svg) {
+    translate: -4px 0;
+  }
+  /* Main button: the site's primary button tokens (saffron, navy text). */
+  .living :global(.living-btn) {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.6rem;
+    min-height: 3rem;
+    padding: 0.75rem 1.6rem;
+    border-radius: 999px;
+    background: var(--btn-primary-bg);
+    color: var(--btn-primary-fg);
+    font-family: var(--font-display);
+    font-size: 1.05rem;
+    font-weight: 800;
+    text-decoration: none;
+    transition:
+      background-color 0.3s ease,
+      color 0.3s ease,
+      transform 0.3s cubic-bezier(0.2, 0.7, 0.2, 1);
+  }
+  .living :global(.living-btn:hover) {
+    background: var(--btn-primary-bg-hover);
+    color: var(--btn-primary-fg);
+    transform: translateY(-2px);
+  }
+  .living :global(:focus-visible) {
+    outline-color: var(--living-terracotta-ink);
   }
 </style>

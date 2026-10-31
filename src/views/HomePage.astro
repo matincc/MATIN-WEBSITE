@@ -23,7 +23,6 @@ import { getCollection } from 'astro:content';
 import { getImage } from 'astro:assets';
 import Lightbox from '@/components/ui/Lightbox.astro';
 import LivingIntro from '@/components/living/LivingIntro.astro';
-import PicksGallery from '@/components/living/PicksGallery.astro';
 import LivingPrograms from '@/components/living/LivingPrograms.astro';
 import { livingStrings } from '@/i18n/living';
 import NewsRegionTabs from '@/components/content/NewsRegionTabs.astro';
@@ -110,19 +109,18 @@ const l = livingStrings(lang);
   <div class="alive living">
     <AliveHero lang={lang} />
     {/* Homepage order (owner's request, Oct 31 2026: shorter, the institute first, then its
-       work): hero → Who we are → impact → areas of work → Matin in Action → coming up →
-       News (Matin News first) → Montréal's calendar → Matin's Picks → take part →
+       work): hero → Who we are → impact → Matin in Action → coming up →
+       News (Matin News first) → Montréal's calendar → take part →
        resources → partners → land acknowledgement. The President's note, participants'
        voices, Notes from the President, the newsletter panel (the footer keeps one) and the
-       separate Advisory Circle band are no longer on the homepage. */}
+       separate Advisory Circle band are no longer on the homepage; Matin's Picks live on the
+       Events page (#picks); the areas of work moved
+       to the About page (#areas, About menu). */}
     <!-- Who we are: the approved introduction, set large, beside a photo collage -->
     <LivingIntro lang={lang} />
 
     <!-- Our impact: real figures only; Matin's first steps until there are some -->
     <ImpactBand lang={lang} />
-
-    <!-- What Matin does: the three areas of work -->
-    <LivingPrograms lang={lang} part="areas" />
 
     <!-- Matin in Action as visual stories: the featured activity told large, Matin's
        "coming soon" posters beside it at different heights. Only Matin's own content
@@ -326,8 +324,6 @@ const l = livingStrings(lang);
        outings (owner's idea, Oct 30 2026; src/content/seasons/) -->
     <SeasonalBand lang={lang} />
 
-    <!-- Matin's Picks: a discovery gallery (same data as the Events page) -->
-    <PicksGallery lang={lang} />
     <ExpireEvents />
 
     <!-- Take part: Share Your Expertise with Matin, with the Advisory Circle button inside -->
