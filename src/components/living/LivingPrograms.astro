@@ -11,6 +11,7 @@ import type { MediaSlot } from '@/lib/media';
 import { href, type UiLang } from '@/i18n/routes';
 import { useTranslations } from '@/i18n/ui';
 import { livingStrings } from '@/i18n/living';
+import { advisorStrings, advisorsAnchor } from '@/i18n/advisors';
 
 interface Props {
   lang: UiLang;
@@ -42,6 +43,8 @@ const areas: { title: string; text: string; slot: MediaSlot; tone: string }[] = 
   { title: t('home.area3Title'), text: t('home.area3Text'), slot: 'areaResearch', tone: 'gold' },
 ];
 const volunteer = `${href('contact', lang)}#${lang === 'fr' ? 'benevolat' : 'volunteer'}`;
+const advisorsHref = `${href('contact', lang)}#${advisorsAnchor(lang)}`;
+const advCta = advisorStrings(lang).teamCta;
 const ways = [
   t('team.joinWayInPerson'),
   t('team.joinWayOnline'),
@@ -110,6 +113,10 @@ const ways = [
         <div class="ljoin__actions">
           <a href={volunteer} class="ljoin__btn">
             {t('team.joinCta')}
+            <ArrowRight size={18} class="flip-rtl" aria-hidden="true" />
+          </a>
+          <a href={advisorsHref} class="ljoin__btn ljoin__btn--alt">
+            {advCta}
             <ArrowRight size={18} class="flip-rtl" aria-hidden="true" />
           </a>
           <a href={href('contact', lang)} class="ljoin__link">
@@ -323,6 +330,15 @@ const ways = [
   .ljoin__btn:hover {
     background: var(--btn-primary-bg-hover);
     transform: translateY(-2px);
+  }
+  .ljoin__btn--alt {
+    background: transparent;
+    color: var(--matin-white);
+    box-shadow: inset 0 0 0 2px var(--matin-white);
+  }
+  .ljoin__btn--alt:hover {
+    background: var(--matin-white);
+    color: var(--matin-firouzeh-ink);
   }
   .ljoin__link {
     color: var(--matin-white);

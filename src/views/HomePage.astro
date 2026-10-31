@@ -23,29 +23,24 @@ import { getCollection } from 'astro:content';
 import { getImage } from 'astro:assets';
 import Lightbox from '@/components/ui/Lightbox.astro';
 import LivingIntro from '@/components/living/LivingIntro.astro';
-import PresidentExcerpt from '@/components/living/PresidentExcerpt.astro';
 import PicksGallery from '@/components/living/PicksGallery.astro';
 import LivingPrograms from '@/components/living/LivingPrograms.astro';
 import { livingStrings } from '@/i18n/living';
 import NewsRegionTabs from '@/components/content/NewsRegionTabs.astro';
 import PostCard from '@/components/content/PostCard.astro';
-import NoteCard from '@/components/content/NoteCard.astro';
 import ResourcesTeaser from '@/components/content/ResourcesTeaser.astro';
 import ExpireEvents from '@/components/content/ExpireEvents.astro';
 import BaseLayout from '@/layouts/BaseLayout.astro';
 import AliveHero from '@/components/brand/AliveHero.astro';
 import UpcomingStrip from '@/components/content/UpcomingStrip.astro';
 import LandAcknowledgement from '@/components/brand/LandAcknowledgement.astro';
-import HomeNewsletter from '@/components/content/HomeNewsletter.astro';
-import AdvisoryInvite from '@/components/content/AdvisoryInvite.astro';
 import ImpactBand from '@/components/trust/ImpactBand.astro';
-import VoicesBand from '@/components/trust/VoicesBand.astro';
 import PartnersSection from '@/components/trust/PartnersSection.astro';
 import SeasonalBand from '@/components/content/SeasonalBand.astro';
 import { href, newsAnchors, siteAlternates, type UiLang } from '@/i18n/routes';
 import { pick, useTranslations } from '@/i18n/ui';
 import { getMatinFeed, type MatinItem } from '@/lib/matin';
-import { articleHref, forLang, getNews, getNotes } from '@/lib/content';
+import { articleHref, forLang, getNews } from '@/lib/content';
 import { ctaFor } from '@/lib/matinLabels';
 import MatinMedia from '@/components/content/MatinMedia.astro';
 
@@ -101,7 +96,6 @@ const matinNews = news
   .slice(0, 3);
 // Notes from the President (owner's request, Oct 27 2026): the two latest, on a deep terracotta band.
 // Oct 30 2026 (owner: shorter homepage): two stories per region and the latest note only.
-const notes = await getNotes(1);
 const l = livingStrings(lang);
 ---
 
@@ -115,18 +109,20 @@ const l = livingStrings(lang);
 
   <div class="alive living">
     <AliveHero lang={lang} />
-    {/* Four dates only (owner's request, Oct 28 2026: fewer identical cards). */}
-    <UpcomingStrip lang={lang} limit={4} />
-
-    <!-- Through Montréal's calendar: the occasion of the day, a greeting and free public
-       outings (owner's idea, Oct 30 2026; src/content/seasons/) -->
-    <SeasonalBand lang={lang} />
-
+    {/* Homepage order (owner's request, Oct 31 2026: shorter, the institute first, then its
+       work): hero → Who we are → impact → areas of work → Matin in Action → coming up →
+       News (Matin News first) → Montréal's calendar → Matin's Picks → take part →
+       resources → partners → land acknowledgement. The President's note, participants'
+       voices, Notes from the President, the newsletter panel (the footer keeps one) and the
+       separate Advisory Circle band are no longer on the homepage. */}
     <!-- Who we are: the approved introduction, set large, beside a photo collage -->
     <LivingIntro lang={lang} />
 
     <!-- Our impact: real figures only; Matin's first steps until there are some -->
     <ImpactBand lang={lang} />
+
+    <!-- What Matin does: the three areas of work -->
+    <LivingPrograms lang={lang} part="areas" />
 
     <!-- Matin in Action as visual stories: the featured activity told large, Matin's
        "coming soon" posters beside it at different heights. Only Matin's own content
@@ -254,23 +250,11 @@ const l = livingStrings(lang);
       </div>
     </section>
 
-    <!-- A Personal Note from Our President: photo, first paragraph, link to the full note -->
-    <PresidentExcerpt lang={lang} />
+    {/* Four dates only (owner's request, Oct 28 2026: fewer identical cards). */}
+    <UpcomingStrip lang={lang} limit={4} />
 
-    <!-- Words of participants, with their consent; an invitation until there are some -->
-    <VoicesBand lang={lang} />
 
-    <!-- Matin's Picks: a discovery gallery (same data as the Events page) -->
-    <PicksGallery lang={lang} />
-    <ExpireEvents />
-
-    {/* The full-width Montréal pause was removed (owner's request, Oct 30 2026: shorter homepage). */}
-    <!-- Programs: the three areas of work. Homepage order (owner's request, Oct 31 2026):
-         areas → News → Notes from the President → Share Your Expertise → Advisory Circle →
-         Newsletter → Cultural Resources → Partners and supporters → land acknowledgement. -->
-    <LivingPrograms lang={lang} part="areas" />
-
-    <!-- News, set like a cultural publication: Cultural News in region tabs, then Matin News -->
+    <!-- News: Matin News first, then Cultural News in region tabs (owner, Oct 31 2026) -->
     <section id="latest-news" class="lnews scroll-mt-24" aria-labelledby="latest-news-title">
       <div class="container-site">
         <header class="lnews__head" data-reveal>
@@ -285,25 +269,6 @@ const l = livingStrings(lang);
             <ArrowRight size={20} class="flip-rtl" aria-hidden="true" />
           </a>
         </header>
-        <div class="news-wire">
-          <div class="lnews__sub">
-            <h3 class="lnews__subtitle">{t('news.culturalTitle')}</h3>
-            <a
-              href={`${newsHref}#${newsAnchors.recommends}`}
-              class="living-link living-link--small"
-            >
-              {t('news.allCultural')}
-              <ArrowRight size={18} class="flip-rtl" aria-hidden="true" />
-            </a>
-          </div>
-          <NewsRegionTabs
-            lang={lang}
-            posts={culturalNews}
-            perTab={2}
-            id="home-cultural"
-            level={4}
-          />
-        </div>
         {matinNews.length > 0 && (
           <div class="lnews__matin">
             <div class="lnews__sub">
@@ -335,46 +300,38 @@ const l = livingStrings(lang);
             </ul>
           </div>
         )}
+        <div class="news-wire">
+          <div class="lnews__sub">
+            <h3 class="lnews__subtitle">{t('news.culturalTitle')}</h3>
+            <a
+              href={`${newsHref}#${newsAnchors.recommends}`}
+              class="living-link living-link--small"
+            >
+              {t('news.allCultural')}
+              <ArrowRight size={18} class="flip-rtl" aria-hidden="true" />
+            </a>
+          </div>
+          <NewsRegionTabs
+            lang={lang}
+            posts={culturalNews}
+            perTab={2}
+            id="home-cultural"
+            level={4}
+          />
+        </div>
       </div>
     </section>
 
-    <!-- Notes from the President: the latest LinkedIn notes, hidden while there are none -->
-    {notes.length > 0 && (
-      <section
-        id="president-notes"
-        class="lnotes scroll-mt-24"
-        aria-labelledby="president-notes-title"
-      >
-        <div class="container-site">
-          <header class="lnews__head">
-            <div>
-              <h2 id="president-notes-title" class="living-title">
-                {t('notes.title')}
-              </h2>
-              <p class="living-lede">{t('notes.homeLede')}</p>
-            </div>
-            <a href={href('notes', lang)} class="living-link">
-              {t('notes.all')}
-              <ArrowRight size={20} class="flip-rtl" aria-hidden="true" />
-            </a>
-          </header>
-          <ul class:list={['notes-home__list', notes.length > 1 && 'notes-home__list--two']}>
-            {notes.map((note) => (
-              <li>
-                <NoteCard note={note} lang={lang} headingLevel="h3" />
-              </li>
-            ))}
-          </ul>
-        </div>
-      </section>
-    )}
+    <!-- Through Montréal's calendar: the occasion of the day, a greeting and free public
+       outings (owner's idea, Oct 30 2026; src/content/seasons/) -->
+    <SeasonalBand lang={lang} />
 
-    <!-- Participation: Share Your Expertise with Matin, then the Advisory Circle -->
+    <!-- Matin's Picks: a discovery gallery (same data as the Events page) -->
+    <PicksGallery lang={lang} />
+    <ExpireEvents />
+
+    <!-- Take part: Share Your Expertise with Matin, with the Advisory Circle button inside -->
     <LivingPrograms lang={lang} part="join" />
-    <AdvisoryInvite lang={lang} />
-
-    <!-- Newsletter (owner's request, Oct 30 2026) -->
-    <HomeNewsletter lang={lang} />
 
     <!-- Cultural Resources & Organizations: opens the directory -->
     <ResourcesTeaser lang={lang} />
@@ -760,7 +717,7 @@ const l = livingStrings(lang);
     color: var(--living-green-ink);
   }
   .lnews__matin {
-    margin-block-start: clamp(3rem, 2.5rem + 2vw, 4.5rem);
+    margin-block-end: clamp(3rem, 2.5rem + 2vw, 4.5rem);
   }
   /* Region tabs: charcoal outlines, the active one filled. */
   .lnews :global(.news-wire .is-enhanced > .region-tabs__list) {
