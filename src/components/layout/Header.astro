@@ -8,6 +8,7 @@ import {
   X,
 } from '@lucide/astro';
 import Lockup from '@/components/brand/Lockup.astro';
+import MapleLeaf from '@/components/brand/MapleLeaf.astro';
 import LangToggle from './LangToggle.astro';
 import { newsAnchors, href, type Alternates, type RouteKey, type UiLang } from '@/i18n/routes';
 import { useTranslations } from '@/i18n/ui';
@@ -145,7 +146,7 @@ const isActive = (url: string) => !url.includes('?') && current.startsWith(url);
     <div class="brand-block">
       <Lockup lang={lang} size="large" />
       <p class="header-slogan">
-        <span class="header-slogan__main">{t('brand.tagline')}</span>
+        <span class="header-slogan__main">{t('brand.tagline')}<MapleLeaf size={18} class="leafopt leafopt--slogan" /></span>
         {lang === 'fa' && <span class="header-slogan__fa" lang="fa" dir="rtl">{faSlogan}</span>}
       </p>
     </div>
@@ -239,7 +240,7 @@ const isActive = (url: string) => !url.includes('?') && current.startsWith(url);
     </div>
     <nav aria-label={t('a11y.mainNav')} class="px-5 pt-2 pb-10">
       <p class="header-slogan header-slogan--menu">
-        <span class="header-slogan__main">{t('brand.tagline')}</span>
+        <span class="header-slogan__main">{t('brand.tagline')}<MapleLeaf size={18} class="leafopt leafopt--slogan" /></span>
         {lang === 'fa' && <span class="header-slogan__fa" lang="fa" dir="rtl">{faSlogan}</span>}
       </p>
       <div class="mb-6 rounded-2xl bg-tint px-4 py-3">

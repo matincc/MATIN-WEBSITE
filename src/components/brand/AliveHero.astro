@@ -17,6 +17,7 @@
  * under prefers-reduced-motion. No script.
  */
 import Scribble from '@/components/ui/Scribble.astro';
+import MapleLeaf from '@/components/brand/MapleLeaf.astro';
 import '@fontsource/playfair-display/800-italic.css';
 import { Picture } from 'astro:assets';
 import { ArrowRight } from '@lucide/astro';
@@ -67,7 +68,10 @@ const secondary = next
 
   <div class="container-site ahero__inner">
     <div class="ahero__copy">
-      <p class="ahero__place">{a.heroPlace}</p>
+      <p class="ahero__place">
+        <MapleLeaf size={20} class="leafopt leafopt--hero" />
+        <span>{a.heroPlace}<span class="leafopt leafopt--hero">{lang === 'fa' ? ' · کانادا' : ' · Canada'}</span></span>
+      </p>
       <h1 id="hero-title" class="ahero__title">
         {/* The institute's name stays in the page's main heading for search engines and
             screen readers; the logo above already shows it. */}
