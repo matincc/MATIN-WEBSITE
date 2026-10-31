@@ -23,7 +23,6 @@ import { getCollection } from 'astro:content';
 import { getImage } from 'astro:assets';
 import Lightbox from '@/components/ui/Lightbox.astro';
 import LivingIntro from '@/components/living/LivingIntro.astro';
-import LivingPrograms from '@/components/living/LivingPrograms.astro';
 import { livingStrings } from '@/i18n/living';
 import PostCard from '@/components/content/PostCard.astro';
 import ExpireEvents from '@/components/content/ExpireEvents.astro';
@@ -32,7 +31,6 @@ import AliveHero from '@/components/brand/AliveHero.astro';
 import UpcomingStrip from '@/components/content/UpcomingStrip.astro';
 import LandAcknowledgement from '@/components/brand/LandAcknowledgement.astro';
 import ImpactBand from '@/components/trust/ImpactBand.astro';
-import PartnersSection from '@/components/trust/PartnersSection.astro';
 import SeasonalBand from '@/components/content/SeasonalBand.astro';
 import { href, newsAnchors, siteAlternates, type UiLang } from '@/i18n/routes';
 import { pick, useTranslations } from '@/i18n/ui';
@@ -107,8 +105,9 @@ const l = livingStrings(lang);
     <AliveHero lang={lang} />
     {/* Homepage order (owner's request, Oct 31 2026: shorter, the institute first, then its
        work): hero → Who we are → impact → Matin in Action → coming up →
-       News (Matin News first) → Montréal's calendar → take part →
-       partners → land acknowledgement. The President's note, participants'
+       Matin News → Montréal's calendar → land acknowledgement. The homepage shows Matin
+       itself, never requests for collaboration: Share Your Expertise, partners and supporters
+       live on the Collaboration page. The President's note, participants'
        voices, Notes from the President, the newsletter panel (the footer keeps one) and the
        separate Advisory Circle band are no longer on the homepage; Matin's Picks live on the
        Events page (#picks); Cultural Resources only on the Resources page; the areas of work moved
@@ -306,12 +305,6 @@ const l = livingStrings(lang);
     <SeasonalBand lang={lang} />
 
     <ExpireEvents />
-
-    <!-- Take part: Share Your Expertise with Matin, with the Advisory Circle button inside -->
-    <LivingPrograms lang={lang} part="join" />
-
-    <!-- Partner organizations and supporters: always shown, with open invitations -->
-    <PartnersSection lang={lang} />
 
     <!-- Land acknowledgement (owner's request, Oct 30 2026), just above the footer -->
     <LandAcknowledgement lang={lang} />

@@ -1,5 +1,6 @@
 ---
-import { advisorStrings, advisorsAnchor } from '@/i18n/advisors';
+import { advisorStrings } from '@/i18n/advisors';
+import { collabStrings, collabAnchors } from '@/i18n/collab';
 import {
   ChevronDown,
   HeartHandshake,
@@ -33,7 +34,16 @@ const anchor = (url: string, id: string) => `${url}#${id}`;
 // Main menu, in this order (owner's brief, Oct 24 2026). Get Involved is merged into
 // Contact & Collaboration (Phase 3). Lighter menu (owner, Oct 30 2026): the Gallery is no
 // longer a top-level item; its Photos, Videos and Posters sit under Events.
-const items: RouteKey[] = ['about', 'team', 'programs', 'events', 'news', 'resources', 'contact'];
+const items: RouteKey[] = [
+  'about',
+  'team',
+  'programs',
+  'events',
+  'news',
+  'resources',
+  'collaboration',
+  'contact',
+];
 const links = items.map((key) => ({ key, href: href(key, lang), label: t(`nav.${key}`) }));
 const aboutHref = href('about', lang);
 // Sub-links of "About": only Who We Are (the President's note moved to the homepage
@@ -117,16 +127,18 @@ resourcesLinks.push({
   label: cultureMapStrings.nav[lang],
   href: href('cultureMap', lang),
 });
-// Sub-links of "Contact & Collaboration" (owner's request, Oct 29 2026), in his order:
-// Write to us, Membership, Join Matin's Volunteer Team, all sections of the Contact page.
-const contactHref = href('contact', lang);
-const contactLinks = [
-  { id: 'write', label: t('contact.formTitle') },
-  { id: lang === 'fr' ? 'adhesion' : 'membership', label: t('nav.contactMembership') },
-  { id: lang === 'fr' ? 'benevolat' : 'volunteer', label: t('involved.volunteerTitle') },
-  // Matin Advisory Circle (owner's request, Oct 31 2026).
-  { id: advisorsAnchor(lang), label: advisorStrings(lang).nav },
-].map((l) => ({ ...l, href: anchor(contactHref, l.id) }));
+// Collaboration (owner's request, Oct 31 2026: its own item before Contact): Share Your
+// Expertise, Partners & Supporters, Membership, Volunteering, the Advisory Circle.
+const collabHref = href('collaboration', lang);
+const cs = collabStrings(lang);
+const ca = collabAnchors(lang);
+const collabLinks = [
+  { id: ca.expertise, label: cs.expertise },
+  { id: ca.partners, label: cs.partners },
+  { id: ca.membership, label: t('nav.contactMembership') },
+  { id: ca.volunteer, label: t('involved.volunteerTitle') },
+  { id: ca.advisors, label: advisorStrings(lang).nav },
+].map((l) => ({ ...l, href: anchor(collabHref, l.id) }));
 // Menu items that open a dropdown.
 const subMenus: Partial<Record<RouteKey, { id: string; label: string; links: typeof aboutLinks }>> =
   {
@@ -139,7 +151,7 @@ const subMenus: Partial<Record<RouteKey, { id: string; label: string; links: typ
       label: t('a11y.resourcesSubmenu'),
       links: resourcesLinks,
     },
-    contact: { id: 'contact-submenu', label: t('a11y.contactSubmenu'), links: contactLinks },
+    collaboration: { id: 'collab-submenu', label: cs.submenu, links: collabLinks },
   };
 
 const current = Astro.url.pathname;

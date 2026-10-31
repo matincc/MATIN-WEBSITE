@@ -14,10 +14,6 @@ import { Image } from 'astro:assets';
 import teamCollabPhoto from '@/assets/photos/team-collaboration.jpg';
 import SectionHeader from '@/components/ui/SectionHeader.astro';
 import ContactForm from '@/components/forms/ContactForm.astro';
-import VolunteerForm from '@/components/forms/VolunteerForm.astro';
-import MembershipForm from '@/components/forms/MembershipForm.astro';
-import AdvisorForm from '@/components/forms/AdvisorForm.astro';
-import { advisorStrings, advisorsAnchor } from '@/i18n/advisors';
 import MapFacade from '@/components/ui/MapFacade.astro';
 import SocialLinks from '@/components/ui/SocialLinks.astro';
 import { href, siteAlternates, type UiLang } from '@/i18n/routes';
@@ -30,15 +26,7 @@ interface Props {
 const { lang } = Astro.props;
 const t = useTranslations(lang);
 const s = await getSettings();
-const inv = await getSingleton('involvement');
-// The volunteer form exists in all three languages.
-const hasVolunteer = true;
-const volunteerId = lang === 'fr' ? 'benevolat' : 'volunteer';
-// Membership form right after « Write to us » (owner's request, Oct 29 2026).
-const membershipId = lang === 'fr' ? 'adhesion' : 'membership';
-// Matin Advisory Circle (owner's request, Oct 31 2026), after the volunteer section.
-const adv = advisorStrings(lang);
-const advisorsId = advisorsAnchor(lang);
+const collabHref = href('collaboration', lang);
 // Each detail appears only once it is set in the site settings.
 const a = s.address;
 const address = a && `${a.street}, ${a.city} (${a.region}) ${a.postalCode}`;
@@ -90,7 +78,7 @@ const details = [
         <h2 id="form-title" class="mb-6 text-3xl font-bold">
           {t('contact.formTitle')}
         </h2>
-        <ContactForm lang={lang} volunteerHref={hasVolunteer ? `#${volunteerId}` : undefined} />
+        <ContactForm lang={lang} volunteerHref={`${collabHref}#${lang === 'fr' ? 'benevolat' : 'volunteer'}`} />
       </section>
 
       <div class="space-y-8">
@@ -152,79 +140,16 @@ const details = [
     </div>
   </div>
 
-  <section
-    id={membershipId}
-    class="membership-band scroll-mt-24 py-16 sm:py-20"
-    aria-labelledby="membership-title"
-  >
-    <div class="container-site">
-      <SectionHeader
-        align="start"
-        id="membership-title"
-        title={t('membership.formTitle')}
-        subtitle={t('membership.lede')}
-      />
-      <p class="membership-fee">{t('membership.feeNote')}</p>
-      <div class="card form-panel form-panel--membership p-6 sm:p-10">
-        <p class="mb-8 text-lg">{t('membership.formIntro')}</p>
-        <MembershipForm lang={lang} action={`${href('contact', lang)}?sent=1#${membershipId}`} />
-      </div>
-      <p class="careers-note">
-        <a href={href('membership', lang)}>{t('membership.typesTitle')}</a>
-      </p>
-    </div>
-  </section>
-
-  {hasVolunteer && (
-    <section
-      id={volunteerId}
-      class="volunteer-band scroll-mt-24 py-16 sm:py-20"
-      aria-labelledby="volunteer-title"
-    >
-      <div class="container-site">
-        <SectionHeader
-          align="start"
-          id="volunteer-title"
-          title={t('involved.volunteerTitle')}
-          subtitle={inv.volunteerIntro && pick(inv.volunteerIntro, lang)}
-        />
-        <!-- A short, compact form right under the invitation (owner's brief, Oct 27 2026). -->
-        <div class="card form-panel form-panel--volunteer p-6 sm:p-10">
-          <VolunteerForm lang={lang} />
-        </div>
-        <p class="careers-note">
-          {t('contact.careersNote')} <a href={href('careers', lang)}>{t('contact.careersLink')}</a>
-        </p>
-      </div>
-    </section>
-  )}
-  <section
-    id={advisorsId}
-    class="advisors-band scroll-mt-24 py-16 sm:py-20"
-    aria-labelledby="advisors-title"
-  >
-    <div class="container-site">
-      <SectionHeader align="start" id="advisors-title" title={adv.title} subtitle={adv.lede} />
-      <ol class="adv-steps">
-        {[
-          [adv.how1Title, adv.how1Text],
-          [adv.how2Title, adv.how2Text],
-          [adv.how3Title, adv.how3Text],
-        ].map(([title, text], i) => (
-          <li class="adv-step">
-            <span class="adv-step__n" aria-hidden="true">{lang === 'fa' ? ['۱', '۲', '۳'][i] : i + 1}</span>
-            <h3 class="adv-step__title">{title}</h3>
-            <p>{text}</p>
-          </li>
-        ))}
-      </ol>
-      <div class="card form-panel form-panel--advisors p-6 sm:p-10">
-        <h3 class="mb-6 text-2xl font-bold">{adv.formTitle}</h3>
-        <AdvisorForm lang={lang} />
-      </div>
-    </div>
-  </section>
+  {/* Membership, volunteering and the Advisory Circle moved to the Collaboration page
+     (owner's request, Oct 31 2026); old links to their anchors are sent there. */}
 </PageLayout>
+
+<script define:vars={{ collabHref }}>
+  // Old links to Contact sections that moved to Collaboration (Oct 31 2026).
+  const moved = ['adhesion', 'membership', 'benevolat', 'volunteer', 'conseillers', 'advisory-circle'];
+  const id = location.hash.slice(1);
+  if (moved.includes(id)) location.replace(collabHref + location.search + '#' + id);
+</script>
 
 <style>
   /* Colourful page (owner, Oct 31 2026: « like the other pages, no white »): each band

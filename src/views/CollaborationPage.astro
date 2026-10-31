@@ -1,0 +1,272 @@
+---
+/**
+ * Collaboration (owner's request, Oct 31 2026): the homepage shows Matin itself; the ways
+ * to work with Matin live here, in the menu before Contact. In order: Share Your Expertise
+ * (the approved team.join* invitation), Partners & Supporters, Membership, Volunteering,
+ * the Matin Advisory Circle. The forms are the same Netlify forms as before
+ * (adhesion, benevolat, conseillers); old Contact anchors are forwarded here.
+ */
+import PageLayout from '@/layouts/PageLayout.astro';
+import SectionHeader from '@/components/ui/SectionHeader.astro';
+import LivingPrograms from '@/components/living/LivingPrograms.astro';
+import PartnersSection from '@/components/trust/PartnersSection.astro';
+import VolunteerForm from '@/components/forms/VolunteerForm.astro';
+import MembershipForm from '@/components/forms/MembershipForm.astro';
+import AdvisorForm from '@/components/forms/AdvisorForm.astro';
+import { advisorStrings } from '@/i18n/advisors';
+import { collabStrings, collabAnchors } from '@/i18n/collab';
+import { href, siteAlternates, type UiLang } from '@/i18n/routes';
+import { useTranslations, pick } from '@/i18n/ui';
+import { getSingleton } from '@/lib/content';
+
+interface Props {
+  lang: UiLang;
+}
+const { lang } = Astro.props;
+const t = useTranslations(lang);
+const c = collabStrings(lang);
+const ids = collabAnchors(lang);
+const inv = await getSingleton('involvement');
+const hasVolunteer = true;
+const volunteerId = ids.volunteer;
+const membershipId = ids.membership;
+const adv = advisorStrings(lang);
+const advisorsId = ids.advisors;
+---
+
+<PageLayout
+  accent="firouzeh"
+  lang={lang}
+  title={c.title}
+  lede={c.lede}
+  ledeStrong
+  alternates={siteAlternates('collaboration')}
+>
+  <div id={ids.expertise} class="living collab-expertise scroll-mt-24">
+    <LivingPrograms lang={lang} part="join" />
+  </div>
+
+  <div class="collab-partners">
+    <PartnersSection lang={lang} />
+  </div>
+
+  <section
+    id={membershipId}
+    class="membership-band scroll-mt-24 py-16 sm:py-20"
+    aria-labelledby="membership-title"
+  >
+    <div class="container-site">
+      <SectionHeader
+        align="start"
+        id="membership-title"
+        title={t('membership.formTitle')}
+        subtitle={t('membership.lede')}
+      />
+      <p class="membership-fee">{t('membership.feeNote')}</p>
+      <div class="card form-panel form-panel--membership p-6 sm:p-10">
+        <p class="mb-8 text-lg">{t('membership.formIntro')}</p>
+        <MembershipForm lang={lang} action={`${href('collaboration', lang)}?sent=1#${membershipId}`} />
+      </div>
+      <p class="careers-note">
+        <a href={href('membership', lang)}>{t('membership.typesTitle')}</a>
+      </p>
+    </div>
+  </section>
+
+  {hasVolunteer && (
+    <section
+      id={volunteerId}
+      class="volunteer-band scroll-mt-24 py-16 sm:py-20"
+      aria-labelledby="volunteer-title"
+    >
+      <div class="container-site">
+        <SectionHeader
+          align="start"
+          id="volunteer-title"
+          title={t('involved.volunteerTitle')}
+          subtitle={inv.volunteerIntro && pick(inv.volunteerIntro, lang)}
+        />
+        <!-- A short, compact form right under the invitation (owner's brief, Oct 27 2026). -->
+        <div class="card form-panel form-panel--volunteer p-6 sm:p-10">
+          <VolunteerForm lang={lang} />
+        </div>
+        <p class="careers-note">
+          {t('contact.careersNote')} <a href={href('careers', lang)}>{t('contact.careersLink')}</a>
+        </p>
+      </div>
+    </section>
+  )}
+  <section
+    id={advisorsId}
+    class="advisors-band scroll-mt-24 py-16 sm:py-20"
+    aria-labelledby="advisors-title"
+  >
+    <div class="container-site">
+      <SectionHeader align="start" id="advisors-title" title={adv.title} subtitle={adv.lede} />
+      <ol class="adv-steps">
+        {[
+          [adv.how1Title, adv.how1Text],
+          [adv.how2Title, adv.how2Text],
+          [adv.how3Title, adv.how3Text],
+        ].map(([title, text], i) => (
+          <li class="adv-step">
+            <span class="adv-step__n" aria-hidden="true">{lang === 'fa' ? ['۱', '۲', '۳'][i] : i + 1}</span>
+            <h3 class="adv-step__title">{title}</h3>
+            <p>{text}</p>
+          </li>
+        ))}
+      </ol>
+      <div class="card form-panel form-panel--advisors p-6 sm:p-10">
+        <h3 class="mb-6 text-2xl font-bold">{adv.formTitle}</h3>
+        <AdvisorForm lang={lang} />
+      </div>
+    </div>
+  </section>
+</PageLayout>
+
+<style>
+  /* Colourful page (owner, Oct 31 2026: « like the other pages, no white »): each band
+     has its own pale ground, each panel a contrasting tint; inputs stay white so the
+     fields read clearly. Text navy or ink on every tint (8:1 or more); white on encre. */
+  .write-band {
+    background: color-mix(in srgb, var(--matin-soleil) 24%, var(--matin-ivoire));
+  }
+  .form-panel:not(#o) {
+    border: none;
+    border-block-start: 8px solid var(--matin-firouzeh-ink);
+    border-start-end-radius: 5rem;
+    background: color-mix(in srgb, var(--matin-firouzeh) 26%, var(--matin-ivoire));
+  }
+  .info-panel:not(#o) {
+    border: none;
+    border-block-start: 8px solid var(--matin-soleil);
+    border-end-end-radius: 4rem;
+    background: var(--matin-encre);
+    color: var(--color-white);
+  }
+  .info-panel :is(h2, h3, p, a, div):not(#o) {
+    color: var(--color-white);
+  }
+  .info-panel :global(svg.text-gold-dark) {
+    color: var(--matin-soleil);
+  }
+  .info-panel a:not(#o):focus-visible {
+    outline-color: var(--matin-soleil);
+  }
+  .contact-art {
+    position: relative;
+    max-width: 30rem;
+    margin-inline: auto;
+    padding: 1.25rem 1.25rem 0 0;
+  }
+  .contact-art :global(.contact-art__img) {
+    position: relative;
+    z-index: 1;
+    display: block;
+    width: 100%;
+    height: auto;
+    aspect-ratio: 4 / 3;
+    object-fit: cover;
+    border-radius: 14rem 14rem 1.5rem 1.5rem;
+    border: 8px solid var(--matin-ivoire);
+    box-shadow: 0 24px 40px -26px color-mix(in srgb, var(--matin-encre) 70%, transparent);
+  }
+  .contact-art__block {
+    position: absolute;
+    inset-block-start: 0;
+    inset-inline-end: 0;
+    width: 45%;
+    aspect-ratio: 1;
+    border-radius: 50%;
+    background: var(--matin-brique);
+  }
+  .membership-band {
+    background: color-mix(in srgb, var(--matin-brique) 16%, var(--matin-ivoire));
+  }
+  .membership-fee {
+    margin-block: -0.5rem 1.5rem;
+    display: inline-block;
+    padding: 0.4rem 1.1rem;
+    border-radius: 999px;
+    background: var(--matin-ivoire);
+    font-weight: 800;
+    color: var(--matin-brique-ink);
+  }
+  .form-panel--membership:not(#o) {
+    max-width: 60rem;
+    border-block-start-color: var(--matin-brique-ink);
+    border-start-end-radius: 6rem;
+    background: color-mix(in srgb, var(--matin-soleil) 34%, var(--matin-ivoire));
+  }
+  .volunteer-band {
+    background: color-mix(in srgb, var(--matin-firouzeh) 18%, var(--matin-ivoire));
+  }
+  .careers-note {
+    margin-block-start: 1.5rem;
+    font-size: 1.05rem;
+  }
+  .careers-note a {
+    font-weight: 700;
+  }
+  .form-panel--volunteer:not(#o) {
+    max-width: 60rem;
+    border-block-start-color: var(--matin-soleil);
+    border-start-end-radius: 6rem;
+    background: color-mix(in srgb, var(--matin-brique) 22%, var(--matin-ivoire));
+  }
+  .advisors-band {
+    background: color-mix(in srgb, var(--matin-encre) 10%, var(--matin-ivoire));
+  }
+  .adv-steps {
+    display: grid;
+    gap: 1rem;
+    margin-block: 0 2.5rem;
+    max-width: 72rem;
+  }
+  @media (min-width: 56rem) {
+    .adv-steps {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+  }
+  .adv-step {
+    position: relative;
+    padding: 1.4rem 1.5rem 1.5rem;
+    border-radius: 1rem;
+    border-start-end-radius: 2.75rem;
+    background: var(--matin-encre);
+    color: var(--color-white);
+  }
+  .adv-step:nth-child(2) {
+    background: var(--matin-firouzeh-ink);
+  }
+  .adv-step:nth-child(3) {
+    background: var(--matin-brique-ink);
+  }
+  .adv-step__n {
+    display: inline-grid;
+    place-items: center;
+    width: 2.4rem;
+    height: 2.4rem;
+    margin-block-end: 0.75rem;
+    border-radius: 50%;
+    background: var(--matin-soleil);
+    color: var(--matin-encre);
+    font-family: var(--font-display);
+    font-weight: 800;
+  }
+  .adv-step__title:not(#o) {
+    margin-block-end: 0.35rem;
+    font-size: 1.25rem;
+    font-weight: 800;
+    color: var(--color-white);
+  }
+  .adv-step p {
+    line-height: 1.6;
+  }
+  .form-panel--advisors:not(#o) {
+    max-width: 60rem;
+    border-block-start-color: var(--matin-encre);
+    border-start-end-radius: 6rem;
+    background: color-mix(in srgb, var(--matin-firouzeh) 20%, var(--matin-ivoire));
+  }
+</style>

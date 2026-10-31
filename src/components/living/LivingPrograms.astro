@@ -44,8 +44,8 @@ const areas: { title: string; text: string; slot: MediaSlot; tone: string }[] = 
   },
   { title: t('home.area3Title'), text: t('home.area3Text'), slot: 'areaResearch', tone: 'gold' },
 ];
-const volunteer = `${href('contact', lang)}#${lang === 'fr' ? 'benevolat' : 'volunteer'}`;
-const advisorsHref = `${href('contact', lang)}#${advisorsAnchor(lang)}`;
+const volunteer = `${href('collaboration', lang)}#${lang === 'fr' ? 'benevolat' : 'volunteer'}`;
+const advisorsHref = `${href('collaboration', lang)}#${advisorsAnchor(lang)}`;
 const advCta = advisorStrings(lang).teamCta;
 const ways = [
   t('team.joinWayInPerson'),
@@ -121,7 +121,7 @@ const ways = [
             {advCta}
             <ArrowRight size={18} class="flip-rtl" aria-hidden="true" />
           </a>
-          <a href={href('contact', lang)} class="ljoin__link">
+          <a href={`${href('contact', lang)}#write`} class="ljoin__link">
             {t('home.actContact')}
           </a>
         </div>

@@ -9,7 +9,7 @@
  */
 import FormShell from './FormShell.astro';
 import Field from './Field.astro';
-import type { UiLang } from '@/i18n/routes';
+import { href, type UiLang } from '@/i18n/routes';
 import { useTranslations } from '@/i18n/ui';
 import { countryNames } from '@/lib/countries';
 
@@ -39,6 +39,7 @@ const countries = countryNames(lang);
   lang={lang}
   name="benevolat"
   id="volunteer"
+  action={`${href('collaboration', lang)}?sent=1#${lang === 'fr' ? 'benevolat' : 'volunteer'}`}
   submitLabel={t('form.volunteerSubmit')}
   consentText={t('form.consentVolunteer')}
   successMessage={t('form.volunteerSuccess')}

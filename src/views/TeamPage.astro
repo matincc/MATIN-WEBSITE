@@ -67,9 +67,9 @@ const board = (
   })
   .filter((m) => m !== undefined);
 const voiceIds = new Set(cultureVoices.map((v) => v.member));
-const volunteerHref = `${href('contact', lang)}#${lang === 'fr' ? 'benevolat' : 'volunteer'}`;
+const volunteerHref = `${href('collaboration', lang)}#${lang === 'fr' ? 'benevolat' : 'volunteer'}`;
 // Experts join the Advisory Circle (owner's request, Oct 31 2026).
-const advisorsHref = `${href('contact', lang)}#${advisorsAnchor(lang)}`;
+const advisorsHref = `${href('collaboration', lang)}#${advisorsAnchor(lang)}`;
 const advCta = advisorStrings(lang).teamCta;
 const joinWays = [
   { icon: MapPin, label: t('team.joinWayInPerson') },

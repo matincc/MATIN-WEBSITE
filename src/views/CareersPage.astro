@@ -24,7 +24,7 @@ const { lang } = Astro.props;
 const t = useTranslations(lang);
 const jobs = await getJobs();
 const site = (Astro.site ?? new URL(Astro.url.origin)).href;
-const volunteerHref = `${href('contact', lang)}#${lang === 'fr' ? 'benevolat' : 'volunteer'}`;
+const volunteerHref = `${href('collaboration', lang)}#${lang === 'fr' ? 'benevolat' : 'volunteer'}`;
 
 const positions = jobs.map((j) => ({ value: j.data.title.fr, label: pick(j.data.title, lang)! }));
 
