@@ -74,7 +74,8 @@ const blocks: {
 ];
 // Six surfaces for the values, never a uniform grid (owner's request, Oct 29 2026: less
 // rigid): turquoise and brick cards with white text among white and sand ones.
-const valueTones = ['firouzeh', 'white', 'sable', 'sable', 'brique', 'white'];
+// Six distinct colours, none the colour of the page (owner, Oct 31 2026).
+const valueTones = ['firouzeh', 'soleil', 'encre', 'brique', 'firouzeh-tint', 'brique-tint'];
 
 // Thin-line icons, all drawn at the same size and stroke width.
 // Equity is four equal squares: never a scale, gavel or other legal symbol.
@@ -513,10 +514,11 @@ const history = about.history.map((h) => ({
     border-radius: 50%;
     border: 1.25rem solid color-mix(in srgb, var(--color-white) 16%, var(--color-firouzeh));
   }
-  /* Legal status: ivory with navy text, a soft round shape and a small sun. */
+  /* Legal status: navy with white text and a small sun (owner, Oct 31 2026: the ivory
+     card had no colour of its own; size and shape unchanged). */
   .about-block[data-tone='sable'] {
-    background: var(--color-ivory);
-    color: var(--color-ink);
+    background: var(--matin-encre);
+    color: var(--matin-white);
     border-radius: 1.5rem 1.5rem 4rem 1.5rem;
     box-shadow: var(--shadow-card);
   }
@@ -532,8 +534,11 @@ const history = about.history.map((h) => ({
     padding-inline-end: 3rem;
     font-size: clamp(1.6rem, 1.3rem + 1vw, 2.1rem);
   }
+  .about-block[data-tone='sable'] .about-block__title {
+    color: var(--matin-white);
+  }
   .about-block[data-tone='sable'] a {
-    color: var(--color-brique-ink);
+    color: var(--color-soleil);
   }
 
   /* ---------- Our values: cards at different heights, never a uniform grid ---------- */
@@ -656,24 +661,38 @@ const history = about.history.map((h) => ({
     font-weight: 800;
     font-variation-settings: normal;
   }
-  .value-card[data-tone='white'] {
-    background: var(--color-white);
-    border: 1px solid var(--color-card-edge);
-    box-shadow: var(--shadow-card);
+  .value-card[data-tone='soleil'] {
+    background: var(--color-soleil);
+    color: var(--matin-encre);
   }
-  .value-card[data-tone='white'] .value-card__icon {
-    background: var(--color-sable);
-    color: var(--color-brique-ink);
+  .value-card[data-tone='soleil'] .value-card__icon {
+    background: var(--matin-encre);
+    color: var(--color-soleil);
   }
-  .value-card[data-tone='sable'] {
-    background: var(--color-sable);
+  .value-card[data-tone='firouzeh-tint'] {
+    background: color-mix(in srgb, var(--matin-firouzeh) 32%, var(--matin-white));
+    color: var(--matin-encre);
   }
-  .value-card[data-tone='sable'] .value-card__icon {
-    background: var(--color-white);
-    color: var(--color-firouzeh-ink);
+  .value-card[data-tone='firouzeh-tint'] .value-card__icon {
+    background: var(--matin-firouzeh-ink);
+    color: var(--matin-white);
+  }
+  .value-card[data-tone='brique-tint'] {
+    background: color-mix(in srgb, var(--matin-brique) 30%, var(--matin-white));
+    color: var(--matin-encre);
+  }
+  .value-card[data-tone='brique-tint'] .value-card__icon {
+    background: var(--matin-brique-ink);
+    color: var(--matin-white);
+  }
+  .value-card[data-tone='soleil'] .value-card__title,
+  .value-card[data-tone='firouzeh-tint'] .value-card__title,
+  .value-card[data-tone='brique-tint'] .value-card__title {
+    color: var(--matin-encre);
   }
   .value-card[data-tone='firouzeh'],
-  .value-card[data-tone='brique'] {
+  .value-card[data-tone='brique'],
+  .value-card[data-tone='encre'] {
     color: var(--color-white);
   }
   .value-card[data-tone='firouzeh'] {
@@ -682,15 +701,20 @@ const history = about.history.map((h) => ({
   .value-card[data-tone='brique'] {
     background: var(--color-brique-ink);
   }
+  .value-card[data-tone='encre'] {
+    background: var(--matin-encre);
+  }
   .value-card[data-tone='firouzeh'] .value-card__title,
-  .value-card[data-tone='brique'] .value-card__title {
+  .value-card[data-tone='brique'] .value-card__title,
+  .value-card[data-tone='encre'] .value-card__title {
     color: var(--color-white);
   }
   .value-card[data-tone='firouzeh'] .value-card__icon {
     background: var(--color-ivory);
     color: var(--color-firouzeh-ink);
   }
-  .value-card[data-tone='brique'] .value-card__icon {
+  .value-card[data-tone='brique'] .value-card__icon,
+  .value-card[data-tone='encre'] .value-card__icon {
     background: var(--color-soleil);
     color: var(--color-primary);
   }
