@@ -25,7 +25,7 @@ interface Props {
 const { lang, alternates } = Astro.props;
 const t = useTranslations(lang);
 // Header signature (design-system brief, Oct 31 2026): the slogan in the page's language
-// and, under it, the Persian institutional slogan, always in Persian.
+// and, under it, the Persian institutional slogan, on the Persian pages only (owner, Oct 31 2026).
 const faSlogan = useTranslations('fa')('home.positioning');
 /** Adds #id to a page URL. */
 const anchor = (url: string, id: string) => `${url}#${id}`;
@@ -148,7 +148,7 @@ const isActive = (url: string) => !url.includes('?') && current.startsWith(url);
       <Lockup lang={lang} size="large" />
       <p class="header-slogan">
         <span class="header-slogan__main">{t('brand.tagline')}</span>
-        <span class="header-slogan__fa" lang="fa" dir="rtl">{faSlogan}</span>
+        {lang === 'fa' && <span class="header-slogan__fa" lang="fa" dir="rtl">{faSlogan}</span>}
       </p>
     </div>
 
@@ -253,7 +253,7 @@ const isActive = (url: string) => !url.includes('?') && current.startsWith(url);
     <nav aria-label={t('a11y.mainNav')} class="px-5 pt-2 pb-10">
       <p class="header-slogan header-slogan--menu">
         <span class="header-slogan__main">{t('brand.tagline')}</span>
-        <span class="header-slogan__fa" lang="fa" dir="rtl">{faSlogan}</span>
+        {lang === 'fa' && <span class="header-slogan__fa" lang="fa" dir="rtl">{faSlogan}</span>}
       </p>
       <div class="mb-6 rounded-2xl bg-tint px-4 py-3">
         <LangToggle lang={lang} alternates={alternates} large />

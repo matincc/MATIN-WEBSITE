@@ -15,7 +15,7 @@ interface Props {
 const { lang, showNewsletter = true } = Astro.props;
 const t = useTranslations(lang);
 const s = await getSettings();
-// The Persian institutional slogan, always in Persian (design-system brief, Oct 31 2026).
+// The Persian institutional slogan, on the Persian pages only (owner, Oct 31 2026).
 const faSlogan = useTranslations('fa')('home.positioning');
 
 // Same order as the header menu; the FAQ (left out until it has questions), Become a Member
@@ -60,7 +60,7 @@ const hasContact = Boolean(a || s.phone || s.email);
     <Lockup lang={lang} variant="dark" />
     <p class="footer-slogan">
       <span class="footer-slogan__main">{t('brand.tagline')}</span>
-      <span class="footer-slogan__fa" lang="fa" dir="rtl">{faSlogan}</span>
+      {lang === 'fa' && <span class="footer-slogan__fa" lang="fa" dir="rtl">{faSlogan}</span>}
     </p>
   </div>
   <div class="container-site grid gap-12 pt-10 pb-12 md:grid-cols-2 lg:grid-cols-12">
