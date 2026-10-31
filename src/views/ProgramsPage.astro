@@ -42,7 +42,7 @@ const hasInitiatives =
       title={t('home.areasTitle')}
       lede={t('home.areasLede')}
       align="start"
-      class="mb-12"
+      class="mb-12 areas-head"
     />
     <AreasGrid lang={lang} linked={false} />
   </section>
@@ -71,3 +71,13 @@ const hasInitiatives =
   </section>
   )}
 </PageLayout>
+
+<style>
+  /* The line beside « Connecting Cultures… », larger (owner, Oct 31 2026). */
+  :global(.areas-head .lede) {
+    font-size: clamp(1.3rem, 1.05rem + 0.9vw, 1.8rem);
+    font-weight: 500;
+    line-height: 1.55;
+    color: var(--matin-encre);
+  }
+</style>

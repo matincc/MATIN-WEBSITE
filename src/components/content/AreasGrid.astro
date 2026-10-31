@@ -155,6 +155,30 @@ const areas = [
   .area-card:hover .area-card__media :global(img) {
     transform: scale(1.05);
   }
+  /* Coloured cards, not white (owner, Oct 31 2026): navy, saffron, turquoise. */
+  .areas-grid > li:nth-child(3n + 1) .area-card {
+    --card-bg: var(--matin-encre);
+    --card-fg: var(--matin-white);
+  }
+  .areas-grid > li:nth-child(3n + 2) .area-card {
+    --card-bg: var(--matin-soleil);
+    --card-fg: var(--matin-encre);
+  }
+  .areas-grid > li:nth-child(3n) .area-card {
+    --card-bg: var(--matin-firouzeh-ink);
+    --card-fg: var(--matin-white);
+  }
+  .areas-grid .area-card {
+    border: 0;
+    background: var(--card-bg);
+    color: var(--card-fg);
+  }
+  .areas-grid .area-card :global(.area-card__title),
+  .areas-grid .area-card .area-card__link,
+  .areas-grid .area-card .area-card__text,
+  .areas-grid .area-card .area-card__cta {
+    color: var(--card-fg);
+  }
   .area-card__body {
     display: flex;
     flex: 1;

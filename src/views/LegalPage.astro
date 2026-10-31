@@ -75,25 +75,47 @@ const html = renderMarkdown(body, lang).replace(/<h2>(.*?)<\/h2>/g, (_, inner: s
     display: grid;
     gap: 2.5rem;
   }
+  /* Coloured panels, not white boxes (owner, Oct 31 2026): the text on pale saffron with
+     navy ink, the contents on navy. */
   .legal-body {
     max-width: 48rem;
+    padding: clamp(1.5rem, 1rem + 2.5vw, 3rem);
+    border-radius: 1.5rem;
+    border-start-end-radius: 5rem;
+    background: color-mix(in srgb, var(--matin-soleil) 16%, var(--matin-white));
+    border-block-start: 6px solid var(--matin-brique);
+    color: var(--matin-encre);
+  }
+  .legal-body :global(p),
+  .legal-body :global(li) {
+    color: var(--matin-encre);
   }
   .legal-body :global(h2) {
     scroll-margin-top: 7rem;
   }
   .legal-toc {
-    padding: 1.5rem 1.75rem;
-    border: 1px solid var(--color-line);
-    border-inline-start: 5px solid var(--color-gold);
-    border-radius: 1rem;
-    background: var(--color-white);
+    padding: 1.75rem 1.9rem;
+    border-radius: 1.25rem;
+    border-end-start-radius: 4rem;
+    background: var(--matin-encre);
+    color: var(--matin-white);
   }
   .legal-toc__title {
     margin-block-end: 0.75rem;
     font-family: var(--font-display);
     font-size: 1.125rem;
     font-weight: 800;
-    color: var(--color-primary);
+    color: var(--matin-soleil);
+  }
+  .legal-toc a {
+    color: var(--matin-white);
+  }
+  .legal-toc li::marker {
+    color: var(--matin-soleil);
+    font-weight: 800;
+  }
+  .legal-toc :focus-visible {
+    outline-color: var(--matin-soleil);
   }
   .legal-toc ol {
     display: grid;
