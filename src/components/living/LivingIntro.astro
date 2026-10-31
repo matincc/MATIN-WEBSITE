@@ -16,6 +16,36 @@ interface Props {
 }
 const { lang } = Astro.props;
 const t = useTranslations(lang);
+
+/*
+ * Owner, Oct 31 2026: the introduction read « too official ». The approved words stay
+ * exactly as written; only their setting changes: the three ways (dialogue, arts,
+ * research) are marked in the palette colours and the two aims are set in bold.
+ */
+const MARKS: Record<UiLang, { ways: string[]; aims: string[] }> = {
+  en: { ways: ['dialogue', 'the arts', 'research'], aims: ['mutual understanding', 'a shared sense of belonging'] },
+  fr: {
+    ways: ['le dialogue', 'les arts', 'la recherche'],
+    aims: ['la compréhension mutuelle', "un sentiment d['’]appartenance partagé"],
+  },
+  fa: { ways: ['گفت‌وگو', 'هنر', 'پژوهش'], aims: ['درک متقابل', 'احساس تعلقی مشترک'] },
+};
+const whoText = t('home.whoText');
+const marks = MARKS[lang] ?? MARKS.en;
+const esc = (x: string) => x.replace(/[.*+?^${}()|\\]/g, (c) => (c === '[' || c === ']' ? c : '\\' + c));
+const pattern = new RegExp(
+  `(${[...marks.ways, ...marks.aims].map((m) => m.split(/(\[['’]\])/).map((part) => (part.startsWith('[') ? part : esc(part))).join('').replace(/ /g, '[\\s\u00a0\u202f]')).join('|')})`,
+  'g',
+);
+let wayIndex = 0;
+const segments = whoText.split(pattern).map((text, i) => {
+  if (i % 2 === 0) return { text, kind: 'plain' as const };
+  const plain = text.replace(/[\u00a0\u202f]/g, ' ').replace(/’/g, "'");
+  const isWay = marks.ways.some((w) => w.replace(/\[['’]\]/g, "'") === plain);
+  return isWay
+    ? { text, kind: 'way' as const, tone: ['firouzeh', 'soleil', 'brique'][wayIndex++ % 3] }
+    : { text, kind: 'aim' as const };
+});
 ---
 
 <section class="lintro" data-own-ground aria-labelledby="lintro-title">
@@ -25,7 +55,17 @@ const t = useTranslations(lang);
       <h2 id="lintro-title" class="lintro__title">
         {t('home.whoTitle')}
       </h2>
-      <p class="lintro__statement">{t('home.whoText')}</p>
+      <p class="lintro__statement">
+        {segments.map((seg) =>
+          seg.kind === 'way' ? (
+            <mark class:list={['lintro__way', `lintro__way--${seg.tone}`]}>{seg.text}</mark>
+          ) : seg.kind === 'aim' ? (
+            <strong class="lintro__aim">{seg.text}</strong>
+          ) : (
+            seg.text
+          ),
+        )}
+      </p>
       <a href={href('about', lang)} class="living-link">
         {t('home.whoCardsLabel')}
         <ArrowRight size={20} class="flip-rtl" aria-hidden="true" />
@@ -91,34 +131,67 @@ const t = useTranslations(lang);
     }
   }
   .lintro__title {
-    margin-block: 0.75rem 1.5rem;
-    font-family: var(--font-display);
-    font-size: clamp(1.1rem, 1rem + 0.4vw, 1.35rem);
-    font-weight: 800;
-    color: var(--living-green-ink);
-  }
-  /* The approved introduction, set like the opening of a magazine feature. */
-  .lintro__statement {
-    max-width: 38rem;
+    margin-block: 0.5rem 1.5rem;
     font-family: var(--font-editorial);
-    font-size: clamp(1.6rem, 1.15rem + 1.8vw, 2.6rem);
-    font-weight: 400;
+    font-size: clamp(2.6rem, 1.8rem + 3.2vw, 4.75rem);
+    font-weight: 600;
     font-variation-settings:
       'SOFT' 100,
-      'opsz' 72;
-    line-height: 1.25;
-    letter-spacing: -0.01em;
-    color: var(--living-charcoal);
+      'opsz' 144;
+    line-height: 1.02;
+    letter-spacing: -0.02em;
+    color: var(--matin-brique-ink);
+  }
+  :global(html[lang='fa']) .lintro__title {
+    font-family: var(--font-display);
+    font-size: clamp(2.2rem, 1.6rem + 2.4vw, 3.6rem);
+    font-weight: 900;
+    line-height: 1.3;
+    letter-spacing: 0;
+  }
+  /* The approved introduction, warm and readable (owner, Oct 31 2026: less official):
+     reading type, the three ways marked like a highlighter, the two aims in bold. */
+  .lintro__statement {
+    max-width: 36rem;
+    font-family: var(--font-sans);
+    font-size: clamp(1.25rem, 1.1rem + 0.6vw, 1.6rem);
+    font-weight: 400;
+    line-height: 1.75;
+    color: var(--matin-encre);
     text-wrap: pretty;
   }
   :global(html[lang='fa']) .lintro__statement {
     font-family: var(--font-display);
-    font-size: clamp(1.4rem, 1.1rem + 1.2vw, 2.05rem);
-    font-weight: 600;
-    line-height: 1.8;
-    letter-spacing: 0;
+    font-size: clamp(1.3rem, 1.1rem + 0.7vw, 1.7rem);
+    font-weight: 500;
+    line-height: 2;
     /* Owner's request, Oct 30 2026: a neat block, not ragged lines (« مرتب »). */
     text-wrap: balance;
+  }
+  .lintro__way {
+    padding: 0 0.18em;
+    border-radius: 0.35em 0.35em 0.35em 0.1em;
+    font-weight: 700;
+    color: var(--matin-encre);
+    -webkit-box-decoration-break: clone;
+    box-decoration-break: clone;
+  }
+  .lintro__way--firouzeh {
+    background: color-mix(in srgb, var(--matin-firouzeh) 32%, var(--matin-white));
+  }
+  .lintro__way--soleil {
+    background: color-mix(in srgb, var(--matin-soleil) 55%, var(--matin-white));
+  }
+  .lintro__way--brique {
+    background: color-mix(in srgb, var(--matin-brique) 32%, var(--matin-white));
+  }
+  .lintro__aim {
+    font-weight: 700;
+    color: var(--matin-brique-ink);
+    text-decoration: underline;
+    text-decoration-color: var(--matin-soleil);
+    text-decoration-thickness: 3px;
+    text-underline-offset: 0.25em;
   }
   .lintro__text :global(.living-link) {
     margin-block-start: 2rem;

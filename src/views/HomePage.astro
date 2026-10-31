@@ -479,14 +479,15 @@ const l = livingStrings(lang);
   }
 
   /* ================= Matin in Action: stories ================= */
+  /* Tighter spacing (owner, Oct 31 2026: too much empty space above, below and under the title). */
   .laction {
-    padding-block: clamp(4rem, 3rem + 4vw, 7rem);
+    padding-block: clamp(2.25rem, 1.75rem + 2vw, 3.75rem);
     background: var(--matin-firouzeh-pale);
     border-start-end-radius: clamp(3rem, 8vw, 9rem);
   }
   .laction__head {
     max-width: 48rem;
-    margin-block-end: clamp(2.5rem, 2rem + 2vw, 4rem);
+    margin-block-end: clamp(1rem, 0.75rem + 1vw, 1.75rem);
   }
   /* Phones and tablets: one story and a peek of the next, swiped. */
   .laction__track {
@@ -520,17 +521,17 @@ const l = livingStrings(lang);
       overflow: visible;
     }
     .laction__item:nth-child(2) {
-      margin-block-start: 7rem;
+      margin-block-start: 2.5rem;
     }
     .laction__item:nth-child(3) {
-      margin-block-start: 2rem;
+      margin-block-start: 0.75rem;
     }
     .laction__item:nth-child(3n + 4) {
       grid-column: 1;
     }
     .story--lead {
       grid-template-columns: minmax(0, 1.15fr) minmax(0, 1fr);
-      align-items: end;
+      align-items: center;
       gap: 2rem;
     }
   }
