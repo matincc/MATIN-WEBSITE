@@ -88,7 +88,8 @@ export const media = {
     credit: unsplashCredit('wes lewis', 'westhmus', 'diverse-group-at-professional-seminar-zt6OxRORM2g'),
   },
   /** Who we are, second image of the collage: the national flags of 49 countries from every
-      continent laid side by side (owner's request, Oct 31 2026), Canada at the centre.
+      continent laid side by side (owner's request, Oct 31 2026), Canada at the centre and the
+      countries he named inside the circle.
       Composed for Matin from the flag-icons graphics (MIT licence, github.com/lipis/flag-icons). */
   introMaking: {
     src: introWorldFlags,
