@@ -100,6 +100,7 @@ const ld = (obj: object) => JSON.stringify(obj).replace(/</g, '\\u003c');
 {seasons.length > 0 && (
   <section
     class="seasons"
+    data-own-ground
     aria-label={s.label}
     data-seasons
     hidden={!seasons.some((x) => x.active)}
@@ -206,8 +207,14 @@ const ld = (obj: object) => JSON.stringify(obj).replace(/</g, '\\u003c');
 </script>
 
 <style>
+  /* The jewel of the homepage (owner, Oct 31 2026: the pale green ground was dull): a deep
+     turquoise band with a flat saffron sun, the occasion's warm panel on it. */
   .seasons {
-    background: var(--matin-ivoire);
+    background-color: var(--matin-firouzeh-ink);
+    background-image:
+      radial-gradient(circle at 100% 0, var(--matin-soleil) 0 7rem, transparent 7rem),
+      radial-gradient(circle at 0 100%, color-mix(in srgb, var(--matin-brique) 70%, var(--matin-firouzeh-ink)) 0 9rem, transparent 9rem);
+    background-repeat: no-repeat;
     padding-block: clamp(2rem, 4vw, 3.5rem);
   }
   .seasons__inner {
@@ -223,7 +230,7 @@ const ld = (obj: object) => JSON.stringify(obj).replace(/</g, '\\u003c');
     font-weight: 800;
     letter-spacing: 0.18em;
     text-transform: uppercase;
-    color: var(--matin-firouzeh-ink);
+    color: var(--matin-white);
   }
   :global(html[lang='fa']) .seasons__label {
     letter-spacing: 0;

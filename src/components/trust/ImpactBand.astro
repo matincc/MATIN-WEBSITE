@@ -33,7 +33,7 @@ const steps = [
 ];
 ---
 
-<section class="impact" id="impact" aria-labelledby="impact-title">
+<section class="impact" data-own-ground id="impact" aria-labelledby="impact-title">
   <div class="container-site">
     <h2 id="impact-title" class="impact__title">{t('home.impactTitle')}</h2>
     <p class="impact__lede">{figures.length ? t('home.impactLede') : t('home.impactEmpty')}</p>
@@ -66,7 +66,9 @@ const steps = [
 <style>
   .impact {
     padding-block: clamp(3rem, 2rem + 3vw, 5rem);
-    background: var(--matin-sable);
+    background-color: color-mix(in srgb, var(--matin-soleil) 38%, var(--matin-ivoire));
+    background-image: radial-gradient(circle at 100% 100%, color-mix(in srgb, var(--matin-brique) 40%, transparent) 0 10rem, transparent 10rem);
+    background-repeat: no-repeat;
   }
   .impact__title {
     font-family: var(--font-editorial);
@@ -91,7 +93,7 @@ const steps = [
     align-content: start;
     gap: 0.4rem;
     padding: 1.5rem 1.6rem;
-    background: var(--matin-ivoire);
+    background: var(--matin-white);
     border-radius: 1rem;
     border-start-start-radius: 2.5rem;
     border-block-start: 5px solid var(--matin-soleil);

@@ -16,6 +16,7 @@ const light = (el: Element) => {
 let n = 0;
 document.querySelectorAll('main > *, main > div > section').forEach((el) => {
   if (el.matches('main > div') && el.querySelector(':scope > section')) return;
+  if (el.hasAttribute('data-own-ground')) return;
   if (el.classList.contains('ahero') || el.querySelector('.ahero')) return;
   if (getComputedStyle(el).backgroundImage !== 'none') return;
   if (!light(el) || el.getBoundingClientRect().height < 120) return;

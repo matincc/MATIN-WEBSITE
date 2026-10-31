@@ -18,7 +18,7 @@ const { lang } = Astro.props;
 const t = useTranslations(lang);
 ---
 
-<section class="lintro" aria-labelledby="lintro-title">
+<section class="lintro" data-own-ground aria-labelledby="lintro-title">
   <div class="container-site lintro__grid">
     <div class="lintro__text" data-reveal>
       <p class="living-kicker">{t('home.positioning')}</p>
@@ -70,7 +70,14 @@ const t = useTranslations(lang);
 </section>
 
 <style>
+  /* Warm terracotta ground with flat turquoise and saffron shapes (owner, Oct 31 2026:
+     this section was colourless and lifeless). */
   .lintro {
+    background-color: color-mix(in srgb, var(--matin-brique) 22%, var(--matin-ivoire));
+    background-image:
+      radial-gradient(circle at 0 100%, color-mix(in srgb, var(--matin-firouzeh) 45%, transparent) 0 11rem, transparent 11rem),
+      radial-gradient(circle at 100% 0, color-mix(in srgb, var(--matin-soleil) 70%, transparent) 0 8rem, transparent 8rem);
+    background-repeat: no-repeat;
     padding-block: clamp(4rem, 3rem + 5vw, 8rem) clamp(3rem, 2rem + 3vw, 5rem);
   }
   .lintro__grid {

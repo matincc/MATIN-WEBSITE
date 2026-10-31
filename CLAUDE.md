@@ -238,6 +238,8 @@ Every event, and every other page that carries structured data (JSON-LD), must g
 
 - **Polish (owner, Oct 31 2026, evening):** a red maple leaf (ivory halo) after « Cultures en dialogue » in the footer too; « Devenir membre » in the header is filled turquoise (`--matin-firouzeh-ink`, white text; navy on hover) so it differs from the terracotta Donate; inner page banners without a lede (About, Our Team) are compact (`page-head--compact`: less padding, smaller sun, no gap under the horizon line), and the President section on Our Team starts closer to the banner.
 
+- **Livelier homepage and team (owner, Oct 31 2026, evening):** Through Montréal's calendar on a deep turquoise band (`--matin-firouzeh-ink`, white label, saffron sun, terracotta shape) with its warm panel; Who we are (`LivingIntro`) on pale terracotta with turquoise and saffron shapes; Our Impact on pale saffron with white cards; these three set `data-own-ground` so `pageGrounds.ts` leaves them alone. What Culture Means to Us: Hakan's sheet pale turquoise, Komlan's pale saffron.
+
 ## 4f. Unified design system (owner's brief, Oct 31 2026; approved and published Oct 31 2026)
 
 - **Official palette** (replaces the scheme A values, keeps their variable names so every component follows): Terracotta `#B9674D` (`--matin-brique`), Saffron `#E2AA36` (`--matin-soleil`), Turquoise `#3C9290` (`--matin-firouzeh`), Navy Blue `#243B50` (`--matin-encre`), Warm Cream `#F5EFE3` (`--matin-ivoire`). `-ink` shades (`#94523E`, `#2D6E6C`) for small text and for grounds under white text; sable and nuit are mixed from the palette. Cream dominates, navy structures, terracotta and saffron warm, turquoise balances. The owner's reference image is for colours only, not a layout to copy.

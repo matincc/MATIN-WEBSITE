@@ -120,8 +120,10 @@ const voices = cultureVoices.flatMap((v) => {
       var(--matin-brique) 11%,
       color-mix(in srgb, var(--matin-soleil) 24%, var(--matin-ivoire))
     );
-    --v-sand: color-mix(in srgb, var(--matin-white) 55%, var(--matin-ivoire));
-    --v-rose: color-mix(in srgb, var(--matin-brique) 12%, var(--matin-ivoire));
+    /* Hakan pale turquoise, Komlan pale saffron, so the sheets stand out from the
+       page ground (owner, Oct 31 2026: they blended into it). */
+    --v-sand: color-mix(in srgb, var(--matin-firouzeh) 24%, var(--matin-ivoire));
+    --v-rose: color-mix(in srgb, var(--matin-soleil) 38%, var(--matin-ivoire));
     --v-caramel: color-mix(in srgb, var(--matin-soleil) 70%, var(--matin-brique));
     --v-cocoa: color-mix(in srgb, var(--matin-brique-ink) 55%, var(--matin-nuit));
     --v-shadow: color-mix(in srgb, var(--matin-brique-ink) 26%, transparent);
@@ -390,19 +392,19 @@ const voices = cultureVoices.flatMap((v) => {
   }
   .voice--sand {
     --v-sheet: var(--v-sand);
-    --v-under: color-mix(in srgb, var(--matin-soleil) 22%, var(--matin-sable));
+    --v-under: color-mix(in srgb, var(--matin-firouzeh) 45%, var(--matin-ivoire));
     --v-under-rotate: -0.9deg;
     --v-under-shift: -0.35rem 0.45rem;
-    --v-mark: color-mix(in srgb, var(--v-caramel) 75%, var(--v-sand));
-    --v-lead: var(--v-cocoa);
+    --v-mark: color-mix(in srgb, var(--matin-firouzeh-ink) 60%, var(--v-sand));
+    --v-lead: var(--matin-firouzeh-ink);
     --v-tag-rotate: 1.8deg;
   }
   .voice--rose {
     --v-sheet: var(--v-rose);
-    --v-under: color-mix(in srgb, var(--matin-brique) 15%, var(--v-rose));
+    --v-under: color-mix(in srgb, var(--matin-soleil) 70%, var(--matin-ivoire));
     --v-under-rotate: 0.7deg;
     --v-under-shift: 0.5rem -0.45rem;
-    --v-mark: color-mix(in srgb, var(--matin-brique) 38%, var(--v-rose));
+    --v-mark: color-mix(in srgb, var(--matin-brique) 55%, var(--v-rose));
     --v-lead: var(--v-cocoa);
     --v-tag-rotate: -1deg;
   }
