@@ -127,42 +127,106 @@ const nf = new Intl.NumberFormat(lang === 'fa' ? 'fa-IR' : 'en-CA');
     gap: 1.5rem;
     grid-template-columns: repeat(auto-fit, minmax(min(100%, 20rem), 1fr));
   }
+  /* Three ways to join (owner, Oct 31 2026: the cards were the colour of the page): each card
+     has its own full colour (navy, saffron, turquoise), one deep corner and its own height. */
   .category-card {
     display: flex;
     flex-direction: column;
     gap: 0.9rem;
-    padding: 1.75rem;
-    background: var(--color-ivory);
-    border-block-start: 6px solid var(--accent);
+    padding: 2rem 1.85rem;
+    border: 0;
+    border-radius: 1.25rem;
+    border-start-end-radius: 4.5rem;
     font-size: 1.1rem;
     line-height: 1.7;
+    box-shadow: 0 18px 36px -24px color-mix(in srgb, var(--matin-encre) 60%, transparent);
+  }
+  .category-card[data-accent='navy'] {
+    --card-bg: var(--matin-encre);
+    --card-fg: var(--matin-white);
+    --card-tile: var(--matin-soleil);
+    --card-tile-fg: var(--matin-encre);
+  }
+  .category-card[data-accent='mustard'] {
+    --card-bg: var(--matin-soleil);
+    --card-fg: var(--matin-encre);
+    --card-tile: var(--matin-encre);
+    --card-tile-fg: var(--matin-soleil);
+    border-start-end-radius: 1.25rem;
+    border-end-start-radius: 4.5rem;
+  }
+  .category-card[data-accent='teal'] {
+    --card-bg: var(--matin-firouzeh-ink);
+    --card-fg: var(--matin-white);
+    --card-tile: var(--matin-white);
+    --card-tile-fg: var(--matin-firouzeh-ink);
+  }
+  .category-card.category-card {
+    background: var(--card-bg);
+    color: var(--card-fg);
+  }
+  @media (min-width: 64rem) {
+    .category-grid {
+      align-items: start;
+    }
+    .category-card[data-accent='mustard'] {
+      margin-block-start: 2.5rem;
+    }
+    .category-card[data-accent='teal'] {
+      margin-block-start: 1.25rem;
+    }
   }
   .category-card__icon {
     display: inline-grid;
     place-items: center;
-    width: 3.25rem;
-    height: 3.25rem;
+    width: 3.5rem;
+    height: 3.5rem;
     border-radius: 999px;
-    background: var(--color-champagne);
-    color: var(--accent-ink);
+    background: var(--card-tile);
+    color: var(--card-tile-fg);
   }
   .category-card__title {
-    font-size: clamp(1.3rem, 1.15rem + 0.5vw, 1.6rem);
+    font-size: clamp(1.4rem, 1.2rem + 0.6vw, 1.75rem);
     font-weight: 800;
-    color: var(--color-primary);
+    color: inherit;
   }
   .category-card__rights {
     margin-block-start: auto;
     padding-block-start: 0.9rem;
-    border-block-start: 1px solid var(--color-card-edge);
-    font-weight: 500;
-    color: var(--accent-ink);
+    border-block-start: 2px solid color-mix(in srgb, currentColor 35%, transparent);
+    font-weight: 700;
+    color: inherit;
   }
+  /* « Membership is free until December 31, 2027 » stands out (owner, Oct 31 2026):
+     bold, larger, in the editorial serif and terracotta, on a pale saffron ribbon. */
   .fee-note {
-    max-width: 46rem;
-    margin-block-start: 2rem;
-    font-size: 1.15rem;
-    line-height: 1.7;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.75rem;
+    max-width: 100%;
+    margin-block-start: 2.5rem;
+    padding: 1rem 1.6rem;
+    border-radius: 999px;
+    border-start-start-radius: 0.5rem;
+    background: color-mix(in srgb, var(--matin-soleil) 24%, var(--matin-white));
+    border: 2px solid var(--matin-soleil);
+    font-family: var(--font-editorial);
+    font-size: clamp(1.35rem, 1.15rem + 0.8vw, 1.85rem);
+    font-weight: 800;
+    line-height: 1.35;
+    color: var(--matin-brique-ink);
+  }
+  .fee-note::before {
+    content: '';
+    flex: none;
+    width: 1.1rem;
+    height: 1.1rem;
+    border-radius: 999px;
+    background: var(--matin-soleil);
+    box-shadow: 0 0 0 4px color-mix(in srgb, var(--matin-soleil) 35%, transparent);
+  }
+  :global(html[lang='fa']) .fee-note {
+    font-family: var(--font-display);
   }
   .apply-band {
     background: var(--color-teal-pale);
