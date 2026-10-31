@@ -547,8 +547,10 @@ const isActive = (url: string) => !url.includes('?') && current.startsWith(url);
       display: block;
       flex-basis: 100%;
       background: var(--matin-encre);
-      box-shadow: 0 0 0 100vmax var(--matin-encre);
-      clip-path: inset(0 -100vmax);
+      /* The navy band runs to both window edges without widening the page. A clip-path
+         here hid the dropdowns (they hang below the band), so the band is drawn with a
+         flat border-image outset instead (Oct 31 2026). */
+      border-image: conic-gradient(var(--matin-encre) 0 0) fill 0 / / 0 100vmax;
     }
     .desktop-nav > ul {
       justify-content: center;
