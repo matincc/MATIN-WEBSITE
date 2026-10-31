@@ -140,7 +140,8 @@ const segments = whoText.split(pattern).map((text, i) => {
       'opsz' 144;
     line-height: 1.02;
     letter-spacing: -0.02em;
-    color: var(--matin-brique-ink);
+    /* Navy, not terracotta: it disappeared on the terracotta ground (owner, Oct 31 2026). */
+    color: var(--matin-encre);
   }
   :global(html[lang='fa']) .lintro__title {
     font-family: var(--font-display);
@@ -182,16 +183,20 @@ const segments = whoText.split(pattern).map((text, i) => {
   .lintro__way--soleil {
     background: color-mix(in srgb, var(--matin-soleil) 55%, var(--matin-white));
   }
+  /* « research »: the terracotta tint vanished on this terracotta ground, so a deeper one. */
   .lintro__way--brique {
-    background: color-mix(in srgb, var(--matin-brique) 32%, var(--matin-white));
+    background: color-mix(in srgb, var(--matin-brique) 62%, var(--matin-white));
   }
   .lintro__aim {
     font-weight: 700;
-    color: var(--matin-brique-ink);
+    color: var(--matin-encre);
     text-decoration: underline;
     text-decoration-color: var(--matin-soleil);
     text-decoration-thickness: 3px;
     text-underline-offset: 0.25em;
+  }
+  :global(.living) .lintro :global(.living-kicker) {
+    color: var(--matin-firouzeh-ink);
   }
   .lintro__text :global(.living-link) {
     margin-block-start: 2rem;
