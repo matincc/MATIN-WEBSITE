@@ -858,7 +858,73 @@ const legal = defineCollection({
   }),
 });
 
+/**
+ * The seasonal calendar (owner's idea, Oct 30 2026): the homepage greets the occasions
+ * of Montréal's real life (Canadian days, the celebrations of its communities and faiths,
+ * all treated alike) and lists a few FREE public activities from municipal or public
+ * bodies only (LaSalle first, then the Ville de Montréal, libraries, maisons de la
+ * culture). Matin never organizes them: it shares them, with the official link. One file
+ * per occasion; each shows by itself between `showFrom` and `showUntil` (Montréal dates).
+ * Never invent an occasion, a date or an activity: see README.md in the folder.
+ */
+const seasonEvent = z.object({
+  title: z.object({ fr: z.string().min(1), en: z.string().min(1), fa: z.string().min(1) }),
+  /** Matin's short original summary, never copied from the organizer. */
+  summary: z.object({ fr: z.string().min(1), en: z.string().min(1), fa: z.string().min(1) }),
+  start: localDateTime,
+  end: localDateTime,
+  place: z.object({
+    name: z.string().min(1),
+    address: z.string().min(1),
+    /** Borough or city, e.g. « LaSalle ». */
+    area: z.string().min(1),
+  }),
+  /** The public body that runs it (borough, city, library). Never Matin. */
+  organizer: z.object({ name: z.string().min(1), url: z.url() }),
+  /** A second body named by the official page as leading it (e.g. a Legion branch). */
+  partner: z.object({ name: z.string().min(1), url: z.url().optional() }).optional(),
+  /** The official page of the activity: the link shown, and the source. */
+  url: z.url(),
+  /** The official image on the organizer's site (structured data only, not shown). */
+  image: z.url(),
+  /** Only free activities are listed. */
+  free: z.literal(true),
+  registration: z.boolean().default(false),
+  /** Since when it is offered (registration opening, or the day we checked it). */
+  availableFrom: isoDate.optional(),
+  lastVerified: isoDate,
+});
+
+const seasons = defineCollection({
+  loader: yaml('seasons'),
+  schema: z
+    .object({
+      /** The day (or first day) of the occasion. */
+      date: isoDate,
+      dateEnd: isoDate.optional(),
+      showFrom: isoDate,
+      /** Last day shown, included. */
+      showUntil: isoDate,
+      /** `solemn` for days of remembrance: quieter colours, no "celebrate" wording. */
+      tone: z.enum(['festive', 'solemn']).default('festive'),
+      /** The small drawing beside the greeting. */
+      motif: z.enum(['lantern', 'poppy', 'diya', 'lights', 'moon', 'tree', 'sparkle']),
+      kicker: z.object({ fr: z.string().min(1), en: z.string().min(1), fa: z.string().min(1) }),
+      title: z.object({ fr: z.string().min(1), en: z.string().min(1), fa: z.string().min(1) }),
+      greeting: z.object({ fr: z.string().min(1), en: z.string().min(1), fa: z.string().min(1) }),
+      events: z.array(seasonEvent).default([]),
+      /** Where the date of the occasion was checked. */
+      dateSource: z.string().min(1),
+      faReviewed,
+    })
+    .refine((s) => s.showFrom <= s.showUntil, {
+      message: 'showFrom must be on or before showUntil',
+      path: ['showUntil'],
+    }),
+});
+
 export const collections = {
+  seasons,
   programs,
   events,
   news,

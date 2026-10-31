@@ -1,0 +1,20 @@
+# Yalda night 2026: the evening of Monday December 21 (30 Azar 1405), the longest
+# night of the year. Free public activities: to add once published.
+date: '2026-12-21'
+showFrom: '2026-12-16'
+showUntil: '2026-12-22'
+tone: festive
+motif: moon
+dateSource: Persian calendar, 30 Azar 1405 = December 21, 2026; winter solstice December 21, 2026.
+kicker:
+  fr: "21 décembre"
+  en: "December 21"
+  fa: "۳۰ آذر · ۲۱ دسامبر"
+title:
+  fr: "Belle nuit de Yalda !"
+  en: "Happy Yalda Night!"
+  fa: "شب یلدا مبارک!"
+greeting:
+  fr: "Le soir du 21 décembre, la nuit la plus longue de l'année, des familles venues d'Iran, d'Afghanistan, du Tadjikistan et de toute la région se réunissent pour lire la poésie de Hafez et attendre ensemble le retour de la lumière. Matin souhaite à toutes et à tous une nuit chaleureuse, pleine de conversations."
+  en: "On the evening of December 21, the longest night of the year, families from Iran, Afghanistan, Tajikistan and the whole region gather to read Hafez's poetry and wait together for the light to return. Matin wishes everyone a warm night full of conversation."
+  fa: "شب ۳۰ آذر، بلندترین شب سال، خانواده‌هایی از ایران، افغانستان، تاجیکستان و سراسر منطقه دور هم جمع می‌شوند، شعر حافظ می‌خوانند و با هم به انتظار بازگشت روشنایی می‌نشینند. متین برای همه شبی گرم و پر از گفت‌وگو آرزو می‌کند."

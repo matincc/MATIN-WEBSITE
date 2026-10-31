@@ -1,0 +1,83 @@
+# Halloween, Saturday October 31, 2026. Activities checked on montreal.ca on 2026-10-30.
+date: '2026-10-31'
+showFrom: '2026-10-24'
+showUntil: '2026-11-01'
+tone: festive
+motif: lantern
+dateSource: Halloween is held every year on October 31.
+kicker:
+  fr: "31 octobre"
+  en: "October 31"
+  fa: "۳۱ اکتبر"
+title:
+  fr: "Joyeuse Halloween !"
+  en: "Happy Halloween!"
+  fa: "هالووین مبارک!"
+greeting:
+  fr: "Le soir du 31 octobre, les rues de Montréal se remplissent de costumes, de lanternes et de rires. Halloween réunit des familles de toutes les origines : une belle occasion de rencontrer ses voisins. Matin souhaite à toutes et à tous une soirée joyeuse et prudente."
+  en: "On the evening of October 31, Montréal's streets fill with costumes, lanterns and laughter. Halloween brings together families of every background, a lovely chance to meet your neighbours. Matin wishes everyone a joyful and safe evening."
+  fa: "شب ۳۱ اکتبر، خیابان‌های مونترال پر از لباس‌های رنگارنگ، فانوس و خنده می‌شود. هالووین خانواده‌هایی با هر پیشینه‌ای را کنار هم می‌آورد؛ فرصتی زیبا برای آشنایی با همسایه‌ها. متین برای همه شبی شاد و امن آرزو می‌کند."
+events:
+  - title:
+      fr: "Fête de l'Halloween à LaSalle"
+      en: "Halloween Celebration in LaSalle"
+      fa: "جشن هالووین لاسال"
+    summary:
+      fr: "Défilé d'un dragon géant illuminé, personnages costumés, spectacle « La valse des lumières » et feux d'artifice à 20 h au parc Leroux. Venez costumés !"
+      en: "A giant illuminated dragon parade, costumed characters, the show \"La valse des lumières\" and fireworks at 8 p.m. in Parc Leroux. Come in costume!"
+      fa: "رژهٔ اژدهای غول‌پیکر نورانی، شخصیت‌های با لباس‌های ویژه، نمایش «والس نورها» و آتش‌بازی ساعت ۸ شب در پارک لورو. با لباس هالووین بیایید!"
+    start: '2026-10-31T17:30'
+    end: '2026-10-31T20:30'
+    place:
+      name: Parc Leroux
+      address: Angle de la rue Centrale et de l'avenue Lacharité, Montréal (Québec) H8P 2C1
+      area: LaSalle
+    organizer:
+      name: Arrondissement de LaSalle (Ville de Montréal)
+      url: https://montreal.ca/lasalle
+    url: https://montreal.ca/evenements/fete-de-lhalloween-lasalle-120564
+    image: https://res.cloudinary.com/villemontreal/image/upload/w_1200,ar_4:3,c_fill/f_auto,dpr_auto,q_auto/v1/portail/lmxzmb6wmsahzrgrt9lh.png
+    free: true
+    lastVerified: '2026-10-30'
+  - title:
+      fr: "À l’Halloween, faites une halte sucrée aux couleurs du Día de Muertos"
+      en: "A Halloween stop in the colours of Mexico's Día de Muertos"
+      fa: "توقفی در شب هالووین با رنگ‌های «روز مردگان» مکزیک"
+    summary:
+      fr: "La bibliothèque Saul-Bellow accueille les familles le soir de l'Halloween, aux couleurs du Día de Muertos, la tradition mexicaine. Entrée libre, sans inscription."
+      en: "Saul-Bellow Library welcomes families on Halloween night, decorated in the colours of Día de Muertos, the Mexican tradition. Free entry, no registration."
+      fa: "کتابخانهٔ سال بلو در شب هالووین با رنگ‌های «روز مردگان»، سنت مکزیکی، از خانواده‌ها پذیرایی می‌کند. ورود آزاد، بدون ثبت‌نام."
+    start: '2026-10-31T17:00'
+    end: '2026-10-31T20:00'
+    place:
+      name: Bibliothèque Saul-Bellow
+      address: 3100, rue Saint-Antoine, Montréal (Québec) H8S 4B8
+      area: Lachine
+    organizer:
+      name: Arrondissement de Lachine (Ville de Montréal)
+      url: https://montreal.ca/lachine
+    url: https://montreal.ca/evenements/le-soir-de-lhalloween-faites-une-halte-sucree-aux-couleurs-du-dia-de-muertos-la-bibliotheque-120176
+    image: https://res.cloudinary.com/villemontreal/image/upload/w_1200,ar_4:3,c_fill/f_auto,dpr_auto,q_auto/v1/portail/qshggb3vw8yg1on9b9xf.jpg
+    free: true
+    lastVerified: '2026-10-30'
+  - title:
+      fr: "Faites la tournée d'Halloween dans un mystérieux village celte"
+      en: "Trick-or-treat in a mysterious Celtic village"
+      fa: "گردش هالووین در یک دهکدهٔ رازآلود سلتی"
+    summary:
+      fr: "Le soir de l'Halloween, la bibliothèque de Saint-Pierre se transforme en village celte, en clin d'œil aux origines anciennes de la fête. Entrée libre."
+      en: "On Halloween night, Saint-Pierre Library becomes a Celtic village, a nod to the festival's ancient roots. Free entry."
+      fa: "در شب هالووین، کتابخانهٔ سن‌پیر به یک دهکدهٔ سلتی تبدیل می‌شود؛ اشاره‌ای به ریشه‌های کهن این جشن. ورود آزاد."
+    start: '2026-10-31T17:00'
+    end: '2026-10-31T20:00'
+    place:
+      name: Bibliothèque de Saint-Pierre
+      address: 183, rue des Érables, Montréal (Québec) H8R 1B1
+      area: Lachine
+    organizer:
+      name: Arrondissement de Lachine (Ville de Montréal)
+      url: https://montreal.ca/lachine
+    url: https://montreal.ca/evenements/faites-la-tournee-dhalloween-dans-un-mysterieux-village-celte-120088
+    image: https://res.cloudinary.com/villemontreal/image/upload/w_1200,h_630,c_fill/f_auto,dpr_auto,q_auto/v1/portail/eoiprmxhl059t3xokrih.jpg
+    free: true
+    lastVerified: '2026-10-30'
