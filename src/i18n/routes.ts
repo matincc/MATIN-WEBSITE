@@ -19,6 +19,7 @@ export const routes = {
   news: { fr: 'actualites', en: 'news' },
   notes: { fr: 'notes-du-president', en: 'president-notes' },
   gallery: { fr: 'galerie', en: 'gallery' },
+  stories: { fr: 'mon-histoire', en: 'my-story' },
   resources: { fr: 'ressources', en: 'resources' },
   localGuide: { fr: 'guide-local', en: 'local-guide' },
   cultureMap: { fr: 'carte-des-cultures', en: 'culture-map' },

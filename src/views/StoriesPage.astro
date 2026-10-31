@@ -1,0 +1,356 @@
+---
+/**
+ * « Mon histoire en 15 secondes » / "My Story in 15 Seconds" / «داستان من در ۱۵ ثانیه»
+ * (owner's request, Oct 31 2026). People of Montréal tell a short personal story on video:
+ * up to 15 seconds (site and YouTube) or up to 1 minute (a YouTube Short). 1. How it works
+ * and the questions. 2. Published clips (src/content/stories/, newest first). 3. The upload
+ * form beside the guidelines. Nothing is published automatically: the President approves
+ * each clip, it goes to Matin's YouTube channel, then gets a YAML file here.
+ * Linked from the Events menu after Gallery · Videos, and from « In Their Words » on the
+ * homepage. Texts drafted by Claude for the owner's review (src/i18n/stories.ts).
+ */
+import { ArrowDown } from '@lucide/astro';
+import PageLayout from '@/layouts/PageLayout.astro';
+import SectionHeader from '@/components/ui/SectionHeader.astro';
+import StoryClip from '@/components/stories/StoryClip.astro';
+import StoryForm from '@/components/stories/StoryForm.astro';
+import { href, siteAlternates, type UiLang } from '@/i18n/routes';
+import { storyPrompt, storyPrompts, storyStrings } from '@/i18n/stories';
+import { useTranslations } from '@/i18n/ui';
+import { getStories } from '@/lib/stories';
+
+interface Props {
+  lang: UiLang;
+}
+const { lang } = Astro.props;
+const s = storyStrings(lang);
+const t = useTranslations(lang);
+const stories = await getStories();
+const site = (Astro.site ?? new URL(Astro.url.origin)).href;
+const pageUrl = new URL(href('stories', lang), site).href;
+const digits = (n: number) => n.toLocaleString(lang === 'fa' ? 'fa-IR' : 'en-CA');
+
+const steps = [
+  { title: s.step1Title, text: s.step1Text },
+  { title: s.step2Title, text: s.step2Text },
+  { title: s.step3Title, text: s.step3Text },
+  { title: s.step4Title, text: s.step4Text },
+];
+const guides = [s.guide1, s.guide2, s.guide3, s.guide4, s.guide5];
+
+// Google: the page as a collection of videos, each clip a complete VideoObject.
+const organization = { '@type': 'Organization', name: t('meta.siteName'), url: site };
+const jsonLd = [
+  {
+    '@context': 'https://schema.org',
+    '@type': 'CollectionPage',
+    name: s.title,
+    description: s.metaDescription,
+    url: pageUrl,
+    inLanguage: lang === 'fr' ? 'fr-CA' : lang === 'en' ? 'en-CA' : 'fa',
+    publisher: organization,
+  },
+  ...stories.map((c) => ({
+    '@context': 'https://schema.org',
+    '@type': 'VideoObject',
+    name: `${c.firstName} · ${c.city} · ${s.title}`,
+    description: storyPrompt(c.prompt, lang),
+    thumbnailUrl: `https://i.ytimg.com/vi/${c.videoId}/hqdefault.jpg`,
+    uploadDate: c.published.toISOString().slice(0, 10),
+    embedUrl: `https://www.youtube-nocookie.com/embed/${c.videoId}`,
+    contentUrl: `https://www.youtube.com/shorts/${c.videoId}`,
+    inLanguage: c.language === 'other' ? undefined : c.language,
+    publisher: organization,
+    isPartOf: { '@type': 'CollectionPage', url: pageUrl },
+  })),
+];
+---
+
+<PageLayout
+  accent="brique"
+  lang={lang}
+  title={s.title}
+  description={s.metaDescription}
+  lede={s.lede}
+  ledeStrong
+  alternates={siteAlternates('stories')}
+  jsonLd={jsonLd}
+>
+  <section class="story-how py-16 sm:py-20" aria-labelledby="how-title">
+    <div class="container-site story-how__grid">
+      <div>
+        <SectionHeader align="start" id="how-title" title={s.howTitle} />
+        <ol class="steps">
+          {steps.map((step, i) => (
+            <li class="step" data-reveal style={`--reveal-delay: ${i * 80}ms`}>
+              <span class="step__n" aria-hidden="true">
+                {digits(i + 1)}
+              </span>
+              <div>
+                <h3 class="step__title">{step.title}</h3>
+                <p class="step__text">{step.text}</p>
+              </div>
+            </li>
+          ))}
+        </ol>
+        <a href="#share" class="btn btn-primary mt-8">
+          <ArrowDown size={18} aria-hidden="true" />
+          {s.shareCta}
+        </a>
+      </div>
+      <aside class="prompts" aria-labelledby="prompts-title">
+        <span class="prompts__sun" aria-hidden="true"></span>
+        <h2 id="prompts-title" class="prompts__title">
+          {s.promptsTitle}
+        </h2>
+        <ul class="prompts__list">
+          {storyPrompts
+            .filter((p) => p !== 'free')
+            .map((p) => (
+              <li>{storyPrompt(p, lang)}</li>
+            ))}
+        </ul>
+      </aside>
+    </div>
+  </section>
+
+  <section
+    id="stories"
+    class="story-clips scroll-mt-24 py-16 sm:py-20"
+    aria-labelledby="clips-title"
+  >
+    <div class="container-site">
+      <SectionHeader align="start" id="clips-title" title={s.clipsTitle} />
+      {stories.length ? (
+        <ul class="clips">
+          {stories.map((c, i) => (
+            <li>
+              <StoryClip lang={lang} story={c} index={i} />
+            </li>
+          ))}
+        </ul>
+      ) : (
+        <p class="clips-empty">{s.clipsEmpty}</p>
+      )}
+      {stories.length > 0 && <p class="clips-note">{s.videoNotice}</p>}
+    </div>
+  </section>
+
+  <section id="share" class="story-share scroll-mt-24 py-16 sm:py-20" aria-labelledby="share-title">
+    <div class="container-site story-share__grid">
+      <div class="share-panel">
+        <h2 id="share-title" class="share-panel__title">
+          {s.formTitle}
+        </h2>
+        <p class="share-panel__lede">{s.formLede}</p>
+        <StoryForm lang={lang} />
+      </div>
+      <aside class="guides" aria-labelledby="guides-title">
+        <h2 id="guides-title" class="guides__title">
+          {s.guidelinesTitle}
+        </h2>
+        <ul class="guides__list">
+          {guides.map((g) => (
+            <li>{g}</li>
+          ))}
+        </ul>
+      </aside>
+    </div>
+  </section>
+</PageLayout>
+
+<style>
+  .story-how {
+    background: var(--matin-ivoire);
+  }
+  .story-how__grid,
+  .story-share__grid {
+    display: grid;
+    gap: 3rem;
+  }
+  @media (min-width: 64rem) {
+    .story-how__grid {
+      grid-template-columns: minmax(0, 1.15fr) minmax(0, 0.85fr);
+      align-items: start;
+    }
+    .story-share__grid {
+      grid-template-columns: minmax(0, 1.3fr) minmax(0, 0.7fr);
+      align-items: start;
+    }
+  }
+  .steps {
+    display: grid;
+    gap: 1.5rem;
+    margin-block-start: 2rem;
+    max-width: 42rem;
+  }
+  .step {
+    display: grid;
+    grid-template-columns: auto 1fr;
+    gap: 1.1rem;
+    align-items: start;
+  }
+  .step__n {
+    display: grid;
+    place-items: center;
+    width: 3rem;
+    height: 3rem;
+    border-radius: 999px;
+    background: var(--matin-soleil);
+    color: var(--matin-encre);
+    font-family: var(--font-display);
+    font-size: 1.25rem;
+    font-weight: 800;
+  }
+  .step:nth-child(2) .step__n {
+    background: var(--matin-firouzeh-ink);
+    color: var(--matin-white);
+  }
+  .step:nth-child(3) .step__n {
+    background: var(--matin-brique-ink);
+    color: var(--matin-white);
+  }
+  .step:nth-child(4) .step__n {
+    background: var(--matin-encre);
+    color: var(--matin-white);
+  }
+  .step__title {
+    font-family: var(--font-display);
+    font-size: 1.25rem;
+    font-weight: 800;
+    color: var(--matin-encre);
+  }
+  .step__text {
+    margin-block-start: 0.3rem;
+    font-size: 1.05rem;
+    line-height: 1.65;
+    color: var(--matin-ink);
+  }
+  .prompts {
+    position: relative;
+    overflow: hidden;
+    padding: 2rem 1.75rem 2.25rem;
+    border-radius: 1.25rem;
+    border-start-end-radius: 4rem;
+    background: var(--matin-firouzeh-ink);
+    color: var(--matin-white);
+  }
+  .prompts__sun {
+    position: absolute;
+    inset-block-start: -1.75rem;
+    inset-inline-end: -1.75rem;
+    width: 7rem;
+    aspect-ratio: 1;
+    border-radius: 999px;
+    background: var(--matin-soleil);
+  }
+  .prompts__title {
+    position: relative;
+    font-family: var(--font-editorial);
+    font-size: clamp(1.6rem, 1.3rem + 1vw, 2.2rem);
+    font-weight: 700;
+    color: var(--matin-soleil);
+  }
+  .prompts__list {
+    position: relative;
+    display: grid;
+    gap: 1rem;
+    margin-block-start: 1.25rem;
+  }
+  .prompts__list li {
+    padding-block-start: 1rem;
+    border-block-start: 1px solid color-mix(in srgb, var(--matin-white) 30%, transparent);
+    font-family: var(--font-editorial);
+    font-size: 1.2rem;
+    line-height: 1.5;
+  }
+  .prompts__list li:first-child {
+    padding-block-start: 0;
+    border: 0;
+  }
+  .story-clips {
+    background: var(--matin-sable);
+  }
+  .clips {
+    display: grid;
+    gap: 1.75rem;
+    margin-block-start: 2rem;
+    grid-template-columns: repeat(auto-fill, minmax(min(100%, 14rem), 1fr));
+  }
+  .clips li:nth-child(even) {
+    margin-block-start: 2rem;
+  }
+  .clips-empty {
+    margin-block-start: 1.5rem;
+    max-width: 40rem;
+    padding: 1.5rem 1.75rem;
+    border-radius: 1rem;
+    border-end-start-radius: 2.75rem;
+    background: var(--matin-white);
+    font-size: 1.1rem;
+    line-height: 1.7;
+    color: var(--matin-encre);
+  }
+  .clips-note {
+    margin-block-start: 1.5rem;
+    font-size: 0.9rem;
+    color: var(--matin-ink);
+  }
+  .story-share {
+    background: var(--matin-ivoire);
+  }
+  .share-panel {
+    padding: clamp(1.5rem, 1rem + 2vw, 2.5rem);
+    border-radius: 1.25rem;
+    border-end-start-radius: 3.5rem;
+    border-block-start: 6px solid var(--matin-brique);
+    background: var(--matin-white);
+    box-shadow: var(--shadow-card);
+  }
+  .share-panel__title {
+    font-family: var(--font-editorial);
+    font-size: clamp(1.8rem, 1.4rem + 1.4vw, 2.6rem);
+    font-weight: 700;
+    color: var(--matin-encre);
+  }
+  .share-panel__lede {
+    margin-block: 0.6rem 1.75rem;
+    font-size: 1.05rem;
+    line-height: 1.65;
+    color: var(--matin-ink);
+  }
+  .guides {
+    padding: 2rem 1.75rem;
+    border-radius: 1.25rem;
+    border-start-start-radius: 3.5rem;
+    background: var(--matin-aube);
+  }
+  @media (min-width: 64rem) {
+    .guides {
+      position: sticky;
+      top: 7rem;
+    }
+  }
+  .guides__title {
+    font-family: var(--font-display);
+    font-size: 1.35rem;
+    font-weight: 800;
+    color: var(--matin-encre);
+  }
+  .guides__list {
+    display: grid;
+    gap: 0.85rem;
+    margin-block-start: 1rem;
+    padding-inline-start: 1.1rem;
+    list-style: disc;
+    line-height: 1.6;
+    color: var(--matin-ink);
+  }
+  .guides__list li::marker {
+    color: var(--matin-brique);
+  }
+  :global(html[lang='fa']) .prompts__title,
+  :global(html[lang='fa']) .share-panel__title {
+    font-weight: 800;
+  }
+</style>

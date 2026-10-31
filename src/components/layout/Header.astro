@@ -14,6 +14,7 @@ import LangToggle from './LangToggle.astro';
 import { newsAnchors, href, type Alternates, type RouteKey, type UiLang } from '@/i18n/routes';
 import { useTranslations } from '@/i18n/ui';
 import { strings as cultureMapStrings } from '@/lib/cultureMap';
+import { storyStrings } from '@/i18n/stories';
 import { getNetworks, getUpcomingEvents, picksOf } from '@/lib/content';
 import { guideStrings } from '@/lib/localGuide';
 
@@ -82,11 +83,14 @@ const galleryLinks = [
   { id: 'photos', label: t('gallery.filterPhotos') },
   { id: 'videos', label: t('gallery.filterVideos') },
   { id: 'posters', label: t('gallery.filterPosters') },
-].map((l) => ({
-  ...l,
-  label: `${t('nav.gallery')} · ${l.label}`,
-  href: anchor(galleryHref, l.id),
-}));
+].map((l) => ({ ...l, label: `${t('nav.gallery')} · ${l.label}`, href: anchor(galleryHref, l.id) }));
+// « My Story in 15 Seconds » (owner's request, Oct 31 2026) sits right after Gallery · Videos.
+const videosAt = galleryLinks.findIndex((l) => l.id === 'videos') + 1;
+galleryLinks.splice(videosAt, 0, {
+  id: 'my-story',
+  label: storyStrings(lang).nav,
+  href: href('stories', lang),
+});
 eventsLinks.push(...galleryLinks);
 const resourcesHref = href('resources', lang);
 // Until International Cultural Networks has entries, its link opens the directory's
