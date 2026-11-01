@@ -39,14 +39,16 @@ const [line1, ...rest] = useTranslations(logoLang)('brand.institute').split(' ')
   ]}
   dir="ltr"
 >
+  <span class="lockup__badge">
   <Image
-    src={logo}
-    alt=""
-    widths={[96, 160, 240]}
-    sizes="80px"
-    class="lockup__logo"
-    loading="eager"
-  />
+      src={logo}
+      alt=""
+      widths={[96, 160, 240]}
+      sizes="80px"
+      class="lockup__logo"
+      loading="eager"
+    />
+  </span>
   <span class="lockup__word" lang={logoLang} dir="ltr">
     Matin
   </span>
@@ -79,6 +81,26 @@ const [line1, ...rest] = useTranslations(logoLang)('brand.institute').split(' ')
     flex: none;
     width: 3rem;
     height: auto;
+  }
+  /* The logo's inside is pale cream like the header (owner, Nov 1 2026: « make it a
+     little darker so it takes some colour »): a saffron tint laid over it with
+     multiply darkens only its light inside; the dark letters and the gold ring stay.
+     The file itself is unchanged. */
+  .lockup__badge {
+    position: relative;
+    display: inline-flex;
+    flex: none;
+    border-radius: 50%;
+    isolation: isolate;
+  }
+  .lockup__badge::after {
+    content: '';
+    position: absolute;
+    inset: 6%;
+    border-radius: 50%;
+    background: color-mix(in srgb, var(--matin-soleil) 55%, var(--matin-brique) 10%);
+    mix-blend-mode: multiply;
+    pointer-events: none;
   }
   .lockup__word {
     font-family: var(--font-brand);
