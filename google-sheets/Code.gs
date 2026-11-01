@@ -1,4 +1,4 @@
-// Matin forms web app v7 (advisor emails FR/EN or FA/EN, five business days, Nov 1 2026)
+// Matin forms web app v8 (advisor emails in the site's language: FR, EN, or FA+EN; Nov 1 2026)
 /**
  * Matin – website form entries → Google Sheet (owner's request, Oct 27 2026; membership
  * applications added Oct 28 2026, volunteer registry and thank-you emails Oct 29 2026: after changing this file, paste it into the Apps Script
@@ -584,8 +584,12 @@ function sendAdvisorReceipt(data) {
         'The Matin Intercultural Institute team',
       ],
     ];
-    // From the Persian site: Persian first, then English, no French (owner, Nov 1 2026).
-    const fa = clean(data.lang).toUpperCase() === 'FA';
+    // One language, the site's (owner, Nov 1 2026): French site → French only, English site →
+    // English only; Persian site → Persian first, then English, no French.
+    const lang = clean(data.lang).toUpperCase();
+    const fa = lang === 'FA';
+    if (lang === 'FR') parts.splice(1, 1);
+    if (lang === 'EN') parts.splice(0, 1);
     if (fa) {
       // The owner's own Persian text (Nov 1 2026), word for word, then the usual English text.
       parts.splice(0, 2, [
@@ -605,7 +609,11 @@ function sendAdvisorReceipt(data) {
       email,
       fa
         ? 'درخواست شما دریافت شد. گروه مشاوران متین'
-        : 'Candidature reçue · Cercle des conseillers de Matin · Application received · Matin Advisory Circle',
+        : lang === 'EN'
+          ? 'Application received · Matin Advisory Circle'
+          : lang === 'FR'
+            ? 'Candidature reçue · Cercle des conseillers de Matin'
+            : 'Candidature reçue · Cercle des conseillers de Matin · Application received · Matin Advisory Circle',
       text,
       { name: 'Institut interculturel Matin', replyTo: ADV_REPLY_TO, htmlBody: emailHtml(text) },
     );
@@ -663,7 +671,7 @@ function sendAdvisorWelcome() {
         sheet.getRange(row, 1).setValue(advId);
       }
       try {
-        const msg = advisorWelcomeEmail(advId, String(r[2]).trim(), String(r[16]).trim().toUpperCase() === 'FA');
+        const msg = advisorWelcomeEmail(advId, String(r[2]).trim(), String(r[16]).trim().toUpperCase());
         GmailApp.sendEmail(email, msg.subject, msg.text, {
           name: 'Institut interculturel Matin',
           replyTo: ADV_REPLY_TO,
@@ -681,7 +689,8 @@ function sendAdvisorWelcome() {
   }
 }
 
-function advisorWelcomeEmail(advId, name, fa) {
+function advisorWelcomeEmail(advId, name, lang) {
+  const fa = lang === 'FA';
   const fr = [
     'Bonjour' + (name ? ' ' + name : '') + ',',
     '',
@@ -734,12 +743,17 @@ function advisorWelcomeEmail(advId, name, fa) {
     'معاونت پژوهشی',
     'مؤسسه میان‌فرهنگی متین',
   ];
-  // From the Persian site: Persian first, then English, no French (owner, Nov 1 2026).
-  const parts = fa ? [faText, en] : [fr, en];
+  // One language, the site's (owner, Nov 1 2026): French site → French only, English site →
+  // English only; Persian site → Persian first, then English, no French.
+  const parts = fa ? [faText, en] : lang === 'EN' ? [en] : lang === 'FR' ? [fr] : [fr, en];
   return {
     subject: fa
       ? 'به گروه مشاوران متین خوش آمدید · Welcome to the Matin Advisory Circle'
-      : 'Bienvenue au Cercle des conseillers de Matin · Welcome to the Matin Advisory Circle',
+      : lang === 'EN'
+        ? 'Welcome to the Matin Advisory Circle'
+        : lang === 'FR'
+          ? 'Bienvenue au Cercle des conseillers de Matin'
+          : 'Bienvenue au Cercle des conseillers de Matin · Welcome to the Matin Advisory Circle',
     text: parts.map((p) => p.join('\n')).join('\n\n———\n\n') +
       '\n\nhttps://matincc.ca · ' + ADV_REPLY_TO,
   };
