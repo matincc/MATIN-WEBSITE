@@ -441,8 +441,9 @@ const aliases = { expertise: ids.advisors, 'advisors': ids.advisors };
     --panel-bg: color-mix(in srgb, var(--matin-firouzeh) 20%, var(--matin-ivoire));
   }
   .collab-panel--advisors {
-    --panel-edge: var(--matin-encre);
-    --panel-bg: color-mix(in srgb, var(--matin-encre) 9%, var(--matin-ivoire));
+    /* Warm apricot, no longer cool grey-blue (owner, Nov 1 2026). */
+    --panel-edge: var(--matin-brique-ink);
+    --panel-bg: color-mix(in srgb, var(--matin-brique) 18%, color-mix(in srgb, var(--matin-soleil) 14%, var(--matin-ivoire)));
   }
   .collab-panel--partners {
     /* Pale saffron, no longer white (owner, Nov 1 2026). */

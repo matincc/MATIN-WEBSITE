@@ -51,7 +51,9 @@ function validate(field: HTMLInputElement | HTMLTextAreaElement | HTMLSelectElem
   if (field instanceof HTMLInputElement && field.type === 'file') {
     const file = field.files?.[0];
     if (!file) return field.required ? m.required : '';
-    if (!/\.(pdf|docx?)$/i.test(file.name)) return field.dataset.msgType ?? '';
+    // data-ext narrows the accepted types (Advisory Circle: PDF and DOCX only).
+    const ext = new RegExp(`\\.(${field.dataset.ext ?? 'pdf|docx?'})$`, 'i');
+    if (!ext.test(file.name)) return field.dataset.msgType ?? '';
     const max = Number(field.dataset.maxBytes || 0);
     return max && file.size > max ? (field.dataset.msgTooBig ?? '') : '';
   }
@@ -204,6 +206,22 @@ export function enhanceForms() {
       box.addEventListener('input', show);
       show();
     });
+    // « Accept all »: ticks (or unticks) every required single checkbox of the form —
+    // the commitments and the privacy consent — and follows them if one is changed.
+    const all = form.querySelector<HTMLInputElement>('input[data-check-all]');
+    if (all) {
+      const boxes = [
+        ...form.querySelectorAll<HTMLInputElement>('input[type="checkbox"][required]'),
+      ];
+      all.addEventListener('change', () => {
+        const on = all.checked;
+        boxes.forEach((b) => (b.checked = on));
+        boxes.forEach((b) => b.dispatchEvent(new Event('change', { bubbles: true })));
+      });
+      boxes.forEach((b) =>
+        b.addEventListener('change', () => (all.checked = boxes.every((x) => x.checked))),
+      );
+    }
     // Fields with data-prefill (LinkedIn): the start of the address is written in on
     // focus, so the visitor only adds their profile name; left alone, it is cleared.
     form.querySelectorAll<HTMLInputElement>('input[data-prefill]').forEach((input) => {

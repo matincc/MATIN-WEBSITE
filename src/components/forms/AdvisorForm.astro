@@ -188,7 +188,8 @@ const req = ` (${t('form.required')})`;
       type="file"
       class="input adv-file"
       required
-      accept=".pdf,.doc,.docx,application/pdf,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document"
+      accept=".pdf,.docx,application/pdf,application/vnd.openxmlformats-officedocument.wordprocessingml.document"
+      data-ext="pdf|docx"
       data-max-bytes="5242880"
       data-msg-too-big={a.cvTooBig}
       data-msg-type={a.cvType}
@@ -203,6 +204,13 @@ const req = ` (${t('form.required')})`;
       {a.terms.split('\n').map((line) => <li>{line}</li>)}
     </ol>
   </details>
+
+  {/* « Accept all » ticks the four boxes below at once; each one is still sent on its
+      own (owner, Nov 1 2026). It has no name, so it is not sent itself. */}
+  <div class="adv-all">
+    <input id="adv-all" type="checkbox" class="size-5 shrink-0 accent-primary" data-check-all />
+    <label for="adv-all">{a.acceptAll}</label>
+  </div>
 
   {[
     { id: 'adv-terms', name: 'accept_terms', text: a.acceptTerms },
@@ -314,6 +322,23 @@ const req = ` (${t('form.required')})`;
   .adv-choices input:focus-visible + label {
     outline: 2px solid var(--color-primary);
     outline-offset: 2px;
+  }
+  .adv-all {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.7rem 1rem;
+    border-radius: 999px;
+    background: var(--color-white);
+    border: 1.5px solid var(--matin-brique-ink);
+    width: fit-content;
+    font-family: var(--font-display);
+    font-weight: 800;
+    color: var(--matin-encre);
+    cursor: pointer;
+  }
+  .adv-all label {
+    cursor: pointer;
   }
   .adv-terms {
     padding: 1rem 1.25rem;
