@@ -978,3 +978,15 @@ svg.leafopt--slogan {
   width: 11px;
   height: 11px;
 }
+
+/* Warmer grounds on the inner pages (owner, Nov 1 2026: « the cream looks pale; a very
+   warm colour » on About, Our Team, Events, News, Gallery, Resources, Collaboration and
+   Contact): saffron and terracotta tints instead of cream and pale turquoise. */
+body:has(.page-head) .ground[data-ground='0'],
+body:has(.page-head) .ground[data-ground='2'] {
+  background-color: color-mix(in srgb, var(--matin-soleil) 26%, var(--matin-ivoire));
+}
+body:has(.page-head) .ground[data-ground='1'],
+body:has(.page-head) .ground[data-ground='3'] {
+  background-color: color-mix(in srgb, var(--matin-brique) 20%, var(--matin-ivoire));
+}

@@ -272,4 +272,35 @@ const compact = !lede && !Astro.slots.has('hero');
       padding-block-end: clamp(5rem, 2rem + 6vw, 9.5rem);
     }
   }
+
+  /* ---------- Warm banner (owner, Nov 1 2026: « the cream looks pale; a very warm
+     colour ») ----------
+     Deep terracotta with white title and lede, saffron sun, and a warm apricot ground
+     under the page's own sections. White on brique-ink 6.4:1. */
+  .page-head:not(#o) {
+    background: var(--matin-brique-ink);
+    border-block-end-color: var(--matin-soleil);
+  }
+  .page-head:not(#o) .page-head__title,
+  .page-head:not(#o) .page-head__lede {
+    color: var(--matin-white);
+  }
+  .page-head:not(#o) nav :is(a, span) {
+    color: var(--matin-white);
+  }
+  .page-head:not(#o) nav :global(svg) {
+    color: var(--matin-soleil);
+  }
+  .page-head:not(#o) nav a:focus-visible {
+    outline-color: var(--matin-soleil);
+  }
+  .page-head[data-accent-ground]:not(#o) {
+    --head-accent: var(--matin-firouzeh);
+  }
+  .page-head[data-accent-ground='firouzeh']:not(#o) {
+    --head-accent: var(--matin-encre);
+  }
+  :global(body:has(.page-head)) {
+    background: color-mix(in srgb, var(--matin-brique) 10%, color-mix(in srgb, var(--matin-soleil) 24%, var(--matin-ivoire)));
+  }
 </style>
