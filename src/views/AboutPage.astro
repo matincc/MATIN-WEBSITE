@@ -382,7 +382,7 @@ const history = about.history.map((h) => ({
     text-wrap: balance;
   }
   .who-legal {
-    max-width: 40rem;
+    max-width: 52rem;
     margin-block-start: 1.75rem;
     padding-inline-start: 1.1rem;
     border-inline-start: 3px solid var(--color-firouzeh);
@@ -891,7 +891,8 @@ const history = about.history.map((h) => ({
     letter-spacing: 0;
   }
   .living :global(.living-lede) {
-    max-width: 40rem;
+    /* Wider so the lede is not cut into short lines (owner, Nov 1 2026). */
+    max-width: 58rem;
     margin-block-start: 1.1rem;
     font-size: clamp(1.1rem, 1rem + 0.4vw, 1.35rem);
     line-height: 1.6;

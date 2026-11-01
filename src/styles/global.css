@@ -292,6 +292,15 @@
     line-height: 1.15;
     text-wrap: balance;
   }
+  /* Owner's request, Nov 1 2026: no paragraph ends with one lonely word on its
+     last line (FR and FA). Browsers without support simply wrap as before. */
+  p,
+  li,
+  blockquote,
+  dd,
+  figcaption {
+    text-wrap: pretty;
+  }
   /* Links: blue, with a gold underline on hover. */
   a {
     @apply text-primary underline-offset-4;

@@ -577,7 +577,9 @@ const large =
       aspect-ratio: auto;
       height: auto;
       min-height: 100%;
-      margin: calc(var(--pad) * -1) 0 calc(var(--pad) * -1) calc(var(--pad) * -1);
+      /* Logical margins so the bleed goes to the card's outer edge in RTL (Persian) too. */
+      margin-block: calc(var(--pad) * -1);
+      margin-inline: calc(var(--pad) * -1) 0;
       border-block-end: 0;
     }
     .agenda-card--row .agenda-image :global(picture),

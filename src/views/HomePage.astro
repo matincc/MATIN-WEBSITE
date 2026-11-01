@@ -373,7 +373,8 @@ const l = livingStrings(lang);
     letter-spacing: 0;
   }
   .living :global(.living-lede) {
-    max-width: 40rem;
+    /* Wider so the lede is not cut into short lines (owner, Nov 1 2026). */
+    max-width: 58rem;
     margin-block-start: 1.1rem;
     font-size: clamp(1.1rem, 1rem + 0.4vw, 1.35rem);
     line-height: 1.6;
@@ -789,7 +790,7 @@ const l = livingStrings(lang);
     color: var(--matin-firouzeh-ink);
   }
   .lnews__sublede {
-    max-width: 44rem;
+    max-width: 62rem;
     margin-block-start: 0.5rem;
     font-size: 1.1rem;
     line-height: 1.55;
