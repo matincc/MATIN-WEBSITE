@@ -85,7 +85,7 @@ const groups = resourceCategories
   </nav>
 
   <div class="directory-band">
-    <div id="directory" class="container-site scroll-mt-28 pt-12 pb-24">
+    <div id="directory" class="container-site scroll-mt-28 pt-8 pb-16">
 
       {groups.length === 0 && <p class="empty-state">{t('resources.empty')}</p>}
 
@@ -115,7 +115,7 @@ const groups = resourceCategories
         </div>
       )}
 
-      <div class="space-y-14">
+      <div class="directory-groups">
         {groups.map(({ category, items }) => {
           const Icon = resourceIcons[category];
           return (
@@ -898,5 +898,253 @@ const groups = resourceCategories
     .res-jump__link:hover {
       transform: none;
     }
+  }
+  /* ---------- Compact, one colour per category (owner, Nov 1 2026: « very elegant, very
+     orderly, smaller; the circles and buttons of a category in the same colour as its
+     head; municipalities must not start with the banner's terracotta ») ----------
+     Municipal navy, Québec turquoise, federal terracotta, community saffron, international
+     plum. Each category uses its colour for the filter dot, the head, the card's top edge,
+     the name circle and the link button; cards are white and identical, three across on
+     wide screens. White on encre 11.3, firouzeh-ink 5.9, brique-ink 6.2, plum 9+; navy on
+     soleil 6.1. */
+  .directory-band:not(#o) {
+    margin-block-start: 0;
+    background: transparent;
+  }
+  .directory-groups {
+    display: grid;
+    gap: 2.25rem;
+  }
+  .directory-group:not(#o) {
+    --cat-ink: var(--color-white);
+    --cat-tint: var(--color-white);
+    --body-bg: color-mix(in srgb, var(--cat) 7%, var(--matin-ivoire));
+    border: 1px solid color-mix(in srgb, var(--cat) 22%, transparent);
+    border-radius: 1.25rem;
+    border-start-end-radius: 3rem;
+    background: var(--body-bg);
+    box-shadow: 0 10px 26px -22px color-mix(in srgb, var(--matin-encre) 60%, transparent);
+  }
+  .directory-group[data-category='municipal']:not(#o),
+  .chip[data-cat='municipal']:not(#o) {
+    --cat: var(--matin-encre);
+    --chip-color: var(--matin-encre);
+  }
+  .directory-group[data-category='quebec']:not(#o),
+  .chip[data-cat='quebec']:not(#o) {
+    --cat: var(--matin-firouzeh-ink);
+    --chip-color: var(--matin-firouzeh-ink);
+  }
+  .directory-group[data-category='federal']:not(#o),
+  .chip[data-cat='federal']:not(#o) {
+    --cat: var(--matin-brique-ink);
+    --chip-color: var(--matin-brique-ink);
+  }
+  .directory-group[data-category='community']:not(#o),
+  .chip[data-cat='community']:not(#o) {
+    --cat: var(--matin-soleil);
+    --cat-ink: var(--matin-encre);
+    --chip-color: var(--matin-soleil);
+    --chip-ink: var(--matin-encre);
+  }
+  .directory-group[data-category='international']:not(#o),
+  .chip[data-cat='international']:not(#o) {
+    --cat: color-mix(in srgb, var(--matin-brique-ink) 50%, var(--matin-encre));
+    --chip-color: color-mix(in srgb, var(--matin-brique-ink) 50%, var(--matin-encre));
+  }
+  /* Head: filled with the category colour, one compact line. */
+  .directory-group .directory-head:not(#o) {
+    gap: 0.4rem 1rem;
+    padding: 1rem clamp(1.1rem, 0.8rem + 1.2vw, 1.75rem);
+    background: var(--cat);
+    color: var(--cat-ink);
+  }
+  .directory-group .directory-head__icon:not(#o) {
+    width: 2.75rem;
+    height: 2.75rem;
+    border-radius: 50%;
+    background: var(--color-white);
+    color: var(--matin-encre);
+  }
+  .directory-group[data-category='community'] .directory-head__icon:not(#o) {
+    background: var(--matin-encre);
+    color: var(--matin-soleil);
+  }
+  .directory-group .directory-head__icon :global(svg) {
+    width: 1.35rem;
+    height: 1.35rem;
+  }
+  .directory-group .directory-title:not(#o) {
+    font-size: clamp(1.3rem, 1.1rem + 0.7vw, 1.75rem);
+    color: var(--cat-ink);
+  }
+  .directory-group .directory-lede:not(#o) {
+    margin-block-start: 0.15rem;
+    font-size: 1rem;
+    line-height: 1.5;
+    color: var(--cat-ink);
+  }
+  .directory-group .directory-count:not(#o) {
+    padding: 0.2rem 0.8rem;
+    background: transparent;
+    border: 1.5px solid currentColor;
+    color: var(--cat-ink);
+    font-size: 0.875rem;
+  }
+  /* Cards: white, identical, three across; the name circle and the button in the category
+     colour. */
+  .directory-group .org-list:not(#o) {
+    gap: 1rem;
+    padding: clamp(1rem, 0.7rem + 1.2vw, 1.5rem);
+  }
+  @media (min-width: 40rem) {
+    .directory-group .org-list:not(#o) {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  }
+  @media (min-width: 72rem) {
+    .directory-group .org-list:not(#o) {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+  }
+  .directory-group .org-list > :global(*):not(#o) {
+    margin-block: 0;
+  }
+  .directory-group :global(.org):not(#o) {
+    --accent: var(--cat);
+    --shape-bg: var(--cat);
+    --shape-ink: var(--cat-ink);
+    grid-template-columns: 4.75rem minmax(0, 1fr);
+    gap: 1rem;
+    padding: 1.1rem;
+    border: 1px solid color-mix(in srgb, var(--cat) 20%, var(--color-card-edge));
+    border-block-start: 4px solid var(--cat);
+    border-radius: 1rem;
+    background: var(--color-white);
+    box-shadow: none;
+    rotate: none;
+  }
+  .directory-group :global(.org:hover):not(#o),
+  .directory-group :global(.org:focus-within):not(#o) {
+    border-color: var(--cat);
+    box-shadow: 0 14px 26px -20px color-mix(in srgb, var(--matin-encre) 60%, transparent);
+  }
+  .directory-group :global(.org .org__logo):not(#o) {
+    height: auto;
+    align-self: start;
+    justify-items: center;
+  }
+  .directory-group :global(.org .org__shape):not(#o) {
+    width: 4.75rem;
+  }
+  .directory-group :global(.org .org__shape)::before {
+    inset: 0 !important;
+    border-radius: 50% !important;
+    clip-path: none !important;
+    transform: none !important;
+  }
+  .directory-group :global(.org .org__echo):not(#o) {
+    display: none;
+  }
+  .directory-group :global(.org .org__wordmark):not(#o) {
+    max-width: 84%;
+    font-size: 0.85rem;
+  }
+  .directory-group :global(.org .org__wordmark--long):not(#o) {
+    font-size: 0.62rem;
+  }
+  .directory-group :global(.org .org__body):not(#o) {
+    gap: 0.35rem;
+  }
+  .directory-group :global(.org .org__name):not(#o) {
+    font-size: 1.05rem;
+    line-height: 1.3;
+  }
+  .directory-group :global(.org .org__text):not(#o) {
+    font-size: 0.95rem;
+    line-height: 1.5;
+  }
+  .directory-group :global(.org .org__kind):not(#o) {
+    border-color: color-mix(in srgb, var(--cat) 40%, transparent);
+    background: color-mix(in srgb, var(--cat) 12%, var(--color-white));
+    color: var(--matin-encre);
+    font-size: 0.75rem;
+  }
+  .directory-group :global(.org .org__link):not(#o) {
+    min-height: 2.25rem;
+    margin-block-start: 0.4rem;
+    padding: 0.25rem 0.9rem;
+    border-color: var(--cat);
+    background: var(--cat);
+    color: var(--cat-ink);
+    font-size: 0.9rem;
+  }
+  @media (min-width: 72rem) {
+    .directory-group :global(.org .org__link):not(#o) {
+      white-space: nowrap;
+    }
+  }
+  .directory-group :global(.org .org__link:hover):not(#o) {
+    border-color: var(--cat);
+    background: var(--color-white);
+    color: var(--matin-encre);
+  }
+  .directory-group :global(.org .org__link:hover svg) {
+    color: var(--matin-encre);
+  }
+  /* Filter: no panel; white chips with each category's dot, the selected one filled. */
+  .directory-filter:not(#o) {
+    margin-block-end: 1.75rem;
+    padding: 0;
+    border: none;
+    background: transparent;
+    gap: 0.6rem 1rem;
+  }
+  .directory-filter__label:not(#o) {
+    color: var(--matin-encre);
+  }
+  .directory-filter__label :global(svg):not(#o) {
+    color: var(--matin-brique-ink);
+  }
+  .chip:not(#o) {
+    min-height: 2.4rem;
+    padding: 0.35rem 1rem 0.35rem 0.8rem;
+    border: 1.5px solid color-mix(in srgb, var(--chip-color) 45%, transparent);
+    border-radius: 999px;
+    background: var(--color-white);
+    box-shadow: none;
+    font-size: 0.9375rem;
+  }
+  .chip:not(#o):hover {
+    border-color: var(--chip-color);
+    background: var(--color-white);
+  }
+  @media (max-width: 39.99rem) {
+    .chip:not(#o) {
+      border-radius: 1.2rem;
+    }
+    .directory-group :global(.org):not(#o) {
+      grid-template-columns: 3.5rem minmax(0, 1fr);
+      gap: 0.85rem;
+    }
+    .directory-group :global(.org .org__shape):not(#o) {
+      width: 3.5rem;
+    }
+    .directory-group :global(.org .org__wordmark):not(#o) {
+      font-size: 0.66rem;
+    }
+    .directory-group :global(.org .org__wordmark--long):not(#o) {
+      font-size: 0.5rem;
+    }
+  }
+  .chip[aria-pressed='true']:not(#o) {
+    border-color: var(--chip-color);
+    background: var(--chip-color);
+    color: var(--chip-ink);
+    box-shadow: none;
+  }
+  .chip[aria-pressed='true']:not(#o) .chip__dot {
+    background: var(--chip-ink);
+    box-shadow: none;
   }
 </style>
