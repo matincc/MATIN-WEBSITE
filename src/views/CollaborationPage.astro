@@ -48,7 +48,7 @@ const aliases = { expertise: ids.advisors, 'advisors': ids.advisors };
   ledeStrong
   alternates={siteAlternates('collaboration')}
 >
-  <div class="collab scroll-mt-24" data-collab data-aliases={JSON.stringify(aliases)}>
+  <div class="collab scroll-mt-24" data-own-ground data-collab data-aliases={JSON.stringify(aliases)}>
     <div class="container-site">
       <p class="collab__hint">{c.lede2}</p>
       <ul class="collab__boxes">
@@ -172,9 +172,39 @@ const aliases = { expertise: ids.advisors, 'advisors': ids.advisors };
 
 <style>
   /* ---------- Four boxes that open their forms (owner, Oct 31 2026) ---------- */
+  /* A livelier ground (owner, Nov 1 2026): pale turquoise with a large saffron sun and a
+     terracotta arch at its edges, flat shapes only. */
   .collab {
+    position: relative;
+    overflow: hidden;
+    isolation: isolate;
     padding-block: clamp(2.5rem, 2rem + 2vw, 4rem) clamp(3.5rem, 2.5rem + 3vw, 5.5rem);
-    background: color-mix(in srgb, var(--matin-soleil) 16%, var(--matin-ivoire));
+    background: color-mix(in srgb, var(--matin-firouzeh) 30%, var(--matin-ivoire));
+  }
+  .collab::before,
+  .collab::after {
+    content: '';
+    position: absolute;
+    z-index: -1;
+    aspect-ratio: 1;
+    border-radius: 50%;
+  }
+  .collab::before {
+    inset-block-start: -8rem;
+    inset-inline-end: -6rem;
+    width: clamp(16rem, 10rem + 18vw, 28rem);
+    background: color-mix(in srgb, var(--matin-soleil) 65%, var(--matin-ivoire));
+  }
+  .collab::after {
+    inset-block-end: -10rem;
+    inset-inline-start: -8rem;
+    width: clamp(18rem, 12rem + 20vw, 32rem);
+    border-radius: 50% 50% 0 0;
+    background: color-mix(in srgb, var(--matin-brique) 40%, var(--matin-ivoire));
+  }
+  .collab__hint:not(#o) {
+    font-weight: 600;
+    color: var(--matin-encre);
   }
   .collab__hint {
     margin-block-end: 1.5rem;

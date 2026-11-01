@@ -261,3 +261,4 @@ Every event, and every other page that carries structured data (JSON-LD), must g
 - **Menu (owner, Nov 1 2026):** About, Our Team, Events, News, Gallery (dropdown: Gallery · Photos, Gallery · Videos, Gallery · Posters, My Story in 15 Seconds last), Resources, Collaboration, Contact. Programs is no longer in the top menu (page kept, footer link); the Gallery items left the Events dropdown. Collaboration has a fifth box, « My Story in 15 Seconds », a link to its page (no form there).
 - **News order (owner, Nov 1 2026):** Matin News above Cultural News, on the News page and in the News dropdown.
 - **Contact (owner, Nov 1 2026):** no photo beside « Write to us ».
+- **Collaboration ground (owner, Nov 1 2026):** pale turquoise with a saffron sun and a terracotta arch at the edges.
