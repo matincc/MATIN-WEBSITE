@@ -587,26 +587,31 @@ function sendAdvisorReceipt(data) {
     // From the Persian site: Persian first, then English, no French (owner, Nov 1 2026).
     const fa = clean(data.lang).toUpperCase() === 'FA';
     if (fa) {
+      // The owner's own Persian text (Nov 1 2026), word for word, then the same in English.
       parts.splice(0, 2, [
         'سلام' + (name ? ' ' + name + ' عزیز' : '') + '،',
         '',
-        'درخواست شما دریافت شد. ' +
-          'از علاقهٔ شما به گروه مشاوران مؤسسه میان‌فرهنگی متین سپاسگزاریم؛ رزومهٔ شما نیز به دست ما رسید.',
-        '',
-        'تیم ما مشخصات شما را بررسی می‌کند و حداکثر ظرف پنج روز کاری یک ایمیل تأیید برایتان می‌فرستد. ' +
-          'یادآوری می‌کنیم که پیوستن به گروه رایگان است و هیچ رابطهٔ استخدامی ایجاد نمی‌کند؛ ' +
-          'هر همکاری با دستمزد در قراردادی کتبی و جداگانه، برای هر پروژه، مشخص می‌شود.',
+        'درخواست شما دریافت شد، از علاقه شما برای همکاری با گروه مشاوران مؤسسه میان‌فرهنگی متین سپاسگزاریم. ' +
+          'کارشناسان ما رزومه ارسالی شما را بررسی می‌کنند و حداکثر ظرف ۵ روز کاری یک ایمیل تایید برای شما ارسال خواهد شد.',
         '',
         'با احترام،',
         'تیم مؤسسه میان‌فرهنگی متین',
-      ], parts[1]);
+      ], [
+        'Hello' + (name ? ' ' + name : '') + ',',
+        '',
+        "Your application has been received. Thank you for your interest in collaborating with the Matin Intercultural Institute's Advisory Circle. " +
+          'Our experts will review the CV you sent, and a confirmation email will be sent to you within five business days at most.',
+        '',
+        'Best regards,',
+        'The Matin Intercultural Institute team',
+      ]);
     }
     const text = parts.map((p) => p.join('\n')).join('\n\n———\n\n') +
       '\n\n' + ADV_REPLY_TO + ' · https://matincc.ca';
     GmailApp.sendEmail(
       email,
       fa
-        ? 'درخواست شما دریافت شد · گروه مشاوران متین · Application received · Matin Advisory Circle'
+        ? 'درخواست شما دریافت شد. گروه مشاوران متین'
         : 'Candidature reçue · Cercle des conseillers de Matin · Application received · Matin Advisory Circle',
       text,
       { name: 'Institut interculturel Matin', replyTo: ADV_REPLY_TO, htmlBody: emailHtml(text) },
