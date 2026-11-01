@@ -57,7 +57,7 @@ const errorId = `${id}-error`;
     )}
   </label>
   {as === 'textarea' ? (
-    <textarea id={id} name={name} class="input" required={required} aria-describedby={errorId} />
+    <textarea id={id} name={name} class="input" required={required} aria-describedby={errorId} maxlength={2000} />
   ) : as === 'select' ? (
     <select id={id} name={name} class="input" required={required} aria-describedby={errorId}>
       {placeholderOption !== undefined && <option value="">{placeholderOption}</option>}
@@ -75,6 +75,7 @@ const errorId = `${id}-error`;
       data-required-when={requiredWhen}
       autocomplete={autocomplete}
       aria-describedby={errorId}
+      maxlength={200}
     />
   )}
   <p id={errorId} class="field-error" hidden></p>

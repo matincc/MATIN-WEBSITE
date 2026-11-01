@@ -990,3 +990,17 @@ body:has(.page-head) .ground[data-ground='1'],
 body:has(.page-head) .ground[data-ground='3'] {
   background-color: color-mix(in srgb, var(--matin-brique) 20%, var(--matin-ivoire));
 }
+
+/* Character counter under capped text boxes (src/scripts/forms.ts). */
+.char-count {
+  margin-block-start: 0.3rem;
+  font-size: 0.8rem;
+  text-align: end;
+  color: var(--color-ink);
+  opacity: 0.75;
+}
+.char-count--full {
+  color: var(--matin-brique-ink);
+  font-weight: 700;
+  opacity: 1;
+}

@@ -188,6 +188,22 @@ export function enhanceForms() {
     };
     form.noValidate = true; // we show our own, bilingual messages
     setupConditions(form);
+    // Long answers are capped (maxlength, owner Nov 1 2026: no 100-page pastes):
+    // a small « 120 / 2000 » counter under each text box shows the room left.
+    form.querySelectorAll<HTMLTextAreaElement>('textarea[maxlength]').forEach((box) => {
+      const max = box.maxLength;
+      const count = document.createElement('p');
+      count.className = 'char-count';
+      count.setAttribute('aria-hidden', 'true');
+      count.dir = 'ltr';
+      const show = () => {
+        count.textContent = `${box.value.length} / ${max}`;
+        count.classList.toggle('char-count--full', box.value.length >= max);
+      };
+      box.after(count);
+      box.addEventListener('input', show);
+      show();
+    });
     // Fields with data-prefill (LinkedIn): the start of the address is written in on
     // focus, so the visitor only adds their profile name; left alone, it is cleared.
     form.querySelectorAll<HTMLInputElement>('input[data-prefill]').forEach((input) => {
