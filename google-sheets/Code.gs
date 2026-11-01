@@ -595,7 +595,7 @@ function sendAdvisorReceipt(data) {
           'کارشناسان ما رزومه ارسالی شما را بررسی می‌کنند و حداکثر ظرف ۵ روز کاری یک ایمیل تایید برای شما ارسال خواهد شد.',
         '',
         'با احترام،',
-        'گروه پژوهشی',
+        'معاونت پژوهشی',
         'مؤسسه میان‌فرهنگی متین',
       ], [
         'Hello' + (name ? ' ' + name : '') + ',',
@@ -604,7 +604,7 @@ function sendAdvisorReceipt(data) {
           'Our experts will review the CV you sent, and a confirmation email will be sent to you within five business days at most.',
         '',
         'Best regards,',
-        'Research Group',
+        'Research Department',
         'Matin Intercultural Institute',
       ]);
     }
@@ -740,7 +740,7 @@ function advisorWelcomeEmail(advId, name, fa) {
     'لطفاً در نامه‌هایتان به ما شمارهٔ مشاور خود را ذکر کنید.',
     '',
     'با سپاس،',
-    'گروه پژوهشی',
+    'معاونت پژوهشی',
     'مؤسسه میان‌فرهنگی متین',
   ];
   // From the Persian site: Persian first, then English, no French (owner, Nov 1 2026).
