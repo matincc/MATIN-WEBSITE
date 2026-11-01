@@ -424,4 +424,104 @@ const ways = [
       grid-template-columns: minmax(0, 1fr);
     }
   }
+  /* ---------- Colour redesign (owner, Nov 1 2026: « all white boxes; the donation box
+     is the same colour as the ground ») ----------
+     The three ways are solid colour cards (terracotta, turquoise, navy) with white text
+     and a saffron button; Make a Donation is a navy panel with saffron amounts, and its
+     two ways to give sit on pale saffron and pale turquoise. White on brique-ink 6.2,
+     firouzeh-ink 5.9, encre 11.3; navy on soleil 6.1. */
+  .way:not(#o) {
+    position: relative;
+    overflow: hidden;
+    border: none;
+    border-radius: 1.25rem;
+    border-end-start-radius: 3rem;
+    background: var(--tone-ink);
+    color: var(--matin-white);
+    box-shadow: 0 18px 34px -26px color-mix(in srgb, var(--matin-encre) 75%, transparent);
+  }
+  .way:not(#o)::after {
+    content: '';
+    position: absolute;
+    inset-block-start: -3rem;
+    inset-inline-end: -3rem;
+    width: 8rem;
+    aspect-ratio: 1;
+    border-radius: 50%;
+    background: color-mix(in srgb, var(--matin-white) 12%, transparent);
+    pointer-events: none;
+  }
+  .way[data-tone='firouzeh']:not(#o) {
+    background: var(--matin-firouzeh-ink);
+  }
+  .way[data-tone='encre']:not(#o)::after {
+    background: color-mix(in srgb, var(--matin-soleil) 35%, transparent);
+  }
+  .way__icon:not(#o) {
+    background: var(--matin-white);
+    color: var(--tone-ink);
+  }
+  .way__title:not(#o),
+  .way__text:not(#o) {
+    color: var(--matin-white);
+  }
+  .way__cta:not(#o) {
+    justify-self: start;
+    margin-block-start: 0.25rem;
+    padding: 0.5rem 1.1rem;
+    border-radius: 999px;
+    background: var(--matin-soleil);
+    color: var(--matin-encre);
+    text-decoration: none;
+  }
+  .way__cta:not(#o):hover {
+    background: var(--matin-white);
+    color: var(--matin-encre);
+  }
+  .way__cta:not(#o):focus-visible {
+    outline: 3px solid var(--matin-white);
+    outline-offset: 3px;
+  }
+  .donate:not(#o) {
+    border: none;
+    background: var(--matin-encre);
+    color: var(--matin-white);
+    box-shadow: 0 22px 40px -30px color-mix(in srgb, var(--matin-encre) 80%, transparent);
+  }
+  .donate__icon:not(#o) {
+    background: var(--matin-soleil);
+    color: var(--matin-encre);
+  }
+  .donate__title:not(#o),
+  .donate__text:not(#o),
+  .amounts__label:not(#o),
+  .amounts__monthly:not(#o),
+  .donate__note:not(#o) {
+    color: var(--matin-white);
+  }
+  .amounts__chip:not(#o) {
+    border-color: var(--matin-soleil);
+    background: var(--matin-soleil);
+    color: var(--matin-encre);
+  }
+  .amounts__chip--free:not(#o) {
+    background: transparent;
+    color: var(--matin-white);
+    border-style: dashed;
+  }
+  .give:not(#o) {
+    border: none;
+    background: color-mix(in srgb, var(--matin-soleil) 30%, var(--matin-ivoire));
+    color: var(--matin-encre);
+  }
+  .give:not(.give--main):not(#o) {
+    background: color-mix(in srgb, var(--matin-firouzeh) 30%, var(--matin-ivoire));
+  }
+  .give__icon:not(#o) {
+    background: var(--matin-encre);
+    color: var(--matin-soleil);
+  }
+  .give__email:not(#o) {
+    background: var(--matin-white);
+  }
 </style>

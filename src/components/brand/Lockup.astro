@@ -5,6 +5,7 @@
  * Oct 27 2026, assets/logo-matin-sun.jpg, only its white background removed) sits before them.
  */
 import { Image } from 'astro:assets';
+import { Home } from '@lucide/astro';
 import logo from '@/assets/brand/logo-matin.png';
 import MapleLeaf from './MapleLeaf.astro';
 import { useTranslations } from '@/i18n/ui';
@@ -21,6 +22,10 @@ const { lang, variant = 'white', size = 'default' } = Astro.props;
 const t = useTranslations(lang);
 // The logo keeps its French/English wording; on Persian pages it shows the French logo.
 const logoLang = lang === 'fa' ? 'fr' : lang;
+// « Back to home » appears beside the header logo on hover, so visitors know the logo
+// leads home (owner, Nov 1 2026). Not on the homepage itself, not in the footer.
+const homePath = href('home', lang).replace(/\/$/, '');
+const showTip = size === 'large' && Astro.url.pathname.replace(/\/$/, '') !== homePath;
 const [line1, ...rest] = useTranslations(logoLang)('brand.institute').split(' ');
 ---
 
@@ -53,10 +58,17 @@ const [line1, ...rest] = useTranslations(logoLang)('brand.institute').split(' ')
     <span>{rest.join(' ')}</span>
   </span>
   <span class="sr-only">— {t('nav.home')}</span>
+  {showTip && (
+    <span class="lockup__tip" lang={lang} dir={lang === 'fa' ? 'rtl' : 'ltr'} aria-hidden="true">
+      <Home size={15} aria-hidden="true" />
+      {t('notFound.home')}
+    </span>
+  )}
 </a>
 
 <style>
   .lockup {
+    position: relative;
     display: inline-flex;
     align-items: center;
     gap: 0.7rem;
@@ -67,6 +79,35 @@ const [line1, ...rest] = useTranslations(logoLang)('brand.institute').split(' ')
     flex: none;
     width: 3rem;
     height: auto;
+    /* Lifts the round logo off the cream header, whose colour matches its inside
+       (owner, Nov 1 2026): a soft navy shadow and slightly richer colours. The file
+       itself is unchanged. */
+    filter: drop-shadow(0 5px 9px color-mix(in srgb, var(--matin-encre) 50%, transparent))
+      brightness(1.07) contrast(1.12) saturate(1.3);
+  }
+  /* A small, friendly wobble when the pointer reaches the logo. */
+  @media (hover: hover) and (prefers-reduced-motion: no-preference) {
+    .lockup:hover .lockup__logo,
+    .lockup:focus-visible .lockup__logo {
+      animation: lockup-wobble 0.7s ease-in-out;
+    }
+  }
+  @keyframes lockup-wobble {
+    0% {
+      transform: rotate(0) scale(1);
+    }
+    25% {
+      transform: rotate(-9deg) scale(1.08);
+    }
+    50% {
+      transform: rotate(7deg) scale(1.08);
+    }
+    75% {
+      transform: rotate(-3deg) scale(1.04);
+    }
+    100% {
+      transform: rotate(0) scale(1);
+    }
   }
   .lockup__word {
     font-family: var(--font-brand);
@@ -156,6 +197,54 @@ const [line1, ...rest] = useTranslations(logoLang)('brand.institute').split(' ')
     }
     .lockup--large .lockup__inst {
       font-size: 0.72rem;
+    }
+  }
+  /* « Back to home » tip under the header logo: shown on hover and keyboard focus. */
+  .lockup__tip {
+    position: absolute;
+    z-index: 60;
+    inset-block-start: calc(100% + 0.45rem);
+    left: 0;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    padding: 0.35rem 0.8rem;
+    border-radius: 999px;
+    background: var(--matin-soleil);
+    color: var(--matin-encre);
+    font-family: var(--font-display);
+    font-size: 0.875rem;
+    font-weight: 700;
+    line-height: 1.2;
+    white-space: nowrap;
+    box-shadow: 0 8px 18px -10px color-mix(in srgb, var(--matin-encre) 70%, transparent);
+    opacity: 0;
+    transform: translateY(-4px);
+    pointer-events: none;
+    transition:
+      opacity 0.2s,
+      transform 0.2s;
+  }
+  .lockup__tip :global(svg) {
+    color: var(--matin-encre);
+  }
+  .lockup__tip::before {
+    content: '';
+    position: absolute;
+    inset-block-end: 100%;
+    left: 1.6rem;
+    border: 6px solid transparent;
+    border-block-end-color: var(--matin-soleil);
+  }
+  .lockup:hover .lockup__tip,
+  .lockup:focus-visible .lockup__tip {
+    opacity: 1;
+    transform: none;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .lockup__tip {
+      transition: none;
+      transform: none;
     }
   }
 </style>
