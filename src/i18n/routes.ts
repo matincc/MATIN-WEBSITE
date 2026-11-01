@@ -39,7 +39,8 @@ export const routes = {
 export type RouteKey = keyof typeof routes;
 
 /** Anchors of the two News sections on the News page (the former category pages redirect there). */
-export const newsAnchors = { recommends: 'cultural-news', 'matin-news': 'matin-news' } as const;
+// Matin News first (owner, Nov 1 2026): this order is also the News dropdown's.
+export const newsAnchors = { 'matin-news': 'matin-news', recommends: 'cultural-news' } as const;
 
 /** Build a localized path, e.g. path('events', 'en', 'summer-fest') → /en/events/summer-fest/ */
 export function path(key: RouteKey, lang: Lang, ...rest: (string | number)[]): string {

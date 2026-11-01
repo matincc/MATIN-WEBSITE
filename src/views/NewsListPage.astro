@@ -50,25 +50,7 @@ const alternates = siteAlternates('news');
     </p>
   )}
 
-  <section
-    id="cultural-news"
-    class="news-cultural on-dark scroll-mt-28"
-    aria-labelledby="cultural-title"
-  >
-    <div class="container-site">
-      <div class="news-wire">
-        <SectionHeader
-          align="start"
-          id="cultural-title"
-          title={t('news.culturalTitle')}
-          subtitle={t('news.culturalLede')}
-          class="mb-8"
-        />
-        <NewsRegionTabs lang={lang} posts={cultural} id="cultural-news-tabs" />
-      </div>
-    </div>
-  </section>
-
+  {/* Matin News first, then Cultural News (owner, Nov 1 2026). */}
   <section id="matin-news" class="news-matin scroll-mt-28" aria-labelledby="matin-news-title">
     <div class="container-site">
       <SectionHeader
@@ -102,6 +84,25 @@ const alternates = siteAlternates('news');
       </p>
     </div>
   </section>
+  <section
+    id="cultural-news"
+    class="news-cultural on-dark scroll-mt-28"
+    aria-labelledby="cultural-title"
+  >
+    <div class="container-site">
+      <div class="news-wire">
+        <SectionHeader
+          align="start"
+          id="cultural-title"
+          title={t('news.culturalTitle')}
+          subtitle={t('news.culturalLede')}
+          class="mb-8"
+        />
+        <NewsRegionTabs lang={lang} posts={cultural} id="cultural-news-tabs" />
+      </div>
+    </div>
+  </section>
+
 </PageLayout>
 
 <style>
@@ -110,7 +111,7 @@ const alternates = siteAlternates('news');
     font-size: 1.0625rem;
   }
   .news-cultural {
-    padding-block: clamp(2.5rem, 2rem + 2vw, 4rem) clamp(3rem, 2rem + 3vw, 5rem);
+    padding-block: clamp(3rem, 2rem + 3vw, 5rem);
   }
   /* Matin News (scheme A, Oct 29 2026): on the sable ground, so the page keeps one dark
      moment only (Cultural News); the white cards still stand out. */
