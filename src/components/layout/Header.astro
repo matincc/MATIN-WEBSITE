@@ -34,12 +34,14 @@ const anchor = (url: string, id: string) => `${url}#${id}`;
 // Main menu, in this order (owner's brief, Oct 24 2026). Get Involved is merged into
 // Contact & Collaboration (Phase 3). Lighter menu (owner, Oct 30 2026): the Gallery is no
 // longer a top-level item; its Photos, Videos and Posters sit under Events.
+// Owner's order (Nov 1 2026): Programs leaves the menu (page kept, linked from the
+// footer); Gallery is a top-level item again, after News.
 const items: RouteKey[] = [
   'about',
   'team',
-  'programs',
   'events',
   'news',
+  'gallery',
   'resources',
   'collaboration',
   'contact',
@@ -103,7 +105,6 @@ galleryLinks.splice(videosAt, 0, {
   label: storyStrings(lang).nav,
   href: href('stories', lang),
 });
-eventsLinks.push(...galleryLinks);
 const resourcesHref = href('resources', lang);
 // Until International Cultural Networks has entries, its link opens the directory's
 // international category instead (the networks section is hidden while empty).
@@ -146,6 +147,7 @@ const subMenus: Partial<Record<RouteKey, { id: string; label: string; links: typ
     team: { id: 'team-submenu', label: t('a11y.teamSubmenu'), links: teamLinks },
     events: { id: 'events-submenu', label: t('a11y.eventsSubmenu'), links: eventsLinks },
     news: { id: 'news-submenu', label: t('a11y.newsSubmenu'), links: newsLinks },
+    gallery: { id: 'gallery-submenu', label: t('a11y.gallerySubmenu'), links: galleryLinks },
     resources: {
       id: 'resources-submenu',
       label: t('a11y.resourcesSubmenu'),

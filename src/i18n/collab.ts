@@ -20,6 +20,8 @@ const fr = {
   open: 'Ouvrir le formulaire',
   openPartners: 'Voir les détails',
   close: 'Fermer',
+  storyTeaser: 'Une question, votre téléphone, quelques secondes : envoyez-nous votre histoire en vidéo.',
+  storyCta: 'Partager mon histoire',
 };
 const en: typeof fr = {
   title: 'Collaborate with Matin',
@@ -34,6 +36,8 @@ const en: typeof fr = {
   open: 'Open the form',
   openPartners: 'See details',
   close: 'Close',
+  storyTeaser: 'One question, your phone, a few seconds: send us your story on video.',
+  storyCta: 'Share my story',
 };
 const fa: typeof fr = {
   title: 'همکاری با متین',
@@ -48,6 +52,8 @@ const fa: typeof fr = {
   open: 'باز کردن فرم',
   openPartners: 'دیدن جزئیات',
   close: 'بستن',
+  storyTeaser: 'یک پرسش، گوشی شما، چند ثانیه: داستانتان را در یک ویدیو برای ما بفرستید.',
+  storyCta: 'داستانم را بفرستم',
 };
 const dicts: Record<UiLang, typeof fr> = { fr, en, fa };
 

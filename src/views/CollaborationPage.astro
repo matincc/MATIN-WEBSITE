@@ -8,7 +8,8 @@
  * #conseillers, #partenaires and their English forms) open the matching panel; old
  * Contact anchors are forwarded here.
  */
-import { BadgeCheck, ChevronDown, HandHeart, Handshake, Lightbulb } from '@lucide/astro';
+import { ArrowRight, BadgeCheck, ChevronDown, HandHeart, Handshake, Lightbulb, Video } from '@lucide/astro';
+import { storyStrings } from '@/i18n/stories';
 import PageLayout from '@/layouts/PageLayout.astro';
 import PartnersSection from '@/components/trust/PartnersSection.astro';
 import VolunteerForm from '@/components/forms/VolunteerForm.astro';
@@ -72,6 +73,20 @@ const aliases = { expertise: ids.advisors, 'advisors': ids.advisors };
             </button>
           </li>
         ))}
+        {/* « My Story in 15 Seconds » (owner, Nov 1 2026): a box that leads to its own
+            page in the Gallery; no form here. */}
+        <li>
+          <a href={href('stories', lang)} class="collab-box collab-box--story">
+            <span class="collab-box__icon" aria-hidden="true"><Video size={26} /></span>
+            <span class="collab-box__n" aria-hidden="true">{lang === 'fa' ? '۵' : '05'}</span>
+            <span class="collab-box__title">{storyStrings(lang).title}</span>
+            <span class="collab-box__teaser">{c.storyTeaser}</span>
+            <span class="collab-box__cta collab-box__cta--link">
+              {c.storyCta}
+              <ArrowRight size={18} aria-hidden="true" class="rtl:-scale-x-100" />
+            </span>
+          </a>
+        </li>
       </ul>
 
       <section id={ids.membership} class="collab-panel collab-panel--membership scroll-mt-24" aria-labelledby="membership-title" data-collab-panel>
@@ -175,10 +190,59 @@ const aliases = { expertise: ids.advisors, 'advisors': ids.advisors };
       grid-template-columns: repeat(2, minmax(0, 1fr));
     }
   }
-  @media (min-width: 72rem) {
+  @media (min-width: 60rem) {
     .collab__boxes {
-      grid-template-columns: repeat(4, minmax(0, 1fr));
+      grid-template-columns: repeat(6, minmax(0, 1fr));
     }
+    /* Three boxes on the first row, two wider ones under them. */
+    .collab__boxes > li {
+      grid-column: span 2;
+    }
+    .collab__boxes > li:nth-child(n + 4) {
+      grid-column: span 3;
+    }
+  }
+  @media (min-width: 90rem) {
+    .collab__boxes {
+      grid-template-columns: repeat(5, minmax(0, 1fr));
+    }
+    .collab__boxes > li,
+    .collab__boxes > li:nth-child(n + 4) {
+      grid-column: auto;
+    }
+  }
+  @media (min-width: 40rem) and (max-width: 59.99rem) {
+    .collab__boxes > li:last-child {
+      grid-column: 1 / -1;
+    }
+  }
+  .collab-box--story:not(#o) {
+    --box-bg: var(--matin-white);
+    --box-fg: var(--matin-encre);
+    --box-sun: var(--matin-brique);
+    outline: 4px solid var(--matin-brique-ink);
+    outline-offset: -4px;
+    border-radius: 1.25rem;
+    border-start-end-radius: 4rem;
+    border-end-start-radius: 4rem;
+    text-decoration: none;
+  }
+  .collab-box--story:hover {
+    color: var(--box-fg);
+  }
+  .collab-box--story .collab-box__icon {
+    background: var(--matin-brique-ink);
+    color: var(--matin-white);
+  }
+  .collab-box--story .collab-box__n {
+    color: var(--matin-white);
+  }
+  .collab-box--story .collab-box__cta {
+    background: var(--matin-brique-ink);
+    color: var(--matin-white);
+  }
+  .collab:not(.is-enhanced) .collab-box__cta--link {
+    display: inline-flex;
   }
   .collab__boxes > li {
     display: flex;
