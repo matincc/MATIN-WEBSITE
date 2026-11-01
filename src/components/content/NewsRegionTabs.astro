@@ -9,7 +9,10 @@
  * coloured edge per story; « Lire la suite » as a filled terracotta button. Only published entries reach this list;
  * proposed or rejected stories are never in the repository (see
  * src/content/news/README.md). Each card names its source and links to it.
+ * Photo (owner's decision, Nov 1 2026): a story may carry an image, the source's own when
+ * its terms allow reuse, otherwise a relevant openly licensed photo, always with its credit.
  */
+import { Image } from 'astro:assets';
 import type { CollectionEntry } from 'astro:content';
 import { ArrowUpRight, ExternalLink, Newspaper } from '@lucide/astro';
 import { pick } from '@/i18n/ui';
@@ -71,7 +74,25 @@ const tabs = newsRegions.map((region) => {
             const src = d.source!;
             const Heading = cardLevel;
             return (
-              <li class:list={['wire__item', tab.lead && i === 0 && 'wire__item--lead']}>
+              <li
+                class:list={[
+                  'wire__item',
+                  tab.lead && i === 0 && 'wire__item--lead',
+                  d.image && 'wire__item--photo',
+                ]}
+              >
+                {d.image && (
+                  <figure class="wire__media">
+                    <Image
+                      src={d.image}
+                      alt={pick(d.imageAlt, lang) ?? ''}
+                      widths={[480, 720, 960]}
+                      sizes="(min-width: 52rem) 40vw, 100vw"
+                      class="wire__img"
+                    />
+                    {d.imageCredit && <figcaption class="wire__credit">{d.imageCredit}</figcaption>}
+                  </figure>
+                )}
                 <p class="wire__kicker">
                   <span class="wire__source-name">{src.name}</span>
                   <span class="wire__dot" aria-hidden="true" />
@@ -143,6 +164,9 @@ const tabs = newsRegions.map((region) => {
       justify-content: center;
       align-items: flex-start;
     }
+    .wire--lead .wire__item--lead.wire__item--photo {
+      justify-content: flex-start;
+    }
   }
   .wire__item {
     display: flex;
@@ -182,6 +206,31 @@ const tabs = newsRegions.map((region) => {
   /* The lead story: a warm ivory card, so it reads first. */
   .wire__item.wire__item--lead {
     border-inline-start-color: var(--matin-soleil);
+  }
+  /* Photo at the top of the card, flush with its edges; the credit sits under it. */
+  .wire__item--photo {
+    padding-block-start: 0;
+    overflow: hidden;
+  }
+  .wire__media {
+    align-self: stretch;
+    margin-block-end: 1.1rem;
+    margin-inline: calc(-1 * clamp(1.35rem, 1rem + 1vw, 2rem));
+  }
+  .wire__img {
+    display: block;
+    width: 100%;
+    aspect-ratio: 16 / 9;
+    object-fit: cover;
+  }
+  .wire__item--lead .wire__img {
+    aspect-ratio: 3 / 2;
+  }
+  .wire__credit {
+    padding: 0.35rem clamp(1.35rem, 1rem + 1vw, 2rem) 0;
+    font-size: 0.75rem;
+    line-height: 1.4;
+    color: var(--color-ink);
   }
   .wire__kicker {
     display: flex;

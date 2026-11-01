@@ -17,6 +17,13 @@ Two sections, never mixed (owner's brief, Oct 25 2026):
 - `matin-news`: **Matin News / Nouvelles de Matin / اخبار متین**. The institute's official news,
   with its own article page.
 
+Photo (owner's decision, Nov 1 2026): every Cultural News story should have one, shown at
+the top of its card. Use the source's own photo when its terms allow reuse (for example a
+government or UNESCO image published for the media), otherwise a relevant openly licensed photo
+(Wikimedia Commons), always with `imagePermission: true` and `imageCredit`. Never copy a press
+agency or newspaper photo without a licence. Prefer significant stories that come with a photo:
+the site is not a news agency.
+
 Other fields: `archived: true` takes an outdated item off the site (kept in the history);
 `draft: true` shows an item only on the local preview (`npm run dev`); `updated` after a
 substantial change. Images: only with the right to use them (`imagePermission: true`), with
