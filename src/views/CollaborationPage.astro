@@ -1,14 +1,15 @@
 ---
 /**
- * Collaboration (owner's request, Oct 31 2026): the homepage shows Matin itself; the ways
- * to work with Matin live here, in the menu before Contact. In order: Share Your Expertise
- * (the approved team.join* invitation), Partners & Supporters, Membership, Volunteering,
- * the Matin Advisory Circle. The forms are the same Netlify forms as before
- * (adhesion, benevolat, conseillers); old Contact anchors are forwarded here.
+ * Collaboration (owner's requests, Oct 31 2026): the homepage shows Matin itself; the ways
+ * to work with Matin live here, in the menu before Contact. Four boxes, in the owner's
+ * order: Membership, Volunteer Team, Advisory Circle, Partners & Supporters. Each box
+ * opens its own panel with its form (adhesion, benevolat, conseillers), so the page stays
+ * short. Without JavaScript every panel is shown. Menu anchors (#adhesion, #benevolat,
+ * #conseillers, #partenaires and their English forms) open the matching panel; old
+ * Contact anchors are forwarded here.
  */
+import { BadgeCheck, ChevronDown, HandHeart, Handshake, Lightbulb } from '@lucide/astro';
 import PageLayout from '@/layouts/PageLayout.astro';
-import SectionHeader from '@/components/ui/SectionHeader.astro';
-import LivingPrograms from '@/components/living/LivingPrograms.astro';
 import PartnersSection from '@/components/trust/PartnersSection.astro';
 import VolunteerForm from '@/components/forms/VolunteerForm.astro';
 import MembershipForm from '@/components/forms/MembershipForm.astro';
@@ -27,11 +28,15 @@ const t = useTranslations(lang);
 const c = collabStrings(lang);
 const ids = collabAnchors(lang);
 const inv = await getSingleton('involvement');
-const hasVolunteer = true;
-const volunteerId = ids.volunteer;
-const membershipId = ids.membership;
 const adv = advisorStrings(lang);
-const advisorsId = ids.advisors;
+const boxes = [
+  { key: 'membership', id: ids.membership, Icon: BadgeCheck, title: t('membership.title'), teaser: t('membership.lede'), cta: c.open },
+  { key: 'volunteer', id: ids.volunteer, Icon: HandHeart, title: t('involved.volunteerTitle'), teaser: c.volunteerTeaser, cta: c.open },
+  { key: 'advisors', id: ids.advisors, Icon: Lightbulb, title: adv.title, teaser: c.advisorsTeaser, cta: c.open },
+  { key: 'partners', id: ids.partners, Icon: Handshake, title: c.partners, teaser: c.partnersTeaser, cta: c.openPartners },
+];
+// The old « Share Your Expertise » anchor now leads to the Advisory Circle.
+const aliases = { expertise: ids.advisors, 'advisors': ids.advisors };
 ---
 
 <PageLayout
@@ -42,146 +47,334 @@ const advisorsId = ids.advisors;
   ledeStrong
   alternates={siteAlternates('collaboration')}
 >
-  <div id={ids.expertise} class="living collab-expertise scroll-mt-24">
-    <LivingPrograms lang={lang} part="join" />
-  </div>
-
-  <div class="collab-partners">
-    <PartnersSection lang={lang} />
-  </div>
-
-  <section
-    id={membershipId}
-    class="membership-band scroll-mt-24 py-16 sm:py-20"
-    aria-labelledby="membership-title"
-  >
+  <div class="collab scroll-mt-24" data-collab data-aliases={JSON.stringify(aliases)}>
     <div class="container-site">
-      <SectionHeader
-        align="start"
-        id="membership-title"
-        title={t('membership.formTitle')}
-        subtitle={t('membership.lede')}
-      />
-      <p class="membership-fee">{t('membership.feeNote')}</p>
-      <div class="card form-panel form-panel--membership p-6 sm:p-10">
-        <p class="mb-8 text-lg">{t('membership.formIntro')}</p>
-        <MembershipForm lang={lang} action={`${href('collaboration', lang)}?sent=1#${membershipId}`} />
-      </div>
-      <p class="careers-note">
-        <a href={href('membership', lang)}>{t('membership.typesTitle')}</a>
-      </p>
-    </div>
-  </section>
+      <p class="collab__hint">{c.lede2}</p>
+      <ul class="collab__boxes">
+        {boxes.map((b, i) => (
+          <li>
+            <button
+              type="button"
+              class={`collab-box collab-box--${b.key}`}
+              aria-expanded="false"
+              aria-controls={b.id}
+              data-collab-toggle={b.id}
+            >
+              <span class="collab-box__icon" aria-hidden="true"><b.Icon size={26} /></span>
+              <span class="collab-box__n" aria-hidden="true">{lang === 'fa' ? ['۱', '۲', '۳', '۴'][i] : `0${i + 1}`}</span>
+              <span class="collab-box__title">{b.title}</span>
+              <span class="collab-box__teaser">{b.teaser}</span>
+              <span class="collab-box__cta">
+                <span class="collab-box__open">{b.cta}</span>
+                <span class="collab-box__close">{c.close}</span>
+                <ChevronDown size={20} aria-hidden="true" class="collab-box__chev" />
+              </span>
+            </button>
+          </li>
+        ))}
+      </ul>
 
-  {hasVolunteer && (
-    <section
-      id={volunteerId}
-      class="volunteer-band scroll-mt-24 py-16 sm:py-20"
-      aria-labelledby="volunteer-title"
-    >
-      <div class="container-site">
-        <SectionHeader
-          align="start"
-          id="volunteer-title"
-          title={t('involved.volunteerTitle')}
-          subtitle={inv.volunteerIntro && pick(inv.volunteerIntro, lang)}
-        />
-        <!-- A short, compact form right under the invitation (owner's brief, Oct 27 2026). -->
-        <div class="card form-panel form-panel--volunteer p-6 sm:p-10">
-          <VolunteerForm lang={lang} />
-        </div>
+      <section id={ids.membership} class="collab-panel collab-panel--membership scroll-mt-24" aria-labelledby="membership-title" data-collab-panel>
+        <h2 id="membership-title" class="collab-panel__title">{t('membership.formTitle')}</h2>
+        <p class="membership-fee">{t('membership.feeNote')}</p>
+        <p class="mb-8 text-lg">{t('membership.formIntro')}</p>
+        <MembershipForm lang={lang} action={`${href('collaboration', lang)}?sent=1#${ids.membership}`} />
+        <p class="careers-note">
+          <a href={href('membership', lang)}>{t('membership.typesTitle')}</a>
+        </p>
+      </section>
+
+      <section id={ids.volunteer} class="collab-panel collab-panel--volunteer scroll-mt-24" aria-labelledby="volunteer-title" data-collab-panel>
+        <h2 id="volunteer-title" class="collab-panel__title">{t('involved.volunteerTitle')}</h2>
+        {inv.volunteerIntro && <p class="collab-panel__intro">{pick(inv.volunteerIntro, lang)}</p>}
+        <VolunteerForm lang={lang} />
         <p class="careers-note">
           {t('contact.careersNote')} <a href={href('careers', lang)}>{t('contact.careersLink')}</a>
         </p>
-      </div>
-    </section>
-  )}
-  <section
-    id={advisorsId}
-    class="advisors-band scroll-mt-24 py-16 sm:py-20"
-    aria-labelledby="advisors-title"
-  >
-    <div class="container-site">
-      <SectionHeader align="start" id="advisors-title" title={adv.title} subtitle={adv.lede} />
-      <ol class="adv-steps">
-        {[
-          [adv.how1Title, adv.how1Text],
-          [adv.how2Title, adv.how2Text],
-          [adv.how3Title, adv.how3Text],
-        ].map(([title, text], i) => (
-          <li class="adv-step">
-            <span class="adv-step__n" aria-hidden="true">{lang === 'fa' ? ['۱', '۲', '۳'][i] : i + 1}</span>
-            <h3 class="adv-step__title">{title}</h3>
-            <p>{text}</p>
-          </li>
-        ))}
-      </ol>
-      <div class="card form-panel form-panel--advisors p-6 sm:p-10">
+      </section>
+
+      <section id={ids.advisors} class="collab-panel collab-panel--advisors scroll-mt-24" aria-labelledby="advisors-title" data-collab-panel>
+        <h2 id="advisors-title" class="collab-panel__title">{adv.title}</h2>
+        <p class="collab-panel__intro">{adv.lede}</p>
+        <ol class="adv-steps">
+          {[
+            [adv.how1Title, adv.how1Text],
+            [adv.how2Title, adv.how2Text],
+            [adv.how3Title, adv.how3Text],
+          ].map(([title, text], i) => (
+            <li class="adv-step">
+              <span class="adv-step__n" aria-hidden="true">{lang === 'fa' ? ['۱', '۲', '۳'][i] : i + 1}</span>
+              <h3 class="adv-step__title">{title}</h3>
+              <p>{text}</p>
+            </li>
+          ))}
+        </ol>
         <h3 class="mb-6 text-2xl font-bold">{adv.formTitle}</h3>
         <AdvisorForm lang={lang} />
-      </div>
+      </section>
+
+      <section id={ids.partners} class="collab-panel collab-panel--partners scroll-mt-24" aria-labelledby="partners-panel-title" data-collab-panel>
+        <h2 id="partners-panel-title" class="collab-panel__title">{c.partners}</h2>
+        <PartnersSection lang={lang} embedded />
+      </section>
     </div>
-  </section>
+  </div>
 </PageLayout>
 
+<script>
+  // Boxes open one panel at a time; the URL anchor opens its panel (menu links, form
+  // thank-you redirects). Without this script every panel stays visible.
+  const root = document.querySelector<HTMLElement>('[data-collab]');
+  if (root) {
+    const aliases: Record<string, string> = JSON.parse(root.dataset.aliases || '{}');
+    root.classList.add('is-enhanced');
+    const toggles = [...root.querySelectorAll<HTMLElement>('[data-collab-toggle]')];
+    const panels = [...root.querySelectorAll<HTMLElement>('[data-collab-panel]')];
+    const open = (id: string | null, scroll: boolean) => {
+      panels.forEach((p) => (p.hidden = p.id !== id));
+      toggles.forEach((b) => b.setAttribute('aria-expanded', String(b.dataset.collabToggle === id)));
+      const panel = id && document.getElementById(id);
+      if (panel && scroll) panel.scrollIntoView({ behavior: matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth', block: 'start' });
+    };
+    toggles.forEach((b) =>
+      b.addEventListener('click', () => {
+        const id = b.dataset.collabToggle ?? null;
+        const isOpen = b.getAttribute('aria-expanded') === 'true';
+        open(isOpen ? null : id, !isOpen);
+        history.replaceState(null, '', isOpen || !id ? location.pathname + location.search : '#' + id);
+      }),
+    );
+    const fromHash = () => {
+      const h = decodeURIComponent(location.hash.slice(1));
+      const id = aliases[h] || h;
+      if (panels.some((p) => p.id === id)) open(id, true);
+      else open(null, false);
+    };
+    window.addEventListener('hashchange', fromHash);
+    fromHash();
+  }
+</script>
+
 <style>
-  /* Colourful page (owner, Oct 31 2026: « like the other pages, no white »): each band
-     has its own pale ground, each panel a contrasting tint; inputs stay white so the
-     fields read clearly. Text navy or ink on every tint (8:1 or more); white on encre. */
-  .write-band {
-    background: color-mix(in srgb, var(--matin-soleil) 24%, var(--matin-ivoire));
+  /* ---------- Four boxes that open their forms (owner, Oct 31 2026) ---------- */
+  .collab {
+    padding-block: clamp(2.5rem, 2rem + 2vw, 4rem) clamp(3.5rem, 2.5rem + 3vw, 5.5rem);
+    background: color-mix(in srgb, var(--matin-soleil) 16%, var(--matin-ivoire));
   }
-  .form-panel:not(#o) {
-    border: none;
-    border-block-start: 8px solid var(--matin-firouzeh-ink);
-    border-start-end-radius: 5rem;
-    background: color-mix(in srgb, var(--matin-firouzeh) 26%, var(--matin-ivoire));
+  .collab__hint {
+    margin-block-end: 1.5rem;
+    font-size: clamp(1.0625rem, 1rem + 0.3vw, 1.25rem);
+    color: var(--color-ink);
   }
-  .info-panel:not(#o) {
-    border: none;
-    border-block-start: 8px solid var(--matin-soleil);
-    border-end-end-radius: 4rem;
-    background: var(--matin-encre);
-    color: var(--color-white);
+  .collab__boxes {
+    display: grid;
+    gap: clamp(1rem, 0.75rem + 1vw, 1.5rem);
   }
-  .info-panel :is(h2, h3, p, a, div):not(#o) {
-    color: var(--color-white);
+  @media (min-width: 40rem) {
+    .collab__boxes {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
   }
-  .info-panel :global(svg.text-gold-dark) {
-    color: var(--matin-soleil);
+  @media (min-width: 72rem) {
+    .collab__boxes {
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+    }
   }
-  .info-panel a:not(#o):focus-visible {
-    outline-color: var(--matin-soleil);
+  .collab__boxes > li {
+    display: flex;
   }
-  .contact-art {
+  .collab-box {
+    --box-bg: var(--matin-brique-ink);
+    --box-fg: var(--matin-white);
+    --box-sun: var(--matin-soleil);
     position: relative;
-    max-width: 30rem;
-    margin-inline: auto;
-    padding: 1.25rem 1.25rem 0 0;
-  }
-  .contact-art :global(.contact-art__img) {
-    position: relative;
-    z-index: 1;
-    display: block;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.6rem;
     width: 100%;
-    height: auto;
-    aspect-ratio: 4 / 3;
-    object-fit: cover;
-    border-radius: 14rem 14rem 1.5rem 1.5rem;
-    border: 8px solid var(--matin-ivoire);
-    box-shadow: 0 24px 40px -26px color-mix(in srgb, var(--matin-encre) 70%, transparent);
+    padding: 1.6rem 1.5rem 1.4rem;
+    border: 0;
+    border-radius: 1.25rem;
+    border-start-end-radius: 4rem;
+    background: var(--box-bg);
+    color: var(--box-fg);
+    text-align: start;
+    cursor: pointer;
+    box-shadow: 0 18px 32px -24px color-mix(in srgb, var(--matin-encre) 80%, transparent);
+    transition:
+      translate 0.3s ease,
+      box-shadow 0.3s ease;
   }
-  .contact-art__block {
+  .collab-box::after {
+    /* A sun rising at the box's top corner. */
+    content: '';
     position: absolute;
-    inset-block-start: 0;
-    inset-inline-end: 0;
-    width: 45%;
+    inset-block-start: -2.75rem;
+    inset-inline-end: -2.75rem;
+    width: 7rem;
     aspect-ratio: 1;
     border-radius: 50%;
-    background: var(--matin-brique);
+    background: var(--box-sun);
+    opacity: 0.9;
   }
-  .membership-band {
-    background: color-mix(in srgb, var(--matin-brique) 16%, var(--matin-ivoire));
+  .collab-box--volunteer {
+    --box-bg: var(--matin-firouzeh-ink);
+    --box-sun: var(--matin-brique);
+    border-radius: 1.25rem;
+    border-end-end-radius: 4rem;
+  }
+  .collab-box--advisors {
+    --box-bg: var(--matin-encre);
+    border-radius: 1.25rem;
+    border-start-start-radius: 4rem;
+  }
+  .collab-box--partners {
+    --box-bg: var(--matin-soleil);
+    --box-fg: var(--matin-encre);
+    --box-sun: var(--matin-firouzeh);
+    border-radius: 1.25rem;
+    border-end-start-radius: 4rem;
+  }
+  .collab-box:hover {
+    translate: 0 -4px;
+    box-shadow: 0 24px 40px -22px color-mix(in srgb, var(--matin-encre) 85%, transparent);
+  }
+  .collab-box:focus-visible {
+    outline: 3px solid var(--matin-encre);
+    outline-offset: 3px;
+  }
+  .collab-box[aria-expanded='true'] {
+    box-shadow:
+      0 0 0 4px var(--matin-ivoire),
+      0 0 0 7px var(--box-bg);
+  }
+  .collab-box__icon {
+    position: relative;
+    z-index: 1;
+    display: inline-grid;
+    place-items: center;
+    width: 3rem;
+    height: 3rem;
+    border-radius: 50%;
+    background: color-mix(in srgb, var(--box-fg) 16%, transparent);
+  }
+  .collab-box__n {
+    position: absolute;
+    inset-block-start: 1rem;
+    inset-inline-end: 1.15rem;
+    z-index: 1;
+    font-family: var(--font-display);
+    font-weight: 800;
+    font-size: 0.95rem;
+    color: var(--matin-encre);
+  }
+  .collab-box--partners .collab-box__n {
+    color: var(--matin-white);
+  }
+  .collab-box__title {
+    font-family: var(--font-editorial);
+    font-size: clamp(1.35rem, 1.2rem + 0.5vw, 1.6rem);
+    font-weight: 700;
+    line-height: 1.2;
+  }
+  :global(html[lang='fa']) .collab-box__title {
+    font-family: var(--font-display);
+    font-weight: 800;
+    line-height: 1.5;
+  }
+  .collab-box__teaser {
+    flex: 1;
+    font-size: 1rem;
+    line-height: 1.6;
+    opacity: 0.95;
+  }
+  .collab-box__cta {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    margin-block-start: 0.5rem;
+    padding: 0.5rem 1.1rem;
+    border-radius: 999px;
+    background: var(--matin-ivoire);
+    color: var(--matin-encre);
+    font-family: var(--font-display);
+    font-weight: 800;
+    font-size: 0.975rem;
+  }
+  .collab-box__close,
+  .collab-box[aria-expanded='true'] .collab-box__open {
+    display: none;
+  }
+  .collab-box[aria-expanded='true'] .collab-box__close {
+    display: inline;
+  }
+  .collab-box__chev {
+    transition: rotate 0.3s ease;
+  }
+  .collab-box[aria-expanded='true'] .collab-box__chev {
+    rotate: 180deg;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .collab-box,
+    .collab-box__chev {
+      transition: none;
+    }
+    .collab-box:hover {
+      translate: none;
+    }
+  }
+  /* Without JavaScript the toggles do nothing, so they are just signposts. */
+  .collab:not(.is-enhanced) .collab-box__cta {
+    display: none;
+  }
+
+  /* ---------- The panels ---------- */
+  .collab-panel {
+    margin-block-start: clamp(1.75rem, 1.25rem + 2vw, 2.75rem);
+    padding: clamp(1.5rem, 1rem + 2.5vw, 3rem);
+    border-radius: 1.5rem;
+    border-start-end-radius: 6rem;
+    border-block-start: 8px solid var(--panel-edge, var(--matin-brique-ink));
+    background: var(--panel-bg, color-mix(in srgb, var(--matin-soleil) 30%, var(--matin-ivoire)));
+  }
+  .collab-panel[hidden] {
+    display: none;
+  }
+  .collab-panel--volunteer {
+    --panel-edge: var(--matin-firouzeh-ink);
+    --panel-bg: color-mix(in srgb, var(--matin-firouzeh) 20%, var(--matin-ivoire));
+  }
+  .collab-panel--advisors {
+    --panel-edge: var(--matin-encre);
+    --panel-bg: color-mix(in srgb, var(--matin-encre) 9%, var(--matin-ivoire));
+  }
+  .collab-panel--partners {
+    --panel-edge: var(--matin-soleil);
+    --panel-bg: var(--matin-white);
+  }
+  .collab-panel__title {
+    margin-block-end: 1rem;
+    font-family: var(--font-editorial);
+    font-size: clamp(1.75rem, 1.4rem + 1.4vw, 2.5rem);
+    font-weight: 700;
+    line-height: 1.15;
+    color: var(--matin-encre);
+  }
+  :global(html[lang='fa']) .collab-panel__title {
+    font-family: var(--font-display);
+    font-weight: 800;
+    line-height: 1.5;
+  }
+  .collab-panel__intro {
+    max-width: 52rem;
+    margin-block-end: 2rem;
+    font-size: clamp(1.0625rem, 1rem + 0.3vw, 1.25rem);
+    line-height: 1.75;
+  }
+  .collab-panel :global(form) {
+    max-width: 60rem;
   }
   .membership-fee {
     margin-block: -0.5rem 1.5rem;

@@ -15,8 +15,10 @@ import { useTranslations } from '@/i18n/ui';
 
 interface Props {
   lang: UiLang;
+  /** Inside the Collaboration page's opening box: no id and no heading of its own. */
+  embedded?: boolean;
 }
-const { lang } = Astro.props;
+const { lang, embedded = false } = Astro.props;
 const t = useTranslations(lang);
 const all = (await getCollection('partners')).sort((a, b) => a.data.order - b.data.order);
 const groups = [
@@ -46,12 +48,20 @@ const kindLabel = {
 };
 ---
 
-<section id="partenaires" class="partners scroll-mt-24" aria-labelledby="partners-title">
-  <div class="container-site">
-    <header class="partners__head" data-reveal>
-      <h2 id="partners-title" class="partners__title">{t('home.partnersTitle')}</h2>
-      <p class="partners__lede">{t('home.partnersLede')}</p>
-    </header>
+<section
+  id={embedded ? undefined : 'partenaires'}
+  class:list={['partners scroll-mt-24', embedded && 'partners--embedded']}
+  aria-labelledby={embedded ? undefined : 'partners-title'}
+  aria-label={embedded ? t('home.partnersTitle') : undefined}
+>
+  <div class={embedded ? undefined : 'container-site'}>
+    {!embedded && (
+      <header class="partners__head" data-reveal>
+        <h2 id="partners-title" class="partners__title">{t('home.partnersTitle')}</h2>
+        <p class="partners__lede">{t('home.partnersLede')}</p>
+      </header>
+    )}
+    {embedded && <p class="partners__lede">{t('home.partnersLede')}</p>}
     <div class="partners__grid">
       {
         groups.map((g) => (
@@ -101,6 +111,13 @@ const kindLabel = {
   .partners {
     padding-block: clamp(3rem, 2rem + 3vw, 5rem);
     background: var(--matin-white);
+  }
+  .partners--embedded {
+    padding-block: 0;
+    background: transparent;
+  }
+  .partners--embedded .partners__lede {
+    margin-block-end: 1.75rem;
   }
   .partners__head {
     display: grid;

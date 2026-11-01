@@ -463,68 +463,60 @@ const voices = cultureVoices.flatMap((v) => {
     }
   }
 
-  /* ---------- Wide screens: three placements on a 12-column grid ---------- */
+  /* ---------- Compact (owner, Oct 31 2026: « smaller, tighter ») ---------- */
+  .voices__head {
+    margin-block-end: clamp(2.25rem, 1.75rem + 2vw, 3.5rem);
+  }
+  .voices__title {
+    font-size: clamp(2rem, 1.4rem + 2.2vw, 3.25rem);
+  }
+  .voices__list {
+    gap: clamp(2.75rem, 2rem + 2vw, 3.5rem);
+  }
+  .voice__text {
+    font-size: clamp(1rem, 0.97rem + 0.15vw, 1.0625rem);
+    line-height: 1.7;
+  }
+  .voice__lead {
+    font-size: clamp(1.2rem, 1.1rem + 0.4vw, 1.4rem);
+  }
+  .voice__sheet {
+    padding: 3rem clamp(1.25rem, 1rem + 1vw, 1.75rem) 1.6rem;
+  }
+  .voice__mark {
+    font-size: clamp(4rem, 3.5rem + 1.5vw, 5rem);
+  }
+
+  /* ---------- Wide screens: the three side by side, at three heights ---------- */
   @media (min-width: 64rem) {
-    .voice__fig {
-      display: grid;
-      grid-template-columns: repeat(12, minmax(0, 1fr));
-      align-items: center;
+    .voices__list {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      align-items: start;
+      gap: clamp(1.25rem, 0.5rem + 1.5vw, 2rem);
     }
-    .voice__tag {
-      margin: 0;
-      max-width: 21rem;
-      width: auto;
+    .voice--sand {
+      margin-block-start: 2.5rem;
+    }
+    .voice--rose {
+      margin-block-start: 1rem;
+    }
+    .voice__fig {
+      height: 100%;
     }
     .voice__sheet {
-      padding-block: clamp(2.75rem, 2rem + 1.5vw, 3.5rem);
+      flex: 1;
     }
-
-    /* Mina: her tag hangs from the bottom of her sheet, on the start side. It overlaps
-       only the sheet's bottom padding, whatever the text length. */
+    .voice__tag {
+      max-width: 92%;
+    }
+    .voice--sand .voice__tag,
+    .voice--rose .voice__tag,
     .voice--apricot .voice__tag {
-      grid-row: 2;
-      grid-column: 1 / 5;
-      justify-self: start;
-      margin-block-start: -2.5rem;
+      align-self: flex-start;
+      margin-inline: 0.5rem 0;
     }
-    .voice--apricot .voice__sheet {
-      grid-row: 1;
-      grid-column: 3 / 12;
-      padding-block-end: 4rem;
-      padding-inline-start: calc(100% / 9 + 2.75rem);
-      padding-inline-end: clamp(2rem, 1rem + 2vw, 3.5rem);
-    }
-    .voice--apricot .voice__mark {
-      inset-inline-start: calc(100% / 9 + 1.5rem);
-    }
-
-    /* Hakan: the mirror image, his tag rising above the end of his sheet. */
-    .voice--sand .voice__tag {
-      grid-row: 1;
-      grid-column: 9 / 13;
-      justify-self: end;
-    }
-    .voice--sand .voice__sheet {
-      grid-row: 2;
-      grid-column: 2 / 11;
-      margin-block-start: -3rem;
-      padding-block-start: 3.75rem;
-      padding-inline-start: clamp(2.5rem, 1.5rem + 2.5vw, 4.5rem);
-      padding-inline-end: clamp(2.5rem, 1.5rem + 2.5vw, 4.5rem);
-    }
-
-    /* Benoît: a narrower sheet, the tag pinned on its top edge. */
-    .voice--rose .voice__tag {
-      grid-row: 1;
-      grid-column: 7 / 11;
-      justify-self: start;
-      margin-block-end: -2.4rem;
-    }
-    .voice--rose .voice__sheet {
-      grid-row: 2;
-      grid-column: 3 / 11;
-      padding-block-start: 4.25rem;
-      padding-inline: clamp(2.5rem, 1.5rem + 2.5vw, 4.5rem);
+    .voice__mark {
+      display: none;
     }
   }
 

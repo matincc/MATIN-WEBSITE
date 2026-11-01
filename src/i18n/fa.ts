@@ -84,7 +84,7 @@ const fa: DeepPartial<Dictionary> = {
     teamMembers: 'تیم',
     teamBoard: 'هیئت‌مدیره',
     teamExecutive: 'تیم اجرایی',
-    teamAdvisors: 'همکاری با متین',
+    teamAdvisors: 'حلقهٔ مشاوران',
     president: 'یادداشتی شخصی از رئیس مؤسسه',
     ourPresident: 'رئیس ما',
     notes: 'یادداشت‌های رئیس مؤسسه',

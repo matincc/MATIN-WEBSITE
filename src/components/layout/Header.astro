@@ -133,11 +133,11 @@ const collabHref = href('collaboration', lang);
 const cs = collabStrings(lang);
 const ca = collabAnchors(lang);
 const collabLinks = [
-  { id: ca.expertise, label: cs.expertise },
-  { id: ca.partners, label: cs.partners },
+  // Owner's order (Oct 31 2026): membership first, then volunteers, advisors, partners.
   { id: ca.membership, label: t('nav.contactMembership') },
   { id: ca.volunteer, label: t('involved.volunteerTitle') },
   { id: ca.advisors, label: advisorStrings(lang).nav },
+  { id: ca.partners, label: cs.partners },
 ].map((l) => ({ ...l, href: anchor(collabHref, l.id) }));
 // Menu items that open a dropdown.
 const subMenus: Partial<Record<RouteKey, { id: string; label: string; links: typeof aboutLinks }>> =
