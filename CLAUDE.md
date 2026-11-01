@@ -181,6 +181,10 @@ Every event, and every other page that carries structured data (JSON-LD), must g
 
 ---
 
+## 8. Legal obligations calendar (owner's request, Nov 1 2026)
+
+`docs/compliance/legal-obligations-agm.md` (in Persian) lists Matin's legal duties as a Québec Part III nonprofit: annual general meeting rules, REQ declarations, CO-17.SP, T2/T1044, registers, Law 25, Montréal. At the start of each working session, read it and tell the owner about any deadline in the next 60 days. When the owner answers one of its open questions (section 2: fiscal year-end, by-laws, initial declaration, directors, employees, end of free membership), update the timeline in the same edit. It is information, not legal advice; never present it otherwise. Never put the NEQ or the incorporation date on the site because of it (section 1 rules still apply).
+
 ## How the project is organized
 
 - **Stack:** Astro 7 (static), Tailwind CSS 4, TypeScript. Deployed on Netlify. `npm run dev` for local work, `npm run build` to check types, build and index search.
