@@ -43,8 +43,18 @@ interface Props {
   picked?: boolean;
   /** Group name for the fullscreen viewer: the image becomes a link that opens it. */
   lightboxGroup?: string;
+  /** « row »: image beside the text (Events page, owner Nov 1 2026: shorter boxes);
+      « compact »: the same, with only date, place and the button (upcoming list). */
+  layout?: 'card' | 'row' | 'compact';
 }
-const { event, lang, headingLevel = 'h3', picked = false, lightboxGroup } = Astro.props;
+const {
+  event,
+  lang,
+  headingLevel = 'h3',
+  picked = false,
+  lightboxGroup,
+  layout = 'card',
+} = Astro.props;
 const t = useTranslations(lang);
 const d = event.data;
 const tz = d.timeZone;
@@ -98,6 +108,7 @@ const large =
   class:list={[
     'card card-lift agenda-card',
     { 'is-cancelled': d.status === 'cancelled', 'is-matin': ours, 'agenda-card--pick': picked },
+    layout !== 'card' && `agenda-card--row agenda-card--${layout}`,
   ]}
   data-accent={accent}
   data-event-end={event.endDate.toISOString()}
@@ -537,6 +548,80 @@ const large =
     }
     .agenda-card:hover .agenda-image :global(img) {
       transform: none;
+    }
+  }
+
+  /* ---------- Row layouts (owner, Nov 1 2026: « boxes too long and tall ») ----------
+     From 40rem the image sits beside the text, filling the card's height; the text is
+     shortened. Below 40rem the card keeps its usual vertical layout. */
+  @media (min-width: 40rem) {
+    .agenda-card--row:not(#o) {
+      --pad: 1.6rem;
+      display: grid;
+      grid-template-columns: minmax(0, 2fr) minmax(0, 3fr);
+      grid-auto-rows: min-content;
+      align-content: start;
+      column-gap: 1.6rem;
+      row-gap: 0.6rem;
+      padding: var(--pad);
+      height: 100%;
+    }
+    .agenda-card--row > :global(*) {
+      grid-column: 2;
+    }
+    .agenda-card--row > .agenda-image:not(#o),
+    .agenda-card--row > :global(.agenda-image):not(#o) {
+      grid-column: 1;
+      grid-row: 1 / span 12;
+      align-self: stretch;
+      aspect-ratio: auto;
+      height: auto;
+      min-height: 100%;
+      margin: calc(var(--pad) * -1) 0 calc(var(--pad) * -1) calc(var(--pad) * -1);
+      border-block-end: 0;
+    }
+    .agenda-card--row .agenda-image :global(picture),
+    .agenda-card--row .agenda-image :global(img) {
+      height: 100%;
+    }
+    .agenda-card--row .agenda-title:not(#o) {
+      font-size: clamp(1.2rem, 1.1rem + 0.4vw, 1.45rem);
+    }
+    .agenda-card--row .agenda-summary:not(#o),
+    .agenda-card--row .agenda-why:not(#o) {
+      display: -webkit-box;
+      -webkit-box-orient: vertical;
+      -webkit-line-clamp: 3;
+      overflow: hidden;
+    }
+    .agenda-card--row .agenda-why:not(#o) {
+      -webkit-line-clamp: 2;
+    }
+    .agenda-card--row .agenda-meta:not(#o) {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.35rem 1.1rem;
+      padding: 0;
+      background: none;
+      font-size: 1rem;
+    }
+    /* Picks and upcoming rows: only the date and the place. */
+    .agenda-card--row:is(.agenda-card--pick, .agenda-card--compact) .agenda-meta > li:nth-child(n + 3),
+    .agenda-card--row .agenda-checked:not(#o) {
+      display: none;
+    }
+    .agenda-card--row .mt-auto {
+      flex-direction: row;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 0.5rem 1rem;
+    }
+    .agenda-card--compact:not(#o) {
+      grid-template-columns: minmax(0, 1fr) minmax(0, 2fr);
+    }
+    .agenda-card--compact :is(.agenda-summary, .agenda-why, .agenda-checked, .agenda-subject):not(#o),
+    .agenda-card--compact .agenda-meta > li:nth-child(n + 3) {
+      display: none;
     }
   }
 </style>

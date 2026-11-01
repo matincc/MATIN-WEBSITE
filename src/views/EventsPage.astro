@@ -110,9 +110,11 @@ const showFilters = upcoming.length >= FILTER_MIN_EVENTS && filters.length > 0;
 >
   <section
     id="matin-events"
-    class="scroll-mt-24 bg-tint py-16 sm:py-20"
+    class="ev-band ev-band--matin scroll-mt-24"
     aria-labelledby="matin-events-title"
+    data-own-ground
   >
+    <span class="ev-band__sun" aria-hidden="true"></span>
     <div class="container-site">
       <SectionHeader
         align="start"
@@ -121,10 +123,10 @@ const showFilters = upcoming.length >= FILTER_MIN_EVENTS && filters.length > 0;
         class="mb-10"
       />
       {matinUpcoming.length > 0 ? (
-        <ul class="stagger-grid grid gap-6 md:grid-cols-2 lg:grid-cols-3" data-upcoming-list>
-          {matinUpcoming.map((event) => (
-            <li>
-              <EventCard event={event} lang={lang} />
+        <ul class="ev-matin grid gap-6" data-upcoming-list>
+          {matinUpcoming.map((event, i) => (
+            <li data-reveal style={`--reveal-delay:${i * 90}ms`}>
+              <EventCard event={event} lang={lang} layout="row" />
             </li>
           ))}
         </ul>
@@ -140,13 +142,20 @@ const showFilters = upcoming.length >= FILTER_MIN_EVENTS && filters.length > 0;
     </div>
   </section>
 
-  <PicksSection lang={lang} class="pt-16 pb-6 sm:pt-20" exclude={matinUpcoming.map((e) => e.id)} />
+  <PicksSection
+    lang={lang}
+    class="ev-band ev-band--picks"
+    exclude={matinUpcoming.map((e) => e.id)}
+    layout="row"
+  />
 
   <section
     id="upcoming"
-    class="container-site scroll-mt-24 pt-14 pb-20"
+    class="ev-band ev-band--upcoming scroll-mt-24"
     aria-labelledby="upcoming-title"
+    data-own-ground
   >
+    <div class="container-site">
     <SectionHeader align="start" id="upcoming-title" title={t('events.upcoming')} class="mb-10" />
 
     {showFilters && (
@@ -178,19 +187,21 @@ const showFilters = upcoming.length >= FILTER_MIN_EVENTS && filters.length > 0;
       {upcoming.length > 0 && (
         <ul
           id="event-list"
-          class="stagger-grid grid gap-6 md:grid-cols-2 lg:grid-cols-3"
+          class="ev-upcoming grid gap-5"
           data-upcoming-list
           data-page-size={PAGE_SIZE}
         >
-          {upcoming.map((event) => (
+          {upcoming.map((event, i) => (
             <li
+              data-reveal
+              style={`--reveal-delay:${(i % 6) * 70}ms`}
               data-region={event.data.region}
               data-subject={event.data.subject}
               data-month={event.data.start.slice(0, 7)}
               data-format={event.data.format}
               data-language={event.data.language}
             >
-              <EventCard event={event} lang={lang} />
+              <EventCard event={event} lang={lang} layout="compact" />
             </li>
           ))}
         </ul>
@@ -209,11 +220,12 @@ const showFilters = upcoming.length >= FILTER_MIN_EVENTS && filters.length > 0;
         </div>
       )}
     </div>
+    </div>
   </section>
   <ExpireEvents />
 
   {past.length > 0 && (
-    <section id="past" class="scroll-mt-24 bg-tint py-16 sm:py-20" aria-labelledby="past-title">
+    <section id="past" class="ev-band ev-band--past scroll-mt-24" aria-labelledby="past-title" data-own-ground>
       <div class="container-site">
         <SectionHeader align="start" id="past-title" title={t('events.past')} class="mb-10" />
         <ul class="divide-y divide-line overflow-hidden rounded-[var(--radius-card)] border border-line bg-white">
@@ -295,6 +307,111 @@ const showFilters = upcoming.length >= FILTER_MIN_EVENTS && filters.length > 0;
 </script>
 
 <style>
+  /* ---------- Bands (owner, Nov 1 2026: a basic redesign, shorter, with motion) ----------
+     Matin Events on navy with a saffron sun, Matin's Picks on deep turquoise, upcoming
+     events on pale saffron, past events on pale terracotta. Flat shapes only. */
+  .ev-band,
+  :global(.ev-band) {
+    position: relative;
+    overflow: hidden;
+    isolation: isolate;
+    padding-block: clamp(2.75rem, 2rem + 3vw, 4.5rem);
+  }
+  .ev-band--matin {
+    background: var(--matin-encre);
+  }
+  .ev-band__sun {
+    position: absolute;
+    z-index: -1;
+    inset-block-start: -6rem;
+    inset-inline-end: -4rem;
+    width: clamp(12rem, 8rem + 12vw, 22rem);
+    aspect-ratio: 1;
+    border-radius: 50%;
+    background: var(--matin-soleil);
+  }
+  .ev-band--matin :global(:is(.section-title, .section-subtitle)),
+  .ev-band--matin :global(h2) {
+    color: var(--matin-white);
+  }
+  .ev-band--matin :global(.empty-state) {
+    color: var(--matin-encre);
+  }
+  .ev-matin {
+    max-width: 72rem;
+  }
+  :global(.ev-band--picks) {
+    background: var(--matin-firouzeh-ink);
+  }
+  :global(.ev-band--picks)::before {
+    content: '';
+    position: absolute;
+    z-index: -1;
+    inset-block-end: -7rem;
+    inset-inline-start: -5rem;
+    width: clamp(14rem, 9rem + 14vw, 24rem);
+    aspect-ratio: 1;
+    border-radius: 50% 50% 0 0;
+    background: var(--matin-brique);
+  }
+  :global(.ev-band--picks :is(.section-title, .section-subtitle)),
+  :global(.ev-band--picks #picks-title) {
+    color: var(--matin-white);
+  }
+  :global(.ev-band--picks .region-panel__title) {
+    color: var(--matin-white);
+  }
+  :global(.ev-band--picks .is-enhanced > .region-tabs__list) {
+    background: transparent;
+    border-color: color-mix(in srgb, var(--matin-white) 45%, transparent);
+  }
+  :global(.ev-band--picks .region-tab) {
+    border-color: var(--matin-white);
+    color: var(--matin-white);
+    background: transparent;
+  }
+  :global(.ev-band--picks .region-tab[aria-selected='true']) {
+    background: var(--matin-soleil);
+    border-color: var(--matin-soleil);
+    color: var(--matin-encre);
+  }
+  :global(.ev-band--picks .empty-state) {
+    color: var(--matin-encre);
+  }
+  :global(.picks-rows) {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  @media (min-width: 80rem) {
+    :global(.picks-rows) {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+    :global(.picks-rows > li:nth-child(2n)) {
+      translate: 0 1.5rem;
+    }
+  }
+  .ev-band--upcoming {
+    background: color-mix(in srgb, var(--matin-soleil) 22%, var(--matin-ivoire));
+  }
+  @media (min-width: 64rem) {
+    .ev-upcoming {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  }
+  .ev-band--past {
+    background: color-mix(in srgb, var(--matin-brique) 18%, var(--matin-ivoire));
+  }
+  /* A gentle slide on hover for the agenda rows. */
+  @media (hover: hover) and (prefers-reduced-motion: no-preference) {
+    .ev-upcoming > li,
+    .ev-matin > li,
+    :global(.picks-rows > li) {
+      transition: translate 0.35s cubic-bezier(0.2, 0.7, 0.2, 1);
+    }
+    .ev-upcoming > li:hover,
+    .ev-matin > li:hover {
+      translate: 0 -4px;
+    }
+  }
   .filter-label {
     font-size: 0.8rem;
     font-weight: 700;

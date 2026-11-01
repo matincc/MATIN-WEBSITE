@@ -23,8 +23,10 @@ interface Props {
   link?: { href: string; label: string };
   /** Events already shown elsewhere on the page, so that no event appears twice. */
   exclude?: string[];
+  /** Card layout (EventCard): « row » on the Events page (owner, Nov 1 2026). */
+  layout?: 'card' | 'row' | 'compact';
 }
-const { lang, class: className = '', link, exclude = [] } = Astro.props;
+const { lang, class: className = '', link, exclude = [], layout = 'card' } = Astro.props;
 const t = useTranslations(lang);
 const picks = forLang(picksOf(await getUpcomingEvents()), lang).filter(
   (e) => !exclude.includes(e.id),
@@ -71,10 +73,17 @@ const uid = `picks-${exclude.length ? 'events' : 'home'}`;
           >
             <h3 class="region-panel__title">{t(`newsRegions.${tab.region}`)}</h3>
             {tab.events.length > 0 ? (
-              <ul class="stagger-grid grid gap-6 md:grid-cols-2 lg:grid-cols-3" data-upcoming-list>
-                {tab.events.map((event) => (
-                  <li>
+              <ul
+                class:list={[
+                  'grid gap-6',
+                  layout === 'card' ? 'stagger-grid md:grid-cols-2 lg:grid-cols-3' : 'picks-rows',
+                ]}
+                data-upcoming-list
+              >
+                {tab.events.map((event, i) => (
+                  <li data-reveal style={`--reveal-delay:${i * 90}ms`}>
                     <EventCard
+                      layout={layout}
                       event={event}
                       lang={lang}
                       picked
