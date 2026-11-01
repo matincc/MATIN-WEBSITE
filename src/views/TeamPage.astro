@@ -73,7 +73,7 @@ import { advisorStrings, advisorsAnchor } from '@/i18n/advisors';
   <PresidentSection lang={lang} />
 
   <!-- "#team" is kept for older links to the team section. -->
-  <section id="team" class="team-groups scroll-mt-24" aria-label={t('nav.team')}>
+  <section id="team" class="team-groups scroll-mt-24" aria-label={t('nav.team')} data-own-ground>
     <div class="container-site team-groups__stack">
       {/* Board of Directors first, above the Executive Team (owner, Oct 31 2026). */}
       {board.length > 0 && (
@@ -848,5 +848,61 @@ import { advisorStrings, advisorsAnchor } from '@/i18n/advisors';
   }
   .team-join__block {
     background: var(--matin-brique);
+  }
+  /* ---------- Distinct grounds (owner, Nov 1 2026: « every part the same colour, nothing
+     stands out »): President pale saffron, Board turquoise panel on cream, Executive Team
+     on a full-width pale terracotta band, What Culture Means to Us on a navy band, the
+     Advisory Circle box terracotta. Full-width bands via a spread shadow clipped to the
+     band's own height. ---------- */
+  .team-groups:not(#o) {
+    background: var(--matin-ivoire);
+    padding-block-end: clamp(3rem, 2rem + 3vw, 5rem);
+  }
+  .crew:not(#o),
+  .team-groups :global(.voices) {
+    position: relative;
+    padding-block: clamp(3rem, 2rem + 3vw, 5rem);
+    clip-path: inset(0 -100vmax);
+  }
+  .crew:not(#o) {
+    background: color-mix(in srgb, var(--matin-brique) 22%, var(--matin-ivoire));
+    box-shadow: 0 0 0 100vmax color-mix(in srgb, var(--matin-brique) 22%, var(--matin-ivoire));
+  }
+  .team-groups :global(.voices) {
+    background: var(--matin-encre);
+    box-shadow: 0 0 0 100vmax var(--matin-encre);
+  }
+  .team-groups :global(.voices .voices__title),
+  .team-groups :global(.voices .voices__subtitle) {
+    color: var(--matin-white);
+  }
+  .team-groups :global(.voices .voices__asked) {
+    background-color: var(--matin-soleil);
+    color: var(--matin-encre);
+  }
+  .team-groups :global(.voices .voices__asked :is(.voices__asked-label, .voices__asked-q)) {
+    color: var(--matin-encre);
+  }
+  .team-groups :global(.voices .voices__asked-cta) {
+    background: var(--matin-encre);
+    color: var(--matin-white);
+  }
+  .team-groups :global(.voices .voices__asked:hover) {
+    background-color: var(--matin-ivoire);
+  }
+  .team-groups__stack:not(#o) {
+    gap: 0;
+  }
+  .team-groups__stack > :global(#board) {
+    margin-block-end: clamp(3rem, 2rem + 3vw, 5rem);
+  }
+  .team-groups__stack > .team-join {
+    margin-block-start: clamp(3rem, 2rem + 3vw, 5rem);
+  }
+  .team-join:not(#o) {
+    background: var(--matin-brique-ink);
+  }
+  .team-join__block:not(#o) {
+    background: var(--matin-firouzeh);
   }
 </style>

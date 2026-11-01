@@ -42,7 +42,7 @@ const linkedinPath =
 ---
 
 {bio && (
-  <section id="our-president" class="pres scroll-mt-24" aria-labelledby="our-president-title">
+  <section id="our-president" class="pres scroll-mt-24" aria-labelledby="our-president-title" data-own-ground>
     <span class="pres__field" aria-hidden="true" />
     <div class="container-site pres__grid">
       <div class="pres__media">
@@ -113,7 +113,8 @@ const linkedinPath =
     position: relative;
     overflow: hidden;
     padding-block: clamp(2.5rem, 1.5rem + 3vw, 4.5rem) clamp(3.5rem, 2rem + 5vw, 7.5rem);
-    background: var(--color-ivory);
+    /* Pale saffron, so the President's part reads apart from the team below (owner, Nov 1 2026). */
+    background: color-mix(in srgb, var(--matin-soleil) 22%, var(--matin-ivoire));
   }
   .pres__field {
     position: absolute;
