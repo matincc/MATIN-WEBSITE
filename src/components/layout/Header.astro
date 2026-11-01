@@ -467,6 +467,14 @@ const isActive = (url: string) => !url.includes('?') && current.startsWith(url);
     color: var(--matin-brique-ink);
     white-space: nowrap;
   }
+  /* The second line never widens the top row: it takes the slogan's width and wraps if
+     longer (Nov 1 2026: "Rooted in Canada, Connected to the World" pushed the buttons down). */
+  .header-slogan:not(.header-slogan--menu) .header-slogan__fa {
+    width: 0;
+    min-width: 100%;
+    white-space: normal;
+    line-height: 1.2;
+  }
   :global([dir='rtl']) .header-slogan__fa {
     font-family: 'Vazirmatn Variable', Tahoma, sans-serif;
   }
