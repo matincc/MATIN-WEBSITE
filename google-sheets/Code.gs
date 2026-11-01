@@ -1,4 +1,4 @@
-// Matin forms web app v8 (advisor emails in the site's language: FR, EN, or FA+EN; Nov 1 2026)
+// Matin forms web app v9 (advisor emails in the site's language; CVs checked: real PDF or .docx, no macros; Nov 1 2026)
 /**
  * Matin – website form entries → Google Sheet (owner's request, Oct 27 2026; membership
  * applications added Oct 28 2026, volunteer registry and thank-you emails Oct 29 2026: after changing this file, paste it into the Apps Script
@@ -525,8 +525,12 @@ function saveAdvisorCv(url, name, received) {
     const res = UrlFetchApp.fetch(url, { muteHttpExceptions: true, followRedirects: true });
     if (res.getResponseCode() !== 200) return url;
     const blob = res.getBlob();
-    if (blob.getBytes().length > 6 * 1024 * 1024) return url;
-    const ext = (/\.(pdf|docx?)(\?|$)/i.exec(url) || [, 'pdf'])[1].toLowerCase();
+    const bytes = blob.getBytes();
+    if (bytes.length > 6 * 1024 * 1024) return 'Refusé · Rejected: file too large';
+    // Security (owner's question, Nov 1 2026): keep only real PDF or Word (.docx) files, judged
+    // by their content, not their name, and never a Word file that carries macros.
+    const ext = cvKind(blob, bytes);
+    if (!ext) return 'Refusé · Rejected: not a real PDF or Word (.docx) file';
     const day = Utilities.formatDate(received, 'America/Toronto', 'yyyy-MM-dd');
     const safe = name.replace(/[^\p{L}\p{N} .-]/gu, '').trim().slice(0, 80) || 'CV';
     blob.setName(day + ' ' + safe + '.' + ext);
@@ -534,6 +538,21 @@ function saveAdvisorCv(url, name, received) {
   } catch (err) {
     console.error('Advisor CV not copied: ' + err);
     return url;
+  }
+}
+
+/** 'pdf' or 'docx' when the bytes really are one, else '' (macros, other files, renamed files). */
+function cvKind(blob, bytes) {
+  const head = String.fromCharCode.apply(null, bytes.slice(0, 5).map((b) => b & 0xff));
+  if (head === '%PDF-') return 'pdf';
+  if (head.slice(0, 4) !== 'PK\u0003\u0004') return '';
+  try {
+    const names = Utilities.unzip(blob.setContentType('application/zip')).map((f) => f.getName());
+    const isWord = names.some((n) => n === 'word/document.xml');
+    const hasMacros = names.some((n) => /vbaProject\.bin$/i.test(n) || /^word\/activeX\//i.test(n));
+    return isWord && !hasMacros ? 'docx' : '';
+  } catch (err) {
+    return '';
   }
 }
 
