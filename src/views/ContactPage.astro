@@ -10,8 +10,6 @@
  */
 import { Clock, Mail, MapPin, Phone } from '@lucide/astro';
 import PageLayout from '@/layouts/PageLayout.astro';
-import { Image } from 'astro:assets';
-import teamCollabPhoto from '@/assets/photos/team-collaboration.jpg';
 import SectionHeader from '@/components/ui/SectionHeader.astro';
 import ContactForm from '@/components/forms/ContactForm.astro';
 import MapFacade from '@/components/ui/MapFacade.astro';
@@ -115,18 +113,7 @@ const details = [
           <SocialLinks lang={lang} social={s.social} />
         </section>
 
-        {/* The owner's photo replaces the community illustration (owner, Oct 31 2026),
-            in an arch with a saffron sun behind it. Illustrative photo: alt="". */}
-        <figure class="contact-art">
-          <span class="contact-art__block" aria-hidden="true"></span>
-          <Image
-            src={teamCollabPhoto}
-            alt=""
-            widths={[480, 720, 960]}
-            sizes="(min-width: 1024px) 30rem, 90vw"
-            class="contact-art__img"
-          />
-        </figure>
+        {/* No photo beside « Write to us » (owner, Nov 1 2026). */}
 
         {address && (
           <section aria-labelledby="map-title">
