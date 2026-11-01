@@ -31,7 +31,8 @@ const countries = countryNames(lang);
 const dials = dialOptions(lang);
 const degreeLabels = a.degrees.split('|');
 const areaLabels = a.areaNames.split('|');
-const LANGUAGES = ['French', 'English', 'Persian', 'Arabic', 'Spanish', 'Chinese', 'Other'] as const;
+// Working languages: French and English only (owner, Nov 1 2026).
+const LANGUAGES = ['French', 'English'] as const;
 const req = ` (${t('form.required')})`;
 ---
 
