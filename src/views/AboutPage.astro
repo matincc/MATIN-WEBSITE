@@ -76,7 +76,9 @@ const blocks: {
 // Six surfaces for the values, never a uniform grid (owner's request, Oct 29 2026: less
 // rigid): turquoise and brick cards with white text among white and sand ones.
 // Six distinct colours, none the colour of the page (owner, Oct 31 2026).
-const valueTones = ['firouzeh', 'soleil', 'encre', 'brique', 'firouzeh-tint', 'brique-tint'];
+// The sixth card was a pale terracotta that vanished into the ground (owner, Nov 1 2026):
+// now deep turquoise like the first.
+const valueTones = ['firouzeh', 'soleil', 'encre', 'brique', 'firouzeh-tint', 'firouzeh'];
 
 // Thin-line icons, all drawn at the same size and stroke width.
 // Equity is four equal squares: never a scale, gavel or other legal symbol.
@@ -952,5 +954,112 @@ const history = about.history.map((h) => ({
   }
   .living :global(:focus-visible) {
     outline-color: var(--living-terracotta-ink);
+  }
+  /* ---------- Compact About (owner, Nov 1 2026: « too much empty space; the page is far
+     too long ») ---------- */
+  /* Mission, Vision, Legal status: three equal cards in one row, no staggering. */
+  .about-band:not(#o) {
+    padding-block: clamp(2.5rem, 2rem + 2vw, 3.5rem);
+  }
+  .about-blocks:not(#o) {
+    align-items: stretch;
+    gap: 1.25rem;
+  }
+  @media (min-width: 72rem) {
+    .about-blocks:not(#o) {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+  }
+  .about-blocks:not(#o) > .about-block {
+    margin-block-start: 0;
+    padding: clamp(1.5rem, 1.2rem + 1vw, 2.25rem);
+  }
+  .about-block--legal:not(#o) {
+    max-width: none;
+  }
+  .about-blocks:not(#o) .about-block__title {
+    margin-block-end: 0.75rem;
+    font-size: clamp(1.6rem, 1.3rem + 1vw, 2.1rem);
+  }
+  .about-blocks:not(#o) .about-block__text {
+    font-size: 1.0625rem;
+    line-height: 1.6;
+  }
+  /* Areas of work: three cards side by side (photo on top, title, text) instead of three
+     tall alternating rows. */
+  .about-areas :global(.lprog):not(#o) {
+    padding-block: clamp(2.5rem, 2rem + 2vw, 3.5rem);
+  }
+  .about-areas :global(.lprog__list):not(#o) {
+    gap: 1.25rem;
+    margin-block-start: 1.75rem;
+  }
+  @media (min-width: 60rem) {
+    .about-areas :global(.lprog__list):not(#o) {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+  }
+  .about-areas :global(.lprog__row):not(#o) {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 0;
+    align-items: start;
+    align-content: start;
+    margin: 0;
+    overflow: hidden;
+    border-radius: 1.25rem;
+    border-start-end-radius: 3rem;
+    background: var(--color-white);
+    box-shadow: 0 10px 26px -22px color-mix(in srgb, var(--matin-encre) 60%, transparent);
+  }
+  .about-areas :global(.lprog__row .lprog__photo):not(#o) {
+    order: 0;
+  }
+  .about-areas :global(.lprog__row .media__frame):not(#o) {
+    aspect-ratio: 16 / 9;
+    border-radius: 0;
+  }
+  .about-areas :global(.lprog__row .media__credit):not(#o) {
+    position: absolute;
+    margin: 0;
+    padding: 0.1rem 0.4rem;
+  }
+  .about-areas :global(.lprog__text):not(#o) {
+    max-width: none;
+    padding: 1.1rem 1.4rem 1.5rem;
+  }
+  .about-areas :global(.lprog__mark):not(#o) {
+    margin-block-end: 0.75rem;
+  }
+  .about-areas :global(.lprog__title):not(#o) {
+    font-size: clamp(1.3rem, 1.15rem + 0.5vw, 1.6rem);
+  }
+  .about-areas :global(.lprog__body):not(#o) {
+    margin-block-start: 0.6rem;
+    font-size: 1rem;
+    line-height: 1.6;
+  }
+  .about-areas :global(.lprog__all):not(#o) {
+    margin-block-start: 1.75rem;
+  }
+  /* Values: one even grid, tighter band. */
+  .values:not(#o) {
+    padding-block: clamp(2.5rem, 2rem + 2vw, 3.5rem);
+  }
+  .values-grid:not(#o) {
+    align-items: stretch;
+    gap: 1.25rem;
+  }
+  .values-grid:not(#o) > .value-card {
+    margin-block: 0;
+  }
+  /* Our story: less space above and below. */
+  .story:not(#o) {
+    padding-block: clamp(2.5rem, 2rem + 2vw, 3.5rem);
+  }
+  .timeline:not(#o) {
+    padding-block-end: 0.5rem;
+  }
+  .story__sun:not(#o) {
+    width: clamp(6rem, 4rem + 8vw, 12rem);
   }
 </style>
