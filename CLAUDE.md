@@ -199,6 +199,7 @@ Every event, and every other page that carries structured data (JSON-LD), must g
 - Never deploy to Netlify manually or with the Netlify CLI. Just push to `main`.
 - Always commit under the GitHub name `matincc` and email `matincc.mtl@gmail.com`, not `imaniman99`.
 - Group several edits into one push when possible, because each push uses Netlify build credits.
+- **Credits (Nov 1 2026):** each production deploy costs 15 credits. When the month's credits run out, Netlify marks production deploys « Skipped » / paused (the site stays online on operational credits; previews still build). On Nov 1 2026 the owner bought one 500-credit pack ($5, never expires); monthly credits reset on the 19th. Auto recharge stays OFF (no recurring cost) and never upgrade the plan without the owner.
 
 ## 4e. Owner's requests of Oct 30 2026
 
