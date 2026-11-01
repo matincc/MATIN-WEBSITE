@@ -248,4 +248,99 @@ const kindLabel = {
     background: var(--btn-primary-bg-hover);
     color: var(--btn-primary-fg);
   }
+  /* ---------- Inside the Collaboration panel (owner, Nov 1 2026: « the boxes look
+     crooked and unclear; redesign them, beautiful ») ----------
+     Two equal, straight boxes side by side: Partner Organizations in deep turquoise,
+     Supporters and Sponsors in deep terracotta, white text (5.9 and 6.2:1), a large
+     round icon badge, the invitation as plain text and a saffron button. No dashed
+     frames, no staggering. */
+  .partners--embedded .partners__grid {
+    gap: 1.25rem;
+    align-items: stretch;
+  }
+  .partners--embedded .partners__group:not(#o) {
+    --tone: var(--matin-firouzeh-ink);
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    margin: 0;
+    overflow: hidden;
+    padding: clamp(1.5rem, 1.2rem + 1.2vw, 2.25rem);
+    border: none;
+    border-radius: 1.5rem;
+    border-start-end-radius: 4rem;
+    background: var(--tone);
+    color: var(--matin-white);
+    box-shadow: 0 18px 34px -26px color-mix(in srgb, var(--matin-encre) 70%, transparent);
+  }
+  .partners--embedded .partners__group--support:not(#o) {
+    --tone: var(--matin-brique-ink);
+    border-start-end-radius: 1.5rem;
+    border-start-start-radius: 4rem;
+  }
+  /* A soft circle in the corner of each box. */
+  .partners--embedded .partners__group::after {
+    content: '';
+    position: absolute;
+    inset-block-end: -3.5rem;
+    inset-inline-end: -3.5rem;
+    width: 10rem;
+    aspect-ratio: 1;
+    border-radius: 50%;
+    background: color-mix(in srgb, var(--matin-white) 12%, transparent);
+    pointer-events: none;
+  }
+  .partners--embedded .partners__group--support::after {
+    background: color-mix(in srgb, var(--matin-soleil) 30%, transparent);
+  }
+  .partners--embedded .partners__group-title:not(#o) {
+    margin-block-end: 0.75rem;
+    font-family: var(--font-editorial);
+    font-size: clamp(1.5rem, 1.25rem + 0.8vw, 1.9rem);
+    font-weight: 700;
+    color: var(--matin-white);
+  }
+  :global(html[lang='fa']) .partners--embedded .partners__group-title {
+    font-family: var(--font-display);
+    font-weight: 800;
+  }
+  .partners--embedded .partners__list {
+    flex: 1;
+    grid-template-columns: 1fr;
+  }
+  .partners--embedded .partner--open:not(#o) {
+    position: relative;
+    z-index: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 1rem;
+    min-height: 0;
+    padding: 0;
+    border: none;
+    background: transparent;
+    color: var(--matin-white);
+    font-size: 1.0625rem;
+    line-height: 1.7;
+  }
+  .partners--embedded .partner--open :global(.partner__icon):not(#o) {
+    order: -1;
+    box-sizing: content-box;
+    width: 1.9rem;
+    height: 1.9rem;
+    padding: 0.85rem;
+    border-radius: 50%;
+    background: var(--matin-white);
+    color: var(--tone);
+  }
+  .partners--embedded .partner__cta {
+    margin-block-start: auto;
+  }
+  .partners--embedded .partner__cta:focus-visible {
+    outline: 3px solid var(--matin-white);
+    outline-offset: 3px;
+  }
+  .partners--embedded .partner:not(.partner--open) {
+    border: none;
+  }
 </style>
