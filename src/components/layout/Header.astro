@@ -467,16 +467,18 @@ const isActive = (url: string) => !url.includes('?') && current.startsWith(url);
     color: var(--matin-brique-ink);
     white-space: nowrap;
   }
-  /* The second line never widens the top row: it takes the slogan's width and wraps if
-     longer (Nov 1 2026: "Rooted in Canada, Connected to the World" pushed the buttons down). */
+  /* One line (owner, Nov 1 2026): 1rem in French and English so "Rooted in Canada, Connected
+     to the World" fits beside the buttons from 86rem without pushing them down. */
   .header-slogan:not(.header-slogan--menu) .header-slogan__fa {
-    width: 0;
-    min-width: 100%;
+    font-size: 1rem;
+  }
+  /* In the phone menu the line may wrap, so it never runs off a narrow screen. */
+  .header-slogan--menu .header-slogan__fa {
     white-space: normal;
-    line-height: 1.2;
   }
   :global([dir='rtl']) .header-slogan__fa {
     font-family: 'Vazirmatn Variable', Tahoma, sans-serif;
+    font-size: 1.1rem;
   }
   .donate-btn {
     display: inline-flex;
