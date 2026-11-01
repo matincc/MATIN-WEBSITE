@@ -587,7 +587,7 @@ function sendAdvisorReceipt(data) {
     // From the Persian site: Persian first, then English, no French (owner, Nov 1 2026).
     const fa = clean(data.lang).toUpperCase() === 'FA';
     if (fa) {
-      // The owner's own Persian text (Nov 1 2026), word for word, then the same in English.
+      // The owner's own Persian text (Nov 1 2026), word for word, then the usual English text.
       parts.splice(0, 2, [
         'سلام' + (name ? ' ' + name + ' عزیز' : '') + '،',
         '',
@@ -597,16 +597,7 @@ function sendAdvisorReceipt(data) {
         'با احترام،',
         'معاونت پژوهشی',
         'مؤسسه میان‌فرهنگی متین',
-      ], [
-        'Hello' + (name ? ' ' + name : '') + ',',
-        '',
-        "Your application has been received. Thank you for your interest in collaborating with the Matin Intercultural Institute's Advisory Circle. " +
-          'Our experts will review the CV you sent, and a confirmation email will be sent to you within five business days at most.',
-        '',
-        'Best regards,',
-        'Research Department',
-        'Matin Intercultural Institute',
-      ]);
+      ], parts[1]);
     }
     const text = parts.map((p) => p.join('\n')).join('\n\n———\n\n') +
       '\n\n' + ADV_REPLY_TO + ' · https://matincc.ca';
