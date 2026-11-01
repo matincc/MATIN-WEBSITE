@@ -584,12 +584,14 @@ function sendAdvisorReceipt(data) {
         'The Matin Intercultural Institute team',
       ],
     ];
-    if (clean(data.lang).toUpperCase() === 'FA') {
-      parts.push([
+    // From the Persian site: Persian first, then English, no French (owner, Nov 1 2026).
+    const fa = clean(data.lang).toUpperCase() === 'FA';
+    if (fa) {
+      parts.splice(0, 2, [
         'سلام' + (name ? ' ' + name + ' عزیز' : '') + '،',
         '',
-        'از علاقهٔ شما به حلقهٔ مشاوران مؤسسه میان‌فرهنگی متین سپاسگزاریم. ' +
-          'درخواست و رزومهٔ شما به دست ما رسید.',
+        'درخواست شما دریافت شد. ' +
+          'از علاقهٔ شما به حلقهٔ مشاوران مؤسسه میان‌فرهنگی متین سپاسگزاریم؛ رزومهٔ شما نیز به دست ما رسید.',
         '',
         'تیم ما مشخصات شما را بررسی می‌کند و حداکثر ظرف پنج روز کاری یک ایمیل تأیید برایتان می‌فرستد. ' +
           'یادآوری می‌کنیم که پیوستن به حلقه رایگان است و هیچ رابطهٔ استخدامی ایجاد نمی‌کند؛ ' +
@@ -597,13 +599,15 @@ function sendAdvisorReceipt(data) {
         '',
         'با احترام،',
         'تیم مؤسسه میان‌فرهنگی متین',
-      ]);
+      ], parts[1]);
     }
     const text = parts.map((p) => p.join('\n')).join('\n\n———\n\n') +
       '\n\n' + ADV_REPLY_TO + ' · https://matincc.ca';
     GmailApp.sendEmail(
       email,
-      'Candidature reçue · Cercle des conseillers de Matin · Application received · Matin Advisory Circle',
+      fa
+        ? 'درخواست شما دریافت شد · حلقهٔ مشاوران متین · Application received · Matin Advisory Circle'
+        : 'Candidature reçue · Cercle des conseillers de Matin · Application received · Matin Advisory Circle',
       text,
       { name: 'Institut interculturel Matin', replyTo: ADV_REPLY_TO, htmlBody: emailHtml(text) },
     );
@@ -731,9 +735,12 @@ function advisorWelcomeEmail(advId, name, fa) {
     'با سپاس،',
     'تیم مؤسسه میان‌فرهنگی متین',
   ];
-  const parts = [fr, en].concat(fa ? [faText] : []);
+  // From the Persian site: Persian first, then English, no French (owner, Nov 1 2026).
+  const parts = fa ? [faText, en] : [fr, en];
   return {
-    subject: 'Bienvenue au Cercle des conseillers de Matin · Welcome to the Matin Advisory Circle',
+    subject: fa
+      ? 'به حلقهٔ مشاوران متین خوش آمدید · Welcome to the Matin Advisory Circle'
+      : 'Bienvenue au Cercle des conseillers de Matin · Welcome to the Matin Advisory Circle',
     text: parts.map((p) => p.join('\n')).join('\n\n———\n\n') +
       '\n\nhttps://matincc.ca · ' + ADV_REPLY_TO,
   };
