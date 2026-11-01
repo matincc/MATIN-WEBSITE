@@ -563,7 +563,7 @@ function sendAdvisorReceipt(data) {
         "Merci de votre intérêt pour le Cercle des conseillers de l'Institut interculturel Matin. " +
           'Nous avons bien reçu votre candidature et votre CV.',
         '',
-        'Notre équipe étudiera votre profil et vous écrira après son examen. ' +
+        'Notre équipe étudiera votre profil et vous enverra un courriel de confirmation dans un délai maximal de cinq jours ouvrables. ' +
           "Pour rappel, l'inscription au Cercle est gratuite et ne crée aucun lien d'emploi : " +
           'toute collaboration rémunérée fera l’objet d’un contrat écrit distinct, projet par projet.',
         '',
@@ -576,7 +576,7 @@ function sendAdvisorReceipt(data) {
         "Thank you for your interest in the Matin Intercultural Institute's Advisory Circle. " +
           'We have received your application and your CV.',
         '',
-        'Our team will review your profile and write to you once the review is complete. ' +
+        'Our team will review your profile and send you a confirmation email within five business days at most. ' +
           'As a reminder, joining the Circle is free and creates no employment relationship: ' +
           'any paid collaboration will be set out in a separate written contract, project by project.',
         '',
@@ -584,21 +584,6 @@ function sendAdvisorReceipt(data) {
         'The Matin Intercultural Institute team',
       ],
     ];
-    if (clean(data.lang).toUpperCase() === 'FA') {
-      parts.push([
-        'سلام' + (name ? ' ' + name + ' عزیز' : '') + '،',
-        '',
-        'از علاقهٔ شما به حلقهٔ مشاوران مؤسسه میان‌فرهنگی متین سپاسگزاریم. ' +
-          'درخواست و رزومهٔ شما به دست ما رسید.',
-        '',
-        'تیم ما مشخصات شما را بررسی می‌کند و پس از بررسی برایتان می‌نویسد. ' +
-          'یادآوری می‌کنیم که پیوستن به حلقه رایگان است و هیچ رابطهٔ استخدامی ایجاد نمی‌کند؛ ' +
-          'هر همکاری با دستمزد در قراردادی کتبی و جداگانه، برای هر پروژه، مشخص می‌شود.',
-        '',
-        'با احترام،',
-        'تیم مؤسسه میان‌فرهنگی متین',
-      ]);
-    }
     const text = parts.map((p) => p.join('\n')).join('\n\n———\n\n') +
       '\n\n' + ADV_REPLY_TO + ' · https://matincc.ca';
     GmailApp.sendEmail(
@@ -714,24 +699,8 @@ function advisorWelcomeEmail(advId, name, fa) {
     'With our thanks,',
     'The Matin Intercultural Institute team',
   ];
-  const faText = [
-    'سلام' + (name ? ' ' + name + ' عزیز' : '') + '،',
-    '',
-    'از طرف مؤسسه میان‌فرهنگی متین، با خوشحالی پیوستن شما را به حلقهٔ مشاوران متین خوشامد می‌گوییم. ' +
-      'سپاسگزاریم که تخصص خود را در خدمت گفت‌وگوی میان فرهنگ‌ها قرار می‌دهید.',
-    '',
-    'شمارهٔ مشاور شما: ' + advId,
-    '',
-    'هر وقت پروژه‌ای با تخصص شما هماهنگ باشد، برایتان می‌نویسیم و آن را معرفی می‌کنیم. ' +
-      'هر همکاری با دستمزد در قراردادی کتبی و جداگانه مشخص می‌شود و دستمزد پس از انجام کار، طبق همان قرارداد، پرداخت می‌شود. ' +
-      'نام شما فقط با موافقت کتبی خودتان منتشر می‌شود.',
-    '',
-    'لطفاً در نامه‌هایتان به ما شمارهٔ مشاور خود را ذکر کنید.',
-    '',
-    'با سپاس،',
-    'تیم مؤسسه میان‌فرهنگی متین',
-  ];
-  const parts = [fr, en].concat(fa ? [faText] : []);
+  // Advisory Circle emails are French and English only (owner, Nov 1 2026).
+  const parts = [fr, en];
   return {
     subject: 'Bienvenue au Cercle des conseillers de Matin · Welcome to the Matin Advisory Circle',
     text: parts.map((p) => p.join('\n')).join('\n\n———\n\n') +
