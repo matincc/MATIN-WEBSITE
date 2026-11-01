@@ -115,7 +115,7 @@ const fr = {
     whoTitle: 'Qui sommes-nous ?',
     // Secondary positioning line (owner's decision, Oct 24 2026); never replaces the
     // slogan « Cultures en dialogue ».
-    positioning: 'Ancré localement, relié au monde',
+    positioning: 'Enraciné au Canada, relié au monde',
     // Land acknowledgement (owner's request, Oct 30 2026; drafted by Claude for his review).
     impactTitle: 'Notre impact',
     impactLede: 'Quelques chiffres tirés de nos propres activités.',
