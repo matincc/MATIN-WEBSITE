@@ -584,6 +584,21 @@ function sendAdvisorReceipt(data) {
         'The Matin Intercultural Institute team',
       ],
     ];
+    if (clean(data.lang).toUpperCase() === 'FA') {
+      parts.push([
+        'سلام' + (name ? ' ' + name + ' عزیز' : '') + '،',
+        '',
+        'از علاقهٔ شما به حلقهٔ مشاوران مؤسسه میان‌فرهنگی متین سپاسگزاریم. ' +
+          'درخواست و رزومهٔ شما به دست ما رسید.',
+        '',
+        'تیم ما مشخصات شما را بررسی می‌کند و حداکثر ظرف پنج روز کاری یک ایمیل تأیید برایتان می‌فرستد. ' +
+          'یادآوری می‌کنیم که پیوستن به حلقه رایگان است و هیچ رابطهٔ استخدامی ایجاد نمی‌کند؛ ' +
+          'هر همکاری با دستمزد در قراردادی کتبی و جداگانه، برای هر پروژه، مشخص می‌شود.',
+        '',
+        'با احترام،',
+        'تیم مؤسسه میان‌فرهنگی متین',
+      ]);
+    }
     const text = parts.map((p) => p.join('\n')).join('\n\n———\n\n') +
       '\n\n' + ADV_REPLY_TO + ' · https://matincc.ca';
     GmailApp.sendEmail(
@@ -699,8 +714,24 @@ function advisorWelcomeEmail(advId, name, fa) {
     'With our thanks,',
     'The Matin Intercultural Institute team',
   ];
-  // Advisory Circle emails are French and English only (owner, Nov 1 2026).
-  const parts = [fr, en];
+  const faText = [
+    'سلام' + (name ? ' ' + name + ' عزیز' : '') + '،',
+    '',
+    'از طرف مؤسسه میان‌فرهنگی متین، با خوشحالی پیوستن شما را به حلقهٔ مشاوران متین خوشامد می‌گوییم. ' +
+      'سپاسگزاریم که تخصص خود را در خدمت گفت‌وگوی میان فرهنگ‌ها قرار می‌دهید.',
+    '',
+    'شمارهٔ مشاور شما: ' + advId,
+    '',
+    'هر وقت پروژه‌ای با تخصص شما هماهنگ باشد، برایتان می‌نویسیم و آن را معرفی می‌کنیم. ' +
+      'هر همکاری با دستمزد در قراردادی کتبی و جداگانه مشخص می‌شود و دستمزد پس از انجام کار، طبق همان قرارداد، پرداخت می‌شود. ' +
+      'نام شما فقط با موافقت کتبی خودتان منتشر می‌شود.',
+    '',
+    'لطفاً در نامه‌هایتان به ما شمارهٔ مشاور خود را ذکر کنید.',
+    '',
+    'با سپاس،',
+    'تیم مؤسسه میان‌فرهنگی متین',
+  ];
+  const parts = [fr, en].concat(fa ? [faText] : []);
   return {
     subject: 'Bienvenue au Cercle des conseillers de Matin · Welcome to the Matin Advisory Circle',
     text: parts.map((p) => p.join('\n')).join('\n\n———\n\n') +
