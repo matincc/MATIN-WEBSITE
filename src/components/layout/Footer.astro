@@ -71,7 +71,7 @@ const hasContact = Boolean(a || s.phone || s.email);
       {lang === 'fa' && <span class="footer-slogan__fa" lang="fa" dir="rtl">{faSlogan}</span>}
     </p>
   </div>
-  <div class="container-site grid gap-12 pt-10 pb-12 md:grid-cols-2 lg:grid-cols-12">
+  <div class="container-site grid gap-12 pt-10 pb-3 md:grid-cols-2 lg:grid-cols-12">
     <div class:list={[hasContact || s.hours ? 'lg:col-span-3 2xl:col-span-4' : 'lg:col-span-5']}>
       <p class="footer-about">{t('footer.about')}</p>
       {!hasContact && <SocialLinks lang={lang} social={s.social} class="mt-6" />}
@@ -177,7 +177,7 @@ const hasContact = Boolean(a || s.phone || s.email);
   </div>
 
   <!-- Montréal on the horizon: the city stands on the copyright bar. -->
-  <MontrealSkyline class="mt-4" />
+  <MontrealSkyline class="footer-skyline" />
   <div class="footer-base">
     <div class="container-site flex flex-col gap-4 py-7 text-[1.0625rem] md:flex-row md:items-center md:justify-between">
       <p>
@@ -220,6 +220,11 @@ const hasContact = Boolean(a || s.phone || s.email);
 </footer>
 
 <style>
+  /* Less empty space between the newsletter consent and the copyright line (owner,
+     Nov 1 2026): a short gap and a lower skyline. */
+  :global(.skyline.footer-skyline) {
+    height: clamp(2.5rem, 1.5rem + 2.5vw, 4rem);
+  }
   /* Navy footer (design-system brief, Oct 31 2026): white text 11.6:1, saffron 5.5:1. */
   .footer {
     background: var(--matin-encre);
