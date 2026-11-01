@@ -1,4 +1,4 @@
-// Matin forms web app v6 (My Story uploads, clean HTML emails, Advisory Circle, Oct 31 2026)
+// Matin forms web app v7 (advisor emails FR/EN or FA/EN, five business days, Nov 1 2026)
 /**
  * Matin – website form entries → Google Sheet (owner's request, Oct 27 2026; membership
  * applications added Oct 28 2026, volunteer registry and thank-you emails Oct 29 2026: after changing this file, paste it into the Apps Script
