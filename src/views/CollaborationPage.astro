@@ -463,8 +463,9 @@ const aliases = { expertise: ids.advisors, 'advisors': ids.advisors };
     font-weight: 800;
     line-height: 1.5;
   }
+  /* Intro paragraphs run the full width of their panel (owner, Nov 1 2026: it stopped halfway). */
   .collab-panel__intro {
-    max-width: 52rem;
+    max-width: none;
     margin-block-end: 2rem;
     font-size: clamp(1.0625rem, 1rem + 0.3vw, 1.25rem);
     line-height: 1.75;
