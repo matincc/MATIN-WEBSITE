@@ -262,3 +262,4 @@ Every event, and every other page that carries structured data (JSON-LD), must g
 - **News order (owner, Nov 1 2026):** Matin News above Cultural News, on the News page and in the News dropdown.
 - **Contact (owner, Nov 1 2026):** no photo beside « Write to us ».
 - **Collaboration ground (owner, Nov 1 2026):** pale turquoise with a saffron sun and a terracotta arch at the edges.
+- **President on Our Team as a newspaper page (owner, Nov 1 2026):** a cream sheet on a deep turquoise band (saffron sun, terracotta arch), masthead kicker over a double rule, the name as headline, the opening sentence as an italic deck, the biography in three justified newspaper columns (two on tablets) with the portrait and its caption in the first column, the two invitations under a double rule. Replaces the magazine profile with the brick field.

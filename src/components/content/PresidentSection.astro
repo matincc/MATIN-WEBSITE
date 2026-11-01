@@ -1,7 +1,10 @@
 ---
 /**
- * The President on Our Team, as the opening profile of a magazine (owner's brief « The
- * People Behind Matin », Oct 29 2026): no card. The approved portrait stands on a deep
+ * The President on Our Team as a newspaper page (owner, Nov 1 2026: smaller, « like a
+ * newspaper », a coloured ground instead of the pale one): a cream sheet on a deep
+ * turquoise band, a masthead rule, the name as the headline, the opening sentence as the
+ * deck, then the biography in newspaper columns with the portrait set in the first one.
+ * Earlier (Oct 29 2026): the opening profile of a magazine, no card. The approved portrait stands on a deep
  * brick colour field that runs to the page edge, and stays in view while the biography is
  * read beside it in one comfortable column (about 20px) instead of small columns. The
  * opening sentence about culture leads, set large in the editorial serif. The LinkedIn link
@@ -43,38 +46,39 @@ const linkedinPath =
 
 {bio && (
   <section id="our-president" class="pres scroll-mt-24" aria-labelledby="our-president-title" data-own-ground>
-    <span class="pres__field" aria-hidden="true" />
-    <div class="container-site pres__grid">
-      <div class="pres__media">
-        <span class="pres__sun" aria-hidden="true" />
-        {photo ? (
-          <Image
-            src={photo}
-            alt={t('about.presidentPhotoAlt', { name: lang === 'fa' ? name : p.name })}
-            widths={[400, 640, 880]}
-            sizes="(min-width: 64rem) 30rem, (min-width: 40rem) 26rem, 82vw"
-            class="pres__photo"
-            loading="eager"
-            fetchpriority="high"
-          />
-        ) : (
-          <span class="pres__photo pres__initials" aria-hidden="true">
-            {initials(p.name)}
-          </span>
-        )}
-      </div>
+    <span class="pres__sun" aria-hidden="true" />
+    <div class="container-site">
+      <article class="pres__paper">
+        <header class="pres__head">
+          <p class="pres__kicker">{t('about.ourPresident')}</p>
+          <h2 id="our-president-title" class="pres__name">
+            {name}
+          </h2>
+          {position && <p class="pres__position">{position}</p>}
+          <Prose html={renderMarkdown(bioLead, lang)} class="pres__lead" />
+        </header>
 
-      <div class="pres__text">
-        <p class="pres__kicker">{t('about.ourPresident')}</p>
-        <h2 id="our-president-title" class="pres__name">
-          {name}
-        </h2>
-        {position && <p class="pres__position">{position}</p>}
-        <Prose html={renderMarkdown(bioLead, lang)} class="pres__lead" />
-      </div>
-
-      <div class="pres__more">
-        {bioRest && <Prose html={renderMarkdown(bioRest, lang)} class="pres__bio" />}
+        <div class="pres__cols">
+          <figure class="pres__fig">
+            {photo ? (
+              <Image
+                src={photo}
+                alt={t('about.presidentPhotoAlt', { name: lang === 'fa' ? name : p.name })}
+                widths={[320, 480, 640]}
+                sizes="(min-width: 64rem) 22rem, (min-width: 40rem) 40vw, 88vw"
+                class="pres__photo"
+                loading="eager"
+                fetchpriority="high"
+              />
+            ) : (
+              <span class="pres__photo pres__initials" aria-hidden="true">
+                {initials(p.name)}
+              </span>
+            )}
+            <figcaption class="pres__caption">{name}{position && ` · ${position}`}</figcaption>
+          </figure>
+          {bioRest && <Prose html={renderMarkdown(bioRest, lang)} class="pres__bio" />}
+        </div>
 
         <ul class="pres__invites">
           {p.linkedin && (
@@ -101,286 +105,221 @@ const linkedinPath =
             </a>
           </li>
         </ul>
-      </div>
+      </article>
     </div>
   </section>
 )}
 
 <style>
-  /* An ivory page with one strong moment of colour: a deep brick field behind the
-     portrait, running from the page edge (owner, Oct 29 2026: more depth, less beige). */
+  /* A deep turquoise band with a saffron sun (owner, Nov 1 2026: the pale ground was
+     colourless), holding one cream newspaper sheet. */
   .pres {
     position: relative;
     overflow: hidden;
-    padding-block: clamp(2.5rem, 1.5rem + 3vw, 4.5rem) clamp(3.5rem, 2rem + 5vw, 7.5rem);
-    /* Pale saffron, so the President's part reads apart from the team below (owner, Nov 1 2026). */
-    background: color-mix(in srgb, var(--matin-soleil) 22%, var(--matin-ivoire));
+    isolation: isolate;
+    padding-block: clamp(2rem, 1.5rem + 2vw, 3.5rem);
+    background: var(--matin-firouzeh-ink);
   }
-  .pres__field {
+  .pres__sun {
     position: absolute;
-    inset-block-start: 0;
-    inset-inline-start: 0;
-    width: 100%;
-    height: clamp(17rem, 12rem + 22vw, 24rem);
-    background: var(--color-brique-ink);
+    z-index: -1;
+    inset-block-start: -7rem;
+    inset-inline-end: -5rem;
+    width: clamp(14rem, 9rem + 14vw, 24rem);
+    aspect-ratio: 1;
+    border-radius: 50%;
+    background: var(--matin-soleil);
   }
-  .pres__grid {
-    position: relative;
-    display: grid;
-    gap: clamp(2.5rem, 2rem + 2vw, 3.5rem);
+  .pres::after {
+    /* A terracotta arch rising at the other corner. */
+    content: '';
+    position: absolute;
+    z-index: -1;
+    inset-block-end: -6rem;
+    inset-inline-start: -4rem;
+    width: clamp(12rem, 8rem + 12vw, 20rem);
+    aspect-ratio: 1;
+    border-radius: 50% 50% 0 0;
+    background: var(--matin-brique);
+  }
+  .pres__paper {
+    max-width: 76rem;
+    margin-inline: auto;
+    padding: clamp(1.5rem, 1rem + 2.5vw, 3rem);
+    border-radius: 0.75rem;
+    border-start-end-radius: 4rem;
+    background: var(--matin-ivoire);
+    box-shadow: 0 30px 50px -30px color-mix(in srgb, var(--matin-nuit) 80%, transparent);
   }
 
-  /* The portrait: the photo as it is, a clean warm-white mount, one deep corner. */
-  .pres__media {
-    position: relative;
-    justify-self: center;
-    width: min(82vw, 26rem);
+  /* Masthead: kicker over a double rule, the name as the headline, the deck. */
+  .pres__head {
+    padding-block-end: 1.25rem;
+    border-block-end: 1px solid color-mix(in srgb, var(--matin-encre) 35%, transparent);
   }
-  .pres__photo {
-    position: relative;
+  .pres__kicker {
+    padding-block-end: 0.5rem;
+    border-block-end: 4px double var(--matin-encre);
+    font-family: var(--font-display);
+    font-size: 0.875rem;
+    font-weight: 800;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--matin-brique-ink);
+  }
+  :global(html[lang='fa']) .pres__kicker {
+    letter-spacing: 0;
+    font-size: 1rem;
+  }
+  .pres__name {
+    margin-block-start: 0.9rem;
+    font-family: var(--font-editorial);
+    font-size: clamp(2.2rem, 1.6rem + 2.4vw, 3.6rem);
+    font-weight: 700;
+    line-height: 1.05;
+    letter-spacing: -0.01em;
+    color: var(--matin-encre);
+  }
+  :global(html[lang='fa']) .pres__name {
+    font-family: var(--font-display);
+    font-weight: 800;
+    line-height: 1.4;
+    letter-spacing: 0;
+  }
+  .pres__position {
+    margin-block-start: 0.4rem;
+    font-family: var(--font-display);
+    font-weight: 700;
+    font-size: clamp(1rem, 0.95rem + 0.2vw, 1.125rem);
+    color: var(--matin-firouzeh-ink);
+  }
+  .pres__head :global(.pres__lead) {
+    max-width: 58rem;
+    margin-block-start: 1rem;
+  }
+  .pres__head :global(.pres__lead p) {
+    font-family: var(--font-editorial);
+    font-style: italic;
+    font-size: clamp(1.2rem, 1.1rem + 0.45vw, 1.45rem);
+    line-height: 1.5;
+    color: var(--matin-encre);
+  }
+  :global(html[lang='fa']) .pres__head :global(.pres__lead p) {
+    font-family: inherit;
+    font-style: normal;
+    font-weight: 600;
+    line-height: 1.9;
+  }
+
+  /* The biography in newspaper columns, the portrait set in the first one. */
+  .pres__cols {
+    margin-block-start: 1.5rem;
+    column-gap: 2rem;
+    column-rule: 1px solid color-mix(in srgb, var(--matin-encre) 22%, transparent);
+  }
+  @media (min-width: 40rem) {
+    .pres__cols {
+      columns: 2;
+    }
+  }
+  @media (min-width: 64rem) {
+    .pres__cols {
+      columns: 3;
+    }
+  }
+  .pres__fig {
+    break-inside: avoid;
+    margin: 0 0 1.25rem;
+  }
+  .pres__fig :global(.pres__photo) {
     display: block;
     width: 100%;
     height: auto;
     aspect-ratio: 4 / 5;
     object-fit: cover;
-    object-position: 50% 25%;
-    border: 0.5rem solid var(--color-paper);
-    border-radius: 0.5rem;
-    border-start-end-radius: 6rem;
-    box-shadow: 0 2rem 3.5rem -2rem color-mix(in srgb, var(--matin-nuit) 60%, transparent);
-  }
-  /* The logo's sun, rising behind one corner of the portrait. */
-  .pres__sun {
-    position: absolute;
-    inset-block-start: -1.75rem;
-    inset-inline-end: -1.75rem;
-    width: 38%;
-    aspect-ratio: 1;
-    border-radius: 50%;
-    background: var(--color-soleil);
+    border-radius: 0.4rem;
+    border-start-end-radius: 2.5rem;
   }
   .pres__initials {
     display: grid;
     place-items: center;
+    background: var(--matin-encre);
+    color: var(--matin-white);
+    font-family: var(--font-editorial);
     font-size: 4rem;
-    font-weight: 700;
-    color: var(--color-primary);
-    background: var(--color-cream);
   }
-
-  /* ---------- The text ---------- */
-  .pres__text {
-    max-width: 42rem;
+  .pres__caption {
+    margin-block-start: 0.5rem;
+    padding-block-start: 0.4rem;
+    border-block-start: 2px solid var(--matin-soleil);
+    font-size: 0.875rem;
+    font-weight: 600;
     color: var(--color-ink);
   }
-  .pres__kicker {
-    display: flex;
-    align-items: center;
-    gap: 0.75rem;
-    font-family: var(--font-display);
-    font-size: 0.95rem;
-    font-weight: 800;
-    letter-spacing: 0.16em;
-    text-transform: uppercase;
-    color: var(--color-brique-ink);
-  }
-  .pres__kicker::before {
-    content: '';
-    width: 2.5rem;
-    height: 3px;
-    border-radius: 2px;
-    background: var(--color-soleil);
-  }
-  :global(html[lang='fa']) .pres__kicker {
-    letter-spacing: 0;
-    font-size: 1.05rem;
-  }
-  .pres__name {
-    margin-block-start: 0.9rem;
-    font-family: var(--font-editorial);
-    font-size: clamp(2.75rem, 1.6rem + 4.2vw, 5.25rem);
-    font-weight: 600;
-    font-variation-settings:
-      'SOFT' 100,
-      'opsz' 144;
-    line-height: 1;
-    letter-spacing: -0.02em;
-    color: var(--color-primary);
-    text-wrap: balance;
-  }
-  :global(html[lang='fa']) .pres__name {
-    font-weight: 800;
-    line-height: 1.3;
-    letter-spacing: 0;
-  }
-  .pres__position {
-    margin-block-start: 1rem;
-    font-family: var(--font-display);
-    font-size: clamp(1.1rem, 1rem + 0.4vw, 1.35rem);
-    font-weight: 700;
-    line-height: 1.45;
-    color: var(--color-brique-ink);
-  }
-  /* The opening sentence about culture, set large like a magazine standfirst. */
-  .pres__text :global(.pres__lead) {
-    margin-block-start: clamp(1.75rem, 1.25rem + 1.5vw, 2.5rem);
-    padding-block-start: clamp(1.5rem, 1.25rem + 1vw, 2rem);
-    border-block-start: 2px solid var(--color-soleil);
-    font-family: var(--font-editorial);
-    font-size: clamp(1.5rem, 1.2rem + 1.1vw, 2.15rem);
-    font-weight: 450;
-    font-variation-settings:
-      'SOFT' 100,
-      'opsz' 72;
-    line-height: 1.35;
-    color: var(--color-primary);
-  }
-  :global(html[lang='fa']) .pres__text :global(.pres__lead) {
-    font-weight: 600;
-    line-height: 1.8;
-  }
-  /* The rest of the biography runs under the portrait and the opening, across the page
-     (owner, Oct 29 2026: shorter section), in two columns on wide screens, about 19px. */
-  .pres__more {
-    grid-column: 1 / -1;
+  .pres__cols :global(.pres__bio) {
+    font-size: clamp(1rem, 0.97rem + 0.15vw, 1.0625rem);
+    line-height: 1.7;
     color: var(--color-ink);
   }
-  .pres__more :global(.pres__bio) {
-    margin-block-start: clamp(1.75rem, 1.25rem + 1.5vw, 2.5rem);
-    font-size: clamp(1.125rem, 1.05rem + 0.3vw, 1.3rem);
-    line-height: 1.8;
+  .pres__cols :global(.pres__bio p) {
+    margin: 0 0 0.9rem;
+    text-align: justify;
+    hyphens: auto;
   }
-  :global(html[lang='fa']) .pres__more :global(.pres__bio) {
-    line-height: 2.05;
+  :global(html[lang='fa']) .pres__cols :global(.pres__bio) {
+    line-height: 2;
   }
-  .pres__more :global(.pres__bio > * + *) {
-    margin-block-start: 1.25em;
-  }
-  /* A drop cap opens the biography (Latin scripts only). */
-  :global(html:not([lang='fa'])) .pres__more :global(.pres__bio > p:first-child::first-letter) {
+  :global(html:not([lang='fa'])) .pres__cols :global(.pres__bio > p:first-child::first-letter) {
     float: inline-start;
-    margin-block: 0.1em 0;
-    margin-inline-end: 0.12em;
+    margin-inline-end: 0.5rem;
     font-family: var(--font-editorial);
-    font-size: 3.4em;
-    font-weight: 600;
-    line-height: 0.82;
-    color: var(--color-brique-ink);
+    font-size: 3.6em;
+    font-weight: 700;
+    line-height: 0.85;
+    color: var(--matin-brique-ink);
   }
 
-  /* Two quiet invitations: LinkedIn and his notes. */
+  /* Two quiet invitations under a rule. */
   .pres__invites {
     display: flex;
     flex-wrap: wrap;
-    gap: 1rem 2.25rem;
-    margin-block-start: clamp(2rem, 1.5rem + 1.5vw, 3rem);
-    padding-block-start: 1.5rem;
-    border-block-start: 1px solid color-mix(in srgb, var(--color-primary) 18%, transparent);
+    gap: 0.75rem 2rem;
+    margin-block-start: 0.75rem;
+    padding-block-start: 1.1rem;
+    border-block-start: 4px double var(--matin-encre);
   }
   .pres__invite {
     display: inline-flex;
     align-items: center;
-    gap: 0.75rem;
-    min-height: 2.75rem;
+    gap: 0.6rem;
     font-family: var(--font-display);
-    font-size: 1.0625rem;
-    font-weight: 700;
-    color: var(--color-primary);
+    font-weight: 800;
+    color: var(--matin-encre);
     text-decoration: none;
   }
-  .pres__invite-text {
-    background: linear-gradient(currentColor, currentColor) no-repeat 0 100% / 0 2px;
-    transition: background-size 0.35s ease;
-  }
-  :global([dir='rtl']) .pres__invite-text {
-    background-position: 100% 100%;
-  }
-  .pres__invite:is(:hover, :focus-visible) .pres__invite-text {
-    background-size: 100% 2px;
+  .pres__invite:hover .pres__invite-text {
+    text-decoration: underline;
+    text-decoration-color: var(--matin-soleil);
+    text-decoration-thickness: 2px;
+    text-underline-offset: 4px;
   }
   .pres__badge {
-    display: grid;
-    flex: none;
+    display: inline-grid;
     place-items: center;
-    width: 2.6rem;
-    aspect-ratio: 1;
+    width: 2.25rem;
+    height: 2.25rem;
     border-radius: 50%;
-    color: var(--color-white);
-    background: var(--color-brique-ink);
-    transition: rotate 0.35s ease;
+    background: var(--matin-brique-ink);
+    color: var(--matin-white);
+    font-family: var(--font-editorial);
+    font-size: 1.4rem;
+    line-height: 1;
   }
   .pres__badge--notes {
-    padding-block-start: 0.55rem;
-    font-family: var(--font-editorial);
-    font-size: 2.1rem;
-    font-weight: 700;
-    line-height: 1;
-    color: var(--color-primary);
-    background: var(--color-soleil);
+    background: var(--matin-soleil);
+    color: var(--matin-encre);
   }
-  .pres__invite:hover .pres__badge {
-    rotate: -8deg;
-  }
-  .pres__invite :global(.pres__arrow) {
-    color: var(--color-brique-ink);
-    transition: translate 0.35s ease;
-  }
-  .pres__invite:hover :global(.pres__arrow) {
-    translate: 0.2rem 0;
-  }
-
-  /* ---------- Tablets and wide screens: portrait and story side by side ---------- */
-  @media (min-width: 56rem) {
-    .pres__field {
-      width: clamp(18rem, 6rem + 26vw, 34rem);
-      height: clamp(30rem, 18rem + 22vw, 44rem);
-      border-end-end-radius: 6rem;
-    }
-    .pres__grid {
-      grid-template-columns: minmax(16rem, 5fr) minmax(0, 7fr);
-      align-items: start;
-      column-gap: clamp(3rem, 1rem + 5vw, 7rem);
-    }
-    .pres__media {
-      justify-self: stretch;
-      width: auto;
-      max-width: 30rem;
-      margin-block-start: clamp(1rem, 0rem + 2vw, 3rem);
-    }
-  }
-  /* Wide screens: the name sits level with the middle of the portrait; the rest of the
-     biography in two comfortable columns under both. */
-  @media (min-width: 56rem) {
-    .pres__grid {
-      align-items: center;
-    }
-    .pres__more {
-      padding-block-start: clamp(1rem, 0.5rem + 1vw, 2rem);
-    }
-  }
-  @media (min-width: 64rem) {
-    .pres__more :global(.pres__bio) {
-      columns: 2;
-      column-gap: clamp(3rem, 1rem + 4vw, 5.5rem);
-    }
-    .pres__more :global(.pres__bio > *) {
-      break-inside: avoid;
-    }
-  }
-
-  /* Gentle hover: the portrait rises a little and the sun grows. */
-  @media (hover: hover) {
-    .pres__photo {
-      transition: translate 0.5s cubic-bezier(0.2, 0.7, 0.2, 1);
-    }
-    .pres__sun {
-      transition: scale 0.6s cubic-bezier(0.2, 0.7, 0.2, 1);
-    }
-    .pres__media:hover .pres__photo {
-      translate: 0 -0.5rem;
-    }
-    .pres__media:hover .pres__sun {
-      scale: 1.1;
-    }
+  .pres__arrow {
+    color: var(--matin-brique-ink);
   }
 </style>
