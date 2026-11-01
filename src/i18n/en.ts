@@ -617,6 +617,7 @@ const en: Dictionary = {
     error: 'Your message could not be sent. Please try again in a few minutes.',
     errorsIntro: 'Please correct the following fields:',
     errRequired: 'This field is required.',
+    errChooseOne: 'Please choose at least one.',
     errEmail: 'Please enter a valid email address, for example name@example.com.',
     errConsent: 'Please check this box to continue.',
     errCaptcha: 'The anti-robot check is not finished yet. Please wait a moment and try again.',

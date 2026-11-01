@@ -156,7 +156,21 @@ const req = ` (${t('form.required')})`;
   </fieldset>
 
   <div class="grid gap-5 sm:grid-cols-2">
-    <Field lang={lang} id="adv-linkedin" name="linkedin" type="url" label={a.linkedin} />
+    <div class="field">
+      <label for="adv-linkedin" class="field-label">{a.linkedin}</label>
+      <p id="adv-linkedin-hint" class="adv-hint">{a.linkedinHint}</p>
+      <input
+        id="adv-linkedin"
+        name="linkedin"
+        type="url"
+        class="input"
+        dir="ltr"
+        autocomplete="url"
+        aria-describedby="adv-linkedin-hint"
+        placeholder="https://www.linkedin.com/in/"
+        data-prefill="https://www.linkedin.com/in/"
+      />
+    </div>
   </div>
   <Field lang={lang} id="adv-motivation" name="motivation" as="textarea" label={a.motivation} class="adv-motivation" />
 
@@ -244,6 +258,16 @@ const req = ` (${t('form.required')})`;
     padding-block: 0.6rem;
     cursor: pointer;
     background: var(--color-white);
+  }
+  /* More air between the parts of the form (owner, Nov 1 2026: « too cramped »). */
+  :global(form[name='conseillers'] > * + *) {
+    margin-block-start: 1.75rem;
+  }
+  .adv-group + .adv-group {
+    margin-block-start: 1.75rem;
+  }
+  .adv-group :global(.field-error) {
+    margin-block-start: 0.6rem;
   }
   .adv-group {
     margin: 0;

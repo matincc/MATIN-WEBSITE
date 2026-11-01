@@ -622,6 +622,7 @@ const fr = {
     error: "Votre message n'a pas pu être envoyé. Veuillez réessayer dans quelques minutes.",
     errorsIntro: 'Veuillez corriger les champs suivants :',
     errRequired: 'Ce champ est obligatoire.',
+    errChooseOne: 'Veuillez en choisir au moins une.',
     errEmail: 'Veuillez entrer une adresse courriel valide, par exemple nom@exemple.com.',
     errConsent: 'Veuillez cocher cette case pour continuer.',
     errCaptcha:

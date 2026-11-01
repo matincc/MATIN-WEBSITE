@@ -13,6 +13,8 @@
 
 type Messages = {
   required: string;
+  /** A checklist where at least one box is needed (« choose at least one »). */
+  choose: string;
   email: string;
   consent: string;
   intro: string;
@@ -24,7 +26,12 @@ type Messages = {
 const EMAIL = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
 
 function fieldLabel(form: HTMLFormElement, field: HTMLElement): string {
-  if (field instanceof HTMLInputElement && field.type === 'radio') {
+  // Radio buttons and « at least one » checklists are named by their group's legend,
+  // not by the first box (owner, Nov 1 2026: the error said only « French »).
+  if (
+    field instanceof HTMLInputElement &&
+    (field.type === 'radio' || field.dataset.groupRequired !== undefined)
+  ) {
     const legend = field.closest('fieldset')?.querySelector('legend');
     return (legend?.textContent ?? '').replace(/\(.*?\)/g, '').trim();
   }
@@ -52,7 +59,7 @@ function validate(field: HTMLInputElement | HTMLTextAreaElement | HTMLSelectElem
     // A checklist where at least one box is needed: the first box carries data-group-required.
     if (field.dataset.groupRequired !== undefined) {
       const checked = field.form?.querySelector(`input[name="${field.name}"]:checked`);
-      return checked ? '' : m.required;
+      return checked ? '' : m.choose;
     }
     return field.required && !field.checked ? m.consent : '';
   }
@@ -171,6 +178,7 @@ export function enhanceForms() {
     const d = form.dataset;
     const m: Messages = {
       required: d.msgRequired!,
+      choose: d.msgChoose ?? d.msgRequired!,
       email: d.msgEmail!,
       consent: d.msgConsent!,
       intro: d.msgIntro!,
@@ -180,6 +188,17 @@ export function enhanceForms() {
     };
     form.noValidate = true; // we show our own, bilingual messages
     setupConditions(form);
+    // Fields with data-prefill (LinkedIn): the start of the address is written in on
+    // focus, so the visitor only adds their profile name; left alone, it is cleared.
+    form.querySelectorAll<HTMLInputElement>('input[data-prefill]').forEach((input) => {
+      const prefix = input.dataset.prefill!;
+      input.addEventListener('focus', () => {
+        if (!input.value) input.value = prefix;
+      });
+      input.addEventListener('blur', () => {
+        if (input.value === prefix) input.value = '';
+      });
+    });
     const summary = form.querySelector<HTMLElement>('[data-error-summary]')!;
     const status = form.querySelector<HTMLElement>('[data-form-status]')!;
     const submit = form.querySelector<HTMLButtonElement>('button[type="submit"]')!;
