@@ -465,7 +465,7 @@ function emailHtml(text) {
 
 /*
  * Matin Advisory Circle (owner's request, Oct 31 2026): « Cercle des conseillers de Matin » /
- * "Matin Advisory Circle" / «حلقهٔ مشاوران متین». Each application from the Contact page
+ * "Matin Advisory Circle" / «گروه مشاوران متین». Each application from the Contact page
  * (Netlify form « conseillers ») becomes one row of the sheet « Advisors - مشاوران »
  * (tab Advisors). The CV is copied from Netlify into the private Drive folder
  * « CV conseillers · Advisor CVs » next to that sheet (created on first use); if the copy
@@ -591,10 +591,10 @@ function sendAdvisorReceipt(data) {
         'سلام' + (name ? ' ' + name + ' عزیز' : '') + '،',
         '',
         'درخواست شما دریافت شد. ' +
-          'از علاقهٔ شما به حلقهٔ مشاوران مؤسسه میان‌فرهنگی متین سپاسگزاریم؛ رزومهٔ شما نیز به دست ما رسید.',
+          'از علاقهٔ شما به گروه مشاوران مؤسسه میان‌فرهنگی متین سپاسگزاریم؛ رزومهٔ شما نیز به دست ما رسید.',
         '',
         'تیم ما مشخصات شما را بررسی می‌کند و حداکثر ظرف پنج روز کاری یک ایمیل تأیید برایتان می‌فرستد. ' +
-          'یادآوری می‌کنیم که پیوستن به حلقه رایگان است و هیچ رابطهٔ استخدامی ایجاد نمی‌کند؛ ' +
+          'یادآوری می‌کنیم که پیوستن به گروه رایگان است و هیچ رابطهٔ استخدامی ایجاد نمی‌کند؛ ' +
           'هر همکاری با دستمزد در قراردادی کتبی و جداگانه، برای هر پروژه، مشخص می‌شود.',
         '',
         'با احترام،',
@@ -606,7 +606,7 @@ function sendAdvisorReceipt(data) {
     GmailApp.sendEmail(
       email,
       fa
-        ? 'درخواست شما دریافت شد · حلقهٔ مشاوران متین · Application received · Matin Advisory Circle'
+        ? 'درخواست شما دریافت شد · گروه مشاوران متین · Application received · Matin Advisory Circle'
         : 'Candidature reçue · Cercle des conseillers de Matin · Application received · Matin Advisory Circle',
       text,
       { name: 'Institut interculturel Matin', replyTo: ADV_REPLY_TO, htmlBody: emailHtml(text) },
@@ -721,7 +721,7 @@ function advisorWelcomeEmail(advId, name, fa) {
   const faText = [
     'سلام' + (name ? ' ' + name + ' عزیز' : '') + '،',
     '',
-    'از طرف مؤسسه میان‌فرهنگی متین، با خوشحالی پیوستن شما را به حلقهٔ مشاوران متین خوشامد می‌گوییم. ' +
+    'از طرف مؤسسه میان‌فرهنگی متین، با خوشحالی پیوستن شما را به گروه مشاوران متین خوشامد می‌گوییم. ' +
       'سپاسگزاریم که تخصص خود را در خدمت گفت‌وگوی میان فرهنگ‌ها قرار می‌دهید.',
     '',
     'شمارهٔ مشاور شما: ' + advId,
@@ -739,7 +739,7 @@ function advisorWelcomeEmail(advId, name, fa) {
   const parts = fa ? [faText, en] : [fr, en];
   return {
     subject: fa
-      ? 'به حلقهٔ مشاوران متین خوش آمدید · Welcome to the Matin Advisory Circle'
+      ? 'به گروه مشاوران متین خوش آمدید · Welcome to the Matin Advisory Circle'
       : 'Bienvenue au Cercle des conseillers de Matin · Welcome to the Matin Advisory Circle',
     text: parts.map((p) => p.join('\n')).join('\n\n———\n\n') +
       '\n\nhttps://matincc.ca · ' + ADV_REPLY_TO,
