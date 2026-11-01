@@ -111,7 +111,7 @@ const en: Dictionary = {
     heroText:
       'A Montréal non-profit organization (NGO) where cultures meet, listen, and create together — rooted in Québec, open to the world.',
     whoTitle: 'Who We Are',
-    positioning: 'Rooted in Canada, Globally Connected',
+    positioning: 'Locally Rooted, Globally Connected',
     // Land acknowledgement (owner's request, Oct 30 2026; drafted by Claude for his review).
     impactTitle: 'Our Impact',
     impactLede: 'A few figures from our own activities.',
