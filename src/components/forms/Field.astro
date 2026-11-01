@@ -20,6 +20,8 @@ interface Props {
   /** Another label while another field has a value (the form script swaps it). */
   labelWhen?: { when: string; label: string };
   class?: string;
+  /** Longest answer accepted (default 2000 for text boxes, 200 for fields). */
+  maxlength?: number;
 }
 const {
   lang,
@@ -35,6 +37,7 @@ const {
   requiredWhen,
   labelWhen,
   class: className = '',
+  maxlength,
 } = Astro.props;
 const t = useTranslations(lang);
 const errorId = `${id}-error`;
@@ -57,7 +60,7 @@ const errorId = `${id}-error`;
     )}
   </label>
   {as === 'textarea' ? (
-    <textarea id={id} name={name} class="input" required={required} aria-describedby={errorId} maxlength={2000} />
+    <textarea id={id} name={name} class="input" required={required} aria-describedby={errorId} maxlength={maxlength ?? 2000} />
   ) : as === 'select' ? (
     <select id={id} name={name} class="input" required={required} aria-describedby={errorId}>
       {placeholderOption !== undefined && <option value="">{placeholderOption}</option>}
@@ -75,7 +78,7 @@ const errorId = `${id}-error`;
       data-required-when={requiredWhen}
       autocomplete={autocomplete}
       aria-describedby={errorId}
-      maxlength={200}
+      maxlength={maxlength ?? 200}
     />
   )}
   <p id={errorId} class="field-error" hidden></p>
