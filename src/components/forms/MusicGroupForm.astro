@@ -6,7 +6,7 @@
  * website and social links, then four required commitments (terms, no rights, own rights,
  * three-year register; the owner dropped the optional « share with festivals » box, Nov 2
  * 2026: sending the links to festivals is the purpose, stated in terms 6 and 8) and the
- * privacy consent. Links only, no files, no passport or ID data (Law 25: only what is
+ * privacy consent. One file (the ensemble's CV, PDF or Word, 5 MB, owner Nov 2 2026), otherwise links only, no passport or ID data (Law 25: only what is
  * needed). Style and size are sent in English so every Sheet row reads alike.
  */
 import FormShell from './FormShell.astro';
@@ -55,6 +55,7 @@ const socialLinks = [
   submitLabel={m.submit}
   consentText={m.consent}
   successMessage={m.success}
+  multipart
 >
   {/* Terms first (owner, Nov 2 2026): the ensemble reads and accepts them, then the rest of
       the form opens. Without JavaScript every field stays open. */}
@@ -154,7 +155,19 @@ const socialLinks = [
       <span data-label-text>{m.experience}</span><span class="req">{req}</span>
     </label>
     <p id="mus-exp-hint" class="mus-hint">{m.experienceHint}</p>
-    <textarea id="mus-exp" name="experience" class="input mus-textarea" required maxlength="1000" aria-describedby="mus-exp-hint mus-exp-error"></textarea>
+    <input
+      id="mus-exp"
+      name="cv"
+      type="file"
+      class="input mus-file"
+      required
+      accept=".pdf,.docx,application/pdf,application/vnd.openxmlformats-officedocument.wordprocessingml.document"
+      data-ext="pdf|docx"
+      data-max-bytes="5242880"
+      data-msg-too-big={m.fileTooBig}
+      data-msg-type={m.fileType}
+      aria-describedby="mus-exp-hint mus-exp-error"
+    />
     <p id="mus-exp-error" class="field-error" hidden></p>
   </div>
   <p class="mus-hint">{m.workHint}</p>
@@ -235,8 +248,10 @@ const socialLinks = [
   :global([dir='rtl']) .mus-phone__code {
     direction: rtl;
   }
-  .mus-textarea {
-    min-height: 8rem;
+  .mus-file {
+    padding-block: 0.6rem;
+    cursor: pointer;
+    background: var(--color-white);
   }
   .mus-terms {
     padding: 1.25rem 1.5rem;
