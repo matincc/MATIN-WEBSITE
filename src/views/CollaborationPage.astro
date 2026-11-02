@@ -169,26 +169,9 @@ const aliases = { expertise: ids.advisors, 'advisors': ids.advisors };
             </li>
           ))}
         </ol>
-        {/* The form is on the Persian page only (owner, Nov 2 2026, latest word): French and
-            English explain the call, show the terms (French version prevails) and link to it. */}
-        {lang === 'fa' ? (
-          <MusicGroupForm lang={lang} />
-        ) : (
-          <div class="mus-faonly">
-            <h3 class="mus-steps-title">{mus.formTitle}</h3>
-            <p>{mus.faOnly}</p>
-            <a class="btn btn-primary mus-facta" href={`${href('collaboration', 'fa')}#${collabAnchors('fa').music}`} hreflang="fa">
-              {mus.faCta}
-              <ArrowRight size={18} aria-hidden="true" />
-            </a>
-            <details class="mus-terms-ro">
-              <summary>{mus.termsTitle}</summary>
-              <ol>
-                {mus.terms.split('\n').map((line) => line.split('|')).map(([title, text]) => <li><strong>{title}</strong><br />{text}</li>)}
-              </ol>
-            </details>
-          </div>
-        )}
+        {/* The full form in every language (owner, Nov 2 2026: « this is Québec, don't forget
+            the French form »; Bill 96: French at least as available as any other language). */}
+        <MusicGroupForm lang={lang} />
       </section>
 
       <section id={ids.partners} class="collab-panel collab-panel--partners scroll-mt-24" aria-labelledby="partners-panel-title" data-collab-panel>
