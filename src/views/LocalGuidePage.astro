@@ -569,8 +569,8 @@ const jsonLd = [
     color: var(--matin-soleil);
   }
 
-  /* The team's note (owner, Nov 2 2026: new design, then « not dark blue »): a straight
-     saffron panel, the title in terracotta ink on the start side, the text in navy beside it,
+  /* The team's note (owner, Nov 2 2026: new design, then « not dark blue », then « saffron
+     is too loud, pale blue »): a straight pale turquoise-blue panel, the title in terracotta ink on the start side, the text in navy beside it,
      a terracotta sun in the corner. Encre on soleil 6.1:1. */
   .guide-why {
     position: relative;
@@ -580,7 +580,8 @@ const jsonLd = [
     padding: clamp(1.75rem, 1.2rem + 2vw, 2.75rem);
     border-radius: 1.25rem;
     border-start-start-radius: 4rem;
-    background: var(--matin-soleil);
+    background: color-mix(in srgb, var(--matin-firouzeh) 16%, var(--color-white));
+    border-inline-start: 6px solid var(--matin-firouzeh);
     color: var(--matin-encre);
     overflow: hidden;
   }
@@ -597,8 +598,7 @@ const jsonLd = [
     width: 9rem;
     height: 9rem;
     border-radius: 50%;
-    background: var(--matin-brique);
-    opacity: 0.9;
+    background: color-mix(in srgb, var(--matin-firouzeh) 35%, var(--color-white));
   }
   .guide-why__head,
   .guide-why > div {
