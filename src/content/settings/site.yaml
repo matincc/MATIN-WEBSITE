@@ -10,6 +10,15 @@ mission:
   fa: 'ترویج گفت‌وگوی بین‌فرهنگی، برابری و تبادل فرهنگی در کبک، کانادا و در سطح بین‌المللی. ما از پذیرش و مشارکت کامل مهاجران پشتیبانی می‌کنیم، هنر و میراث جوامع گوناگون را ارج می‌نهیم، پژوهش و انتشارات دربارهٔ میان‌فرهنگی‌بودن را پیش می‌بریم و پیوند میان جوانان، خانواده‌ها و سالمندان را استوارتر می‌کنیم.'
 phone: '+1 263 378-9340'
 email: info@matincc.ca
+# Loi 25 : personne responsable de la protection des renseignements personnels
+# (confirmé par Matin le 2 novembre 2026).
+privacyOfficer:
+  name: 'Reza Moafi'
+  title:
+    fr: 'Président'
+    en: 'President'
+    fa: 'رئیس مؤسسه'
+  email: admin@matincc.ca
 # Identité légale : affichée sur la page « Informations légales » (lien dans le pied de page)
 # et dans les données structurées pour Google. Adresse publiée : « Montréal, Québec, Canada »
 # seulement, sans rue ni code postal (décision de Matin, 22 octobre 2026).

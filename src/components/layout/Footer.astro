@@ -7,7 +7,7 @@ import SocialLinks from '@/components/ui/SocialLinks.astro';
 import NewsletterForm from '@/components/forms/NewsletterForm.astro';
 import { href, type RouteKey, type UiLang } from '@/i18n/routes';
 import { useTranslations, pick } from '@/i18n/ui';
-import { emptySections, getSettings } from '@/lib/content';
+import { emptySections, getPrograms, getSettings } from '@/lib/content';
 
 interface Props {
   lang: UiLang;
@@ -30,6 +30,7 @@ const mailHelp = {
   fa: { copy: 'کپی نشانی', copied: 'نشانی کپی شد', form: 'یا از اینجا برای ما بنویسید' },
 }[lang];
 const empty = await emptySections();
+const hasPrograms = (await getPrograms()).length > 0;
 const explore = (
   [
     'about',
@@ -45,7 +46,10 @@ const explore = (
     'careers',
     'contact',
   ] as RouteKey[]
-).filter((k) => k !== 'faq' || !empty.has('faq'));
+)
+  .filter((k) => k !== 'faq' || !empty.has('faq'))
+  // Empty pages stay out of the menus until they have content (owner, Nov 2 2026).
+  .filter((k) => k !== 'programs' || hasPrograms);
 const links = explore.map((key) => ({ href: href(key, lang), label: t(`nav.${key}`) }));
 const legal: RouteKey[] = ['legalInfo', 'privacy', 'terms', 'accessibility'];
 const year = new Intl.NumberFormat(lang === 'fa' ? 'fa-IR' : 'en-CA', {

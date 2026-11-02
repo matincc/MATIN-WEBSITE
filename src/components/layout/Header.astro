@@ -17,6 +17,8 @@ import { newsAnchors, href, type Alternates, type RouteKey, type UiLang } from '
 import { useTranslations } from '@/i18n/ui';
 import { strings as cultureMapStrings } from '@/lib/cultureMap';
 import { storyStrings } from '@/i18n/stories';
+import fs from 'node:fs';
+import nodePath from 'node:path';
 import { getNetworks, getUpcomingEvents, picksOf } from '@/lib/content';
 import { guideStrings } from '@/lib/localGuide';
 
@@ -39,16 +41,10 @@ const anchor = (url: string, id: string) => `${url}#${id}`;
 // longer a top-level item; its Photos, Videos and Posters sit under Events.
 // Owner's order (Nov 1 2026): Programs leaves the menu (page kept, linked from the
 // footer); Gallery is a top-level item again, after News.
-const items: RouteKey[] = [
-  'about',
-  'team',
-  'events',
-  'news',
-  'gallery',
-  'resources',
-  'collaboration',
-  'contact',
-];
+// Simpler menu (owner, Nov 2 2026, outside review): six items. Our Team moves under About,
+// the Gallery under Events, « My Story » under Collaboration; empty pages stay out of the
+// menu until they have content (pages and URLs are kept).
+const items: RouteKey[] = ['about', 'events', 'news', 'resources', 'collaboration', 'contact'];
 const links = items.map((key) => ({ key, href: href(key, lang), label: t(`nav.${key}`) }));
 const aboutHref = href('about', lang);
 // Sub-links of "About": only Who We Are (the President's note moved to the homepage
@@ -63,18 +59,16 @@ const aboutLinks = [
   },
   // Our Areas of Work (owner's request, Oct 31 2026: moved from the homepage to About).
   { id: 'areas', label: t('nav.areas'), href: `${aboutHref}#areas` },
-  // Strategic Plan (owner's request, Nov 2 2026): its own page; the PDF is added later.
-  { id: 'strategic-plan', label: t('nav.strategicPlan'), href: href('strategicPlan', lang) },
+  // Our Team (owner, Nov 2 2026: under About instead of a top-level item).
+  { id: 'team', label: t('nav.team'), href: href('team', lang) },
+  // Strategic Plan (owner's request, Nov 2 2026): its own page, in the menu only once a PDF
+  // is in public/documents/ (empty pages stay out of the menu, owner, Nov 2 2026).
+  ...(['plan-strategique-matin.pdf', 'strategic-plan-matin-en.pdf', 'strategic-plan-matin-fa.pdf'].some(
+    (f) => fs.existsSync(nodePath.join(process.cwd(), 'public', 'documents', f)),
+  )
+    ? [{ id: 'strategic-plan', label: t('nav.strategicPlan'), href: href('strategicPlan', lang) }]
+    : []),
 ];
-// Sub-links of "Our Team" (owner's brief, Oct 24 2026): the President, the Board of
-// Directors (owner, Oct 31 2026), the Executive Team and the invitation to collaborate (Oct 28 2026), on the Our Team page.
-const teamHref = href('team', lang);
-const teamLinks = [
-  { id: 'our-president', label: t('nav.teamPresident') },
-  { id: 'board', label: t('nav.teamBoard') },
-  { id: 'executive-team', label: t('nav.teamExecutive') },
-  { id: 'advisors', label: t('nav.teamAdvisors') },
-].map((l) => ({ ...l, href: `${teamHref}#${l.id}` }));
 // Sub-links of "Events", in the owner's order: Matin Events, Matin's Picks (only while
 // there are picks, the section is hidden otherwise), Upcoming Events, then Past Events.
 const eventsHref = href('events', lang);
@@ -85,6 +79,8 @@ const eventsLinks = [
   { id: 'upcoming', label: t('events.upcoming') },
 ].map((l) => ({ ...l, href: `${eventsHref}#${l.id}` }));
 eventsLinks.push({ id: 'past', label: t('nav.eventsArchive'), href: href('eventsArchive', lang) });
+// The Gallery, one link under Events (owner, Nov 2 2026).
+eventsLinks.push({ id: 'gallery', label: t('nav.gallery'), href: href('gallery', lang) });
 // Sub-links of "News": its two sections (owner's brief, Oct 25 2026), then the President's notes.
 const newsHref = href('news', lang);
 const newsLinks: { id: string; label: string; href: string }[] = (
@@ -96,19 +92,6 @@ const newsLinks: { id: string; label: string; href: string }[] = (
 }));
 // Notes from the President (owner's request, Oct 27 2026): their own page, under News.
 newsLinks.push({ id: 'president-notes', label: t('nav.notes'), href: href('notes', lang) });
-// Sub-links of "Gallery" and "Resources": sections of those pages.
-const galleryHref = href('gallery', lang);
-const galleryLinks = [
-  { id: 'photos', label: t('gallery.filterPhotos') },
-  { id: 'videos', label: t('gallery.filterVideos') },
-  { id: 'posters', label: t('gallery.filterPosters') },
-].map((l) => ({ ...l, label: `${t('nav.gallery')} · ${l.label}`, href: anchor(galleryHref, l.id) }));
-// « My Story in 15 Seconds » (owner's request, Oct 31 2026) is the last Gallery item (Nov 1 2026).
-galleryLinks.push({
-  id: 'my-story',
-  label: storyStrings(lang).nav,
-  href: href('stories', lang),
-});
 const resourcesHref = href('resources', lang);
 // Until International Cultural Networks has entries, its link opens the directory's
 // international category instead (the networks section is hidden while empty).
@@ -145,14 +128,14 @@ const collabLinks = [
   { id: ca.partners, label: cs.partners },
   { id: ca.music, label: musicStrings(lang).nav },
 ].map((l) => ({ ...l, href: anchor(collabHref, l.id) }));
+// « My Story in 15 Seconds » under Collaboration (owner, Nov 2 2026): visitors take part.
+collabLinks.push({ id: 'my-story', label: storyStrings(lang).nav, href: href('stories', lang) });
 // Menu items that open a dropdown.
 const subMenus: Partial<Record<RouteKey, { id: string; label: string; links: typeof aboutLinks }>> =
   {
     about: { id: 'about-submenu', label: t('a11y.aboutSubmenu'), links: aboutLinks },
-    team: { id: 'team-submenu', label: t('a11y.teamSubmenu'), links: teamLinks },
     events: { id: 'events-submenu', label: t('a11y.eventsSubmenu'), links: eventsLinks },
     news: { id: 'news-submenu', label: t('a11y.newsSubmenu'), links: newsLinks },
-    gallery: { id: 'gallery-submenu', label: t('a11y.gallerySubmenu'), links: galleryLinks },
     resources: {
       id: 'resources-submenu',
       label: t('a11y.resourcesSubmenu'),
@@ -163,6 +146,14 @@ const subMenus: Partial<Record<RouteKey, { id: string; label: string; links: typ
 
 const current = Astro.url.pathname;
 const isActive = (url: string) => !url.includes('?') && current.startsWith(url);
+// Pages now inside a dropdown light up their parent item.
+const parentOf: Partial<Record<RouteKey, RouteKey[]>> = {
+  about: ['team', 'strategicPlan'],
+  events: ['gallery'],
+  collaboration: ['stories'],
+};
+const isActiveItem = (key: RouteKey, url: string) =>
+  isActive(url) || (parentOf[key] ?? []).some((k) => isActive(href(k, lang)));
 ---
 
 <header class="site-header" data-header>
@@ -212,7 +203,7 @@ const isActive = (url: string) => !url.includes('?') && current.startsWith(url);
               <div class="flex items-center">
                 <a
                   href={l.href}
-                  class:list={['nav-link', isActive(l.href) && 'is-active']}
+                  class:list={['nav-link', isActiveItem(l.key, l.href) && 'is-active']}
                   aria-current={isActive(l.href) ? 'page' : undefined}
                 >
                   {l.label}
@@ -242,7 +233,7 @@ const isActive = (url: string) => !url.includes('?') && current.startsWith(url);
             <li>
               <a
                 href={l.href}
-                class:list={['nav-link', isActive(l.href) && 'is-active']}
+                class:list={['nav-link', isActiveItem(l.key, l.href) && 'is-active']}
                 aria-current={isActive(l.href) ? 'page' : undefined}
               >
                 {l.label}
