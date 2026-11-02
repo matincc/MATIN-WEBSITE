@@ -1,6 +1,6 @@
 # Matin News (owner, Nov 2 2026: show Matin active in the Government of Québec's SQRI).
 # Wording « à l'occasion de » until the walk's registration in the official SQRI calendar
-# is confirmed. Awaiting Matin's approval of the text.
+# is confirmed. Approved by Matin (Nov 2 2026).
 date: 2026-11-02
 author:
   fr: 'Institut interculturel Matin'
@@ -12,9 +12,9 @@ category: matin-news
 image: ../../assets/uploads/news/first-activity/fr.jpg
 imagePermission: true
 imageAlt:
-  fr: "Bannière : « Notre toute première activité. Matin à la Semaine québécoise des rencontres interculturelles 2026 », promenade familiale et amicale au parc Angrignon, samedi 7 novembre à 14 h, entrée principale près du métro Angrignon, gratuit, en français."
-  en: 'Banner: “Our very first activity. Matin at the Semaine québécoise des rencontres interculturelles 2026,” a family-friendly walk in Angrignon Park, Saturday, November 7 at 2 p.m., main entrance by Angrignon metro, free, in French.'
-  fa: 'بنر: «نخستین فعالیت ما. متین در هفتهٔ دیدارهای بین‌فرهنگی کبک ۲۰۲۶»، پیاده‌روی خانوادگی و دوستانه در پارک آنگرینیون، شنبه ۷ نوامبر ساعت ۱۴، ورودی اصلی کنار مترو آنگرینیون، رایگان، به زبان فرانسه.'
+  fr: "Bannière : « Notre toute première activité. Matin à la Semaine québécoise des rencontres interculturelles 2026 », promenade familiale et amicale au parc Angrignon, samedi 7 novembre à 13 h 45, entrée principale près du métro Angrignon, gratuit, en français."
+  en: 'Banner: “Our very first activity. Matin at the Semaine québécoise des rencontres interculturelles 2026,” a family-friendly walk in Angrignon Park, Saturday, November 7 at 1:45 p.m., main entrance by Angrignon metro, free, in French.'
+  fa: 'بنر: «نخستین فعالیت ما. متین در هفتهٔ دیدارهای بین‌فرهنگی کبک ۲۰۲۶»، پیاده‌روی خانوادگی و دوستانه در پارک آنگرینیون، شنبه ۷ نوامبر ساعت ۱۳:۴۵، ورودی اصلی کنار مترو آنگرینیون، رایگان، به زبان فرانسه.'
 urlSlug:
   fr: matin-semaine-rencontres-interculturelles-2026
   en: matin-intercultural-week-2026
@@ -36,7 +36,7 @@ body:
 
     ## Notre activité : une promenade d'automne à LaSalle
 
-    À l'occasion de la Semaine, l'Institut interculturel Matin vous invite à une promenade d'automne au parc Angrignon, à LaSalle, le **samedi 7 novembre 2026, de 14 h à 14 h 45**. Une occasion simple de marcher ensemble, de faire connaissance et de parler de nos cultures, dans une ambiance conviviale. L'activité est gratuite, ouverte à toutes et à tous, et les échanges se dérouleront en français.
+    À l'occasion de la Semaine, l'Institut interculturel Matin vous invite à une promenade d'automne au parc Angrignon, à LaSalle, le **samedi 7 novembre 2026, de 13 h 45 à 15 h 30**. Au programme : accueil et boisson chaude à 13 h 45, promenade d'automne à 14 h, puis, à 14 h 45, un cercle de conversation où chacun peut partager une tradition d'automne de son pays. L'activité est gratuite, ouverte à toutes et à tous, et les échanges se dérouleront en français.
 
     [Voir les détails de la promenade](/fr/evenements/promenade-automne-2026/)
 
@@ -56,7 +56,7 @@ body:
 
     ## Our activity: an autumn walk in LaSalle
 
-    For the Week, Matin Intercultural Institute invites you to an autumn walk in Angrignon Park, LaSalle, on **Saturday, November 7, 2026, from 2:00 to 2:45 p.m.** A simple chance to walk together, get to know each other and talk about our cultures in a friendly atmosphere. The activity is free and open to everyone; conversations will be in French.
+    For the Week, Matin Intercultural Institute invites you to an autumn walk in Angrignon Park, LaSalle, on **Saturday, November 7, 2026, from 1:45 to 3:30 p.m.** The program: welcome and hot drink at 1:45, autumn walk at 2:00, then at 2:45 a conversation circle where everyone can share an autumn tradition from their country. The activity is free and open to everyone; conversations will be in French.
 
     [See the walk details](/en/events/autumn-walk-2026/)
 
@@ -76,7 +76,7 @@ body:
 
     ## برنامهٔ ما: پیاده‌روی پاییزی در لاسال
 
-    به مناسبت این هفته، مؤسسه میان‌فرهنگی متین شما را به یک پیاده‌روی پاییزی در پارک آنگرینیون لاسال دعوت می‌کند: **شنبه ۷ نوامبر ۲۰۲۶، ساعت ۱۴ تا ۱۴:۴۵**. فرصتی ساده برای قدم زدن با هم، آشنایی و گفت‌وگو دربارهٔ فرهنگ‌هایمان در فضایی صمیمی. شرکت رایگان و برای همه آزاد است و گفت‌وگوها به زبان فرانسه خواهد بود.
+    به مناسبت این هفته، مؤسسه میان‌فرهنگی متین شما را به یک پیاده‌روی پاییزی در پارک آنگرینیون لاسال دعوت می‌کند: **شنبه ۷ نوامبر ۲۰۲۶، ساعت ۱۳:۴۵ تا ۱۵:۳۰**. برنامه: ۱۳:۴۵ خوشامد و نوشیدنی گرم، ۱۴:۰۰ پیاده‌روی پاییزی، و از ۱۴:۴۵ حلقهٔ گفت‌وگو که هر کس می‌تواند یک رسم پاییزی سرزمین خودش را با دیگران در میان بگذارد. شرکت رایگان و برای همه آزاد است و گفت‌وگوها به زبان فرانسه خواهد بود.
 
     [جزئیات پیاده‌روی](/fa/events/autumn-walk-2026/)
 

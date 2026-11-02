@@ -18,27 +18,51 @@ summary:
   fa: 'گاهی یک پیاده‌روی ساده می‌تواند آغاز یک گفت‌وگوی خوب باشد. مؤسسه میان‌فرهنگی متین شما را به یک پیاده‌روی پاییزی در پارک آنگرینیون لاسال دعوت می‌کند؛ فرصتی برای لذت بردن از رنگ‌های پاییز، آشنایی با افراد جدید، شنیدن داستان‌های یکدیگر و گذراندن لحظاتی دوستانه در فضایی صمیمی.'
 body:
   fr: |
-    **Activité gratuite, ouverte à toutes et à tous.**
+    **Activité gratuite, ouverte à toutes et à tous, en famille et entre amis.**
+
+    ## Programme
+
+    - **13 h 45** · Accueil et boisson chaude
+    - **14 h** · Promenade d'automne
+    - **14 h 45 à 15 h 30** · Cercle de conversation : partagez une tradition d'automne de votre pays
+
+    Rendez-vous : entrée principale du parc, près du métro Angrignon.
 
     Les échanges se dérouleront en français.
 
-    Dans le cadre de la Semaine québécoise des rencontres interculturelles 2026.
+    À l'occasion de la Semaine québécoise des rencontres interculturelles 2026.
 
     Renseignements : [info@matincc.ca](mailto:info@matincc.ca)
   en: |
-    **Free activity, open to everyone.**
+    **Free activity, open to everyone: bring your family and friends.**
+
+    ## Program
+
+    - **1:45 p.m.** · Welcome and hot drink
+    - **2:00 p.m.** · Autumn walk
+    - **2:45 to 3:30 p.m.** · Conversation circle: share an autumn tradition from your country
+
+    Meeting point: main park entrance, near Angrignon metro.
 
     Conversations will be in French.
 
-    Part of the Semaine québécoise des rencontres interculturelles 2026.
+    On the occasion of the Semaine québécoise des rencontres interculturelles 2026.
 
     Inquiries: [info@matincc.ca](mailto:info@matincc.ca)
   fa: |
-    **این برنامه رایگان است و شرکت در آن برای همه آزاد است.**
+    **این برنامه رایگان است و شرکت در آن برای همه، همراه با خانواده و دوستان، آزاد است.**
+
+    ## برنامه
+
+    - **۱۳:۴۵** · خوشامدگویی و نوشیدنی گرم
+    - **۱۴:۰۰** · پیاده‌روی پاییزی
+    - **۱۴:۴۵ تا ۱۵:۳۰** · حلقهٔ گفت‌وگو: یک رسم پاییزی سرزمین خودتان را با ما در میان بگذارید
+
+    محل دیدار: ورودی اصلی پارک، کنار مترو آنگرینیون.
 
     گفت‌وگوها به زبان فرانسوی خواهد بود.
 
-    این برنامه بخشی از «هفتهٔ دیدارهای بین‌فرهنگی کبک ۲۰۲۶» است.
+    به مناسبت «هفتهٔ دیدارهای بین‌فرهنگی کبک ۲۰۲۶».
 
     برای اطلاعات بیشتر: [info@matincc.ca](mailto:info@matincc.ca)
 subject: dialogue
@@ -46,8 +70,8 @@ region: montreal
 city: Montréal
 format: in-person
 language: fr
-start: '2026-11-07T14:00'
-end: '2026-11-07T14:45'
+start: '2026-11-07T13:45'
+end: '2026-11-07T15:30'
 location:
   name:
     fr: 'Parc Angrignon'
@@ -61,7 +85,7 @@ announced: '2026-10-21'
 image: ../../assets/uploads/events/autumn-walk-2026/poster.jpg
 imageIsPoster: true
 imageAlt:
-  fr: "Affiche officielle : « Marchons ensemble, parlons de nos cultures ». Une promenade interculturelle au parc Angrignon, LaSalle, le samedi 7 novembre 2026 de 14 h à 14 h 45. Activité gratuite, ouverte à toutes et à tous, échanges en français. Des personnes marchent et discutent sous les arbres d'automne."
-  en: 'Official poster: "Marchons ensemble, parlons de nos cultures" (Let''s walk together, let''s talk about our cultures). An intercultural walk in Angrignon Park, LaSalle, Saturday, November 7, 2026, 2:00 to 2:45 PM. Free activity, open to everyone, conversations in French. People walk and chat under autumn trees.'
-  fa: 'پوستر رسمی: «با هم قدم بزنیم، از فرهنگ‌هایمان بگوییم». پیاده‌روی میان‌فرهنگی در پارک آنگرینیون لاسال، شنبه ۷ نوامبر ۲۰۲۶، ساعت ۱۴ تا ۱۴:۴۵. رایگان و آزاد برای همه، گفت‌وگوها به زبان فرانسوی. چند نفر زیر درختان پاییزی قدم می‌زنند و گپ می‌زنند.'
+  fr: "Affiche : « Marchons ensemble, parlons de nos cultures ». Une promenade interculturelle et un cercle de conversation au parc Angrignon, samedi 7 novembre 2026. Rendez-vous à l'entrée principale du parc, près du métro Angrignon. Programme : 13 h 45 accueil et boisson chaude, 14 h promenade d'automne, 14 h 45 cercle de conversation sur une tradition d'automne de votre pays. Gratuit, ouvert à toutes et à tous, échanges en français. À l'occasion de la Semaine québécoise des rencontres interculturelles 2026."
+  en: 'Poster: "Marchons ensemble, parlons de nos cultures" (Let''s walk together, let''s talk about our cultures). An intercultural walk and conversation circle in Angrignon Park, Saturday, November 7, 2026. Meet at the main park entrance near Angrignon metro. Program: 1:45 p.m. welcome and hot drink, 2:00 p.m. autumn walk, 2:45 p.m. conversation circle on an autumn tradition from your country. Free, open to everyone, in French. On the occasion of the Semaine québécoise des rencontres interculturelles 2026.'
+  fa: 'پوستر: «با هم قدم بزنیم، از فرهنگ‌هایمان بگوییم». پیاده‌روی میان‌فرهنگی و حلقهٔ گفت‌وگو در پارک آنگرینیون، شنبه ۷ نوامبر ۲۰۲۶. محل دیدار: ورودی اصلی پارک، کنار مترو آنگرینیون. برنامه: ۱۳:۴۵ خوشامد و نوشیدنی گرم، ۱۴:۰۰ پیاده‌روی پاییزی، ۱۴:۴۵ حلقهٔ گفت‌وگو دربارهٔ رسم پاییزی سرزمین شما. رایگان، برای همه، به زبان فرانسوی. به مناسبت هفتهٔ دیدارهای بین‌فرهنگی کبک ۲۰۲۶.'
 faReviewed: true
