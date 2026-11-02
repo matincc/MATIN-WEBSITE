@@ -169,7 +169,26 @@ const aliases = { expertise: ids.advisors, 'advisors': ids.advisors };
             </li>
           ))}
         </ol>
-        <MusicGroupForm lang={lang} />
+        {/* The form is on the Persian page only (owner, Nov 2 2026, latest word): French and
+            English explain the call, show the terms (French version prevails) and link to it. */}
+        {lang === 'fa' ? (
+          <MusicGroupForm lang={lang} />
+        ) : (
+          <div class="mus-faonly">
+            <h3 class="mus-steps-title">{mus.formTitle}</h3>
+            <p>{mus.faOnly}</p>
+            <a class="btn btn-primary mus-facta" href={`${href('collaboration', 'fa')}#${collabAnchors('fa').music}`} hreflang="fa">
+              {mus.faCta}
+              <ArrowRight size={18} aria-hidden="true" />
+            </a>
+            <details class="mus-terms-ro">
+              <summary>{mus.termsTitle}</summary>
+              <ol>
+                {mus.terms.split('\n').map((line) => line.split('|')).map(([title, text]) => <li><strong>{title}</strong><br />{text}</li>)}
+              </ol>
+            </details>
+          </div>
+        )}
       </section>
 
       <section id={ids.partners} class="collab-panel collab-panel--partners scroll-mt-24" aria-labelledby="partners-panel-title" data-collab-panel>
@@ -500,6 +519,43 @@ const aliases = { expertise: ids.advisors, 'advisors': ids.advisors };
     color: var(--color-white);
     font-weight: 700;
     line-height: 1.6;
+  }
+  .mus-faonly {
+    max-width: 60rem;
+  }
+  .mus-faonly > p {
+    margin-block-end: 1.25rem;
+    font-size: 1.1rem;
+    line-height: 1.7;
+  }
+  .mus-facta:not(#o) {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+  .mus-terms-ro {
+    margin-block-start: 2rem;
+    padding: 1rem 1.25rem;
+    border-radius: 0.9rem;
+    background: var(--color-white);
+    border-inline-start: 5px solid var(--matin-firouzeh);
+  }
+  .mus-terms-ro summary {
+    cursor: pointer;
+    font-family: var(--font-display);
+    font-weight: 800;
+    color: var(--matin-encre);
+  }
+  .mus-terms-ro ol {
+    margin-block-start: 0.75rem;
+    padding-inline-start: 1.25rem;
+    list-style: decimal;
+    display: grid;
+    gap: 0.6rem;
+    line-height: 1.65;
+  }
+  .mus-terms-ro strong {
+    color: var(--matin-firouzeh-ink);
   }
   .mus-steps-title:not(#o) {
     margin-block-end: 1rem;

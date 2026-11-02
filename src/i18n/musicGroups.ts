@@ -33,6 +33,8 @@ const fr = {
   how3Title: 'Nous vous présentons les occasions de collaborer',
   how3Text: 'Quand une occasion de se produire dans un festival, un programme culturel ou un événement artistique se présente et que votre ensemble y correspond, nous communiquons avec vous. Toute collaboration se fait seulement avec votre accord, après avoir fixé les conditions et signé un contrat écrit.',
   formTitle: 'Formulaire de présentation et d’inscription d’un ensemble de musique',
+  faOnly: 'Le formulaire d’inscription est en persan : cet appel s’adresse aux ensembles de musique iraniens, qui correspondront avec Matin en persan.',
+  faCta: 'Ouvrir le formulaire (en persan)',
   termsTitle: 'Conditions d’inscription et de collaboration avec l’Institut Matin',
   termsIntro: 'Avant de remplir le formulaire, veuillez lire attentivement ce qui suit :',
   terms: [
@@ -102,6 +104,8 @@ const en: MusicDict = {
   how3Title: 'We share opportunities to collaborate',
   how3Text: 'Whenever an opportunity to perform at a festival, cultural program or artistic event comes up and your ensemble suits it, we will contact you. Any collaboration takes place only with your agreement, once the terms are set and a written contract is signed.',
   formTitle: 'Music Ensemble Introduction and Registration Form',
+  faOnly: 'The registration form is in Persian: this call is for Iranian music ensembles, who will correspond with Matin in Persian.',
+  faCta: 'Open the form (in Persian)',
   termsTitle: 'Terms of registration and collaboration with the Matin Institute',
   termsIntro: 'Before filling in the form, please read the following carefully:',
   terms: [
@@ -170,6 +174,8 @@ const fa: MusicDict = {
   how3Title: 'فرصت‌های همکاری را با شما در میان می‌گذاریم',
   how3Text: 'هرگاه فرصتی برای اجرا در جشنواره‌ها، برنامه‌های فرهنگی یا رویدادهای هنری فراهم شود و گروه شما با آن برنامه تناسب داشته باشد، با شما تماس خواهیم گرفت. هرگونه همکاری تنها با توافق شما و پس از تعیین شرایط و امضای قرارداد کتبی انجام می‌شود.',
   formTitle: 'فرم معرفی و ثبت‌نام گروه موسیقی',
+  faOnly: '',
+  faCta: '',
   termsTitle: 'شرایط ثبت‌نام و همکاری با مؤسسه متین',
   termsIntro: 'لطفاً پیش از تکمیل فرم، موارد زیر را با دقت بخوانید:',
   terms: [
