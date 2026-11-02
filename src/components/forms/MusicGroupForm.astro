@@ -4,7 +4,8 @@
  * « ensembles »: ensemble name, size (3 to 7), style, instruments, country, city, year
  * founded, director, coordinator, email, phone, background, up to three work links,
  * website and social links, then four required commitments (terms, no rights, own rights,
- * three-year register), one optional consent (share the file with festivals) and the
+ * three-year register; the owner dropped the optional « share with festivals » box, Nov 2
+ * 2026: sending the links to festivals is the purpose, stated in terms 6 and 8) and the
  * privacy consent. Links only, no files, no passport or ID data (Law 25: only what is
  * needed). Style and size are sent in English so every Sheet row reads alike.
  */
@@ -72,7 +73,6 @@ const socialLinks = [
     { id: 'mus-terms', name: 'accept_terms', text: m.acceptTerms, required: true },
     { id: 'mus-norights', name: 'no_rights', text: m.noRights, required: true },
     { id: 'mus-own', name: 'own_rights', text: m.ownRights, required: true },
-    { id: 'mus-share', name: 'share_with_festivals', text: m.share, required: false },
   ].map((c) => (
     <div class="field">
       <div class="flex items-start gap-3">
