@@ -1009,10 +1009,10 @@ function ensembleWelcomeEmail(musId, group, lang) {
     "Quand une occasion de se produire dans un festival, un programme culturel ou un événement artistique se présentera " +
       'et que votre ensemble y correspondra, nous communiquerons avec vous.',
     '',
-    "Rappel : figurer sur cette liste ne constitue ni une invitation ferme, ni un contrat, ni une garantie de prestation. " +
-      "Toute collaboration se fait seulement avec votre accord, après avoir fixé les conditions et signé un contrat écrit.",
+    "Rappel : figurer sur cette liste ne constitue ni une invitation ferme, ni un contrat, ni une garantie de prestation dans des festivals. " +
+      "Toute collaboration se fera seulement avec votre accord, après avoir fixé les conditions et signé un contrat écrit entre l'Institut et le représentant de l'ensemble.",
     '',
-    "Si les renseignements de l'ensemble changent, ou si vous souhaitez qu'ils soient supprimés, il suffit d'écrire à " + ADV_REPLY_TO + '.',
+    "Si les renseignements de l'ensemble changent, ou pour demander la suppression de vos renseignements du site Web de l'Institut, veuillez écrire à " + ADV_REPLY_TO + '.',
     '',
     'Cordialement,',
     'Institut interculturel Matin',
@@ -1028,10 +1028,10 @@ function ensembleWelcomeEmail(musId, group, lang) {
     'When an opportunity to perform at a festival, cultural program or artistic event comes up and your ensemble suits it, ' +
       'we will contact you.',
     '',
-    'Reminder: being on this list is not a firm invitation, a contract or a guarantee of a performance. ' +
-      'Any collaboration takes place only with your agreement, once the terms are set and a written contract is signed.',
+    'Reminder: being on this list is not a firm invitation, a contract or a guarantee of a performance at festivals. ' +
+      "Any collaboration will take place only with your agreement, once the terms are set and a written contract is signed between the Institute and the ensemble's representative.",
     '',
-    "If the ensemble's information changes, or if you would like it deleted, simply write to " + ADV_REPLY_TO + '.',
+    "If the ensemble's information changes, or to ask for your information to be deleted from the Institute's website, please write to " + ADV_REPLY_TO + '.',
     '',
     'Best regards,',
     'Matin Intercultural Institute',
@@ -1045,10 +1045,10 @@ function ensembleWelcomeEmail(musId, group, lang) {
     '',
     'هرگاه فرصتی برای اجرا در جشنواره‌ها، برنامه‌های فرهنگی یا رویدادهای هنری فراهم شود و گروه شما با آن برنامه تناسب داشته باشد، با شما تماس خواهیم گرفت.',
     '',
-    'یادآوری: قرار گرفتن در این فهرست به معنای دعوت قطعی، قرارداد یا تضمین اجرا نیست. ' +
-      'هرگونه همکاری تنها با توافق شما، پس از تعیین شرایط و امضای قرارداد کتبی انجام می‌شود.',
+    'یادآوری: قرار گرفتن در این فهرست به معنی دعوت قطعی، قرارداد یا تضمین اجرا در جشنواره‌ها نیست. ' +
+      'هرگونه همکاری تنها با توافق شما، پس از تعیین شرایط و امضای قرارداد کتبی بین مؤسسه و نمایندهٔ گروه انجام خواهد شد.',
     '',
-    'اگر اطلاعات گروه تغییر کرد یا خواستید اطلاعاتتان حذف شود، کافی است به ' + ADV_REPLY_TO + ' بنویسید.',
+    'لطفاً در صورت تغییر اطلاعات گروه یا درخواست برای حذف اطلاعات شما از وب‌سایت مؤسسه، با ایمیل ' + ADV_REPLY_TO + ' تماس بگیرید.',
     '',
     'با احترام،',
     'مؤسسه میان‌فرهنگی متین',
