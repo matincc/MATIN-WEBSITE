@@ -170,6 +170,18 @@ const socialLinks = [
     />
     <p id="mus-exp-error" class="field-error" hidden></p>
   </div>
+
+  <h4 class="mus-section">{m.sectionLinks}</h4>
+  <div class="grid gap-5 sm:grid-cols-2">
+    {socialLinks.map((f) => (
+      <div class="field">
+        <label for={f.id} class="field-label">{f.label}</label>
+        <input id={f.id} name={f.name} type="url" class="input" dir="ltr" placeholder="https://" maxlength="300" aria-describedby={`${f.id}-error`} />
+        <p id={`${f.id}-error`} class="field-error" hidden></p>
+      </div>
+    ))}
+  </div>
+
   <p class="mus-hint">{m.workHint}</p>
   <div class="grid gap-5">
     {workLinks.map((f) => (
@@ -178,17 +190,6 @@ const socialLinks = [
           <span data-label-text>{f.label}</span>{f.required && <span class="req">{req}</span>}
         </label>
         <input id={f.id} name={f.name} type="url" class="input" dir="ltr" placeholder="https://" maxlength="300" required={f.required} aria-describedby={`${f.id}-error`} />
-        <p id={`${f.id}-error`} class="field-error" hidden></p>
-      </div>
-    ))}
-  </div>
-
-  <h4 class="mus-section">{m.sectionLinks}</h4>
-  <div class="grid gap-5 sm:grid-cols-2">
-    {socialLinks.map((f) => (
-      <div class="field">
-        <label for={f.id} class="field-label">{f.label}</label>
-        <input id={f.id} name={f.name} type="url" class="input" dir="ltr" placeholder="https://" maxlength="300" aria-describedby={`${f.id}-error`} />
         <p id={`${f.id}-error`} class="field-error" hidden></p>
       </div>
     ))}
