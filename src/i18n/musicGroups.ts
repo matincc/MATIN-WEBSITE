@@ -90,7 +90,7 @@ const fr = {
   otherSocial: 'Autre réseau social',
   consent: 'J’accepte que Matin utilise ces renseignements pour étudier notre inscription, conformément à la',
   submit: 'Inscrire notre ensemble',
-  success: 'Merci ! L’inscription de votre ensemble nous est bien parvenue. Après l’avoir étudiée, nous communiquerons avec vous quand une occasion appropriée se présentera. Rappel : cette inscription n’est pas une invitation ferme.',
+  success: 'Merci. L’inscription de votre ensemble est faite. Après l’avoir étudiée, nous communiquerons avec vous quand une occasion appropriée se présentera. Rappel : cette inscription n’est pas une invitation ferme.',
 };
 type MusicDict = typeof fr;
 
@@ -166,7 +166,7 @@ const en: MusicDict = {
   otherSocial: 'Other social network',
   consent: 'I agree that Matin uses this information to review our registration, in accordance with the',
   submit: 'Register our ensemble',
-  success: 'Thank you! We have received your ensemble’s registration. After reviewing it, we will contact you whenever a suitable opportunity comes up. Reminder: this registration is not a firm invitation.',
+  success: 'Thank you. Your ensemble’s registration is complete. After reviewing it, we will contact you whenever a suitable opportunity comes up. Reminder: this registration is not a firm invitation.',
 };
 
 const fa: MusicDict = {
@@ -241,7 +241,7 @@ const fa: MusicDict = {
   otherSocial: 'شبکهٔ اجتماعی دیگر',
   consent: 'موافقم که متین برای بررسی ثبت‌نام ما از این اطلاعات استفاده کند، مطابق',
   submit: 'ثبت‌نام گروه ما',
-  success: 'سپاس! ثبت‌نام گروه شما به دست ما رسید. پس از بررسی، هرگاه فرصت مناسبی پیش بیاید با شما تماس می‌گیریم. یادآوری: این ثبت‌نام به معنای دعوت قطعی نیست.',
+  success: 'سپاس. ثبت‌نام گروه شما انجام شد. پس از بررسی، هرگاه فرصت مناسبی پیش بیاید با شما تماس می‌گیریم. یادآوری: این ثبت‌نام به معنای دعوت قطعی نیست.',
 };
 
 const dicts: Record<UiLang, MusicDict> = { fr, en, fa };
