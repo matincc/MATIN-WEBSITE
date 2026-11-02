@@ -145,7 +145,7 @@ const jsonLd = [
     ))}
   </nav>
 
-  <!-- Search first, as a strong band under the banner (owner, Nov 2 2026: he could not find
+  <!-- Search first, as a strong box under the banner (owner, Nov 2 2026: he could not find
        the search), then the team's note on a navy panel. -->
   <section class="guide-finder" aria-label={s.filterLabel} data-own-ground>
     <div class="container-site">
@@ -486,15 +486,22 @@ const jsonLd = [
 
   /* Search band (owner, Nov 2 2026: stronger, easy to find): deep turquoise, a large white
      field framed in saffron, white chips; the pressed chip saffron with navy text. */
+  /* Owner, Nov 2 2026: not stretched full width, and a clear gap under the banner. */
   .guide-finder {
-    background: var(--matin-firouzeh-ink);
-    border-block-end: 6px solid var(--matin-soleil);
-    padding-block: clamp(2rem, 1.5rem + 2vw, 3rem);
-    color: var(--color-white);
+    padding-block: clamp(2rem, 1.5rem + 2vw, 3.25rem) clamp(1rem, 0.75rem + 1vw, 1.75rem);
   }
   .guide-filter {
     display: grid;
+    grid-template-columns: minmax(0, 1fr);
     gap: 1.1rem;
+    max-width: 62rem;
+    margin-inline: auto;
+    background: var(--matin-firouzeh-ink);
+    border-block-end: 6px solid var(--matin-soleil);
+    border-radius: 1.5rem;
+    border-start-start-radius: 3rem;
+    padding: clamp(1.4rem, 1rem + 2vw, 2.4rem);
+    color: var(--color-white);
   }
   .guide-filter__title {
     display: flex;
@@ -530,6 +537,7 @@ const jsonLd = [
   }
   .guide-filter__search input {
     flex: 1;
+    min-width: 0;
     min-height: 4rem;
     border: 0;
     background: transparent;
