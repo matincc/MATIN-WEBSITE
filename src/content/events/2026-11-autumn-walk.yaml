@@ -53,7 +53,8 @@ location:
     fr: 'Parc Angrignon'
     en: 'Angrignon Park'
     fa: 'پارک آنگرینیون'
-  address: 'LaSalle, Montréal (Québec)'
+  # Meeting point given by Matin on Nov 2 2026.
+  address: 'Entrée principale, près du métro Angrignon, Montréal (Québec)'
 price:
   type: free
 announced: '2026-10-21'

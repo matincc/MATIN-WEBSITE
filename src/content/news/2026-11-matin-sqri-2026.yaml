@@ -7,6 +7,14 @@ author:
   en: 'Matin Intercultural Institute'
   fa: 'مؤسسه میان‌فرهنگی متین'
 category: matin-news
+# Matin's own banner (scripts/banners/), one per language is not supported by the schema:
+# the French banner is used for all languages (French first).
+image: ../../assets/uploads/news/first-activity/fr.jpg
+imagePermission: true
+imageAlt:
+  fr: "Bannière : « Notre toute première activité. Matin à la Semaine québécoise des rencontres interculturelles 2026 », promenade familiale et amicale au parc Angrignon, samedi 7 novembre à 14 h, entrée principale près du métro Angrignon, gratuit, en français."
+  en: 'Banner: “Our very first activity. Matin at the Semaine québécoise des rencontres interculturelles 2026,” a family-friendly walk in Angrignon Park, Saturday, November 7 at 2 p.m., main entrance by Angrignon metro, free, in French.'
+  fa: 'بنر: «نخستین فعالیت ما. متین در هفتهٔ دیدارهای بین‌فرهنگی کبک ۲۰۲۶»، پیاده‌روی خانوادگی و دوستانه در پارک آنگرینیون، شنبه ۷ نوامبر ساعت ۱۴، ورودی اصلی کنار مترو آنگرینیون، رایگان، به زبان فرانسه.'
 urlSlug:
   fr: matin-semaine-rencontres-interculturelles-2026
   en: matin-intercultural-week-2026
@@ -20,6 +28,10 @@ excerpt:
   fa: 'از ۲ تا ۸ نوامبر، کبک با شعار «کبکِ مشترک» نزدیکی فرهنگ‌ها را جشن می‌گیرد. متین با یک پیاده‌روی میان‌فرهنگی در پارک آنگرینیون لاسال، شنبه ۷ نوامبر، در این هفته حضور دارد.'
 body:
   fr: |
+    ![Visuel officiel de la Semaine québécoise des rencontres interculturelles 2026](https://cdn-contenu.quebec.ca/cdn-contenu/immigration/images/SQRI/2026/IMA_SQRI_2026_coverFacebook_851x315_FIN.png)
+
+    *Visuel : ministère de l'Immigration et de l'Intégration du Québec.*
+
     La Semaine québécoise des rencontres interculturelles, organisée chaque année par le gouvernement du Québec, a lieu du 2 au 8 novembre 2026 sous le thème « Le Québec en commun ». Partout au Québec, des organismes proposent des activités en français qui favorisent les rencontres et le dialogue entre Québécoises et Québécois de toutes origines.
 
     ## Notre activité : une promenade d'automne à LaSalle
@@ -36,6 +48,10 @@ body:
 
     Renseignements : [info@matincc.ca](mailto:info@matincc.ca)
   en: |
+    ![Official visual of the Semaine québécoise des rencontres interculturelles 2026](https://cdn-contenu.quebec.ca/cdn-contenu/immigration/images/SQRI/2026/IMA_SQRI_2026_coverFacebook_851x315_FIN.png)
+
+    *Visual: Québec Ministère de l'Immigration et de l'Intégration.*
+
     The Semaine québécoise des rencontres interculturelles (Québec's intercultural encounters week), held every year by the Government of Québec, runs from November 2 to 8, 2026 under the theme “Le Québec en commun.” Across Québec, organizations offer activities in French that bring Quebecers of all origins together to meet and talk.
 
     ## Our activity: an autumn walk in LaSalle
@@ -52,6 +68,10 @@ body:
 
     Inquiries: [info@matincc.ca](mailto:info@matincc.ca)
   fa: |
+    ![تصویر رسمی هفتهٔ دیدارهای بین‌فرهنگی کبک ۲۰۲۶](https://cdn-contenu.quebec.ca/cdn-contenu/immigration/images/SQRI/2026/IMA_SQRI_2026_coverFacebook_851x315_FIN.png)
+
+    *تصویر: وزارت مهاجرت و ادغام کبک.*
+
     هفتهٔ دیدارهای بین‌فرهنگی کبک که هر سال دولت کبک برگزار می‌کند، از ۲ تا ۸ نوامبر ۲۰۲۶ با شعار «کبکِ مشترک» (Le Québec en commun) برگزار می‌شود. در سراسر کبک، سازمان‌ها برنامه‌هایی به زبان فرانسه برگزار می‌کنند تا کبکی‌ها از همهٔ خاستگاه‌ها با هم آشنا شوند و گفت‌وگو کنند.
 
     ## برنامهٔ ما: پیاده‌روی پاییزی در لاسال

@@ -37,6 +37,12 @@ imageAlt:
   fr: "Illustration : des cercles de couleurs qui se chevauchent autour d'un même centre, sur fond bleu."
   en: 'Illustration: overlapping circles of colour around a shared centre, on a blue background.'
   fa: 'تصویر: دایره‌های رنگی که گرد یک مرکز مشترک روی هم افتاده‌اند، روی زمینهٔ آبی.'
+# Official SQRI 2026 visual from the Government of Québec's free promotional kit (owner, Nov 2
+# 2026: show the official banner). Loaded from quebec.ca, credited to the ministry.
+remoteImage:
+  src: https://cdn-contenu.quebec.ca/cdn-contenu/immigration/images/SQRI/2026/IMA_SQRI_2026_post_Instagram_QCdrapeau_1080x1350_FIN.png
+  credit: "Ministère de l'Immigration et de l'Intégration"
+  source: https://www.quebec.ca/immigration/semaine-quebecoise-rencontres-interculturelles
 # Shown as the large banner on the homepage until the event ends.
 spotlight: true
 # Government of Québec event: listed first (owner, Nov 2 2026).

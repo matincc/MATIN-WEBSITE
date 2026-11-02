@@ -1,0 +1,62 @@
+<!doctype html>
+<!--
+  "Our very first activity" banner (owner, Nov 2 2026): Matin at the Semaine québécoise des
+  rencontres interculturelles 2026, autumn walk in Parc Angrignon. Rendered to
+  src/assets/uploads/news/first-activity/<lang>.jpg (1600 × 900) by render.mjs. Matin's own
+  design: no Government of Québec logo or visual identity. Photo cropped from Matin's poster.
+-->
+<html>
+<head>
+<meta charset="utf-8" />
+<style>
+@font-face{font-family:'Playfair';src:url('../../node_modules/@fontsource/playfair-display/files/playfair-display-latin-800-normal.woff2');font-weight:800}
+@font-face{font-family:'DM Sans';src:url('../../node_modules/@fontsource-variable/dm-sans/files/dm-sans-latin-wght-normal.woff2');font-weight:100 1000}
+@font-face{font-family:'Vazirmatn';src:url('../../node_modules/@fontsource-variable/vazirmatn/files/vazirmatn-arabic-wght-normal.woff2');font-weight:100 900}
+@font-face{font-family:'Vazirmatn';src:url('../../node_modules/@fontsource-variable/vazirmatn/files/vazirmatn-latin-wght-normal.woff2');font-weight:100 900;unicode-range:U+0000-00FF}
+:root{--navy:#243b50;--cream:#f5efe3;--gold:#e2aa36;--brick:#b9674d;--teal:#3c9290}
+*{box-sizing:border-box;margin:0}
+html,body{width:800px;height:450px;overflow:hidden}
+body{display:grid;grid-template-columns:44% 56%;background:var(--navy);font-family:'DM Sans',sans-serif;color:var(--cream)}
+body[dir=rtl]{font-family:'Vazirmatn',sans-serif}
+.photo{position:relative;background:url('walk-photo.jpg') center 30%/cover}
+.photo::after{content:'';position:absolute;inset:0;background:linear-gradient(90deg,transparent 60%,var(--navy))}
+body[dir=rtl] .photo::after{background:linear-gradient(270deg,transparent 60%,var(--navy))}
+.logo{position:absolute;top:18px;inset-inline-start:18px;width:74px;height:74px;border-radius:50%;background:#fff url('../../src/assets/brand/logo-circle.png') center/88% no-repeat;box-shadow:0 4px 14px rgba(0,0,0,.3);z-index:2}
+.text{padding:30px 34px 26px 22px;display:flex;flex-direction:column;justify-content:center;gap:10px;position:relative}
+body[dir=rtl] .text{padding:30px 22px 26px 34px}
+.kicker{align-self:flex-start;background:var(--gold);color:var(--navy);font-weight:800;font-size:14px;letter-spacing:.08em;text-transform:uppercase;padding:5px 12px;border-radius:999px}
+body[dir=rtl] .kicker{letter-spacing:0;font-size:15px}
+h1{font-family:'Playfair',serif;font-weight:800;font-size:29px;line-height:1.12;color:#fff}
+body[dir=rtl] h1{font-family:'Vazirmatn';font-weight:900;font-size:29px;line-height:1.4}
+.sub{font-size:17px;line-height:1.35;color:var(--cream)}
+.sub strong{color:var(--gold)}
+.facts{display:flex;flex-wrap:wrap;gap:8px;margin-top:4px}
+.facts{gap:6px}.facts span{background:rgba(255,255,255,.1);border:1px solid rgba(226,170,54,.55);padding:5px 10px;border-radius:10px;font-size:14px;font-weight:700}
+.cta{margin-top:4px;font-size:18px;font-weight:800;color:var(--gold)}
+.leaf{position:absolute;top:-30px;inset-inline-end:-30px;width:90px;height:90px;border-radius:0 70% 0 70%;background:var(--brick);opacity:.35;transform:rotate(18deg)}
+.url{position:absolute;bottom:10px;inset-inline-end:34px;font-size:13px;opacity:.8}
+</style>
+</head>
+<body>
+<div class="photo"><div class="logo"></div></div>
+<div class="text">
+  <span class="leaf"></span>
+  <p class="kicker" data-t="kicker"></p>
+  <h1 data-t="title"></h1>
+  <p class="sub" data-t="sub"></p>
+  <div class="facts"><span data-t="date"></span><span data-t="meet"></span><span data-t="free"></span><span data-t="lang"></span></div>
+  <p class="cta" data-t="cta"></p>
+  <p class="url">matincc.ca</p>
+</div>
+<script>
+const T={
+fr:{kicker:'Notre toute première activité',title:'Matin à la Semaine québécoise des rencontres interculturelles 2026',sub:'Une promenade <strong>familiale et amicale</strong> au parc Angrignon, à deux pas de LaSalle',date:'Samedi 7 novembre · 14 h',free:'Gratuit · ouvert à toutes et à tous',lang:'En français',meet:'Entrée principale, près du métro Angrignon',cta:'Venez nombreux, en famille et entre amis&#8239;!'},
+en:{kicker:'Our very first activity',title:'Matin at the Semaine québécoise des rencontres interculturelles 2026',sub:'A <strong>family-friendly</strong> walk in Angrignon Park, right next to LaSalle',date:'Saturday, November 7 · 2 p.m.',free:'Free · open to everyone',lang:'In French',meet:'Main entrance, by Angrignon metro',cta:'Come along with family and friends!'},
+fa:{kicker:'نخستین فعالیت ما',title:'متین در هفتهٔ دیدارهای بین‌فرهنگی کبک ۲۰۲۶',sub:'یک پیاده‌روی <strong>خانوادگی و دوستانه</strong> در پارک آنگرینیون، کنار لاسال',date:'شنبه ۷ نوامبر · ساعت ۱۴',free:'رایگان · برای همه',lang:'به زبان فرانسه',meet:'ورودی اصلی، کنار مترو آنگرینیون',cta:'با خانواده و دوستانتان بیایید!'}};
+const lang=new URLSearchParams(location.search).get('lang')||'fr';
+document.documentElement.lang=lang; if(lang==='fa') document.body.dir='rtl';
+for(const el of document.querySelectorAll('[data-t]')) el.innerHTML=T[lang][el.dataset.t];
+document.fonts.ready.then(()=>document.body.dataset.ready='1');
+</script>
+</body>
+</html>

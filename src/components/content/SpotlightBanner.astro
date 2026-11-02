@@ -9,6 +9,7 @@ import { CalendarDays, ExternalLink, MapPin, Building } from '@lucide/astro';
 import { cityOf, isMatinEvent, slugOf, type EventEntry } from '@/lib/content';
 import { baseLang, href as link, type UiLang } from '@/i18n/routes';
 import { pick, useTranslations } from '@/i18n/ui';
+import RemoteEventImage from '@/components/content/RemoteEventImage.astro';
 import { formatWhen } from '@/lib/dates';
 
 interface Props {
@@ -62,7 +63,18 @@ const href = ours ? link('events', lang, slugOf(event, baseLang(lang))) : d.even
     }
   </div>
   {
-    d.image && (
+    d.remoteImage && (
+      <div class="spotlight__art">
+        <RemoteEventImage
+          image={d.remoteImage}
+          alt={pick(d.imageAlt, lang) ?? pick(d.title, lang) ?? ''}
+          class="spotlight__official"
+        />
+      </div>
+    )
+  }
+  {
+    !d.remoteImage && d.image && (
       <div class="spotlight__art">
         <div class="spotlight__disc">
           <Picture
@@ -156,6 +168,17 @@ const href = ours ? link('events', lang, slugOf(event, baseLang(lang))) : d.even
   .spotlight__art {
     display: grid;
     place-items: center;
+  }
+  /* Official visual of the organizer (e.g. SQRI 2026), shown whole. */
+  .spotlight__art :global(.spotlight__official) {
+    width: min(100%, 22rem);
+    border-radius: 1rem;
+    overflow: hidden;
+  }
+  .spotlight__art :global(.spotlight__official img) {
+    display: block;
+    width: 100%;
+    height: auto;
   }
   /* The artwork is drawn around its centre, so a round crop of it can turn slowly. */
   .spotlight__disc {

@@ -58,7 +58,7 @@ export default defineConfig({
     csp: {
       directives: [
         "default-src 'self'",
-        "img-src 'self' data: https://tile.openstreetmap.org https://images.unsplash.com https://2026.tiff-jp.net https://festivalofauthors.ca https://static.wixstatic.com https://www.unesco.org https://*.google-analytics.com https://*.googletagmanager.com",
+        "img-src 'self' data: https://tile.openstreetmap.org https://images.unsplash.com https://2026.tiff-jp.net https://festivalofauthors.ca https://static.wixstatic.com https://www.unesco.org https://cdn-contenu.quebec.ca https://*.google-analytics.com https://*.googletagmanager.com",
         "font-src 'self' data:",
         // blob: lets « My Story in 15 Seconds » read the length of the visitor's own video.
         "media-src 'self' blob:",
