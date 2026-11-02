@@ -24,8 +24,9 @@ const { lang } = Astro.props;
 const t = useTranslations(lang);
 const m = musicStrings(lang);
 // Iran first in the dialling codes (owner, Nov 2 2026), then the rest as usual.
-const allDials = dialOptions(lang);
-const dials = [...allDials.filter((d) => d.value === '+98 IR'), ...allDials.filter((d) => d.value !== '+98 IR')];
+// Phone: Iran (+98) or other countries, whose number is then typed with its country code
+// (owner, Nov 2 2026: no long list).
+const iranDial = dialOptions(lang).find((d) => d.value === '+98 IR')!;
 const terms = m.terms.split('\n').map((line) => line.split('|'));
 const styleLabels = m.styleNames.split('|');
 const faDigits = (s: string) => (lang === 'fa' ? s.replace(/\d/g, (d) => '۰۱۲۳۴۵۶۷۸۹'[+d]) : s);
@@ -144,10 +145,12 @@ const socialLinks = [
       <label for="mus-phone" class="field-label">{m.phone}</label>
       <div class="mus-phone" dir="ltr">
         <select id="mus-phone-code" name="phone_code" class="input mus-phone__code" aria-label={m.phoneCode} autocomplete="tel-country-code">
-          {dials.map((d, i) => <option value={d.value} selected={i === 0}>{d.label}</option>)}
+          <option value={iranDial.value} selected>{iranDial.label}</option>
+          <option value="Other">{m.countryOther}</option>
         </select>
         <input id="mus-phone" name="phone" type="tel" class="input" autocomplete="tel-national" inputmode="tel" maxlength="40" />
       </div>
+      <p class="mus-hint" data-show-when="phone_code=Other">{m.phoneOtherHint}</p>
     </div>
   </div>
 
