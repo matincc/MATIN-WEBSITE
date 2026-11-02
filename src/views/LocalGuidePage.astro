@@ -207,7 +207,7 @@ const jsonLd = [
       >
         <div class="container-site">
           <header class="guide-region__head" data-reveal>
-            <span class="guide-region__line" aria-hidden="true">{String(ri + 1).padStart(2, '0')}</span>
+            <span class="guide-region__line" aria-hidden="true">{lang === 'fa' ? String(ri + 1).padStart(2, '0').replace(/\d/g, (d) => '۰۱۲۳۴۵۶۷۸۹'[Number(d)]) : String(ri + 1).padStart(2, '0')}</span>
             <p class="guide-region__kicker">{tx(r.kicker)}</p>
             <h2 id={`${r.id}-title`} class="guide-region__title">
               {tx(r.title)}
