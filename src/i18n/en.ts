@@ -317,7 +317,7 @@ const en: Dictionary = {
   },
   news: {
     title: 'News',
-    lede: 'Cultural news selected by Matin from reliable sources, and official news from the institute.',
+    lede: 'News from Matin Intercultural Institute: our activities, meetings and collaborations.',
     readMore: 'Read article',
     readingTime: '{n} min read',
     by: 'By',

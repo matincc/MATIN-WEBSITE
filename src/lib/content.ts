@@ -107,9 +107,22 @@ export async function getPrograms() {
 }
 
 /** Published articles, newest first (drafts only on the local preview). */
+/**
+ * Cultural News (`recommends`, other organizations' news) is switched off (owner, Nov 2 2026:
+ * the News page shows only Matin's own news). The files stay in src/content/news/; set this to
+ * true to bring them back.
+ */
+export const SHOW_CULTURAL_NEWS = false;
+
 export async function getNews(limit?: number) {
   const list = (
-    await getCollection('news', (p) => !p.data.archived && (import.meta.env.DEV || !p.data.draft))
+    await getCollection(
+      'news',
+      (p) =>
+        !p.data.archived &&
+        (import.meta.env.DEV || !p.data.draft) &&
+        (SHOW_CULTURAL_NEWS || p.data.category !== 'recommends'),
+    )
   ).sort((a, b) => b.data.date.getTime() - a.data.date.getTime());
   return limit ? list.slice(0, limit) : list;
 }

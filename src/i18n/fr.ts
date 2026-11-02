@@ -322,7 +322,7 @@ const fr = {
   },
   news: {
     title: 'Actualités',
-    lede: "L'actualité culturelle choisie par Matin auprès de sources fiables, et les nouvelles officielles de l'Institut.",
+    lede: "Les nouvelles de l'Institut interculturel Matin : nos activités, nos rencontres et nos collaborations.",
     readMore: "Lire l'article",
     readingTime: '{n} min de lecture',
     by: 'Par',

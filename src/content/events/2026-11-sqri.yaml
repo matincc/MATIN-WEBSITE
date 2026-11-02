@@ -39,4 +39,6 @@ imageAlt:
   fa: 'تصویر: دایره‌های رنگی که گرد یک مرکز مشترک روی هم افتاده‌اند، روی زمینهٔ آبی.'
 # Shown as the large banner on the homepage until the event ends.
 spotlight: true
+# Government of Québec event: listed first (owner, Nov 2 2026).
+official: true
 faReviewed: true

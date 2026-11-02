@@ -11,6 +11,7 @@ import PageLayout from '@/layouts/PageLayout.astro';
 import SectionHeader from '@/components/ui/SectionHeader.astro';
 import EventCard from '@/components/content/EventCard.astro';
 import PicksSection from '@/components/content/PicksSection.astro';
+import SpotlightBanner from '@/components/content/SpotlightBanner.astro';
 import ExpireEvents from '@/components/content/ExpireEvents.astro';
 import Lightbox from '@/components/ui/Lightbox.astro';
 import { baseLang, href, siteAlternates, type UiLang } from '@/i18n/routes';
@@ -29,8 +30,22 @@ const matinUpcoming = allUpcoming.filter(isMatinEvent);
 const pickIds = picksOf(allUpcoming)
   .filter((e) => !isMatinEvent(e))
   .map((e) => e.id);
-const shownAbove = new Set([...matinUpcoming.map((e) => e.id), ...pickIds]);
-const upcoming = allUpcoming.filter((e) => !shownAbove.has(e.id));
+// « À la une » (owner, Nov 2 2026): official Québec / Montréal events marked `spotlight`
+// open the page in a bold banner, with Matin's own activity during that time.
+const spotlights = allUpcoming.filter((e) => e.data.spotlight && !isMatinEvent(e));
+const spotlightIds = spotlights.map((e) => e.id);
+const shownAbove = new Set([...matinUpcoming.map((e) => e.id), ...pickIds, ...spotlightIds]);
+// Government and City of Montréal events first (owner, Nov 2 2026), then by date.
+const upcoming = allUpcoming
+  .filter((e) => !shownAbove.has(e.id))
+  .sort((a, b) => Number(b.data.official) - Number(a.data.official));
+const ourDuring = (s: (typeof spotlights)[number]) =>
+  matinUpcoming.find((m) => m.startDate >= s.startDate && m.startDate <= s.endDate);
+const spotStrings = {
+  fr: { title: 'À la une', ours: 'Matin y prend part :' },
+  en: { title: 'In the spotlight', ours: 'Matin takes part:' },
+  fa: { title: 'رویداد ویژه', ours: 'برنامهٔ متین در این هفته:' },
+}[lang];
 /** Upcoming events shown at a time; "Show more events" reveals the next ones. */
 const PAGE_SIZE = 9;
 
@@ -108,6 +123,29 @@ const showFilters = upcoming.length >= FILTER_MIN_EVENTS && filters.length > 0;
   alternates={siteAlternates('events')}
   searchable={false}
 >
+  {spotlights.length > 0 && (
+    <section id="spotlight" class="ev-spot scroll-mt-24" aria-labelledby="ev-spot-title">
+      <div class="container-site">
+        <h2 id="ev-spot-title" class="ev-spot__title">{spotStrings.title}</h2>
+        {spotlights.map((s) => {
+          const ours = ourDuring(s);
+          return (
+            <div class="ev-spot__item">
+              <SpotlightBanner event={s} lang={lang} />
+              {ours && (
+                <p class="ev-spot__ours">
+                  <strong>{spotStrings.ours}</strong>{' '}
+                  <a href={href('events', lang, slugOf(ours, baseLang(lang)))}>
+                    {pick(ours.data.title, lang)}
+                  </a>
+                </p>
+              )}
+            </div>
+          );
+        })}
+      </div>
+    </section>
+  )}
   <section
     id="matin-events"
     class="ev-band ev-band--matin scroll-mt-24"
@@ -307,6 +345,35 @@ const showFilters = upcoming.length >= FILTER_MIN_EVENTS && filters.length > 0;
 </script>
 
 <style>
+  .ev-spot {
+    padding-block: clamp(2.5rem, 5vw, 4rem) 1rem;
+  }
+  .ev-spot__title {
+    margin-block-end: 1.25rem;
+    font-family: var(--font-display, inherit);
+    font-size: clamp(1.75rem, 3vw, 2.5rem);
+    font-weight: 800;
+    color: var(--matin-encre);
+  }
+  .ev-spot__item + .ev-spot__item {
+    margin-block-start: 2rem;
+  }
+  .ev-spot__ours {
+    margin-block-start: 1rem;
+    padding: 0.9rem 1.25rem;
+    border-inline-start: 6px solid var(--matin-soleil);
+    border-radius: 0.75rem;
+    background: color-mix(in srgb, var(--matin-soleil) 18%, var(--matin-white));
+    font-size: 1.125rem;
+    color: var(--matin-encre);
+  }
+  .ev-spot__ours a {
+    font-weight: 700;
+    text-decoration: underline;
+    text-decoration-color: var(--matin-soleil);
+    text-decoration-thickness: 3px;
+  }
+
   /* ---------- Bands (owner, Nov 1 2026: a basic redesign, shorter, with motion) ----------
      Matin Events on navy with a saffron sun, Matin's Picks on deep turquoise, upcoming
      events on pale saffron, past events on pale terracotta. Flat shapes only. */

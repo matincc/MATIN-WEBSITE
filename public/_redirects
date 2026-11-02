@@ -21,3 +21,9 @@
 /en/news/category/matin-news/               /en/news/#matin-news             301
 /en/news/category/*                         /en/news/#cultural-news          301
 /en/news/page/*                             /en/news/                        301
+
+# Cultural News (other organizations' news) was switched off on Nov 2, 2026 (owner): its
+# article addresses land on the News page. Not forced, so Matin's own articles still load.
+/fr/actualites/*   /fr/actualites/   301
+/en/news/*         /en/news/         301
+/fa/news/*         /fa/news/         301

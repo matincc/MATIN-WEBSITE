@@ -1,0 +1,41 @@
+# SQRI 2026 celebration evening in the Sud-Ouest, next to LaSalle (owner, Nov 2 2026: official
+# Québec and Montréal events first). Facts from montreal.ca, checked Nov 2 2026.
+kind: selected
+organizer:
+  name: "Centre social d'aide aux immigrants (CSAI)"
+title:
+  fr: 'Soirée de célébration de la Semaine québécoise des rencontres interculturelles 2026'
+  en: 'SQRI 2026 Celebration Evening'
+  fa: 'شب جشن هفتهٔ دیدارهای بین‌فرهنگی کبک ۲۰۲۶'
+urlSlug:
+  fr: soiree-celebration-sqri-2026
+  en: sqri-2026-celebration-evening
+summary:
+  fr: "Une soirée de rencontres et de découvertes culturelles : musique, danse, arts visuels, dessin en direct, projections vidéo et prestations de plusieurs pays, avec la remise de reconnaissances aux bénévoles et aux élèves en francisation du CSAI."
+  en: 'An evening of meeting people and discovering cultures: music, dance, visual arts, live drawing, video screenings and performances from several countries, with recognition awards for CSAI volunteers and French-language students.'
+  fa: 'شبی برای دیدار و آشنایی با فرهنگ‌ها: موسیقی، رقص، هنرهای تجسمی، نقاشی زنده، نمایش ویدیو و اجراهایی از چند کشور، همراه با قدردانی از داوطلبان و هنرجویان کلاس‌های زبان فرانسهٔ CSAI.'
+whyItMatters:
+  fr: "Une activité officielle de la Semaine, soutenue par le ministère de l'Immigration, dans le Sud-Ouest, tout près de LaSalle."
+  en: 'An official activity of the Week, supported by Québec’s Ministry of Immigration, in the Sud-Ouest, right next to LaSalle.'
+  fa: 'یکی از برنامه‌های رسمی این هفته با حمایت وزارت مهاجرت کبک، در Sud-Ouest و در همسایگی LaSalle.'
+subject: dialogue
+region: montreal
+city: Montréal
+format: in-person
+language: fr
+start: '2026-11-03T17:00'
+end: '2026-11-03T19:00'
+location:
+  name: 'Maison de la culture Marie-Uguay'
+  address: '6052, boulevard Monk, 2e étage, Montréal (Québec) H4E 3H6'
+price:
+  type: free
+  label:
+    fr: 'Gratuit, billet requis (en personne, ou 2 $ en ligne)'
+    en: 'Free, ticket required (in person, or $2 online)'
+    fa: 'رایگان، با بلیت (حضوری، یا ۲ دلار آنلاین)'
+eventUrl: https://montreal.ca/evenements/soiree-de-celebration-de-la-semaine-quebecoise-des-rencontres-interculturelles-2026-121029
+registrationUrl: https://marieuguay.tuxedobillet.com/Marie-Uguay/soiree-de-celebration-du-csai
+sourceUrl: https://montreal.ca/evenements/soiree-de-celebration-de-la-semaine-quebecoise-des-rencontres-interculturelles-2026-121029
+lastVerified: '2026-11-02'
+official: true

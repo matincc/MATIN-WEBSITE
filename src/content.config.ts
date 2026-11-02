@@ -153,6 +153,9 @@ const events = defineCollection({
         featuredUntil: isoDate.optional(),
         /** Large banner at the top of the homepage events section, until the event ends. */
         spotlight: z.boolean().default(false),
+        /** Organized by the Government of Québec or Canada or the City of Montréal, or part of
+            their official programme (e.g. the SQRI): listed first (owner, Nov 2 2026). */
+        official: z.boolean().default(false),
         /** Drafts appear only on the local preview (npm run dev), never on the live site. */
         draft: z.boolean().default(false),
         image: image().optional(),

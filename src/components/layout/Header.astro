@@ -19,7 +19,7 @@ import { strings as cultureMapStrings } from '@/lib/cultureMap';
 import { storyStrings } from '@/i18n/stories';
 import fs from 'node:fs';
 import nodePath from 'node:path';
-import { getNetworks, getUpcomingEvents, picksOf } from '@/lib/content';
+import { getNetworks, getUpcomingEvents, picksOf, SHOW_CULTURAL_NEWS } from '@/lib/content';
 import { guideStrings } from '@/lib/localGuide';
 
 interface Props {
@@ -84,7 +84,10 @@ eventsLinks.push({ id: 'gallery', label: t('nav.gallery'), href: href('gallery',
 // Sub-links of "News": its two sections (owner's brief, Oct 25 2026), then the President's notes.
 const newsHref = href('news', lang);
 const newsLinks: { id: string; label: string; href: string }[] = (
-  Object.keys(newsAnchors) as (keyof typeof newsAnchors)[]
+  (Object.keys(newsAnchors) as (keyof typeof newsAnchors)[]).filter(
+    // Cultural News switched off (owner, Nov 2 2026).
+    (c) => SHOW_CULTURAL_NEWS || c !== 'recommends',
+  )
 ).map((c) => ({
   id: newsAnchors[c] as string,
   label: t(`newsCategories.${c}`),

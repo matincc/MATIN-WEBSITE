@@ -84,6 +84,8 @@ const alternates = siteAlternates('news');
       </p>
     </div>
   </section>
+  {/* Cultural News switched off (owner, Nov 2 2026): see SHOW_CULTURAL_NEWS in lib/content. */}
+  {cultural.length > 0 && (
   <section
     id="cultural-news"
     class="news-cultural on-dark scroll-mt-28"
@@ -102,6 +104,7 @@ const alternates = siteAlternates('news');
       </div>
     </div>
   </section>
+  )}
 
 </PageLayout>
 
