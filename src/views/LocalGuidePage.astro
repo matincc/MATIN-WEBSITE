@@ -207,7 +207,7 @@ const jsonLd = [
       >
         <div class="container-site">
           <header class="guide-region__head" data-reveal>
-            <span class="guide-region__line" aria-hidden="true">{ri + 1}</span>
+            <span class="guide-region__line" aria-hidden="true">{String(ri + 1).padStart(2, '0')}</span>
             <p class="guide-region__kicker">{tx(r.kicker)}</p>
             <h2 id={`${r.id}-title`} class="guide-region__title">
               {tx(r.title)}
@@ -630,50 +630,32 @@ const jsonLd = [
     color: var(--matin-encre);
   }
 
-  /* Regions as metro lines (owner, Nov 2 2026: « all boxes, it looks hand-drawn; bold,
-     innovative, beautiful colours and forms »). Each region is a full-width band in one
-     official colour with a round line badge (1 LaSalle, 2 Montréal, 3 Québec, 4 Canada),
-     giant figures without boxes, and its places as stations along a thick line.
-     Contrast: white on brique-ink 6.4, firouzeh-ink 5.6, encre 11; encre on soleil 6.1. */
+  /* Regions as chapters of an atlas (owner, Nov 2 2026, second try: the colour bands were
+     « too loud, like a child's drawing »). Light grounds (white and ivory alternate), navy
+     type, colour only in details: a large outlined chapter number, a short rule and the
+     place dots in the region's colour. Places are a refined directory with hairlines. */
   .guide-region {
-    --band: var(--matin-brique-ink);
-    --fg: var(--color-white);
-    --soft: color-mix(in srgb, var(--color-white) 88%, transparent);
-    --accent: var(--matin-soleil);
-    --rail: color-mix(in srgb, var(--color-white) 35%, transparent);
+    --accent: var(--matin-brique);
+    --accent-ink: var(--matin-brique-ink);
     position: relative;
     padding-block: clamp(3.5rem, 7vw, 6rem);
-    background: var(--band);
-    color: var(--fg);
-    overflow: hidden;
+    background: var(--color-white);
+    color: var(--matin-encre);
   }
-  .guide-region--montreal { --band: var(--matin-firouzeh-ink); }
+  .guide-region:nth-of-type(even) {
+    background: var(--matin-ivoire);
+  }
+  .guide-region--montreal {
+    --accent: var(--matin-firouzeh);
+    --accent-ink: var(--matin-firouzeh-ink);
+  }
   .guide-region--quebec {
-    --band: var(--matin-soleil);
-    --fg: var(--matin-encre);
-    --soft: var(--matin-encre);
-    --accent: var(--matin-brique-ink);
-    --rail: color-mix(in srgb, var(--matin-encre) 30%, transparent);
+    --accent: var(--matin-soleil);
+    --accent-ink: var(--matin-brique-ink);
   }
-  .guide-region--canada { --band: var(--matin-encre); }
-  /* One large flat circle per band, alternating sides: the sun moving across the map. */
-  .guide-region::before {
-    content: '';
-    position: absolute;
-    inset-block-start: -8rem;
-    inset-inline-end: -8rem;
-    width: clamp(16rem, 30vw, 26rem);
-    aspect-ratio: 1;
-    border-radius: 50%;
-    background: color-mix(in srgb, var(--fg) 9%, transparent);
-    pointer-events: none;
-  }
-  .guide-region:nth-of-type(even)::before {
-    inset-inline-end: auto;
-    inset-inline-start: -8rem;
-  }
-  .guide-region > .container-site {
-    position: relative;
+  .guide-region--canada {
+    --accent: var(--matin-encre);
+    --accent-ink: var(--matin-encre);
   }
   .guide-region.is-filtered .guide-figures,
   .guide-region.is-filtered .guide-sources,
@@ -683,67 +665,62 @@ const jsonLd = [
   .guide-region__head {
     display: grid;
     grid-template-columns: auto 1fr;
-    align-items: center;
-    gap: 0.25rem 1.25rem;
-    max-width: 60rem;
-    margin-bottom: 2.5rem;
+    align-items: end;
+    gap: 0 clamp(1rem, 0.5rem + 2vw, 2rem);
+    max-width: 62rem;
+    margin-bottom: 2.75rem;
   }
   .guide-region__line {
     grid-row: span 2;
-    display: grid;
-    place-items: center;
-    width: clamp(4rem, 3rem + 3vw, 6rem);
-    aspect-ratio: 1;
-    border-radius: 50%;
-    border: 6px solid var(--accent);
-    background: var(--fg);
-    color: var(--band);
-    font-family: var(--font-display);
-    font-size: clamp(1.8rem, 1.3rem + 2vw, 3rem);
-    font-weight: 900;
+    font-family: var(--font-editorial);
+    font-size: clamp(4.5rem, 3rem + 6vw, 8.5rem);
+    font-weight: 700;
+    line-height: 0.8;
+    color: transparent;
+    -webkit-text-stroke: 2px var(--accent);
+    font-variant-numeric: lining-nums;
   }
   .guide-region__kicker {
-    align-self: end;
     font-family: var(--font-display);
-    font-size: 0.95rem;
+    font-size: 0.9rem;
     font-weight: 800;
-    letter-spacing: 0.18em;
+    letter-spacing: 0.2em;
     text-transform: uppercase;
-    color: var(--accent);
-  }
-  .guide-region--quebec .guide-region__kicker {
-    color: var(--matin-encre);
-  }
-  .guide-region--lasalle .guide-region__kicker,
-  .guide-region--montreal .guide-region__kicker,
-  .guide-region--canada .guide-region__kicker {
-    color: var(--matin-soleil);
+    color: var(--accent-ink);
   }
   .guide-region__title {
-    align-self: start;
+    position: relative;
+    padding-bottom: 0.9rem;
     font-family: var(--font-editorial);
-    font-size: clamp(3rem, 2rem + 5vw, 6rem);
-    font-weight: 800;
-    line-height: 0.95;
-    color: var(--fg);
+    font-size: clamp(2.6rem, 1.8rem + 3.5vw, 4.5rem);
+    font-weight: 700;
+    line-height: 1;
+    color: var(--matin-encre);
   }
-  .guide-region__scribble {
-    display: none;
+  .guide-region__title::after {
+    content: '';
+    position: absolute;
+    inset-inline-start: 0;
+    inset-block-end: 0;
+    width: 4.5rem;
+    height: 4px;
+    border-radius: 2px;
+    background: var(--accent);
   }
   .guide-region__intro {
     grid-column: 1 / -1;
-    margin-top: 1.25rem;
-    font-size: clamp(1.1rem, 1rem + 0.4vw, 1.3rem);
-    line-height: 1.75;
-    color: var(--soft);
+    max-width: 46rem;
+    margin-top: 1.5rem;
+    font-size: clamp(1.1rem, 1rem + 0.35vw, 1.25rem);
+    line-height: 1.8;
+    color: var(--color-ink);
   }
   .guide-cite,
   .guide-sources a {
-    color: var(--fg);
-    font-weight: 700;
+    color: var(--accent-ink);
+    font-weight: 600;
     text-decoration: underline;
-    text-decoration-color: var(--accent);
-    text-decoration-thickness: 2px;
+    text-decoration-thickness: 1px;
     text-underline-offset: 3px;
   }
   .guide-cite {
@@ -751,19 +728,19 @@ const jsonLd = [
     font-size: 0.9em;
   }
 
-  /* Figures: giant numbers on the band, thin rules between them, no boxes. */
+  /* Figures: large navy numerals between hairlines. */
   .guide-figures {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(min(100%, 13rem), 1fr));
-    margin-block: 0 0.75rem;
-    border-block: 2px solid var(--rail);
+    margin-bottom: 0.75rem;
+    border-block: 1px solid color-mix(in srgb, var(--matin-encre) 18%, transparent);
   }
   .guide-figure {
     display: flex;
     flex-direction: column;
-    gap: 0.35rem;
-    padding: 1.5rem 1.25rem;
-    border-inline-start: 2px solid var(--rail);
+    gap: 0.4rem;
+    padding: 1.6rem 1.5rem;
+    border-inline-start: 1px solid color-mix(in srgb, var(--matin-encre) 18%, transparent);
   }
   .guide-figure:first-child {
     border-inline-start: 0;
@@ -773,7 +750,7 @@ const jsonLd = [
     .guide-figure {
       padding-inline: 0;
       border-inline-start: 0;
-      border-block-start: 2px solid var(--rail);
+      border-block-start: 1px solid color-mix(in srgb, var(--matin-encre) 18%, transparent);
     }
     .guide-figure:first-child {
       border-block-start: 0;
@@ -781,27 +758,26 @@ const jsonLd = [
   }
   .guide-figure__value {
     font-family: var(--font-editorial);
-    font-size: clamp(2.6rem, 1.8rem + 3vw, 4.5rem);
-    font-weight: 800;
+    font-size: clamp(2.3rem, 1.7rem + 2.2vw, 3.6rem);
+    font-weight: 600;
     line-height: 1;
-    color: var(--fg);
-    font-variant-numeric: tabular-nums;
+    color: var(--matin-encre);
+    font-variant-numeric: lining-nums tabular-nums;
   }
   .guide-figure__label {
-    font-family: var(--font-display);
-    font-weight: 700;
-    color: var(--soft);
+    font-size: 0.98rem;
+    color: var(--color-ink);
   }
   .guide-sources {
-    font-size: 0.85rem;
+    font-size: 0.82rem;
     line-height: 1.6;
-    color: var(--soft);
+    color: color-mix(in srgb, var(--color-ink) 85%, transparent);
   }
 
-  /* Languages and key facts: two open columns on the band. */
+  /* Languages and key facts: two quiet columns. */
   .guide-pair {
     display: grid;
-    gap: 2.5rem 4rem;
+    gap: 2.5rem 4.5rem;
     margin-top: 3rem;
   }
   @media (min-width: 60rem) {
@@ -812,24 +788,25 @@ const jsonLd = [
   .guide-sub {
     margin-bottom: 1.1rem;
     font-family: var(--font-display);
-    font-size: 1.2rem;
+    font-size: 0.85rem;
     font-weight: 800;
-    color: var(--fg);
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--matin-encre);
   }
   .guide-sub--places {
-    margin-top: 3.5rem;
-    font-family: var(--font-editorial);
-    font-size: clamp(1.6rem, 1.3rem + 1vw, 2.2rem);
+    margin-top: 3.75rem;
+    margin-bottom: 0.5rem;
   }
   .guide-shares,
   .guide-facts {
     margin: 0;
-    padding-top: 1.25rem;
-    border-top: 4px solid var(--accent);
+    padding-top: 1.1rem;
+    border-top: 1px solid color-mix(in srgb, var(--matin-encre) 18%, transparent);
   }
   .guide-shares ul {
     display: grid;
-    gap: 0.9rem;
+    gap: 0.85rem;
     margin-bottom: 1rem;
   }
   .guide-share {
@@ -837,12 +814,11 @@ const jsonLd = [
     grid-template-columns: minmax(8rem, 12rem) 1fr auto;
     align-items: center;
     gap: 1rem;
-    font-weight: 600;
   }
   .guide-share__bar {
-    height: 0.9rem;
+    height: 6px;
     border-radius: 999px;
-    background: var(--rail);
+    background: color-mix(in srgb, var(--matin-encre) 10%, transparent);
     overflow: hidden;
   }
   .guide-share__bar span {
@@ -850,128 +826,113 @@ const jsonLd = [
     width: var(--share);
     height: 100%;
     border-radius: inherit;
-    background: var(--fg);
+    background: var(--matin-encre);
   }
-  .guide-share:nth-child(1) .guide-share__bar span { background: var(--matin-soleil); }
-  .guide-region--quebec .guide-share:nth-child(1) .guide-share__bar span { background: var(--matin-brique-ink); }
+  .guide-share:nth-child(1) .guide-share__bar span {
+    background: var(--accent);
+  }
   .guide-share__value {
     font-family: var(--font-display);
-    font-weight: 800;
+    font-weight: 700;
     font-variant-numeric: tabular-nums;
   }
   .guide-facts ul {
     display: grid;
-    gap: 0.75rem;
     margin-bottom: 1rem;
   }
   .guide-facts li {
-    position: relative;
-    padding-inline-start: 1.75rem;
-    line-height: 1.6;
-  }
-  .guide-facts li::before {
-    content: '';
-    position: absolute;
-    inset-inline-start: 0;
-    inset-block-start: 0.35em;
-    width: 0.9rem;
-    height: 0.9rem;
-    border-radius: 50%;
-    border: 3px solid var(--accent);
-    background: var(--fg);
+    padding-block: 0.6rem;
+    border-bottom: 1px solid color-mix(in srgb, var(--matin-encre) 10%, transparent);
+    line-height: 1.55;
   }
 
-  /* Places as stations along the line: a thick rail on the start side, a round stop per
-     place, the name large; two lines side by side on wide screens. */
+  /* Places: a directory in two columns, hairline rows, a small dot in the region colour,
+     the name in the serif, « Site officiel → » that moves on hover. */
   .guide-places {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(min(100%, 24rem), 1fr));
-    column-gap: 3rem;
+    grid-template-columns: repeat(auto-fill, minmax(min(100%, 30rem), 1fr));
+    column-gap: 3.5rem;
+    border-top: 2px solid var(--matin-encre);
   }
   .guide-place {
-    position: relative;
-    display: flex;
-    flex-direction: column;
-    gap: 0.45rem;
-    padding: 0.4rem 0 2.25rem;
-    padding-inline-start: 3.25rem;
+    display: grid;
+    grid-template-columns: auto 1fr;
+    column-gap: 1rem;
+    row-gap: 0.3rem;
+    align-content: start;
+    padding: 1.35rem 0.75rem;
+    border-bottom: 1px solid color-mix(in srgb, var(--matin-encre) 15%, transparent);
+    transition: background-color 0.2s ease;
+  }
+  .guide-place:hover,
+  .guide-place:focus-within {
+    background: color-mix(in srgb, var(--accent) 8%, transparent);
+  }
+  .guide-place > * {
+    grid-column: 2;
   }
   .guide-place::before {
     content: '';
-    position: absolute;
-    inset-block: 0;
-    inset-inline-start: 0.85rem;
-    width: 8px;
-    border-radius: 4px;
-    background: var(--accent);
-  }
-  .guide-place::after {
-    content: '';
-    position: absolute;
-    inset-block-start: 0.35rem;
-    inset-inline-start: 0.05rem;
-    width: 1.6rem;
-    height: 1.6rem;
+    grid-column: 1;
+    grid-row: 1 / span 2;
+    width: 0.7rem;
+    height: 0.7rem;
+    margin-top: 0.3rem;
     border-radius: 50%;
-    border: 6px solid var(--accent);
-    background: var(--fg);
-    transition: scale 0.25s ease;
-  }
-  .guide-place:hover::after,
-  .guide-place:focus-within::after {
-    scale: 1.25;
+    background: var(--accent);
   }
   .guide-place__kind {
     display: inline-flex;
     align-items: center;
     gap: 0.4rem;
     font-family: var(--font-display);
-    font-size: 0.8rem;
+    font-size: 0.75rem;
     font-weight: 800;
-    letter-spacing: 0.12em;
+    letter-spacing: 0.14em;
     text-transform: uppercase;
-    color: var(--soft);
+    color: color-mix(in srgb, var(--matin-encre) 75%, transparent);
   }
   .guide-place__name {
     font-family: var(--font-editorial);
-    font-size: clamp(1.35rem, 1.2rem + 0.6vw, 1.7rem);
-    font-weight: 700;
-    line-height: 1.2;
-    color: var(--fg);
+    font-size: clamp(1.25rem, 1.15rem + 0.4vw, 1.5rem);
+    font-weight: 600;
+    line-height: 1.25;
+    color: var(--matin-encre);
   }
   .guide-place__note {
-    max-width: 34rem;
+    max-width: 36rem;
     line-height: 1.65;
-    color: var(--soft);
+    color: var(--color-ink);
   }
   .guide-place__link {
     display: inline-flex;
     align-items: center;
     gap: 0.4rem;
-    align-self: flex-start;
-    margin-top: 0.2rem;
-    padding: 0.35rem 1rem;
-    border-radius: 999px;
-    background: var(--fg);
-    color: var(--band);
+    justify-self: start;
+    margin-top: 0.3rem;
     font-family: var(--font-display);
     font-weight: 800;
     font-size: 0.95rem;
-    transition: background 0.2s ease, color 0.2s ease;
+    color: var(--accent-ink);
+    text-decoration: underline;
+    text-decoration-thickness: 1px;
+    text-underline-offset: 4px;
   }
-  .guide-place__link:hover {
-    background: var(--accent);
-    color: var(--matin-encre);
+  .guide-place__link :global(svg) {
+    transition: translate 0.2s ease;
   }
-  .guide-region--quebec .guide-place__link:hover {
-    color: var(--color-white);
+  .guide-place:hover .guide-place__link :global(svg) {
+    translate: 3px -3px;
   }
   .guide-place__link:focus-visible {
-    outline: 3px solid var(--fg);
+    outline: 3px solid var(--matin-encre);
     outline-offset: 3px;
   }
   @media (prefers-reduced-motion: reduce) {
-    .guide-place::after { transition: none; }
+    .guide-place,
+    .guide-place__link :global(svg) {
+      transition: none;
+    }
   }
 
   .guide-note {
