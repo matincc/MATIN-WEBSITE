@@ -796,7 +796,7 @@ const jsonLd = [
   }
   .guide-sub--places {
     margin-top: 3.75rem;
-    margin-bottom: 0.5rem;
+    margin-bottom: 1.25rem;
   }
   .guide-shares,
   .guide-facts {
@@ -846,83 +846,95 @@ const jsonLd = [
     line-height: 1.55;
   }
 
-  /* Places: a directory in two columns, hairline rows, a small dot in the region colour,
-     the name in the serif, « Site officiel → » that moves on hover. */
+  /* Places as cards again (owner, Nov 2 2026: « keep the first boxes, but in colour,
+     different colours, not square »). Each card a soft tint of one official colour, cycling
+     terracotta, saffron, turquoise, navy; a thick top edge and the kind pill in the full
+     colour; one deep corner that alternates side. Navy text on every tint (9:1 or more). */
   .guide-places {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(min(100%, 30rem), 1fr));
-    column-gap: 3.5rem;
-    border-top: 2px solid var(--matin-encre);
+    grid-template-columns: repeat(auto-fill, minmax(min(100%, 19rem), 1fr));
+    gap: 1.5rem;
   }
   .guide-place {
-    display: grid;
-    grid-template-columns: auto 1fr;
-    column-gap: 1rem;
-    row-gap: 0.3rem;
-    align-content: start;
-    padding: 1.35rem 0.75rem;
-    border-bottom: 1px solid color-mix(in srgb, var(--matin-encre) 15%, transparent);
-    transition: background-color 0.2s ease;
+    --c: var(--matin-brique);
+    --c-ink: var(--matin-brique-ink);
+    display: flex;
+    flex-direction: column;
+    gap: 0.6rem;
+    padding: 1.6rem 1.5rem 1.5rem;
+    border-radius: 1rem;
+    border-start-start-radius: 2.75rem;
+    border-top: 6px solid var(--c);
+    background: color-mix(in srgb, var(--c) 16%, var(--color-white));
+    box-shadow: 0 16px 30px -26px color-mix(in srgb, var(--matin-encre) 70%, transparent);
+    transition: translate 0.25s ease, box-shadow 0.25s ease;
+  }
+  .guide-place:nth-child(4n + 2) {
+    --c: var(--matin-soleil);
+    --c-ink: var(--matin-brique-ink);
+    border-radius: 1rem;
+    border-start-end-radius: 2.75rem;
+  }
+  .guide-place:nth-child(4n + 3) {
+    --c: var(--matin-firouzeh);
+    --c-ink: var(--matin-firouzeh-ink);
+  }
+  .guide-place:nth-child(4n + 4) {
+    --c: var(--matin-encre);
+    --c-ink: var(--matin-encre);
+    background: color-mix(in srgb, var(--matin-encre) 9%, var(--color-white));
+    border-radius: 1rem;
+    border-start-end-radius: 2.75rem;
   }
   .guide-place:hover,
   .guide-place:focus-within {
-    background: color-mix(in srgb, var(--accent) 8%, transparent);
-  }
-  .guide-place > * {
-    grid-column: 2;
-  }
-  .guide-place::before {
-    content: '';
-    grid-column: 1;
-    grid-row: 1 / span 2;
-    width: 0.7rem;
-    height: 0.7rem;
-    margin-top: 0.3rem;
-    border-radius: 50%;
-    background: var(--accent);
+    translate: 0 -4px;
+    box-shadow: 0 22px 36px -24px color-mix(in srgb, var(--matin-encre) 80%, transparent);
   }
   .guide-place__kind {
     display: inline-flex;
     align-items: center;
     gap: 0.4rem;
+    align-self: flex-start;
+    padding: 0.25rem 0.8rem;
+    border-radius: 999px;
+    background: var(--c-ink);
+    color: var(--color-white);
     font-family: var(--font-display);
-    font-size: 0.75rem;
+    font-size: 0.8rem;
     font-weight: 800;
-    letter-spacing: 0.14em;
-    text-transform: uppercase;
-    color: color-mix(in srgb, var(--matin-encre) 75%, transparent);
   }
   .guide-place__name {
     font-family: var(--font-editorial);
-    font-size: clamp(1.25rem, 1.15rem + 0.4vw, 1.5rem);
-    font-weight: 600;
+    font-size: 1.35rem;
+    font-weight: 700;
     line-height: 1.25;
     color: var(--matin-encre);
   }
   .guide-place__note {
-    max-width: 36rem;
+    flex: 1;
     line-height: 1.65;
-    color: var(--color-ink);
+    color: var(--matin-encre);
   }
   .guide-place__link {
     display: inline-flex;
     align-items: center;
     gap: 0.4rem;
-    justify-self: start;
-    margin-top: 0.3rem;
+    align-self: flex-start;
+    margin-top: 0.25rem;
+    padding: 0.4rem 1rem;
+    border-radius: 999px;
+    background: var(--color-white);
+    color: var(--c-ink);
     font-family: var(--font-display);
     font-weight: 800;
     font-size: 0.95rem;
-    color: var(--accent-ink);
-    text-decoration: underline;
-    text-decoration-thickness: 1px;
-    text-underline-offset: 4px;
+    box-shadow: inset 0 0 0 2px var(--c);
+    transition: background 0.2s ease, color 0.2s ease;
   }
-  .guide-place__link :global(svg) {
-    transition: translate 0.2s ease;
-  }
-  .guide-place:hover .guide-place__link :global(svg) {
-    translate: 3px -3px;
+  .guide-place__link:hover {
+    background: var(--c-ink);
+    color: var(--color-white);
   }
   .guide-place__link:focus-visible {
     outline: 3px solid var(--matin-encre);
@@ -930,8 +942,12 @@ const jsonLd = [
   }
   @media (prefers-reduced-motion: reduce) {
     .guide-place,
-    .guide-place__link :global(svg) {
+    .guide-place__link {
       transition: none;
+    }
+    .guide-place:hover,
+    .guide-place:focus-within {
+      translate: none;
     }
   }
 
