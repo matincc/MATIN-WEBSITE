@@ -1,4 +1,4 @@
-// Matin forms web app v9 (advisor emails in the site's language; CVs checked: real PDF or .docx, no macros; Nov 1 2026)
+// Matin forms web app v10 (music ensembles registry + emails; Nov 2 2026)
 /**
  * Matin – website form entries → Google Sheet (owner's request, Oct 27 2026; membership
  * applications added Oct 28 2026, volunteer registry and thank-you emails Oct 29 2026: after changing this file, paste it into the Apps Script
@@ -59,6 +59,7 @@ function doPost(e) {
     else if (paired !== secret) return reply('forbidden');
 
     if (body.form === 'conseillers') return reply(addAdvisor(body));
+    if (body.form === 'ensembles') return reply(addEnsemble(body));
     const form = FORMS[body.form];
     if (!form) return reply('ignored');
     const sheet = SpreadsheetApp.openById(SHEET_ID).getSheetByName(form.tab);
@@ -774,6 +775,291 @@ function advisorWelcomeEmail(advId, name, lang) {
           ? 'Bienvenue au Cercle des conseillers de Matin'
           : 'Bienvenue au Cercle des conseillers de Matin · Welcome to the Matin Advisory Circle',
     text: parts.map((p) => p.join('\n')).join('\n\n———\n\n') +
+      '\n\nhttps://matincc.ca · ' + ADV_REPLY_TO,
+  };
+}
+
+/*
+ * Music ensemble registration (owner's request, Nov 2 2026): « Inscription des ensembles de
+ * musique » / "Music Ensemble Registration" / «ثبت‌نام گروه‌های موسیقی». Each registration
+ * (Netlify form « ensembles ») becomes one row of the sheet « Ensembles de musique · Music
+ * Ensembles · گروه‌های موسیقی » (tab Ensembles, in 60_Relations_Internationales). The
+ * ensemble's CV file is checked (real PDF or .docx, no macros) and copied into the private
+ * folder « Dossiers des ensembles · Ensemble files » next to that sheet. The ensemble gets an
+ * immediate receipt; when an admin ticks Approve (column Y), it gets a number (MUS-0001…,
+ * column A) and the acceptance email; column Z records the time it was sent, or the error
+ * (rows whose Z starts with « Error » are tried again). Emails in the site's language: French
+ * page → French, English page → English, Persian page → Persian then English.
+ * Run setupEnsembleEmails once after pasting this file.
+ */
+const ENS_REGISTRY_ID = '1j-lVTnH4-qVUh-jKJBsIkezplM6Sf7ZPcnmaPVwfsdw';
+const ENS_TAB = 'Ensembles';
+const ENS_FOLDER_NAME = 'Dossiers des ensembles · Ensemble files';
+const ENS_COLS = 27; // A ID … AA Submission ID
+const ENS_APPROVE = 25; // Y
+const ENS_SENT = 26; // Z
+const ENS_LANG = 22; // V
+
+function addEnsemble(body) {
+  try {
+    const sheet = SpreadsheetApp.openById(ENS_REGISTRY_ID).getSheetByName(ENS_TAB);
+    const id = clean(body.id);
+    const last = Math.max(sheet.getLastRow(), 1);
+    if (id && last > 1) {
+      const found = sheet.getRange(2, ENS_COLS, last - 1, 1)
+        .createTextFinder(id).matchEntireCell(true).findNext();
+      if (found) return 'duplicate';
+    }
+    const data = body.data || {};
+    const v = (f) => clean(data[f]);
+    const received = body.created_at ? new Date(body.created_at) : new Date();
+    const file = saveEnsembleFile(v('cv'), v('group_name'), received);
+    const dates = sheet.getRange(1, 2, last, 1).getValues();
+    let row = dates.findIndex((r, i) => i > 0 && String(r[0]).trim() === '') + 1;
+    if (row < 2) row = last + 1;
+    sheet.getRange(row, 1, 1, 24).setValues([[
+      '', received, v('group_name'), v('members'), v('style'), v('instruments'), v('country'),
+      v('city'), v('founded'), v('director'), v('coordinator'), v('email'), v('phone'), file,
+      v('website'), v('instagram'), v('youtube'), v('other_social'), v('work_link_1'),
+      v('work_link_2'), v('work_link_3'), v('lang').toUpperCase(), v('consents'), '',
+    ]]);
+    sheet.getRange(row, ENS_COLS).setValue(id);
+    if (row > last) sheet.getRange(row, ENS_APPROVE).insertCheckboxes();
+    sendEnsembleReceipt(data);
+    return 'ok';
+  } catch (err) {
+    console.error('Ensemble registry not updated: ' + err);
+    return 'error';
+  }
+}
+
+/** Copies the ensemble's file into its private folder; returns the Drive link, or the original link. */
+function saveEnsembleFile(url, name, received) {
+  if (!/^https:\/\//.test(url)) return url;
+  try {
+    const res = UrlFetchApp.fetch(url, { muteHttpExceptions: true, followRedirects: true });
+    if (res.getResponseCode() !== 200) return url;
+    const blob = res.getBlob();
+    const bytes = blob.getBytes();
+    if (bytes.length > 6 * 1024 * 1024) return 'Refusé · Rejected: file too large';
+    const ext = cvKind(blob, bytes);
+    if (!ext) return 'Refusé · Rejected: not a real PDF or Word (.docx) file';
+    const day = Utilities.formatDate(received, 'America/Toronto', 'yyyy-MM-dd');
+    const safe = name.replace(/[^\p{L}\p{N} .-]/gu, '').trim().slice(0, 80) || 'Ensemble';
+    blob.setName(day + ' ' + safe + '.' + ext);
+    return ensembleFolder().createFile(blob).getUrl();
+  } catch (err) {
+    console.error('Ensemble file not copied: ' + err);
+    return url;
+  }
+}
+
+function ensembleFolder() {
+  const props = PropertiesService.getScriptProperties();
+  const known = props.getProperty('ENS_FOLDER_ID');
+  if (known) {
+    try { return DriveApp.getFolderById(known); } catch (err) { /* recreated below */ }
+  }
+  const parents = DriveApp.getFileById(ENS_REGISTRY_ID).getParents();
+  const parent = parents.hasNext() ? parents.next() : DriveApp.getRootFolder();
+  const existing = parent.getFoldersByName(ENS_FOLDER_NAME);
+  const folder = existing.hasNext() ? existing.next() : parent.createFolder(ENS_FOLDER_NAME);
+  props.setProperty('ENS_FOLDER_ID', folder.getId());
+  return folder;
+}
+
+/** The site's language: FR → French, EN → English, FA → Persian then English. */
+function ensembleParts(lang, fr, en, fa) {
+  return lang === 'FA' ? [fa, en] : lang === 'EN' ? [en] : lang === 'FR' ? [fr] : [fr, en];
+}
+
+function sendEnsembleReceipt(data) {
+  try {
+    const email = clean(data.email);
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) return;
+    const group = clean(data.group_name);
+    const lang = clean(data.lang).toUpperCase();
+    const fr = [
+      'Bonjour,',
+      '',
+      "Nous avons bien reçu le formulaire d'inscription de l'ensemble « " + group + ' ». ' +
+        "Merci de votre confiance envers l'Institut interculturel Matin.",
+      '',
+      "Nous étudierons les renseignements et le parcours de l'ensemble, puis nous vous ferons part du résultat.",
+      '',
+      "Rappel : l'inscription ne constitue ni une invitation ferme, ni un contrat, ni une garantie de prestation.",
+      '',
+      'Cordialement,',
+      'Institut interculturel Matin',
+    ];
+    const en = [
+      'Hello,',
+      '',
+      'We have received the registration form of the ensemble "' + group + '". ' +
+        'Thank you for your trust in the Matin Intercultural Institute.',
+      '',
+      "We will review the ensemble's information and background, then let you know the result.",
+      '',
+      'Reminder: registration is not a firm invitation, a contract or a guarantee of a performance.',
+      '',
+      'Best regards,',
+      'Matin Intercultural Institute',
+    ];
+    const fa = [
+      'با درود،',
+      '',
+      'فرم ثبت‌نام گروه «' + group + '» را دریافت کردیم. از اعتماد شما به مؤسسه میان‌فرهنگی متین سپاسگزاریم.',
+      '',
+      'اطلاعات و سوابق گروه را بررسی می‌کنیم و نتیجه را به شما اطلاع خواهیم داد.',
+      '',
+      'یادآوری: ثبت‌نام به معنای دعوت قطعی، قرارداد یا تضمین اجرا نیست.',
+      '',
+      'با احترام،',
+      'مؤسسه میان‌فرهنگی متین',
+    ];
+    const text = ensembleParts(lang, fr, en, fa).map((p) => p.join('\n')).join('\n\n———\n\n') +
+      '\n\n' + ADV_REPLY_TO + ' · https://matincc.ca';
+    const subject = lang === 'FA'
+      ? 'دریافت فرم ثبت‌نام گروه موسیقی – مؤسسه میان‌فرهنگی متین · Registration received'
+      : lang === 'EN'
+        ? 'Registration received · Matin Intercultural Institute'
+        : "Inscription reçue · Institut interculturel Matin";
+    GmailApp.sendEmail(email, subject, text, {
+      name: 'Institut interculturel Matin', replyTo: ADV_REPLY_TO, htmlBody: emailHtml(text),
+    });
+  } catch (err) {
+    console.error('Ensemble receipt not sent: ' + err);
+  }
+}
+
+/** Run once by hand: installs the Approve trigger and an hourly retry. */
+function setupEnsembleEmails() {
+  ScriptApp.getProjectTriggers().forEach((t) => {
+    if (['onEnsembleApprove', 'sendEnsembleWelcome'].indexOf(t.getHandlerFunction()) !== -1) {
+      ScriptApp.deleteTrigger(t);
+    }
+  });
+  ScriptApp.newTrigger('onEnsembleApprove').forSpreadsheet(ENS_REGISTRY_ID).onEdit().create();
+  ScriptApp.newTrigger('sendEnsembleWelcome').timeBased().everyHours(1).create();
+  ensembleFolder();
+  sendEnsembleWelcome();
+}
+
+function onEnsembleApprove(e) {
+  const r = e && e.range;
+  if (r && r.getSheet().getName() === ENS_TAB && r.getColumn() <= ENS_APPROVE && r.getLastColumn() >= ENS_APPROVE) {
+    sendEnsembleWelcome();
+  }
+}
+
+function sendEnsembleWelcome() {
+  const lock = LockService.getScriptLock();
+  if (!lock.tryLock(30000)) return;
+  let sent = 0;
+  try {
+    const sheet = SpreadsheetApp.openById(ENS_REGISTRY_ID).getSheetByName(ENS_TAB);
+    const last = sheet.getLastRow();
+    if (last < 2) return;
+    const rows = sheet.getRange(2, 1, last - 1, ENS_SENT).getValues();
+    let max = 0;
+    rows.forEach((r) => {
+      const m = /^MUS-(\d+)$/.exec(String(r[0]).trim());
+      if (m && +m[1] > max) max = +m[1];
+    });
+    rows.forEach((r, i) => {
+      const done = String(r[ENS_SENT - 1]).trim();
+      if (r[ENS_APPROVE - 1] !== true || (done && !/^Error/i.test(done))) return;
+      const row = i + 2;
+      const email = String(r[11]).trim();
+      if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+        sheet.getRange(row, ENS_SENT).setValue('Error: no valid email');
+        return;
+      }
+      let musId = String(r[0]).trim();
+      if (!musId) {
+        musId = 'MUS-' + String(++max).padStart(4, '0');
+        sheet.getRange(row, 1).setValue(musId);
+      }
+      try {
+        const msg = ensembleWelcomeEmail(musId, String(r[2]).trim(), String(r[ENS_LANG - 1]).trim().toUpperCase());
+        GmailApp.sendEmail(email, msg.subject, msg.text, {
+          name: 'Institut interculturel Matin', replyTo: ADV_REPLY_TO, htmlBody: emailHtml(msg.text),
+        });
+        sheet.getRange(row, ENS_SENT).setValue(Utilities.formatDate(new Date(), 'America/Toronto', 'yyyy-MM-dd HH:mm'));
+        sent++;
+      } catch (err) {
+        sheet.getRange(row, ENS_SENT).setValue('Error: ' + err.message);
+      }
+    });
+  } finally {
+    lock.releaseLock();
+    console.log(sent + ' ensemble acceptance email(s) sent');
+  }
+}
+
+function ensembleWelcomeEmail(musId, group, lang) {
+  const fr = [
+    'Bonjour,',
+    '',
+    "Nous avons le plaisir de vous annoncer qu'après étude, l'ensemble « " + group + ' » a été ajouté à la liste ' +
+      "des ensembles de musique prêts à se produire de l'Institut interculturel Matin.",
+    '',
+    "Numéro d'inscription de l'ensemble : " + musId,
+    '',
+    "Quand une occasion de se produire dans un festival, un programme culturel ou un événement artistique se présentera " +
+      'et que votre ensemble y correspondra, nous communiquerons avec vous.',
+    '',
+    "Rappel : figurer sur cette liste ne constitue ni une invitation ferme, ni un contrat, ni une garantie de prestation. " +
+      "Toute collaboration se fait seulement avec votre accord, après avoir fixé les conditions et signé un contrat écrit.",
+    '',
+    "Si les renseignements de l'ensemble changent, ou si vous souhaitez qu'ils soient supprimés, il suffit d'écrire à " + ADV_REPLY_TO + '.',
+    '',
+    'Cordialement,',
+    'Institut interculturel Matin',
+  ];
+  const en = [
+    'Hello,',
+    '',
+    'We are pleased to let you know that, after review, the ensemble "' + group + '" has been added to the ' +
+      "Matin Intercultural Institute's list of music ensembles ready to perform.",
+    '',
+    "Ensemble registration number: " + musId,
+    '',
+    'When an opportunity to perform at a festival, cultural program or artistic event comes up and your ensemble suits it, ' +
+      'we will contact you.',
+    '',
+    'Reminder: being on this list is not a firm invitation, a contract or a guarantee of a performance. ' +
+      'Any collaboration takes place only with your agreement, once the terms are set and a written contract is signed.',
+    '',
+    "If the ensemble's information changes, or if you would like it deleted, simply write to " + ADV_REPLY_TO + '.',
+    '',
+    'Best regards,',
+    'Matin Intercultural Institute',
+  ];
+  const fa = [
+    'با درود،',
+    '',
+    'خوشحالیم به اطلاع برسانیم که گروه «' + group + '» پس از بررسی، در فهرست گروه‌های موسیقی آمادهٔ اجرای مؤسسه میان‌فرهنگی متین قرار گرفت.',
+    '',
+    'شمارهٔ ثبت گروه: ' + musId,
+    '',
+    'هرگاه فرصتی برای اجرا در جشنواره‌ها، برنامه‌های فرهنگی یا رویدادهای هنری فراهم شود و گروه شما با آن برنامه تناسب داشته باشد، با شما تماس خواهیم گرفت.',
+    '',
+    'یادآوری: قرار گرفتن در این فهرست به معنای دعوت قطعی، قرارداد یا تضمین اجرا نیست. ' +
+      'هرگونه همکاری تنها با توافق شما، پس از تعیین شرایط و امضای قرارداد کتبی انجام می‌شود.',
+    '',
+    'اگر اطلاعات گروه تغییر کرد یا خواستید اطلاعاتتان حذف شود، کافی است به ' + ADV_REPLY_TO + ' بنویسید.',
+    '',
+    'با احترام،',
+    'مؤسسه میان‌فرهنگی متین',
+  ];
+  return {
+    subject: lang === 'FA'
+      ? 'پذیرش گروه شما در فهرست گروه‌های موسیقی متین · Your ensemble has been accepted'
+      : lang === 'EN'
+        ? "Your ensemble is on Matin's list of music ensembles"
+        : "Votre ensemble figure sur la liste des ensembles de musique de Matin",
+    text: ensembleParts(lang, fr, en, fa).map((p) => p.join('\n')).join('\n\n———\n\n') +
       '\n\nhttps://matincc.ca · ' + ADV_REPLY_TO,
   };
 }

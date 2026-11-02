@@ -24,7 +24,7 @@ const SHEET_WEBHOOK_URL =
   'https://script.google.com/macros/s/AKfycbw-Tpom1Ejxw9H0fOnyzp7YjM9_yLqtwFWjUcokD9vgYjRMqOHI9NcQyqn5bQuKbZq4EQ/exec';
 
 /** Forms copied to the Sheet; anything else is ignored there. */
-const SHEET_FORMS = new Set(['benevolat', 'contact', 'newsletter', 'emplois', 'adhesion', 'conseillers']);
+const SHEET_FORMS = new Set(['benevolat', 'contact', 'newsletter', 'emplois', 'adhesion', 'conseillers', 'ensembles']);
 
 /** Never sent to the Sheet: spam-filter internals and the visitor's network details. */
 const PRIVATE_FIELDS = new Set([
@@ -137,6 +137,33 @@ function asAdvisorRow(raw: Record<string, unknown>, fields: Record<string, unkno
   return data;
 }
 
+/**
+ * Music ensemble registrations (« ensembles », Nov 2 2026): the CV file becomes a link the web
+ * app copies into Drive; « Other countries » is replaced by the country typed; the phone keeps
+ * Iran's code, or is kept as typed for other countries; the four consents become one value.
+ */
+const ENSEMBLE_CONSENTS: [string, string][] = [
+  ['accept_terms', 'Terms'],
+  ['no_rights', 'No invitation or visa'],
+  ['own_rights', 'Owns the rights'],
+  ['consent', 'Privacy (Law 25)'],
+];
+
+function asEnsembleRow(raw: Record<string, unknown>, fields: Record<string, unknown>) {
+  const given = ENSEMBLE_CONSENTS.filter(([key]) => raw[key]).map(([, label]) => label);
+  const data: Record<string, unknown> = { ...fields, cv: fileLink(raw.cv) };
+  const other = String(fields.country_name ?? '').trim();
+  data.country = fields.country === 'Other' ? other || 'Other' : fields.country;
+  delete data.country_name;
+  const code = String(fields.phone_code ?? '').split(' ')[0];
+  const phone = String(fields.phone ?? '').trim();
+  data.phone = phone && code.startsWith('+') && !phone.startsWith('+') ? `${code} ${phone.replace(/^0+/, '')}` : phone;
+  delete data.phone_code;
+  for (const [key] of ENSEMBLE_CONSENTS) delete data[key];
+  data.consents = given.length ? `${given.join(', ')} · ${new Date().toISOString().slice(0, 10)}` : '';
+  return data;
+}
+
 async function copyToSheet(payload: Payload) {
   if (!SHEET_WEBHOOK_URL || !SHEET_FORMS.has(payload.form_name)) return;
   const fields = Object.fromEntries(
@@ -147,7 +174,9 @@ async function copyToSheet(payload: Payload) {
     ? asContactRow(fields)
     : payload.form_name === 'conseillers'
       ? asAdvisorRow(payload.data ?? {}, fields)
-      : fields;
+      : payload.form_name === 'ensembles'
+        ? asEnsembleRow(payload.data ?? {}, fields)
+        : fields;
   try {
     const res = await fetch(SHEET_WEBHOOK_URL, {
       method: 'POST',
