@@ -569,9 +569,9 @@ const jsonLd = [
     color: var(--matin-soleil);
   }
 
-  /* The team's note (owner, Nov 2 2026: new design): a straight navy panel, the title in
-     saffron on the start side, the text in white beside it, a terracotta sun in the corner.
-     White on encre 11:1, soleil on encre 6.6:1. */
+  /* The team's note (owner, Nov 2 2026: new design, then « not dark blue »): a straight
+     saffron panel, the title in terracotta ink on the start side, the text in navy beside it,
+     a terracotta sun in the corner. Encre on soleil 6.1:1. */
   .guide-why {
     position: relative;
     display: grid;
@@ -580,8 +580,8 @@ const jsonLd = [
     padding: clamp(1.75rem, 1.2rem + 2vw, 2.75rem);
     border-radius: 1.25rem;
     border-start-start-radius: 4rem;
-    background: var(--matin-encre);
-    color: var(--color-white);
+    background: var(--matin-soleil);
+    color: var(--matin-encre);
     overflow: hidden;
   }
   @media (min-width: 56rem) {
@@ -609,25 +609,25 @@ const jsonLd = [
     font-size: clamp(1.8rem, 1.3rem + 1.8vw, 2.6rem);
     font-weight: 700;
     line-height: 1.1;
-    color: var(--matin-soleil);
+    color: var(--matin-encre);
   }
   .guide-why__text {
     font-size: clamp(1.1rem, 1.6vw, 1.25rem);
     line-height: 1.8;
-    color: var(--color-white);
+    color: var(--matin-encre);
   }
   .guide-why__sign {
     margin-top: 0.75rem;
     font-family: var(--font-display);
     font-weight: 700;
-    color: var(--color-white);
+    color: var(--matin-encre);
   }
   .guide-why__date {
     margin-top: 1rem;
     font-family: var(--font-display);
     font-weight: 600;
     font-size: 0.95rem;
-    color: var(--matin-soleil);
+    color: var(--matin-encre);
   }
 
   /* Regions: grounds change by region, LaSalle first and warmest. */
