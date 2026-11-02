@@ -8,7 +8,7 @@
  * #conseillers, #partenaires and their English forms) open the matching panel; old
  * Contact anchors are forwarded here.
  */
-import { ArrowRight, BadgeCheck, ChevronDown, HandHeart, Handshake, Lightbulb, Music, ShieldAlert, Video } from '@lucide/astro';
+import { ArrowRight, BadgeCheck, ChevronDown, HandHeart, Handshake, Lightbulb, Music, Video } from '@lucide/astro';
 import { storyStrings } from '@/i18n/stories';
 import PageLayout from '@/layouts/PageLayout.astro';
 import PartnersSection from '@/components/trust/PartnersSection.astro';
@@ -152,15 +152,10 @@ const aliases = { expertise: ids.advisors, 'advisors': ids.advisors };
       </section>
 
       <section id={ids.music} class="collab-panel collab-panel--music scroll-mt-24" aria-labelledby="music-title" data-collab-panel>
-        <h2 id="music-title" class="collab-panel__title">{mus.title}</h2>
+        <h2 id="music-title" class="collab-panel__title">{mus.panelTitle}</h2>
         <p class="collab-panel__intro">{mus.lede}</p>
         <p class="mus-phase">{mus.phase}</p>
-        <div class="mus-notice" role="note">
-          <h3 class="mus-notice__title"><ShieldAlert size={22} aria-hidden="true" /> {mus.noticeTitle}</h3>
-          <ul>
-            {mus.notice.split('\n').map((line) => <li>{line}</li>)}
-          </ul>
-        </div>
+        <h3 class="mus-steps-title">{mus.stepsTitle}</h3>
         <ol class="adv-steps">
           {[
             [mus.how1Title, mus.how1Text],
@@ -174,7 +169,6 @@ const aliases = { expertise: ids.advisors, 'advisors': ids.advisors };
             </li>
           ))}
         </ol>
-        <h3 class="mb-6 text-2xl font-bold">{mus.formTitle}</h3>
         <MusicGroupForm lang={lang} />
       </section>
 
@@ -306,6 +300,13 @@ const aliases = { expertise: ids.advisors, 'advisors': ids.advisors };
   }
   .collab__boxes > li {
     display: flex;
+  }
+  /* Persian page: boxes run left to right like FR/EN (owner, Nov 2 2026); text stays RTL. */
+  :global([dir='rtl']) .collab__boxes {
+    direction: ltr;
+  }
+  :global([dir='rtl']) .collab__boxes > li {
+    direction: rtl;
   }
   .collab-box {
     --box-bg: var(--matin-brique-ink);
@@ -500,31 +501,11 @@ const aliases = { expertise: ids.advisors, 'advisors': ids.advisors };
     font-weight: 700;
     line-height: 1.6;
   }
-  .mus-notice {
-    margin-block-end: 2rem;
-    padding: 1.2rem 1.5rem;
-    border-radius: 1rem;
-    border-inline-start: 6px solid var(--matin-brique-ink);
-    background: var(--color-white);
-    max-width: 72rem;
-  }
-  .mus-notice__title:not(#o) {
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-    margin-block-end: 0.6rem;
+  .mus-steps-title:not(#o) {
+    margin-block-end: 1rem;
     font-family: var(--font-display);
-    font-size: 1.2rem;
+    font-size: 1.35rem;
     font-weight: 800;
-    color: var(--matin-brique-ink);
-  }
-  .mus-notice ul {
-    display: grid;
-    gap: 0.4rem;
-    padding-inline-start: 1.25rem;
-    list-style: disc;
-    line-height: 1.65;
-    font-weight: 600;
     color: var(--matin-encre);
   }
   .collab-panel__title {

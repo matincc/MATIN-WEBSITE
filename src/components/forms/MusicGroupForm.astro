@@ -23,8 +23,12 @@ interface Props {
 const { lang } = Astro.props;
 const t = useTranslations(lang);
 const m = musicStrings(lang);
-const countries = countryNames(lang);
-const dials = dialOptions(lang);
+// Iran first in both lists (owner, Nov 2 2026), then the rest as usual.
+const iranName = new Intl.DisplayNames([lang === 'fa' ? 'fa' : `${lang}-CA`], { type: 'region' }).of('IR') ?? 'Iran';
+const countries = [iranName, ...countryNames(lang).filter((c) => c !== iranName)];
+const allDials = dialOptions(lang);
+const dials = [...allDials.filter((d) => d.value === '+98 IR'), ...allDials.filter((d) => d.value !== '+98 IR')];
+const terms = m.terms.split('\n').map((line) => line.split('|'));
 const styleLabels = m.styleNames.split('|');
 const faDigits = (s: string) => (lang === 'fa' ? s.replace(/\d/g, (d) => '۰۱۲۳۴۵۶۷۸۹'[+d]) : s);
 const req = ` (${t('form.required')})`;
@@ -51,7 +55,39 @@ const socialLinks = [
   consentText={m.consent}
   successMessage={m.success}
 >
-  <h4 class="mus-section">{m.sectionGroup}</h4>
+  {/* Terms first (owner, Nov 2 2026): the ensemble reads and accepts them, then the rest of
+      the form opens. Without JavaScript every field stays open. */}
+  <section class="mus-terms" aria-labelledby="mus-terms-title">
+    <h4 id="mus-terms-title" class="mus-terms__title">{m.termsTitle}</h4>
+    <p class="mus-terms__intro">{m.termsIntro}</p>
+    <ol>
+      {terms.map(([title, text]) => (
+        <li><strong>{title}</strong><br />{text}</li>
+      ))}
+    </ol>
+  </section>
+
+  <h4 class="mus-section">{m.acceptTitle}</h4>
+  {[
+    { id: 'mus-terms', name: 'accept_terms', text: m.acceptTerms, required: true },
+    { id: 'mus-norights', name: 'no_rights', text: m.noRights, required: true },
+    { id: 'mus-own', name: 'own_rights', text: m.ownRights, required: true },
+    { id: 'mus-share', name: 'share_with_festivals', text: m.share, required: false },
+  ].map((c) => (
+    <div class="field">
+      <div class="flex items-start gap-3">
+        <input id={c.id} type="checkbox" name={c.name} value="yes" required={c.required} class="mt-1 size-5 shrink-0 accent-primary" aria-describedby={`${c.id}-error`} data-gate-box={c.required ? '' : undefined} />
+        <label for={c.id} class="leading-relaxed" data-short={c.text.split(/[,.:،]/)[0]}>
+          {c.text} {c.required && <span class="text-muted">({t('form.required')})</span>}
+        </label>
+      </div>
+      <p id={`${c.id}-error`} class="field-error" hidden></p>
+    </div>
+  ))}
+  <p class="mus-gate-hint" data-gate-hint hidden>{m.gateHint}</p>
+
+  <div class="mus-gated" data-gated>
+  <h4 class="mus-section">{m.formTitle}</h4>
   <div class="grid gap-5 sm:grid-cols-2">
     <Field lang={lang} id="mus-name" name="group_name" label={m.groupName} required />
     <div class="field">
@@ -86,10 +122,10 @@ const socialLinks = [
       <label for="mus-country" class="field-label" data-short={m.country}>
         <span data-label-text>{m.country}</span><span class="req">{req}</span>
       </label>
-      <input id="mus-country" name="country" type="text" class="input" list="mus-country-list" autocomplete="country-name" required maxlength="200" aria-describedby="mus-country-error" />
-      <datalist id="mus-country-list">
-        {countries.map((c) => <option value={c} />)}
-      </datalist>
+      <select id="mus-country" name="country" class="input" required autocomplete="country-name" aria-describedby="mus-country-error">
+        <option value="">{m.sizeChoose}</option>
+        {countries.map((c) => <option value={c}>{c}</option>)}
+      </select>
       <p id="mus-country-error" class="field-error" hidden></p>
     </div>
     <Field lang={lang} id="mus-city" name="city" label={m.city} required autocomplete="address-level2" />
@@ -99,23 +135,15 @@ const socialLinks = [
   <h4 class="mus-section">{m.sectionPeople}</h4>
   <div class="grid gap-5 sm:grid-cols-2">
     <Field lang={lang} id="mus-leader" name="director" label={m.leader} required autocomplete="name" />
-    <div class="field">
-      <label for="mus-coord" class="field-label" data-short={m.coordinator}>
-        <span data-label-text>{m.coordinator}</span><span class="req">{req}</span>
-      </label>
-      <p id="mus-coord-hint" class="mus-hint">{m.coordinatorHint}</p>
-      <input id="mus-coord" name="coordinator" type="text" class="input" required maxlength="200" aria-describedby="mus-coord-hint mus-coord-error" />
-      <p id="mus-coord-error" class="field-error" hidden></p>
-    </div>
+    <Field lang={lang} id="mus-coord" name="coordinator" label={m.coordinator} required />
     <Field lang={lang} id="mus-email" name="email" type="email" label={m.email} required autocomplete="email" />
     <div class="field">
       <label for="mus-phone" class="field-label">{m.phone}</label>
-      <p id="mus-phone-hint" class="mus-hint">{m.phoneHint}</p>
       <div class="mus-phone" dir="ltr">
         <select id="mus-phone-code" name="phone_code" class="input mus-phone__code" aria-label={m.phoneCode} autocomplete="tel-country-code">
           {dials.map((d, i) => <option value={d.value} selected={i === 0}>{d.label}</option>)}
         </select>
-        <input id="mus-phone" name="phone" type="tel" class="input" autocomplete="tel-national" inputmode="tel" maxlength="40" aria-describedby="mus-phone-hint" />
+        <input id="mus-phone" name="phone" type="tel" class="input" autocomplete="tel-national" inputmode="tel" maxlength="40" />
       </div>
     </div>
   </div>
@@ -153,36 +181,26 @@ const socialLinks = [
     ))}
   </div>
 
-  <details class="mus-terms" open>
-    <summary>{m.termsTitle}</summary>
-    <ol>
-      {m.terms.split('\n').map((line) => <li>{line}</li>)}
-    </ol>
-  </details>
-
-  <div class="mus-all">
-    <input id="mus-all" type="checkbox" class="size-5 shrink-0 accent-primary" data-check-all />
-    <label for="mus-all">{m.acceptAll}</label>
   </div>
-
-  {[
-    { id: 'mus-terms', name: 'accept_terms', text: m.acceptTerms, required: true },
-    { id: 'mus-norights', name: 'no_rights', text: m.noRights, required: true },
-    { id: 'mus-own', name: 'own_rights', text: m.ownRights, required: true },
-    { id: 'mus-keep', name: 'retention', text: m.retention, required: true },
-    { id: 'mus-share', name: 'share_with_festivals', text: m.share, required: false },
-  ].map((c) => (
-    <div class="field">
-      <div class="flex items-start gap-3">
-        <input id={c.id} type="checkbox" name={c.name} value="yes" required={c.required} class="mt-1 size-5 shrink-0 accent-primary" aria-describedby={`${c.id}-error`} />
-        <label for={c.id} class="text-sm leading-relaxed" data-short={c.text.split(/[,.:]/)[0]}>
-          {c.text} {c.required && <span class="text-muted">({t('form.required')})</span>}
-        </label>
-      </div>
-      <p id={`${c.id}-error`} class="field-error" hidden></p>
-    </div>
-  ))}
 </FormShell>
+
+<script>
+  // The fields open once the three required boxes are ticked (owner, Nov 2 2026).
+  document.querySelectorAll<HTMLFormElement>('form[name="ensembles"]').forEach((form) => {
+    const boxes = [...form.querySelectorAll<HTMLInputElement>('[data-gate-box]')];
+    const gated = form.querySelector<HTMLElement>('[data-gated]');
+    const hint = form.querySelector<HTMLElement>('[data-gate-hint]');
+    if (!gated || !boxes.length) return;
+    const update = () => {
+      const open = boxes.every((b) => b.checked);
+      gated.hidden = !open;
+      gated.querySelectorAll<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>('input, select, textarea').forEach((f) => (f.disabled = !open));
+      if (hint) hint.hidden = open;
+    };
+    boxes.forEach((b) => b.addEventListener('change', update));
+    update();
+  });
+</script>
 
 <style>
   :global(form[name='ensembles'] > * + *) {
@@ -221,39 +239,43 @@ const socialLinks = [
     min-height: 8rem;
   }
   .mus-terms {
-    padding: 1rem 1.25rem;
-    border-radius: 0.9rem;
+    padding: 1.25rem 1.5rem;
+    border-radius: 1rem;
     background: var(--color-white);
-    border-inline-start: 5px solid var(--matin-firouzeh);
+    border-inline-start: 6px solid var(--matin-firouzeh);
   }
-  .mus-terms summary {
-    cursor: pointer;
+  .mus-terms__title:not(#o) {
+    margin-block-end: 0.4rem;
     font-family: var(--font-display);
+    font-size: 1.25rem;
     font-weight: 800;
     color: var(--matin-encre);
   }
+  .mus-terms__intro {
+    margin-block-end: 0.75rem;
+    font-weight: 600;
+  }
   .mus-terms ol {
-    margin-block-start: 0.75rem;
     padding-inline-start: 1.25rem;
     list-style: decimal;
     display: grid;
-    gap: 0.5rem;
-    line-height: 1.6;
-  }
-  .mus-all {
-    display: flex;
-    align-items: center;
     gap: 0.75rem;
+    line-height: 1.7;
+  }
+  .mus-terms strong {
+    color: var(--matin-firouzeh-ink);
+  }
+  .mus-gate-hint {
     padding: 0.7rem 1rem;
-    border-radius: 999px;
-    background: var(--color-white);
-    border: 1.5px solid var(--matin-firouzeh-ink);
-    width: fit-content;
-    font-family: var(--font-display);
-    font-weight: 800;
+    border-radius: 0.75rem;
+    background: color-mix(in srgb, var(--matin-soleil) 30%, var(--matin-ivoire));
+    font-weight: 700;
     color: var(--matin-encre);
   }
-  .mus-all label {
-    cursor: pointer;
+  .mus-gated[hidden] {
+    display: none;
+  }
+  .mus-gated > * + * {
+    margin-block-start: 1.75rem;
   }
 </style>
