@@ -882,10 +882,10 @@ function sendEnsembleReceipt(data) {
     const fr = [
       'Bonjour,',
       '',
-      "Nous avons bien reçu le formulaire d'inscription de l'ensemble « " + group + ' ». ' +
+      "Le formulaire d'inscription de l'ensemble « " + group + ' » a bien été reçu. ' +
         "Merci de votre confiance envers l'Institut interculturel Matin.",
       '',
-      "Nous étudierons les renseignements et le parcours de l'ensemble, puis nous vous ferons part du résultat.",
+      "Nos spécialistes étudieront les renseignements et le parcours de l'ensemble dans un délai de cinq jours ouvrables et vous feront part du résultat.",
       '',
       "Rappel : l'inscription ne constitue ni une invitation ferme, ni un contrat, ni une garantie de prestation.",
       '',
@@ -895,10 +895,10 @@ function sendEnsembleReceipt(data) {
     const en = [
       'Hello,',
       '',
-      'We have received the registration form of the ensemble "' + group + '". ' +
+      'The registration form of the ensemble "' + group + '" has been received. ' +
         'Thank you for your trust in the Matin Intercultural Institute.',
       '',
-      "We will review the ensemble's information and background, then let you know the result.",
+      "Our specialists will review the ensemble's information and background within five business days and let you know the result.",
       '',
       'Reminder: registration is not a firm invitation, a contract or a guarantee of a performance.',
       '',
@@ -908,11 +908,11 @@ function sendEnsembleReceipt(data) {
     const fa = [
       'با درود،',
       '',
-      'فرم ثبت‌نام گروه «' + group + '» را دریافت کردیم. از اعتماد شما به مؤسسه میان‌فرهنگی متین سپاسگزاریم.',
+      'فرم ثبت‌نام گروه «' + group + '» دریافت شد. از اعتماد شما به مؤسسه میان‌فرهنگی متین سپاسگزاریم.',
       '',
-      'اطلاعات و سوابق گروه را بررسی می‌کنیم و نتیجه را به شما اطلاع خواهیم داد.',
+      'کارشناسان ما در طی پنج روز کاری اطلاعات و سوابق گروه را بررسی کرده و نتیجه را به اطلاع شما خواهند رساند.',
       '',
-      'یادآوری: ثبت‌نام به معنای دعوت قطعی، قرارداد یا تضمین اجرا نیست.',
+      'یادآوری: ثبت‌نام به معنی دعوت قطعی، قرارداد یا تضمین اجرا نیست.',
       '',
       'با احترام،',
       'مؤسسه میان‌فرهنگی متین',
