@@ -164,7 +164,7 @@ const href = ours ? link('events', lang, slugOf(event, baseLang(lang))) : d.even
     border-radius: 50%;
     overflow: hidden;
     border: 2px solid color-mix(in srgb, var(--color-gold) 60%, transparent);
-    animation: spotlight-turn 90s linear infinite;
+    animation: none; /* calmer site: no endless motion (owner, Nov 2 2026) */
   }
   .spotlight__disc :global(img) {
     display: block;

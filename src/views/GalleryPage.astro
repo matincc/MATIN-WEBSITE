@@ -546,7 +546,7 @@ const empty = albums.length === 0 && !intro;
   }
   @media (prefers-reduced-motion: no-preference) {
     .gallery-logo :global(.gallery-logo__img) {
-      animation: gallery-logo-float 6s ease-in-out infinite alternate;
+      animation: none; /* calmer site: no endless motion (owner, Nov 2 2026) */
     }
   }
   @keyframes gallery-logo-float {

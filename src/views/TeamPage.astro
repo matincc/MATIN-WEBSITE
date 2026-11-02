@@ -798,7 +798,7 @@ import { advisorStrings, advisorsAnchor } from '@/i18n/advisors';
       animation-play-state: paused;
     }
     .board__frame {
-      animation: board-drift 7s ease-in-out infinite;
+      animation: none; /* calmer site: no endless motion (owner, Nov 2 2026) */
       animation-delay: calc(var(--i) * -2.3s);
     }
   }

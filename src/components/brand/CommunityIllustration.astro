@@ -79,7 +79,7 @@ const headR = (p: (typeof people)[number]) => (p.child ? 19 : 25);
   }
   @media (prefers-reduced-motion: no-preference) {
     .bubble {
-      animation: bubble-drift 7s ease-in-out infinite;
+      animation: none; /* calmer site: no endless motion (owner, Nov 2 2026) */
       transform-box: fill-box;
     }
     .bubble--2 {
@@ -90,7 +90,7 @@ const headR = (p: (typeof people)[number]) => (p.child ? 19 : 25);
       animation-duration: 6s;
     }
     .community-art__circles {
-      animation: circles-breathe 12s ease-in-out infinite;
+      animation: none; /* calmer site: no endless motion (owner, Nov 2 2026) */
       transform-box: fill-box;
       transform-origin: center;
     }

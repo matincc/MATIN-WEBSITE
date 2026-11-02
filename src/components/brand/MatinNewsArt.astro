@@ -148,15 +148,13 @@ const ordered = [
   }
   @media (prefers-reduced-motion: no-preference) {
     .mnews-art__logo {
-      animation: mnews-float 5s ease-in-out infinite;
+      animation: none; /* calmer site: no endless motion (owner, Nov 2 2026) */
     }
     .mnews-art__rays {
-      animation: mnews-turn 40s linear infinite;
+      animation: none; /* calmer site: no endless motion (owner, Nov 2 2026) */
     }
     .mnews-art__sun {
-      animation:
-        mnews-rise 2.4s cubic-bezier(0.2, 0.7, 0.2, 1) both,
-        mnews-glow 7s ease-in-out 2.4s infinite;
+      animation: none; /* calmer site: no endless motion (owner, Nov 2 2026) */
     }
   }
   @keyframes mnews-float {
