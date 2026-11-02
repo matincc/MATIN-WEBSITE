@@ -1,0 +1,148 @@
+---
+/**
+ * Strategic Plan (owner's request, Nov 2 2026): a page under About for Matin's own
+ * strategic plan. Until the PDF exists, a short empty-state message is shown (never a
+ * sample document). To publish: put the PDF in public/documents/ under the first name
+ * below (French, the reference version, Bill 96); an English or Persian version can be
+ * added under its own name and is then offered on that language's page.
+ */
+import fs from 'node:fs';
+import nodePath from 'node:path';
+import { Image } from 'astro:assets';
+import PageLayout from '@/layouts/PageLayout.astro';
+import { href, siteAlternates, type UiLang } from '@/i18n/routes';
+import { planStrings } from '@/i18n/strategicPlan';
+import logo from '@/assets/brand/logo-matin.png';
+
+interface Props {
+  lang: UiLang;
+}
+const { lang } = Astro.props;
+const s = planStrings(lang);
+
+const STRATEGIC_PLAN_FILES: Record<UiLang, string> = {
+  fr: '/documents/plan-strategique-matin.pdf',
+  en: '/documents/strategic-plan-matin-en.pdf',
+  fa: '/documents/strategic-plan-matin-fa.pdf',
+};
+const exists = (p: string) => fs.existsSync(nodePath.join(process.cwd(), 'public', p));
+const own = exists(STRATEGIC_PLAN_FILES[lang]) ? STRATEGIC_PLAN_FILES[lang] : null;
+const file = own ?? (exists(STRATEGIC_PLAN_FILES.fr) ? STRATEGIC_PLAN_FILES.fr : null);
+const showFrenchNote = !!file && !own && lang !== 'fr';
+---
+
+<PageLayout
+  accent="encre"
+  lang={lang}
+  title={s.title}
+  lede={s.lede}
+  alternates={siteAlternates('strategicPlan')}
+>
+  <div class="container-site pt-4 pb-24">
+    <section class="plan" aria-labelledby="plan-title">
+      <div class="plan__art" aria-hidden="true">
+        <span class="plan__sun"></span>
+        <Image src={logo} alt="" width={160} class="plan__logo" />
+      </div>
+      <div class="plan__body">
+        <h2 id="plan-title" class="plan__title">{s.docTitle}</h2>
+        {
+          file ? (
+            <>
+              <p class="plan__text">{s.intro}</p>
+              {showFrenchNote && <p class="plan__note">{s.frenchOnly}</p>}
+              <div class="plan__actions">
+                <a href={file} class="btn btn-primary" target="_blank" rel="noopener">
+                  {s.read}
+                </a>
+                <a href={file} class="btn btn-outline" download>
+                  {s.download}
+                </a>
+              </div>
+              <p class="plan__note">{s.pdfNote}</p>
+            </>
+          ) : (
+            <>
+              <p class="plan__text">{s.empty}</p>
+              <div class="plan__actions">
+                <a href={`${href('contact', lang)}#write`} class="btn btn-outline">
+                  {s.emptyCta}
+                </a>
+              </div>
+            </>
+          )
+        }
+      </div>
+    </section>
+  </div>
+</PageLayout>
+
+<style>
+  .plan {
+    position: relative;
+    display: grid;
+    gap: 2rem;
+    align-items: center;
+    max-width: 62rem;
+    margin-inline: auto;
+    padding: clamp(1.75rem, 4vw, 3.5rem);
+    background: var(--matin-white);
+    border: 1px solid var(--color-card-edge);
+    border-block-start: 6px solid var(--matin-soleil);
+    border-radius: 1rem 3.5rem 1rem 1rem;
+    box-shadow: var(--shadow-card);
+    overflow: hidden;
+  }
+  :global([dir='rtl']) .plan {
+    border-radius: 3.5rem 1rem 1rem 1rem;
+  }
+  @media (min-width: 48rem) {
+    .plan {
+      grid-template-columns: 12rem 1fr;
+      gap: 3rem;
+    }
+  }
+  .plan__art {
+    position: relative;
+    display: grid;
+    place-items: center;
+    width: 11rem;
+    height: 11rem;
+    margin-inline: auto;
+  }
+  .plan__sun {
+    position: absolute;
+    inset: 0;
+    border-radius: 50%;
+    background: color-mix(in srgb, var(--matin-soleil) 28%, var(--matin-white));
+    border: 3px solid color-mix(in srgb, var(--matin-brique) 55%, var(--matin-white));
+  }
+  .plan__logo {
+    position: relative;
+    width: 7.5rem;
+    height: auto;
+  }
+  .plan__title {
+    font-size: clamp(1.75rem, 3vw, 2.5rem);
+    line-height: 1.2;
+    color: var(--matin-encre);
+    text-wrap: balance;
+  }
+  .plan__text {
+    margin-top: 1rem;
+    font-size: 1.2rem;
+    line-height: 1.75;
+    max-width: 42rem;
+  }
+  .plan__note {
+    margin-top: 0.75rem;
+    font-size: 0.95rem;
+    color: var(--matin-encre);
+  }
+  .plan__actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+    margin-top: 1.5rem;
+  }
+</style>

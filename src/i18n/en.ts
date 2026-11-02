@@ -44,6 +44,7 @@ const en: Dictionary = {
     about: 'About',
     whoWeAre: 'Who We Are',
     areas: 'Our Areas of Work',
+    strategicPlan: 'Strategic Plan',
     mission: 'Our Mission',
     vision: 'Our Vision',
     values: 'Our Values',

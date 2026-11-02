@@ -50,6 +50,7 @@ const fa: DeepPartial<Dictionary> = {
     about: 'درباره ما',
     whoWeAre: 'ما که هستیم',
     areas: 'حوزه‌های فعالیت ما',
+    strategicPlan: 'برنامهٔ راهبردی',
     mission: 'مأموریت ما',
     vision: 'چشم‌انداز ما',
     values: 'ارزش‌های ما',

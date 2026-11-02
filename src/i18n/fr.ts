@@ -45,6 +45,7 @@ const fr = {
     about: 'À propos',
     whoWeAre: 'Qui sommes-nous ?',
     areas: "Nos champs d'action",
+    strategicPlan: 'Plan stratégique',
     mission: 'Notre mission',
     vision: 'Notre vision',
     values: 'Nos valeurs',

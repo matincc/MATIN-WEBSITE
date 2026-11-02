@@ -11,6 +11,7 @@ export const defaultLang: Lang = 'fr';
 export const routes = {
   home: { fr: '', en: '' },
   about: { fr: 'a-propos', en: 'about' },
+  strategicPlan: { fr: 'plan-strategique', en: 'strategic-plan' },
   president: { fr: 'a-propos/reza-moafi', en: 'about/reza-moafi' },
   team: { fr: 'equipe', en: 'team' },
   programs: { fr: 'programmes', en: 'programs' },
