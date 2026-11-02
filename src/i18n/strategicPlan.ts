@@ -7,7 +7,7 @@ import type { UiLang } from './routes';
 import { typo } from '@/lib/frenchTypo';
 
 const fr = {
-  title: 'Plan stratégique',
+  title: 'Plan stratégique de Matin',
   lede: 'Les orientations qui guident le travail de l’Institut interculturel Matin dans les années à venir.',
   docTitle: 'Plan stratégique de l’Institut interculturel Matin',
   intro: 'Ce document présente la mission de Matin, ses priorités et les objectifs qu’il se donne pour relier les personnes, les cultures et les communautés.',
@@ -19,7 +19,7 @@ const fr = {
   emptyCta: 'Nous écrire',
 };
 const en: typeof fr = {
-  title: 'Strategic Plan',
+  title: 'Matin Strategic Plan',
   lede: 'The directions that guide the work of the Matin Intercultural Institute in the years ahead.',
   docTitle: 'Strategic Plan of the Matin Intercultural Institute',
   intro: 'This document sets out Matin’s mission, its priorities and the goals it sets itself to connect people, cultures and communities.',
@@ -31,7 +31,7 @@ const en: typeof fr = {
   emptyCta: 'Write to us',
 };
 const fa: typeof fr = {
-  title: 'برنامهٔ راهبردی',
+  title: 'برنامهٔ راهبردی متین',
   lede: 'جهت‌گیری‌هایی که کار مؤسسه میان‌فرهنگی متین را در سال‌های پیش رو هدایت می‌کنند.',
   docTitle: 'برنامهٔ راهبردی مؤسسه میان‌فرهنگی متین',
   intro: 'این سند مأموریت متین، اولویت‌ها و هدف‌هایی را که برای پیوند میان مردم، فرهنگ‌ها و جامعه‌ها در نظر دارد، معرفی می‌کند.',
