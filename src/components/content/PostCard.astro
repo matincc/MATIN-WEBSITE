@@ -39,6 +39,7 @@ const Heading = headingLevel;
     'post group',
     cultural ? 'post--cultural' : 'post--matin',
     featured && 'post--featured',
+    d.image && 'post--photo',
   ]}
 >
   <div class="post__media">
@@ -364,6 +365,40 @@ const Heading = headingLevel;
     }
     .post--matin.post--featured .post__media {
       width: min(80%, 18rem);
+    }
+  }
+  /* Matin News lead with its own banner (owner, Nov 2 2026: « all blue, make it colourful »):
+     warm terracotta card, the banner shown whole (16:9, never cropped into the circle),
+     framed in saffron. White on brique-ink 6.4:1. */
+  .post--matin.post--featured.post--photo {
+    background: var(--matin-brique-ink);
+    box-shadow: 0 28px 50px -30px color-mix(in srgb, var(--matin-brique-ink) 80%, transparent);
+  }
+  .post--matin.post--featured.post--photo .post__media {
+    width: auto;
+    aspect-ratio: 16 / 9;
+    border-radius: 1.5rem;
+    border: 8px solid var(--matin-soleil);
+    outline: none;
+    margin: clamp(1.25rem, 0.8rem + 1.5vw, 2rem);
+    background: var(--matin-encre);
+  }
+  .post--matin.post--featured.post--photo .post__media :global(.post__img) {
+    object-fit: contain;
+  }
+  @media (min-width: 768px) {
+    .post--matin.post--featured.post--photo {
+      grid-template-columns: minmax(0, 1.15fr) minmax(0, 1fr);
+    }
+    .post--matin.post--featured.post--photo .post__media {
+      aspect-ratio: 16 / 9;
+      border-inline-end: 8px solid var(--matin-soleil);
+      margin-inline-start: clamp(1.25rem, 0.8rem + 1.5vw, 2rem);
+    }
+  }
+  @media (max-width: 767px) {
+    .post--matin.post--featured.post--photo .post__media {
+      width: auto;
     }
   }
   @media (prefers-reduced-motion: reduce) {

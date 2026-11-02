@@ -146,22 +146,13 @@ const jsonLd = [
     ))}
   </nav>
 
-  <!-- The team's own note: why this guide exists. -->
-  <div class="container-site">
-    <aside class="guide-why" aria-labelledby="guide-why-title" data-reveal>
-      <span class="guide-why__sun" aria-hidden="true"></span>
-      <h2 id="guide-why-title" class="guide-why__title">
-        {s.whyTitle}
-      </h2>
-      <p class="guide-why__text">{s.whyText}</p>
-      <p class="guide-why__sign">
-        <span>— {s.whySign}</span>
-        <span class="guide-why__date">{s.checked.replace('{date}', dateLabel)}</span>
-      </p>
-    </aside>
-
+  <!-- Search first, as a strong band under the banner (owner, Nov 2 2026: he could not find
+       the search), then the team's note on a navy panel. -->
+  <section class="guide-finder" aria-label={s.filterLabel} data-own-ground>
+    <div class="container-site">
     <!-- Search and kind filter (hidden without JavaScript: every place is then shown). -->
     <div class="guide-filter invisible" data-guide-filter>
+      <h2 class="guide-filter__title"><Search size={30} aria-hidden="true" />{s.filterLabel}</h2>
       <label class="guide-filter__search">
         <span class="sr-only">{s.filterLabel}</span>
         <Search size={20} aria-hidden="true" />
@@ -185,6 +176,24 @@ const jsonLd = [
         {s.filterNone}
       </p>
     </div>
+    </div>
+  </section>
+
+  <!-- The team's own note: why this guide exists. -->
+  <div class="container-site">
+    <aside class="guide-why" aria-labelledby="guide-why-title" data-reveal>
+      <span class="guide-why__sun" aria-hidden="true"></span>
+      <div class="guide-why__head">
+        <h2 id="guide-why-title" class="guide-why__title">
+          {s.whyTitle}
+        </h2>
+        <p class="guide-why__sign">— {s.whySign}</p>
+      </div>
+      <div>
+        <p class="guide-why__text">{s.whyText}</p>
+        <p class="guide-why__date">{s.checked.replace('{date}', dateLabel)}</p>
+      </div>
+    </aside>
   </div>
 
   {regions.map((r, ri) => {
@@ -475,113 +484,150 @@ const jsonLd = [
     background: var(--dot);
   }
 
-  /* The team's note: warm paper, slightly off-straight, a sun in its corner. */
-  .guide-why {
-    position: relative;
-    max-width: 52rem;
-    margin: 0 auto 3rem;
-    padding: 2.25rem 2.5rem 2rem;
-    border-radius: 0.5rem 2.5rem 0.5rem 0.5rem;
-    border-start-start-radius: 2.5rem;
-    border-start-end-radius: 0.5rem;
-    background: var(--matin-aube, var(--matin-sable));
-    box-shadow: 0 1.25rem 2.5rem -1.75rem color-mix(in srgb, var(--matin-encre) 45%, transparent);
-    rotate: -0.6deg;
+  /* Search band (owner, Nov 2 2026: stronger, easy to find): deep turquoise, a large white
+     field framed in saffron, white chips; the pressed chip saffron with navy text. */
+  .guide-finder {
+    background: var(--matin-firouzeh-ink);
+    border-block-end: 6px solid var(--matin-soleil);
+    padding-block: clamp(2rem, 1.5rem + 2vw, 3rem);
+    color: var(--color-white);
   }
-  .guide-why__sun {
-    position: absolute;
-    inset-block-start: -1.1rem;
-    inset-inline-end: 2rem;
-    width: 3rem;
-    height: 3rem;
-    border-radius: 50%;
-    background: var(--matin-soleil);
-  }
-  .guide-why__title {
-    font-family: var(--font-editorial);
-    font-size: clamp(1.6rem, 2.6vw, 2.1rem);
-    font-weight: 700;
-    color: var(--matin-brique-ink);
-    margin-bottom: 0.75rem;
-  }
-  .guide-why__text {
-    font-size: clamp(1.1rem, 1.6vw, 1.25rem);
-    line-height: 1.8;
-    color: var(--matin-encre);
-  }
-  .guide-why__sign {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: space-between;
-    gap: 0.5rem 1.5rem;
-    margin-top: 1.25rem;
-    font-family: var(--font-display);
-    font-weight: 700;
-    color: var(--matin-encre);
-  }
-  .guide-why__date {
-    font-weight: 600;
-    color: var(--matin-firouzeh-ink);
-    font-size: 0.95rem;
-  }
-
-  /* Search and chips. */
   .guide-filter {
     display: grid;
-    gap: 1rem;
-    margin-bottom: 1rem;
+    gap: 1.1rem;
+  }
+  .guide-filter__title {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    font-family: var(--font-editorial);
+    font-size: clamp(1.75rem, 1.3rem + 1.6vw, 2.5rem);
+    font-weight: 700;
+    color: var(--color-white);
+  }
+  .guide-filter__title :global(svg) {
+    color: var(--matin-soleil);
   }
   .guide-filter__search {
     display: flex;
     align-items: center;
-    gap: 0.6rem;
-    max-width: 34rem;
-    padding: 0 1.1rem;
-    border: 1.5px solid var(--color-card-edge);
+    gap: 0.85rem;
+    max-width: 52rem;
+    padding: 0 1.4rem;
+    border: 4px solid var(--matin-soleil);
     border-radius: 999px;
     background: var(--color-white);
     color: var(--matin-firouzeh-ink);
+    box-shadow: 0 18px 36px -20px color-mix(in srgb, var(--matin-encre) 80%, transparent);
+  }
+  .guide-filter__search :global(svg) {
+    width: 1.6rem;
+    height: 1.6rem;
   }
   .guide-filter__search:focus-within {
-    outline: 3px solid var(--matin-encre);
-    outline-offset: 2px;
+    outline: 3px solid var(--color-white);
+    outline-offset: 3px;
   }
   .guide-filter__search input {
     flex: 1;
-    min-height: 3rem;
+    min-height: 4rem;
     border: 0;
     background: transparent;
-    font-size: 1.05rem;
+    font-size: clamp(1.1rem, 1rem + 0.4vw, 1.3rem);
     color: var(--matin-encre);
     outline: none;
   }
   .guide-filter__chips {
     display: flex;
     flex-wrap: wrap;
-    gap: 0.5rem;
+    gap: 0.6rem;
   }
   .guide-chip {
     display: inline-flex;
     align-items: center;
     gap: 0.4rem;
-    min-height: 2.6rem;
-    padding: 0.4rem 1rem;
-    border: 1.5px solid var(--color-card-edge);
+    min-height: 2.75rem;
+    padding: 0.45rem 1.1rem;
+    border: 2px solid var(--color-white);
     border-radius: 999px;
-    background: var(--matin-ivoire);
+    background: var(--color-white);
     color: var(--matin-encre);
     font-family: var(--font-display);
     font-weight: 700;
     cursor: pointer;
   }
+  .guide-chip:hover {
+    border-color: var(--matin-soleil);
+  }
   .guide-chip[aria-pressed='true'] {
-    background: var(--matin-firouzeh-ink);
-    border-color: var(--matin-firouzeh-ink);
-    color: var(--color-white);
+    background: var(--matin-soleil);
+    border-color: var(--matin-soleil);
+    color: var(--matin-encre);
   }
   .guide-filter__none {
+    font-weight: 700;
+    color: var(--matin-soleil);
+  }
+
+  /* The team's note (owner, Nov 2 2026: new design): a straight navy panel, the title in
+     saffron on the start side, the text in white beside it, a terracotta sun in the corner.
+     White on encre 11:1, soleil on encre 6.6:1. */
+  .guide-why {
+    position: relative;
+    display: grid;
+    gap: 1rem 2.5rem;
+    margin: clamp(2rem, 1.5rem + 2vw, 3rem) auto 3rem;
+    padding: clamp(1.75rem, 1.2rem + 2vw, 2.75rem);
+    border-radius: 1.25rem;
+    border-start-start-radius: 4rem;
+    background: var(--matin-encre);
+    color: var(--color-white);
+    overflow: hidden;
+  }
+  @media (min-width: 56rem) {
+    .guide-why {
+      grid-template-columns: minmax(0, 0.8fr) minmax(0, 2fr);
+      align-items: start;
+    }
+  }
+  .guide-why__sun {
+    position: absolute;
+    inset-block-end: -3rem;
+    inset-inline-end: -3rem;
+    width: 9rem;
+    height: 9rem;
+    border-radius: 50%;
+    background: var(--matin-brique);
+    opacity: 0.9;
+  }
+  .guide-why__head,
+  .guide-why > div {
+    position: relative;
+  }
+  .guide-why__title {
+    font-family: var(--font-editorial);
+    font-size: clamp(1.8rem, 1.3rem + 1.8vw, 2.6rem);
+    font-weight: 700;
+    line-height: 1.1;
+    color: var(--matin-soleil);
+  }
+  .guide-why__text {
+    font-size: clamp(1.1rem, 1.6vw, 1.25rem);
+    line-height: 1.8;
+    color: var(--color-white);
+  }
+  .guide-why__sign {
+    margin-top: 0.75rem;
+    font-family: var(--font-display);
+    font-weight: 700;
+    color: var(--color-white);
+  }
+  .guide-why__date {
+    margin-top: 1rem;
+    font-family: var(--font-display);
     font-weight: 600;
-    color: var(--matin-brique-ink);
+    font-size: 0.95rem;
+    color: var(--matin-soleil);
   }
 
   /* Regions: grounds change by region, LaSalle first and warmest. */
