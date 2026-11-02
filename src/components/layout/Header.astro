@@ -1,6 +1,7 @@
 ---
 import { advisorStrings } from '@/i18n/advisors';
 import { collabStrings, collabAnchors } from '@/i18n/collab';
+import { musicStrings } from '@/i18n/musicGroups';
 import {
   ChevronDown,
   HeartHandshake,
@@ -140,6 +141,7 @@ const collabLinks = [
   { id: ca.volunteer, label: t('involved.volunteerTitle') },
   { id: ca.advisors, label: advisorStrings(lang).nav },
   { id: ca.partners, label: cs.partners },
+  { id: ca.music, label: musicStrings(lang).nav },
 ].map((l) => ({ ...l, href: anchor(collabHref, l.id) }));
 // Menu items that open a dropdown.
 const subMenus: Partial<Record<RouteKey, { id: string; label: string; links: typeof aboutLinks }>> =

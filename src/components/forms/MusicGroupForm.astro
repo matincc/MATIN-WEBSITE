@@ -1,0 +1,259 @@
+---
+/**
+ * Music Ensembles Roster registration (owner's request, Nov 2 2026). Netlify form
+ * « ensembles »: ensemble name, size (3 to 7), style, instruments, country, city, year
+ * founded, director, coordinator, email, phone, background, up to three work links,
+ * website and social links, then four required commitments (terms, no rights, own rights,
+ * three-year register), one optional consent (share the file with festivals) and the
+ * privacy consent. Links only, no files, no passport or ID data (Law 25: only what is
+ * needed). Style and size are sent in English so every Sheet row reads alike.
+ */
+import FormShell from './FormShell.astro';
+import Field from './Field.astro';
+import { href, type UiLang } from '@/i18n/routes';
+import { useTranslations } from '@/i18n/ui';
+import { countryNames } from '@/lib/countries';
+import { dialOptions } from '@/lib/dialCodes';
+import { collabAnchors } from '@/i18n/collab';
+import { musicStrings, SIZE_VALUES, STYLE_VALUES } from '@/i18n/musicGroups';
+
+interface Props {
+  lang: UiLang;
+}
+const { lang } = Astro.props;
+const t = useTranslations(lang);
+const m = musicStrings(lang);
+const countries = countryNames(lang);
+const dials = dialOptions(lang);
+const styleLabels = m.styleNames.split('|');
+const faDigits = (s: string) => (lang === 'fa' ? s.replace(/\d/g, (d) => '۰۱۲۳۴۵۶۷۸۹'[+d]) : s);
+const req = ` (${t('form.required')})`;
+const urlField = (id: string, name: string, label: string, required = false, hint?: string) => ({ id, name, label, required, hint });
+const workLinks = [
+  urlField('mus-work1', 'work_link_1', m.work1, true, m.workHint),
+  urlField('mus-work2', 'work_link_2', m.work2),
+  urlField('mus-work3', 'work_link_3', m.work3),
+];
+const socialLinks = [
+  urlField('mus-site', 'website', m.website),
+  urlField('mus-insta', 'instagram', m.instagram),
+  urlField('mus-yt', 'youtube', m.youtube),
+  urlField('mus-other', 'other_social', m.otherSocial),
+];
+---
+
+<FormShell
+  lang={lang}
+  name="ensembles"
+  id="music-groups"
+  action={`${href('collaboration', lang)}?sent=1#${collabAnchors(lang).music}`}
+  submitLabel={m.submit}
+  consentText={m.consent}
+  successMessage={m.success}
+>
+  <h4 class="mus-section">{m.sectionGroup}</h4>
+  <div class="grid gap-5 sm:grid-cols-2">
+    <Field lang={lang} id="mus-name" name="group_name" label={m.groupName} required />
+    <div class="field">
+      <label for="mus-size" class="field-label" data-short={m.size}>
+        <span data-label-text>{m.size}</span><span class="req">{req}</span>
+      </label>
+      <select id="mus-size" name="members" class="input" required aria-describedby="mus-size-error">
+        <option value="">{m.sizeChoose}</option>
+        {SIZE_VALUES.map((v) => <option value={v}>{faDigits(v)}</option>)}
+      </select>
+      <p id="mus-size-error" class="field-error" hidden></p>
+    </div>
+    <div class="field">
+      <label for="mus-style" class="field-label" data-short={m.style}>
+        <span data-label-text>{m.style}</span><span class="req">{req}</span>
+      </label>
+      <select id="mus-style" name="style" class="input" required aria-describedby="mus-style-error">
+        <option value="">{m.styleChoose}</option>
+        {STYLE_VALUES.map((v, i) => <option value={v}>{styleLabels[i]}</option>)}
+      </select>
+      <p id="mus-style-error" class="field-error" hidden></p>
+    </div>
+    <div class="field">
+      <label for="mus-instruments" class="field-label" data-short={m.instruments}>
+        <span data-label-text>{m.instruments}</span><span class="req">{req}</span>
+      </label>
+      <p id="mus-instruments-hint" class="mus-hint">{m.instrumentsHint}</p>
+      <input id="mus-instruments" name="instruments" type="text" class="input" required maxlength="200" aria-describedby="mus-instruments-hint mus-instruments-error" />
+      <p id="mus-instruments-error" class="field-error" hidden></p>
+    </div>
+    <div class="field">
+      <label for="mus-country" class="field-label" data-short={m.country}>
+        <span data-label-text>{m.country}</span><span class="req">{req}</span>
+      </label>
+      <input id="mus-country" name="country" type="text" class="input" list="mus-country-list" autocomplete="country-name" required maxlength="200" aria-describedby="mus-country-error" />
+      <datalist id="mus-country-list">
+        {countries.map((c) => <option value={c} />)}
+      </datalist>
+      <p id="mus-country-error" class="field-error" hidden></p>
+    </div>
+    <Field lang={lang} id="mus-city" name="city" label={m.city} required autocomplete="address-level2" />
+    <Field lang={lang} id="mus-founded" name="founded" label={m.founded} maxlength={4} />
+  </div>
+
+  <h4 class="mus-section">{m.sectionPeople}</h4>
+  <div class="grid gap-5 sm:grid-cols-2">
+    <Field lang={lang} id="mus-leader" name="director" label={m.leader} required autocomplete="name" />
+    <div class="field">
+      <label for="mus-coord" class="field-label" data-short={m.coordinator}>
+        <span data-label-text>{m.coordinator}</span><span class="req">{req}</span>
+      </label>
+      <p id="mus-coord-hint" class="mus-hint">{m.coordinatorHint}</p>
+      <input id="mus-coord" name="coordinator" type="text" class="input" required maxlength="200" aria-describedby="mus-coord-hint mus-coord-error" />
+      <p id="mus-coord-error" class="field-error" hidden></p>
+    </div>
+    <Field lang={lang} id="mus-email" name="email" type="email" label={m.email} required autocomplete="email" />
+    <div class="field">
+      <label for="mus-phone" class="field-label">{m.phone}</label>
+      <p id="mus-phone-hint" class="mus-hint">{m.phoneHint}</p>
+      <div class="mus-phone" dir="ltr">
+        <select id="mus-phone-code" name="phone_code" class="input mus-phone__code" aria-label={m.phoneCode} autocomplete="tel-country-code">
+          {dials.map((d, i) => <option value={d.value} selected={i === 0}>{d.label}</option>)}
+        </select>
+        <input id="mus-phone" name="phone" type="tel" class="input" autocomplete="tel-national" inputmode="tel" maxlength="40" aria-describedby="mus-phone-hint" />
+      </div>
+    </div>
+  </div>
+
+  <h4 class="mus-section">{m.sectionWork}</h4>
+  <div class="field">
+    <label for="mus-exp" class="field-label" data-short={m.experience}>
+      <span data-label-text>{m.experience}</span><span class="req">{req}</span>
+    </label>
+    <p id="mus-exp-hint" class="mus-hint">{m.experienceHint}</p>
+    <textarea id="mus-exp" name="experience" class="input mus-textarea" required maxlength="1000" aria-describedby="mus-exp-hint mus-exp-error"></textarea>
+    <p id="mus-exp-error" class="field-error" hidden></p>
+  </div>
+  <p class="mus-hint">{m.workHint}</p>
+  <div class="grid gap-5">
+    {workLinks.map((f) => (
+      <div class="field">
+        <label for={f.id} class="field-label" data-short={f.label}>
+          <span data-label-text>{f.label}</span>{f.required && <span class="req">{req}</span>}
+        </label>
+        <input id={f.id} name={f.name} type="url" class="input" dir="ltr" placeholder="https://" maxlength="300" required={f.required} aria-describedby={`${f.id}-error`} />
+        <p id={`${f.id}-error`} class="field-error" hidden></p>
+      </div>
+    ))}
+  </div>
+
+  <h4 class="mus-section">{m.sectionLinks}</h4>
+  <div class="grid gap-5 sm:grid-cols-2">
+    {socialLinks.map((f) => (
+      <div class="field">
+        <label for={f.id} class="field-label">{f.label}</label>
+        <input id={f.id} name={f.name} type="url" class="input" dir="ltr" placeholder="https://" maxlength="300" aria-describedby={`${f.id}-error`} />
+        <p id={`${f.id}-error`} class="field-error" hidden></p>
+      </div>
+    ))}
+  </div>
+
+  <details class="mus-terms" open>
+    <summary>{m.termsTitle}</summary>
+    <ol>
+      {m.terms.split('\n').map((line) => <li>{line}</li>)}
+    </ol>
+  </details>
+
+  <div class="mus-all">
+    <input id="mus-all" type="checkbox" class="size-5 shrink-0 accent-primary" data-check-all />
+    <label for="mus-all">{m.acceptAll}</label>
+  </div>
+
+  {[
+    { id: 'mus-terms', name: 'accept_terms', text: m.acceptTerms, required: true },
+    { id: 'mus-norights', name: 'no_rights', text: m.noRights, required: true },
+    { id: 'mus-own', name: 'own_rights', text: m.ownRights, required: true },
+    { id: 'mus-keep', name: 'retention', text: m.retention, required: true },
+    { id: 'mus-share', name: 'share_with_festivals', text: m.share, required: false },
+  ].map((c) => (
+    <div class="field">
+      <div class="flex items-start gap-3">
+        <input id={c.id} type="checkbox" name={c.name} value="yes" required={c.required} class="mt-1 size-5 shrink-0 accent-primary" aria-describedby={`${c.id}-error`} />
+        <label for={c.id} class="text-sm leading-relaxed" data-short={c.text.split(/[,.:]/)[0]}>
+          {c.text} {c.required && <span class="text-muted">({t('form.required')})</span>}
+        </label>
+      </div>
+      <p id={`${c.id}-error`} class="field-error" hidden></p>
+    </div>
+  ))}
+</FormShell>
+
+<style>
+  :global(form[name='ensembles'] > * + *) {
+    margin-block-start: 1.75rem;
+  }
+  .mus-section:not(#o) {
+    padding-block-start: 0.5rem;
+    border-block-start: 2px solid color-mix(in srgb, var(--matin-firouzeh) 35%, transparent);
+    font-family: var(--font-display);
+    font-size: 1.2rem;
+    font-weight: 800;
+    color: var(--matin-firouzeh-ink);
+  }
+  .mus-hint {
+    margin-block-end: 0.4rem;
+    font-size: 0.95rem;
+    color: var(--color-ink);
+  }
+  .mus-phone {
+    display: grid;
+    grid-template-columns: minmax(0, 11rem) minmax(0, 1fr);
+    gap: 0.5rem;
+  }
+  @media (max-width: 30rem) {
+    .mus-phone {
+      grid-template-columns: 1fr;
+    }
+  }
+  .mus-phone__code {
+    padding-inline-end: 2rem;
+  }
+  :global([dir='rtl']) .mus-phone__code {
+    direction: rtl;
+  }
+  .mus-textarea {
+    min-height: 8rem;
+  }
+  .mus-terms {
+    padding: 1rem 1.25rem;
+    border-radius: 0.9rem;
+    background: var(--color-white);
+    border-inline-start: 5px solid var(--matin-firouzeh);
+  }
+  .mus-terms summary {
+    cursor: pointer;
+    font-family: var(--font-display);
+    font-weight: 800;
+    color: var(--matin-encre);
+  }
+  .mus-terms ol {
+    margin-block-start: 0.75rem;
+    padding-inline-start: 1.25rem;
+    list-style: decimal;
+    display: grid;
+    gap: 0.5rem;
+    line-height: 1.6;
+  }
+  .mus-all {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.7rem 1rem;
+    border-radius: 999px;
+    background: var(--color-white);
+    border: 1.5px solid var(--matin-firouzeh-ink);
+    width: fit-content;
+    font-family: var(--font-display);
+    font-weight: 800;
+    color: var(--matin-encre);
+  }
+  .mus-all label {
+    cursor: pointer;
+  }
+</style>

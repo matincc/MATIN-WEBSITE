@@ -69,4 +69,5 @@ export const collabAnchors = (lang: UiLang) => ({
   membership: lang === 'fr' ? 'adhesion' : 'membership',
   volunteer: lang === 'fr' ? 'benevolat' : 'volunteer',
   advisors: lang === 'fr' ? 'conseillers' : 'advisory-circle',
+  music: lang === 'fr' ? 'ensembles-musique' : 'music-ensembles',
 });
