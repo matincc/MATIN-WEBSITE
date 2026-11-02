@@ -13,7 +13,6 @@ import FormShell from './FormShell.astro';
 import Field from './Field.astro';
 import { href, type UiLang } from '@/i18n/routes';
 import { useTranslations } from '@/i18n/ui';
-import { countryNames } from '@/lib/countries';
 import { dialOptions } from '@/lib/dialCodes';
 import { collabAnchors } from '@/i18n/collab';
 import { musicStrings, SIZE_VALUES, STYLE_VALUES } from '@/i18n/musicGroups';
@@ -24,9 +23,7 @@ interface Props {
 const { lang } = Astro.props;
 const t = useTranslations(lang);
 const m = musicStrings(lang);
-// Iran first in both lists (owner, Nov 2 2026), then the rest as usual.
-const iranName = new Intl.DisplayNames([lang === 'fa' ? 'fa' : `${lang}-CA`], { type: 'region' }).of('IR') ?? 'Iran';
-const countries = [iranName, ...countryNames(lang).filter((c) => c !== iranName)];
+// Iran first in the dialling codes (owner, Nov 2 2026), then the rest as usual.
 const allDials = dialOptions(lang);
 const dials = [...allDials.filter((d) => d.value === '+98 IR'), ...allDials.filter((d) => d.value !== '+98 IR')];
 const terms = m.terms.split('\n').map((line) => line.split('|'));
@@ -123,11 +120,16 @@ const socialLinks = [
       <label for="mus-country" class="field-label" data-short={m.country}>
         <span data-label-text>{m.country}</span><span class="req">{req}</span>
       </label>
-      <select id="mus-country" name="country" class="input" required autocomplete="country-name" aria-describedby="mus-country-error">
+      <select id="mus-country" name="country" class="input" required aria-describedby="mus-country-error">
         <option value="">{m.sizeChoose}</option>
-        {countries.map((c) => <option value={c}>{c}</option>)}
+        <option value="Iran">{m.countryIran}</option>
+        <option value="Other">{m.countryOther}</option>
       </select>
       <p id="mus-country-error" class="field-error" hidden></p>
+    </div>
+    {/* Iran or other countries; for another country, its name (owner, Nov 2 2026). */}
+    <div data-show-when="country=Other">
+      <Field lang={lang} id="mus-country-name" name="country_name" label={m.countryName} requiredWhen="country=Other" autocomplete="country-name" />
     </div>
     <Field lang={lang} id="mus-city" name="city" label={m.city} required autocomplete="address-level2" />
     <Field lang={lang} id="mus-founded" name="founded" label={m.founded} maxlength={4} />
@@ -208,7 +210,10 @@ const socialLinks = [
     const update = () => {
       const open = boxes.every((b) => b.checked);
       gated.hidden = !open;
-      gated.querySelectorAll<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>('input, select, textarea').forEach((f) => (f.disabled = !open));
+      gated.querySelectorAll<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>('input, select, textarea').forEach((f) => {
+        // A conditional part stays closed until its own condition is met (forms.ts).
+        f.disabled = !open || !!f.closest<HTMLElement>('[data-show-when]')?.hidden;
+      });
       if (hint) hint.hidden = open;
     };
     boxes.forEach((b) => b.addEventListener('change', update));
