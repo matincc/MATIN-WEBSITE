@@ -783,7 +783,7 @@ const num = (n: number) =>
     background: color-mix(in srgb, var(--color-soleil) 24%, var(--color-white));
     border: 0;
     border-top: 6px solid var(--color-firouzeh);
-    box-shadow: 0 1.75rem 3rem -2rem color-mix(in srgb, var(--color-encre) 55%, transparent);
+    box-shadow: 0 1.75rem 3rem -2rem color-mix(in srgb, var(--color-primary) 55%, transparent);
   }
   .jr-pinned .jr-label {
     color: var(--color-firouzeh-ink);
@@ -801,7 +801,7 @@ const num = (n: number) =>
   }
   .jr-feature__aside .jr-label,
   .jr-feature__aside .jr-meta__item {
-    color: var(--color-encre);
+    color: var(--color-primary);
   }
   .jr-feature__sun {
     background: var(--color-brique);
@@ -838,20 +838,22 @@ const num = (n: number) =>
     list-style: none;
   }
   .jr-item {
-    --tone: var(--color-brique-ink);
-    --wash: color-mix(in srgb, var(--color-brique) 16%, var(--color-white));
+    --tone: var(--color-firouzeh-ink);
+    --wash: color-mix(in srgb, var(--color-firouzeh) 30%, var(--color-white));
     display: grid;
     grid-template-columns: clamp(6rem, 4.5rem + 5vw, 9rem) minmax(0, 1fr);
     gap: clamp(1rem, 0.5rem + 2vw, 2.25rem);
     align-items: stretch;
   }
+  /* Same colour for the date column and its note (owner, Nov 4 2026); no terracotta
+     here, it belongs to the cover. Turquoise, blue, then saffron. */
   .jr-list__grid > li:nth-child(3n + 2) .jr-item {
-    --tone: var(--color-firouzeh-ink);
-    --wash: color-mix(in srgb, var(--color-firouzeh) 16%, var(--color-white));
+    --tone: var(--color-primary);
+    --wash: color-mix(in srgb, var(--color-primary) 22%, var(--color-white));
   }
   .jr-list__grid > li:nth-child(3n + 3) .jr-item {
-    --tone: var(--color-encre);
-    --wash: color-mix(in srgb, var(--color-soleil) 26%, var(--color-white));
+    --tone: color-mix(in srgb, var(--color-soleil) 55%, var(--color-primary));
+    --wash: color-mix(in srgb, var(--color-soleil) 38%, var(--color-white));
   }
   .jr-item__side {
     display: flex;
@@ -868,10 +870,11 @@ const num = (n: number) =>
     display: grid;
     place-items: center;
     width: 3rem;
+    border: 3px solid var(--color-white);
     aspect-ratio: 1;
     border-radius: 999px;
     background: var(--color-soleil);
-    color: var(--color-encre);
+    color: var(--color-primary);
     font-family: var(--font-display);
     font-size: 1.15rem;
     font-weight: 800;
