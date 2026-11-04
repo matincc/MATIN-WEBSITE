@@ -27,3 +27,8 @@
 /fr/actualites/*   /fr/actualites/   301
 /en/news/*         /en/news/         301
 /fa/news/*         /fa/news/         301
+
+# Welcome note removed (owner, Nov 4 2026): it repeated « Why I founded Matin »
+/fr/notes-du-president/mot-de-bienvenue/  /fr/notes-du-president/  301
+/en/president-notes/welcome-note/  /en/president-notes/  301
+/fa/president-notes/welcome-note/  /fa/president-notes/  301

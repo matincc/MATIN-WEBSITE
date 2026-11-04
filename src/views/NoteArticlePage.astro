@@ -91,10 +91,9 @@ const question =
 const foreign = foreignLang ? { lang: foreignLang, dir: dirOf(foreignLang) } : {};
 
 // Keep reading: the welcome note (when this is not it) and the latest other notes.
-const others = notes.filter((n) => n.id !== note?.id).slice(0, welcome ? 3 : 2);
-const welcomeExcerpt = !welcome
-  ? splitParagraphs((lang === 'fa' ? p.message?.fa : p.message?.[lang]) ?? '')[0]
-  : undefined;
+// The welcome note left the journal (owner, Nov 4 2026: it repeated « Why I founded Matin »).
+const others = notes.filter((n) => n.id !== note?.id).slice(0, 3);
+const welcomeExcerpt = undefined as string | undefined;
 
 const journal = href('notes', lang);
 const trail = [
