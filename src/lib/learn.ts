@@ -25,9 +25,9 @@ export const learnStrings = {
   title: { fr: 'La culture en mots simples', en: 'Culture in Plain Words', fa: 'فرهنگ به زبان ساده' },
   nav: { fr: 'La culture en mots simples', en: 'Culture in Plain Words', fa: 'فرهنگ به زبان ساده' },
   lede: {
-    fr: 'Des fiches courtes pour comprendre, simplement et sans jargon, les idées, les droits et les lois qui touchent nos communautés. Chaque fiche se lit en quelques minutes.',
-    en: 'Short sheets that explain, simply and without jargon, the ideas, rights and laws that shape our communities. Each sheet takes a few minutes to read.',
-    fa: 'برگه‌هایی کوتاه که ایده‌ها، حقوق و قوانینی را که بر زندگی جمعی ما اثر می‌گذارند، ساده و بی‌اصطلاحات دشوار توضیح می‌دهند. خواندن هر برگه چند دقیقه بیشتر طول نمی‌کشد.',
+    fr: 'Des fiches courtes qui expliquent les notions de la planification culturelle de façon simple et claire. Chaque fiche se lit en quelques minutes.',
+    en: 'Short sheets that explain the ideas of cultural planning in a simple, clear way. Each sheet takes a few minutes to read.',
+    fa: 'برگه‌هایی کوتاه که مفاهیم برنامه‌ریزی فرهنگی را به صورت ساده و روان توضیح می‌دهند. خواندن هر برگه چند دقیقه بیشتر طول نمی‌کشد.',
   },
   goal: {
     fr: 'Objectif : 100 fiches',
