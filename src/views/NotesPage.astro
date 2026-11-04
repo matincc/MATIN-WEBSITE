@@ -32,7 +32,10 @@ const site = Astro.site ?? new URL(Astro.url.origin);
 
 const notes = await getNotes();
 const hasSamples = notes.some((n) => n.data.sample);
-const [latest, ...older] = notes;
+// A pinned note (owner, Nov 3 2026) opens the journal in place of the welcome note,
+// which then joins the end of the archive.
+const pinnedNote = notes.find((n) => n.data.pinned);
+const [latest, ...older] = notes.filter((n) => n !== pinnedNote);
 const SHOWN = 6;
 
 const { president: p } = await getSingleton('about');
@@ -103,7 +106,41 @@ const dir = (l: string) => (l === 'fa' ? 'rtl' : 'ltr');
     </div>
   </section>
 
-  {welcome.length > 0 && (
+  {pinnedNote &&
+    (() => {
+      const v = noteView(pinnedNote, lang);
+      const foreign = v.foreign ? { lang: v.shownLang, dir: dir(v.shownLang) } : {};
+      return (
+        <section id="personal-note" class="jr-pinned scroll-mt-24" aria-labelledby="jr-pinned-title">
+          <div class="container-site">
+            <article class="jr-pinned__card jr-link-card" data-reveal>
+              <p class="jr-label jr-label--pin">
+                <Pin size={16} aria-hidden="true" />
+                {t('notes.pinned')}
+              </p>
+              <h2 id="jr-pinned-title" class="jr-pinned__title" {...foreign}>
+                <a href={noteHref(pinnedNote, lang)} class="jr-stretch">
+                  {v.headline ?? t('notes.noteOf', { date: formatDate(pinnedNote.data.date, lang) })}
+                </a>
+              </h2>
+              <p class="jr-pinned__excerpt" {...foreign}>{v.paragraphs[0]}</p>
+              <p class="jr-meta">
+                <span class="jr-meta__item">
+                  <Clock size={16} aria-hidden="true" />
+                  {t('news.readingTime', { n: v.minutes })}
+                </span>
+                <span class="jr-go" aria-hidden="true">
+                  {t('notes.readFull')}
+                  <ArrowRight size={18} class="flip-rtl" />
+                </span>
+              </p>
+            </article>
+          </div>
+        </section>
+      );
+    })()}
+
+  {!pinnedNote && welcome.length > 0 && (
     <section id="personal-note" class="jr-pinned scroll-mt-24" aria-labelledby="jr-pinned-title">
       <div class="container-site">
         <article class="jr-pinned__card jr-link-card" data-reveal>
@@ -192,7 +229,7 @@ const dir = (l: string) => (l === 'fa' ? 'rtl' : 'ltr');
         <p class="jr-empty">{t('notes.empty')}</p>
       )}
 
-      {older.length > 0 && (
+      {(older.length > 0 || (pinnedNote && welcome.length > 0)) && (
         <section class="jr-archive" aria-labelledby="jr-archive-title">
           <h2 id="jr-archive-title" class="jr-archive__title" data-reveal>
             {t('notes.archiveTitle')}
@@ -232,6 +269,31 @@ const dir = (l: string) => (l === 'fa' ? 'rtl' : 'ltr');
                 </li>
               );
             })}
+            {pinnedNote && welcome.length > 0 && (
+              <li>
+                <article class="jr-row jr-link-card" aria-labelledby="jr-welcome">
+                  <p class="jr-row__date"></p>
+                  <div class="jr-row__body">
+                    <h3 id="jr-welcome" class="jr-row__title">
+                      <a href={welcomeHref(lang)} class="jr-stretch">
+                        {t('about.founderTitle')}
+                      </a>
+                    </h3>
+                    <p class="jr-row__excerpt">{welcome[0]}</p>
+                  </div>
+                  <p class="jr-row__end">
+                    <span class="jr-meta__item">
+                      <Clock size={16} aria-hidden="true" />
+                      {t('news.readingTime', { n: readingTime(message, lang) })}
+                    </span>
+                    <span class="jr-go" aria-hidden="true">
+                      {t('notes.readWelcome')}
+                      <ArrowRight size={18} class="flip-rtl" />
+                    </span>
+                  </p>
+                </article>
+              </li>
+            )}
           </ol>
           {older.length > SHOWN && (
             <p class="jr-archive__more">
