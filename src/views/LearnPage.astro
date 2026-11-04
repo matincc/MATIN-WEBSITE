@@ -1,0 +1,266 @@
+---
+/**
+ * « La culture en mots simples » / "Culture in Plain Words" / «فرهنگ به زبان ساده»
+ * (owner's learning series, Nov 2026): the President's short explanatory sheets, newest
+ * last, each one shown in full as a coloured reading sheet. Data in src/lib/learn.ts.
+ */
+import PageLayout from '@/layouts/PageLayout.astro';
+import { href, siteAlternates, type UiLang } from '@/i18n/routes';
+import { typo } from '@/lib/frenchTypo';
+import { learnSheets, learnStrings as s } from '@/lib/learn';
+
+interface Props {
+  lang: UiLang;
+}
+const { lang } = Astro.props;
+const tx = (v: string) => typo(v, lang);
+const num = (n: number) =>
+  new Intl.NumberFormat(lang === 'fa' ? 'fa-IR' : lang, { minimumIntegerDigits: 2 }).format(n);
+const dateFmt = new Intl.DateTimeFormat(lang === 'fa' ? 'fa-IR-u-ca-gregory' : `${lang}-CA`, {
+  day: 'numeric',
+  month: 'long',
+  year: 'numeric',
+  timeZone: 'UTC',
+});
+const writeHref = `${href('contact', lang)}#write`;
+---
+
+<PageLayout
+  accent="firouzeh"
+  lang={lang}
+  title={s.title[lang]}
+  lede={tx(s.lede[lang])}
+  alternates={siteAlternates('learn')}
+>
+  <section class="learn" data-own-ground>
+    <div class="container-site learn__inner">
+      <p class="learn__goal">
+        <span class="learn__goal-count">{num(learnSheets.length)}</span>
+        <span>/ {s.goal[lang]}</span>
+      </p>
+
+      {
+        learnSheets.map((sheet, i) => (
+          <article class="sheet" id={sheet.slug} data-tone={i % 3}>
+            <header class="sheet__head">
+              <span class="sheet__num" aria-hidden="true">{num(sheet.number)}</span>
+              <div>
+                <p class="sheet__kicker">{s.sheet[lang].replace('{n}', num(sheet.number))}</p>
+                <h2 class="sheet__title">{tx(sheet.title[lang])}</h2>
+                <p class="sheet__by">
+                  {s.by[lang]} · <time datetime={sheet.date}>{dateFmt.format(new Date(sheet.date))}</time>
+                </p>
+              </div>
+            </header>
+
+            <div class="sheet__short">
+              <p class="sheet__short-label">{s.inShortLabel[lang]}</p>
+              <p>{tx(sheet.inShort[lang])}</p>
+            </div>
+
+            <div class="sheet__body">
+              {sheet.sections.map((sec) => (
+                <section class="sheet__sec">
+                  <h3>{tx(sec.heading[lang])}</h3>
+                  {sec.paragraphs?.map((p) => <p>{tx(p[lang])}</p>)}
+                  {sec.points && (
+                    <ul class="sheet__points">
+                      {sec.points.map((p) => (
+                        <li>{tx(p[lang])}</li>
+                      ))}
+                    </ul>
+                  )}
+                </section>
+              ))}
+            </div>
+
+            <aside class="sheet__question">
+              <p class="sheet__q-label">{s.questionLabel[lang]}</p>
+              <p class="sheet__q">{tx(sheet.question[lang])}</p>
+              <a class="btn btn-primary sheet__write" href={writeHref}>
+                {s.write[lang]} <span aria-hidden="true">{lang === 'fa' ? '←' : '→'}</span>
+              </a>
+              <p class="sheet__q-note">{tx(sheet.questionNote[lang])}</p>
+            </aside>
+          </article>
+        ))
+      }
+
+      <p class="learn__next">{s.next[lang]}</p>
+    </div>
+  </section>
+</PageLayout>
+
+<style>
+  .learn {
+    background: var(--color-ivory);
+    padding-block: clamp(2rem, 1.5rem + 2vw, 3.5rem) clamp(3rem, 2rem + 3vw, 5rem);
+  }
+  .learn__inner {
+    max-width: 58rem;
+  }
+  .learn__goal {
+    display: inline-flex;
+    align-items: baseline;
+    gap: 0.5rem;
+    padding: 0.5rem 1.1rem;
+    border-radius: 999px;
+    background: var(--color-primary);
+    color: var(--color-white);
+    font-family: var(--font-display);
+    font-weight: 700;
+  }
+  .learn__goal-count {
+    color: var(--color-soleil);
+    font-size: 1.4rem;
+    font-weight: 800;
+  }
+  .sheet {
+    --tone: var(--color-firouzeh-ink);
+    --wash: color-mix(in srgb, var(--color-firouzeh) 14%, var(--color-white));
+    margin-top: 1.75rem;
+    border-radius: 0 3.5rem 0 3.5rem;
+    background: var(--color-white);
+    box-shadow: var(--shadow-card);
+    border-top: 8px solid var(--tone);
+    overflow: hidden;
+  }
+  :global([dir='rtl']) .sheet {
+    border-radius: 3.5rem 0 3.5rem 0;
+  }
+  .sheet[data-tone='1'] {
+    --tone: var(--color-primary);
+    --wash: color-mix(in srgb, var(--color-primary) 10%, var(--color-white));
+  }
+  .sheet[data-tone='2'] {
+    --tone: var(--color-brique-ink);
+    --wash: color-mix(in srgb, var(--color-soleil) 22%, var(--color-white));
+  }
+  .sheet__head {
+    display: flex;
+    gap: 1.25rem;
+    align-items: flex-start;
+    padding: clamp(1.25rem, 1rem + 1.5vw, 2.25rem) clamp(1.25rem, 1rem + 2vw, 2.75rem) 1rem;
+  }
+  .sheet__num {
+    flex: none;
+    display: grid;
+    place-items: center;
+    width: 4.25rem;
+    aspect-ratio: 1;
+    border-radius: 999px 999px 1rem 1rem;
+    background: var(--tone);
+    color: var(--color-white);
+    font-family: var(--font-editorial);
+    font-size: 1.8rem;
+    font-weight: 800;
+    box-shadow: 0 0 0 4px var(--color-soleil);
+  }
+  .sheet__kicker {
+    font-family: var(--font-display);
+    font-size: 0.85rem;
+    font-weight: 800;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--tone);
+  }
+  :global([dir='rtl']) .sheet__kicker {
+    letter-spacing: 0;
+  }
+  .sheet__title {
+    margin-top: 0.2rem;
+    font-family: var(--font-editorial);
+    font-size: clamp(1.6rem, 1.2rem + 1.6vw, 2.4rem);
+    font-weight: 800;
+    line-height: 1.2;
+    color: var(--color-primary);
+  }
+  .sheet__by {
+    margin-top: 0.4rem;
+    font-size: 0.95rem;
+    color: var(--color-ink);
+  }
+  .sheet__short {
+    margin-inline: clamp(1.25rem, 1rem + 2vw, 2.75rem);
+    padding: 1.1rem 1.35rem;
+    border-radius: 1.25rem;
+    background: var(--wash);
+    border-inline-start: 5px solid var(--color-soleil);
+    font-size: 1.1rem;
+    font-weight: 500;
+    line-height: 1.65;
+  }
+  .sheet__short-label,
+  .sheet__q-label {
+    font-family: var(--font-display);
+    font-weight: 800;
+    color: var(--tone);
+    margin-bottom: 0.25rem;
+  }
+  .sheet__body {
+    padding: 0.5rem clamp(1.25rem, 1rem + 2vw, 2.75rem) 1.5rem;
+  }
+  .sheet__sec h3 {
+    margin-top: 1.5rem;
+    font-family: var(--font-display);
+    font-size: 1.25rem;
+    font-weight: 800;
+    color: var(--tone);
+  }
+  .sheet__sec p {
+    margin-top: 0.6rem;
+    font-size: 1.075rem;
+    line-height: 1.75;
+  }
+  .sheet__points {
+    margin-top: 0.75rem;
+    display: grid;
+    gap: 0.6rem;
+  }
+  .sheet__points li {
+    position: relative;
+    padding-inline-start: 1.6rem;
+    line-height: 1.6;
+  }
+  .sheet__points li::before {
+    content: '';
+    position: absolute;
+    inset-inline-start: 0;
+    top: 0.5em;
+    width: 0.7rem;
+    height: 0.7rem;
+    border-radius: 999px;
+    background: var(--color-soleil);
+  }
+  .sheet__question {
+    padding: clamp(1.25rem, 1rem + 1.5vw, 2rem) clamp(1.25rem, 1rem + 2vw, 2.75rem);
+    background: var(--tone);
+    color: var(--color-white);
+  }
+  .sheet__question .sheet__q-label {
+    color: var(--color-soleil);
+  }
+  .sheet__q {
+    font-family: var(--font-editorial);
+    font-size: clamp(1.2rem, 1rem + 0.8vw, 1.5rem);
+    font-weight: 700;
+    line-height: 1.4;
+  }
+  .sheet__write {
+    margin-top: 1rem;
+    display: inline-flex;
+    gap: 0.5rem;
+  }
+  .sheet__q-note {
+    margin-top: 0.75rem;
+    font-size: 0.95rem;
+    opacity: 0.92;
+  }
+  .learn__next {
+    margin-top: 2rem;
+    text-align: center;
+    font-family: var(--font-display);
+    font-weight: 700;
+    color: var(--color-firouzeh-ink);
+  }
+</style>

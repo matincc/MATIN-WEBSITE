@@ -24,6 +24,7 @@ export const routes = {
   resources: { fr: 'ressources', en: 'resources' },
   localGuide: { fr: 'guide-local', en: 'local-guide' },
   cultureMap: { fr: 'carte-des-cultures', en: 'culture-map' },
+  learn: { fr: 'la-culture-en-mots-simples', en: 'culture-in-plain-words' },
   collaboration: { fr: 'collaboration', en: 'collaboration' },
   contact: { fr: 'contact', en: 'contact' },
   careers: { fr: 'emplois', en: 'careers' },

@@ -28,6 +28,7 @@ import PostCard from '@/components/content/PostCard.astro';
 import ExpireEvents from '@/components/content/ExpireEvents.astro';
 import BaseLayout from '@/layouts/BaseLayout.astro';
 import AliveHero from '@/components/brand/AliveHero.astro';
+import NationalDayStrip from '@/components/content/NationalDayStrip.astro';
 import UpcomingStrip from '@/components/content/UpcomingStrip.astro';
 import LandAcknowledgement from '@/components/brand/LandAcknowledgement.astro';
 import ImpactBand from '@/components/trust/ImpactBand.astro';
@@ -102,6 +103,7 @@ const l = livingStrings(lang);
   </div>
 
   <div class="alive living">
+    <NationalDayStrip lang={lang} />
     <AliveHero lang={lang} />
     {/* Homepage order (owner's request, Oct 31 2026: shorter, the institute first, then its
        work): hero → Who we are → impact → Matin in Action → coming up →
