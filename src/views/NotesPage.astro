@@ -20,7 +20,7 @@ import { formatDate } from '@/lib/dates';
 import { typo } from '@/lib/frenchTypo';
 import { breadcrumbJsonLd } from '@/lib/seo';
 import { noteHref, noteView, readingTime, splitParagraphs, welcomeHref } from '@/lib/notes';
-import portrait from '@/assets/photos/president-casual.jpg';
+import portrait from '@/assets/photos/president-notes.jpg';
 
 interface Props {
   lang: UiLang;
@@ -65,7 +65,7 @@ const dir = (l: string) => (l === 'fa' ? 'rtl' : 'ltr');
     ),
   ]}
 >
-  <section class="jr-hero" aria-labelledby="page-title">
+  <section class="jr-hero" data-own-ground aria-labelledby="page-title">
     <div class="container-site">
       <JournalCrumbs lang={lang} trail={trail} />
       <div class="jr-hero__grid">
@@ -111,7 +111,7 @@ const dir = (l: string) => (l === 'fa' ? 'rtl' : 'ltr');
       const v = noteView(pinnedNote, lang);
       const foreign = v.foreign ? { lang: v.shownLang, dir: dir(v.shownLang) } : {};
       return (
-        <section id="personal-note" class="jr-pinned scroll-mt-24" aria-labelledby="jr-pinned-title">
+        <section id="personal-note" data-own-ground class="jr-pinned scroll-mt-24" aria-labelledby="jr-pinned-title">
           <div class="container-site">
             <article class="jr-pinned__card jr-link-card" data-reveal>
               <p class="jr-label jr-label--pin">
@@ -141,7 +141,7 @@ const dir = (l: string) => (l === 'fa' ? 'rtl' : 'ltr');
     })()}
 
   {!pinnedNote && welcome.length > 0 && (
-    <section id="personal-note" class="jr-pinned scroll-mt-24" aria-labelledby="jr-pinned-title">
+    <section id="personal-note" data-own-ground class="jr-pinned scroll-mt-24" aria-labelledby="jr-pinned-title">
       <div class="container-site">
         <article class="jr-pinned__card jr-link-card" data-reveal>
           <p class="jr-label jr-label--pin">
@@ -169,7 +169,7 @@ const dir = (l: string) => (l === 'fa' ? 'rtl' : 'ltr');
     </section>
   )}
 
-  <section class="jr-journal" aria-label={title}>
+  <section class="jr-journal" data-own-ground aria-label={title}>
     <div class="container-site">
       {hasSamples && (
         <p class="jr-preview" role="note">
@@ -812,5 +812,127 @@ const dir = (l: string) => (l === 'fa' ? 'rtl' : 'ltr');
     color: var(--color-ink);
     font-size: 1.15rem;
     text-align: center;
+  }
+
+  /* ---------- Colour redesign (owner, Nov 4 2026: « too lifeless and colourless ») ----------
+     A deep terracotta cover with white type and a saffron-framed portrait, the pinned note
+     on pale saffron, the journal on pale turquoise: the latest note as a deep turquoise
+     card with a saffron date panel, the archive as white rows with coloured edges. */
+  .jr-hero {
+    background: var(--color-brique-ink);
+    color: var(--color-white);
+  }
+  .jr-hero::before,
+  .jr-hero::after {
+    content: '';
+    position: absolute;
+    border-radius: 999px;
+    pointer-events: none;
+  }
+  .jr-hero::before {
+    width: clamp(10rem, 6rem + 14vw, 22rem);
+    aspect-ratio: 1;
+    inset-block-end: clamp(-11rem, -6rem - 6vw, -5rem);
+    inset-inline-start: clamp(-6rem, -3rem - 4vw, -3rem);
+    background: var(--color-soleil);
+    opacity: 0.9;
+  }
+  .jr-hero::after {
+    width: clamp(6rem, 4rem + 6vw, 11rem);
+    aspect-ratio: 1;
+    inset-block-start: 3rem;
+    inset-inline-end: clamp(-4rem, -2rem - 2vw, -2rem);
+    background: var(--color-firouzeh);
+    opacity: 0.85;
+  }
+  .jr-hero > :global(.container-site) {
+    position: relative;
+    z-index: 1;
+  }
+  .jr-hero :global(.jr-crumbs),
+  .jr-hero :global(.jr-crumbs a),
+  .jr-hero :global(.jr-crumbs span) {
+    color: var(--color-white);
+  }
+  .jr-hero__title {
+    color: var(--color-white);
+  }
+  .jr-hero__subtitle {
+    color: color-mix(in srgb, var(--color-soleil) 55%, var(--color-white));
+  }
+  .jr-hero__intro {
+    color: color-mix(in srgb, var(--color-white) 92%, transparent);
+  }
+  .jr-portrait__frame::before {
+    background: var(--color-soleil);
+    border: 0;
+  }
+  .jr-portrait__sun {
+    background: var(--color-firouzeh);
+    opacity: 1;
+  }
+  .jr-portrait__frame :global(img) {
+    border-color: var(--color-white);
+  }
+  .jr-portrait__caption {
+    border-inline-start-color: var(--color-soleil);
+  }
+  .jr-portrait__name,
+  .jr-portrait__org {
+    color: var(--color-white);
+  }
+  .jr-portrait__role {
+    color: color-mix(in srgb, var(--color-soleil) 65%, var(--color-white));
+  }
+  .jr-portrait__in {
+    color: var(--color-white);
+    text-decoration-color: var(--color-soleil);
+  }
+  .jr-pinned {
+    z-index: 2;
+  }
+  .jr-pinned__card {
+    max-width: 66rem;
+    background: color-mix(in srgb, var(--color-soleil) 24%, var(--color-white));
+    border: 0;
+    border-top: 6px solid var(--color-firouzeh);
+    box-shadow: 0 1.75rem 3rem -2rem color-mix(in srgb, var(--color-encre) 55%, transparent);
+  }
+  .jr-pinned .jr-label {
+    color: var(--color-firouzeh-ink);
+  }
+  .jr-journal {
+    background: color-mix(in srgb, var(--color-firouzeh) 14%, var(--color-white));
+  }
+  .jr-feature {
+    border: 0;
+    background: var(--color-firouzeh-ink);
+    overflow: hidden;
+  }
+  .jr-feature__aside {
+    background: var(--color-soleil);
+  }
+  .jr-feature__aside .jr-label,
+  .jr-feature__aside .jr-meta__item {
+    color: var(--color-encre);
+  }
+  .jr-feature__sun {
+    background: var(--color-brique);
+  }
+  .jr-feature__title,
+  .jr-feature__title a,
+  .jr-feature__excerpt,
+  .jr-feature .jr-lang,
+  .jr-feature .jr-translation,
+  .jr-feature__body .jr-go {
+    color: var(--color-white);
+  }
+  .jr-archive__title {
+    color: var(--color-brique-ink);
+  }
+  .jr-row {
+    border: 0;
+    border-inline-start: 8px solid var(--color-firouzeh);
+    box-shadow: var(--shadow-card);
   }
 </style>
