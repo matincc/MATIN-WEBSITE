@@ -51,6 +51,49 @@ const trail = [
   { label: title, href: href('notes', lang) },
 ];
 const dir = (l: string) => (l === 'fa' ? 'rtl' : 'ltr');
+
+// One orderly, numbered list (owner, Nov 4 2026: « 1, 2, 3… tidy, each in the same frame,
+// with its date »): the pinned note first, then the others newest first, the welcome note last.
+type Item = {
+  key: string;
+  href: string;
+  title: string;
+  excerpt: string;
+  minutes: string;
+  date?: Date;
+  datetime?: string;
+  foreign: Record<string, string>;
+  cta: string;
+};
+const items: Item[] = [...(pinnedNote ? [pinnedNote] : []), latest, ...older]
+  .filter(Boolean)
+  .map((note) => {
+    const v = noteView(note!, lang);
+    return {
+      key: note!.id,
+      href: noteHref(note!, lang),
+      title: v.headline ?? t('notes.noteOf', { date: formatDate(note!.data.date, lang) }),
+      excerpt: v.excerpt,
+      minutes: v.minutes,
+      date: note!.data.date,
+      datetime: v.datetime,
+      foreign: (v.foreign ? { lang: v.shownLang, dir: dir(v.shownLang) } : {}) as Record<string, string>,
+      cta: t('notes.readFull'),
+    };
+  });
+if (welcome.length > 0) {
+  items.push({
+    key: 'welcome',
+    href: welcomeHref(lang),
+    title: t('about.founderTitle'),
+    excerpt: welcome[0],
+    minutes: readingTime(message, lang),
+    foreign: {},
+    cta: t('notes.readWelcome'),
+  });
+}
+const num = (n: number) =>
+  new Intl.NumberFormat(lang === 'fa' ? 'fa-IR' : lang, { minimumIntegerDigits: 2 }).format(n);
 ---
 
 <BaseLayout
@@ -106,203 +149,53 @@ const dir = (l: string) => (l === 'fa' ? 'rtl' : 'ltr');
     </div>
   </section>
 
-  {pinnedNote &&
-    (() => {
-      const v = noteView(pinnedNote, lang);
-      const foreign = v.foreign ? { lang: v.shownLang, dir: dir(v.shownLang) } : {};
-      return (
-        <section id="personal-note" data-own-ground class="jr-pinned scroll-mt-24" aria-labelledby="jr-pinned-title">
-          <div class="container-site">
-            <article class="jr-pinned__card jr-link-card" data-reveal>
-              <p class="jr-label jr-label--pin">
-                <Pin size={16} aria-hidden="true" />
-                {t('notes.pinned')}
-              </p>
-              <h2 id="jr-pinned-title" class="jr-pinned__title" {...foreign}>
-                <a href={noteHref(pinnedNote, lang)} class="jr-stretch">
-                  {v.headline ?? t('notes.noteOf', { date: formatDate(pinnedNote.data.date, lang) })}
-                </a>
-              </h2>
-              <p class="jr-pinned__excerpt" {...foreign}>{v.paragraphs[0]}</p>
-              <p class="jr-meta">
-                <span class="jr-meta__item">
-                  <Clock size={16} aria-hidden="true" />
-                  {t('news.readingTime', { n: v.minutes })}
-                </span>
-                <span class="jr-go" aria-hidden="true">
-                  {t('notes.readFull')}
-                  <ArrowRight size={18} class="flip-rtl" />
-                </span>
-              </p>
-            </article>
-          </div>
-        </section>
-      );
-    })()}
-
-  {!pinnedNote && welcome.length > 0 && (
-    <section id="personal-note" data-own-ground class="jr-pinned scroll-mt-24" aria-labelledby="jr-pinned-title">
-      <div class="container-site">
-        <article class="jr-pinned__card jr-link-card" data-reveal>
-          <p class="jr-label jr-label--pin">
-            <Pin size={16} aria-hidden="true" />
-            {t('notes.pinned')}
-          </p>
-          <h2 id="jr-pinned-title" class="jr-pinned__title">
-            <a href={welcomeHref(lang)} class="jr-stretch">
-              {t('about.founderTitle')}
-            </a>
-          </h2>
-          <p class="jr-pinned__excerpt">{welcome[0]}</p>
-          <p class="jr-meta">
-            <span class="jr-meta__item">
-              <Clock size={16} aria-hidden="true" />
-              {t('news.readingTime', { n: readingTime(message, lang) })}
-            </span>
-            <span class="jr-go" aria-hidden="true">
-              {t('notes.readWelcome')}
-              <ArrowRight size={18} class="flip-rtl" />
-            </span>
-          </p>
-        </article>
-      </div>
-    </section>
-  )}
-
-  <section class="jr-journal" data-own-ground aria-label={title}>
+  <section class="jr-list" data-own-ground aria-labelledby="jr-list-title">
     <div class="container-site">
+      <h2 id="jr-list-title" class="sr-only">{title}</h2>
       {hasSamples && (
         <p class="jr-preview" role="note">
           {t('notes.sampleNote')}
         </p>
       )}
-
-      {latest ? (
-        (() => {
-          const v = noteView(latest, lang);
-          const foreign = v.foreign ? { lang: v.shownLang, dir: dir(v.shownLang) } : {};
-          return (
-            <article class="jr-feature jr-link-card" aria-labelledby="jr-feature-title" data-reveal>
-              <div class="jr-feature__aside">
-                <span class="jr-feature__sun" aria-hidden="true"></span>
-                <p class="jr-label">{t('notes.latest')}</p>
-                <p class="jr-feature__date">
-                  <time datetime={v.datetime}>{formatDate(latest.data.date, lang)}</time>
-                </p>
-                <p class="jr-meta__item">
-                  <Clock size={16} aria-hidden="true" />
-                  {t('news.readingTime', { n: v.minutes })}
-                </p>
-              </div>
-              <div class="jr-feature__body">
-                {v.foreign && (
-                  <p class="jr-lang">
-                    {t('notes.originalLanguage', {
-                      language: t(`notes.languageNames.${v.shownLang}`),
-                    })}
-                  </p>
-                )}
-                <h2 id="jr-feature-title" class="jr-feature__title" {...foreign}>
-                  <a href={noteHref(latest, lang)} class="jr-stretch">
-                    {v.headline ?? t('notes.noteOf', { date: formatDate(latest.data.date, lang) })}
+      {items.length > 0 ? (
+        <ol class="jr-list__grid">
+          {items.map((item, i) => (
+            <li>
+              <article class="jr-item jr-link-card" aria-labelledby={`jr-${item.key}`}>
+                <div class="jr-item__head">
+                  <span class="jr-item__num" aria-hidden="true">{num(i + 1)}</span>
+                  {item.date ? (
+                    <time class="jr-item__date" datetime={item.datetime}>
+                      {formatDate(item.date, lang)}
+                    </time>
+                  ) : (
+                    <span class="jr-item__date">{t('notes.pinned')}</span>
+                  )}
+                </div>
+                <h3 id={`jr-${item.key}`} class="jr-item__title" {...item.foreign}>
+                  <a href={item.href} class="jr-stretch">
+                    {item.title}
                   </a>
-                </h2>
-                <p class="jr-feature__excerpt" {...foreign}>
-                  {v.excerpt}
+                </h3>
+                <p class="jr-item__excerpt" {...item.foreign}>
+                  {item.excerpt}
                 </p>
-                {v.isTranslation && (
-                  <p class="jr-translation">
-                    {t('notes.translatedFrom', {
-                      language: t(`notes.languageNames.${latest.data.original}`),
-                    })}
-                  </p>
-                )}
-                <span class="jr-go" aria-hidden="true">
-                  {t('notes.readFull')}
-                  <ArrowRight size={18} class="flip-rtl" />
-                </span>
-              </div>
-            </article>
-          );
-        })()
+                <p class="jr-item__foot">
+                  <span class="jr-meta__item">
+                    <Clock size={16} aria-hidden="true" />
+                    {t('news.readingTime', { n: item.minutes })}
+                  </span>
+                  <span class="jr-go" aria-hidden="true">
+                    {item.cta}
+                    <ArrowRight size={18} class="flip-rtl" />
+                  </span>
+                </p>
+              </article>
+            </li>
+          ))}
+        </ol>
       ) : (
         <p class="jr-empty">{t('notes.empty')}</p>
-      )}
-
-      {(older.length > 0 || (pinnedNote && welcome.length > 0)) && (
-        <section class="jr-archive" aria-labelledby="jr-archive-title">
-          <h2 id="jr-archive-title" class="jr-archive__title" data-reveal>
-            {t('notes.archiveTitle')}
-          </h2>
-          <ol class="jr-archive__list" data-archive data-shown={SHOWN}>
-            {older.map((note) => {
-              const v = noteView(note, lang);
-              const foreign = v.foreign ? { lang: v.shownLang, dir: dir(v.shownLang) } : {};
-              return (
-                <li>
-                  <article class="jr-row jr-link-card" aria-labelledby={`jr-${note.id}`}>
-                    <p class="jr-row__date">
-                      <time datetime={v.datetime}>{formatDate(note.data.date, lang)}</time>
-                    </p>
-                    <div class="jr-row__body">
-                      <h3 id={`jr-${note.id}`} class="jr-row__title" {...foreign}>
-                        <a href={noteHref(note, lang)} class="jr-stretch">
-                          {v.headline ??
-                            t('notes.noteOf', { date: formatDate(note.data.date, lang) })}
-                        </a>
-                      </h3>
-                      <p class="jr-row__excerpt" {...foreign}>
-                        {v.excerpt}
-                      </p>
-                    </div>
-                    <p class="jr-row__end">
-                      <span class="jr-meta__item">
-                        <Clock size={16} aria-hidden="true" />
-                        {t('news.readingTime', { n: v.minutes })}
-                      </span>
-                      <span class="jr-go" aria-hidden="true">
-                        {t('notes.continue')}
-                        <ArrowRight size={18} class="flip-rtl" />
-                      </span>
-                    </p>
-                  </article>
-                </li>
-              );
-            })}
-            {pinnedNote && welcome.length > 0 && (
-              <li>
-                <article class="jr-row jr-link-card" aria-labelledby="jr-welcome">
-                  <p class="jr-row__date"></p>
-                  <div class="jr-row__body">
-                    <h3 id="jr-welcome" class="jr-row__title">
-                      <a href={welcomeHref(lang)} class="jr-stretch">
-                        {t('about.founderTitle')}
-                      </a>
-                    </h3>
-                    <p class="jr-row__excerpt">{welcome[0]}</p>
-                  </div>
-                  <p class="jr-row__end">
-                    <span class="jr-meta__item">
-                      <Clock size={16} aria-hidden="true" />
-                      {t('news.readingTime', { n: readingTime(message, lang) })}
-                    </span>
-                    <span class="jr-go" aria-hidden="true">
-                      {t('notes.readWelcome')}
-                      <ArrowRight size={18} class="flip-rtl" />
-                    </span>
-                  </p>
-                </article>
-              </li>
-            )}
-          </ol>
-          {older.length > SHOWN && (
-            <p class="jr-archive__more">
-              <button type="button" class="btn btn-outline" data-archive-more hidden>
-                {t('notes.showMore')}
-              </button>
-            </p>
-          )}
-        </section>
       )}
     </div>
   </section>
@@ -934,5 +827,95 @@ const dir = (l: string) => (l === 'fa' ? 'rtl' : 'ltr');
     border: 0;
     border-inline-start: 8px solid var(--color-firouzeh);
     box-shadow: var(--shadow-card);
+  }
+
+  /* ---------- The numbered list (owner, Nov 4 2026) ---------- */
+  .jr-list {
+    padding-block: clamp(3rem, 2rem + 3vw, 5rem);
+    background: color-mix(in srgb, var(--color-firouzeh) 14%, var(--color-white));
+  }
+  .jr-list__grid {
+    display: grid;
+    gap: 1.5rem;
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+  @media (min-width: 56rem) {
+    .jr-list__grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 2rem;
+    }
+  }
+  .jr-list__grid > li {
+    display: flex;
+  }
+  .jr-item {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    padding: clamp(1.5rem, 1rem + 1.5vw, 2.25rem);
+    border-radius: 1.25rem;
+    border-top: 6px solid var(--color-brique);
+    background: var(--color-white);
+    box-shadow: var(--shadow-card);
+  }
+  .jr-item__head {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding-bottom: 1rem;
+    border-bottom: 1px solid var(--color-card-edge);
+  }
+  .jr-item__num {
+    display: grid;
+    place-items: center;
+    flex: none;
+    width: 3.25rem;
+    aspect-ratio: 1;
+    border-radius: 999px;
+    background: var(--color-brique-ink);
+    color: var(--color-white);
+    font-family: var(--font-display);
+    font-size: 1.25rem;
+    font-weight: 800;
+  }
+  .jr-item__date {
+    font-family: var(--font-display);
+    font-size: 1.05rem;
+    font-weight: 800;
+    color: var(--color-firouzeh-ink);
+  }
+  .jr-item__title {
+    margin-top: 1.1rem;
+    font-family: var(--font-editorial);
+    font-size: clamp(1.4rem, 1.15rem + 0.8vw, 1.85rem);
+    font-weight: 700;
+    line-height: 1.25;
+    color: var(--color-primary);
+    text-wrap: balance;
+  }
+  :global(html[lang='fa']) .jr-item__title {
+    font-weight: 800;
+    line-height: 1.6;
+  }
+  .jr-item__excerpt {
+    margin-top: 0.75rem;
+    font-size: 1.05rem;
+    line-height: 1.7;
+    color: var(--color-ink);
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+  .jr-item__foot {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.75rem 1.5rem;
+    margin-top: auto;
+    padding-top: 1.25rem;
   }
 </style>
