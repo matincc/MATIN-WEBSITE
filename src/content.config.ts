@@ -842,6 +842,9 @@ const notes = defineCollection({
         /** Layout examples: shown on local and deploy previews, never on the live site. */
         sample: z.boolean().default(false),
         archived: z.boolean().default(false),
+        /** Shown first, as « Un mot pour commencer », in place of the welcome note
+            (owner's request, Nov 3 2026). Only the newest pinned note is used. */
+        pinned: z.boolean().default(false),
       })
       .refine((n) => !!n.text[n.original], {
         message: 'Write the note in its original language (text.<original>)',
