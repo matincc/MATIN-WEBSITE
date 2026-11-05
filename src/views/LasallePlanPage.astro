@@ -1,0 +1,137 @@
+---
+/**
+ * « Matin et le Plan d'action culturel de LaSalle 2026–2030 » (owner's approval, Nov 5 2026):
+ * an evergreen page linking Matin's activities to the borough's five axes. Data and wording
+ * rules in src/lib/lasallePlan.ts.
+ */
+import PageLayout from '@/layouts/PageLayout.astro';
+import { href, siteAlternates, type UiLang } from '@/i18n/routes';
+import { typo } from '@/lib/frenchTypo';
+import { lasallePlan as s, lasallePlanUrl } from '@/lib/lasallePlan';
+
+interface Props {
+  lang: UiLang;
+}
+const { lang } = Astro.props;
+const tx = (v: string) => typo(v, lang);
+const num = (n: number) => new Intl.NumberFormat(lang === 'fa' ? 'fa-IR' : lang).format(n);
+---
+
+<PageLayout
+  accent="firouzeh"
+  lang={lang}
+  title={s.title[lang]}
+  lede={tx(s.lede[lang])}
+  alternates={siteAlternates('lasallePlan')}
+  crumbs={[
+    {
+      label: lang === 'fr' ? 'Ressources' : lang === 'fa' ? 'منابع' : 'Resources',
+      href: href('resources', lang),
+    },
+  ]}
+>
+  <section class="lsp" data-own-ground>
+    <div class="container-site lsp__inner">
+      <header class="lsp__head">
+        <h2 class="lsp__title">{tx(s.axesTitle[lang])}</h2>
+        <p class="lsp__lede">{tx(s.axesLede[lang])}</p>
+      </header>
+
+      <ol class="lsp__axes">
+        {s.axes.map((a, i) => (
+          <li class="lsp__axis">
+            <div>
+              <p class="lsp__k">
+                {s.axisLabel[lang]} {num(i + 1)}
+              </p>
+              <h3 class="lsp__name">{tx(a.name[lang])}</h3>
+            </div>
+            <p class="lsp__contrib">{tx(a.contribution[lang])}</p>
+          </li>
+        ))}
+      </ol>
+
+      <aside class="lsp__aside">
+        <p>{tx(s.disclaimer[lang])}</p>
+        <a class="btn btn-primary" href={lasallePlanUrl} target="_blank" rel="noopener">
+          {s.cta[lang]} <span aria-hidden="true">{lang === 'fa' ? '←' : '→'}</span>
+        </a>
+      </aside>
+
+      <p class="lsp__close">
+        {tx(s.close[lang])} <a href={`${href('contact', lang)}#write`}>{s.closeCta[lang]}</a>
+      </p>
+    </div>
+  </section>
+</PageLayout>
+
+<style>
+  .lsp {
+    background: var(--matin-ivoire);
+    padding-block: clamp(2.5rem, 6vw, 4.5rem);
+  }
+  .lsp__inner {
+    display: grid;
+    gap: 2rem;
+    max-width: 62rem;
+  }
+  .lsp__title {
+    font-family: var(--font-display);
+    font-weight: 800;
+    color: var(--matin-encre);
+    font-size: clamp(1.4rem, 3vw, 1.9rem);
+    text-wrap: balance;
+  }
+  .lsp__lede {
+    margin-top: 0.4rem;
+    color: var(--matin-encre);
+  }
+  .lsp__axes {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    border-top: 3px solid var(--matin-brique);
+  }
+  .lsp__axis {
+    display: grid;
+    grid-template-columns: minmax(0, 2fr) minmax(0, 3fr);
+    gap: 0.5rem 2rem;
+    padding-block: 1.25rem;
+    border-bottom: 1px solid var(--color-card-edge);
+  }
+  @media (max-width: 40rem) {
+    .lsp__axis {
+      grid-template-columns: minmax(0, 1fr);
+    }
+  }
+  .lsp__k {
+    font-family: var(--font-display);
+    font-size: 0.8rem;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--matin-firouzeh-ink);
+  }
+  .lsp__name {
+    font-family: var(--font-display);
+    font-weight: 800;
+    color: var(--matin-encre);
+    line-height: 1.35;
+  }
+  .lsp__contrib {
+    color: var(--matin-encre);
+  }
+  .lsp__aside {
+    display: grid;
+    gap: 1rem;
+    justify-items: start;
+    background: var(--matin-sable);
+    border-radius: 1rem;
+    padding: 1.25rem 1.5rem;
+  }
+  .lsp__close a {
+    color: var(--matin-brique-ink);
+    font-weight: 700;
+    text-decoration: underline;
+  }
+</style>

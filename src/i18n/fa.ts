@@ -63,6 +63,8 @@ const fa: DeepPartial<Dictionary> = {
     getInvolved: 'مشارکت',
     resources: 'منابع',
     cultureMap: 'نقشهٔ زندهٔ فرهنگ‌ها',
+    learn: 'فرهنگ به زبان ساده',
+    lasallePlan: 'برنامهٔ فرهنگی لاسال',
     collaboration: 'همکاری',
     contact: 'تماس',
     contactMembership: 'عضویت',

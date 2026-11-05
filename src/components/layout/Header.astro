@@ -21,6 +21,7 @@ import fs from 'node:fs';
 import nodePath from 'node:path';
 import { getNetworks, getUpcomingEvents, picksOf, SHOW_CULTURAL_NEWS } from '@/lib/content';
 import { guideStrings } from '@/lib/localGuide';
+import { learnStrings } from '@/lib/learn';
 
 interface Props {
   lang: UiLang;
@@ -117,6 +118,12 @@ resourcesLinks.push({
   id: 'culture-map',
   label: cultureMapStrings.nav[lang],
   href: href('cultureMap', lang),
+});
+// Culture in Plain Words (owner's learning series, Nov 2026): its own page, under Resources.
+resourcesLinks.push({
+  id: 'learn',
+  label: learnStrings.nav[lang],
+  href: href('learn', lang),
 });
 // Collaboration (owner's request, Oct 31 2026: its own item before Contact): Share Your
 // Expertise, Partners & Supporters, Membership, Volunteering, the Advisory Circle.
