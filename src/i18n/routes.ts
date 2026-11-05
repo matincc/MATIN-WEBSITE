@@ -22,6 +22,7 @@ export const routes = {
   gallery: { fr: 'galerie', en: 'gallery' },
   stories: { fr: 'mon-histoire', en: 'my-story' },
   resources: { fr: 'ressources', en: 'resources' },
+  lasallePlan: { fr: 'ressources/plan-culturel-lasalle', en: 'resources/lasalle-cultural-plan' },
   localGuide: { fr: 'guide-local', en: 'local-guide' },
   cultureMap: { fr: 'carte-des-cultures', en: 'culture-map' },
   learn: { fr: 'la-culture-en-mots-simples', en: 'culture-in-plain-words' },

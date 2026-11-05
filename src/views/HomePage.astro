@@ -92,6 +92,8 @@ const matinNews = news
 // Notes from the President (owner's request, Oct 27 2026): the two latest, on a deep terracotta band.
 // Oct 30 2026 (owner: shorter homepage): two stories per region and the latest note only.
 const l = livingStrings(lang);
+import { lasallePlan } from '@/lib/lasallePlan';
+import { typo } from '@/lib/frenchTypo';
 ---
 
 <BaseLayout lang={lang} alternates={siteAlternates('home')} searchable={false}>
@@ -116,6 +118,12 @@ const l = livingStrings(lang);
        to the About page (#areas, About menu). */}
     <!-- Who we are: the approved introduction, set large, beside a photo collage -->
     <LivingIntro lang={lang} />
+
+    <!-- LaSalle first (owner's approval, Nov 5 2026): one short line to the LaSalle plan page -->
+    <p class="container-site lasalle-line">
+      {typo(lasallePlan.homeLine[lang], lang)}
+      <a href={href('lasallePlan', lang)}>{lasallePlan.homeLink[lang]}</a>
+    </p>
 
     <!-- Our impact: real figures only; Matin's first steps until there are some -->
     <ImpactBand lang={lang} />
@@ -837,5 +845,17 @@ const l = livingStrings(lang);
     .living :global(*) {
       transition-duration: 0.01ms !important;
     }
+  }
+  .lasalle-line {
+    margin-block: 1.5rem;
+    text-align: center;
+    color: var(--matin-encre);
+    font-weight: 600;
+  }
+  .lasalle-line a {
+    margin-inline-start: 0.4rem;
+    color: var(--matin-brique-ink);
+    font-weight: 700;
+    text-decoration: underline;
   }
 </style>

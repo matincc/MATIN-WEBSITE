@@ -59,6 +59,7 @@ const fr = {
     resources: 'Ressources',
     cultureMap: 'Carte vivante des cultures',
     learn: 'La culture en mots simples',
+    lasallePlan: 'Plan culturel de LaSalle',
     collaboration: 'Collaboration',
     contact: 'Contact',
     contactMembership: 'Adhésion',

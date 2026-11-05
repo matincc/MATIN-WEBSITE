@@ -58,6 +58,7 @@ const en: Dictionary = {
     resources: 'Resources',
     cultureMap: 'Living Map of Cultures',
     learn: 'Culture in Plain Words',
+    lasallePlan: 'LaSalle Cultural Plan',
     collaboration: 'Collaboration',
     contact: 'Contact',
     contactMembership: 'Membership',
