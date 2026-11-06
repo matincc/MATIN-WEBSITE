@@ -108,14 +108,14 @@ export const media = {
   },
   /** Full-width pause between sections: Montréal seen from Mont-Royal. */
   montrealWide: {
-    unsplash: 'photo-1683624668626-2fce96bf73a9',
-    focus: '50% 60%',
+    unsplash: 'photo-1671946464512-2e7f2c1a8e4a',
+    focus: '50% 55%',
     temporary: true,
-    shows: 'Two people on a bench on Mont-Royal, looking over Montréal in summer.',
+    shows: 'The St. Lawrence River with green trees on its bank (owner’s choice for the land acknowledgement, Nov 6 2026).',
     credit: unsplashCredit(
-      'Marion Lhn',
-      'marionlhn',
-      'two-people-sitting-on-a-bench-overlooking-a-city-LmCnmjT7fNI',
+      'Jay Thousand',
+      'justay1000',
+      'a-body-of-water-with-trees-in-the-background-NOrdl2nIUXg',
     ),
   },
   /** Programs, area 1 (intercultural dialogue and community engagement). */
