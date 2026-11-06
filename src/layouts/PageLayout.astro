@@ -292,6 +292,11 @@ const compact = true;
   .page-head:not(#o) .page-head__lede {
     color: var(--matin-white);
   }
+  /* Eyebrow (e.g. « Organisé par Matin »): pale saffron, 4.8:1 on brique-ink (owner, Nov 5
+     2026: the teal label could not be read on the terracotta banner). */
+  .page-head:not(#o) .eyebrow {
+    color: color-mix(in srgb, var(--matin-soleil) 30%, white);
+  }
   .page-head:not(#o) nav :is(a, span) {
     color: var(--matin-white);
   }
