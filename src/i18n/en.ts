@@ -657,6 +657,8 @@ const en: Dictionary = {
     additional: 'Additional information (optional)',
     consentVolunteer:
       'I agree that Matin will use this information only to review a possible volunteer collaboration, in accordance with its',
+    volunteerCheckNote:
+      'For roles with seniors or minors, a criminal background check may be requested, only with the volunteer’s written consent.',
     volunteerSuccess:
       'Thank you! Your application has been sent. We will review it and write to you by email.',
     volunteerSubmit: 'Send my application',
