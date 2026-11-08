@@ -46,6 +46,7 @@ video:
     fa: 'پیاده‌روی میان‌فرهنگی در پارک آنگرینیون، ۷ نوامبر ۲۰۲۶'
 quotes:
   - image: ../../assets/uploads/news/walk-2026-11-07/interview-1.jpg
+    focus: '50% 25%'
     label:
       fr: 'Entrevue 1 · Montréalaise par amour'
       en: 'Interview 1 · Came to Montréal for love'
@@ -55,6 +56,7 @@ quotes:
       en: '“I fell in love […] with the city […] because it’s a multicultural city. There are events all the time, every season.” (translated from French)'
       fa: '«عاشق […] این شهر شدم […] چون شهری چندفرهنگی است. همیشه و در همه فصل‌ها رویدادی برپاست.» (ترجمه از فرانسه)'
   - image: ../../assets/uploads/news/walk-2026-11-07/interview-2.jpg
+    focus: '50% 40%'
     label:
       fr: 'Entrevue 2 · À Montréal depuis 8 ans'
       en: 'Interview 2 · In Montréal for 8 years'
@@ -64,6 +66,7 @@ quotes:
       en: '“There are many cultures here […] we all live together […] we come together to create something extraordinary.” (translated from French)'
       fa: '«اینجا فرهنگ‌های بسیاری هست […] همه با هم زندگی می‌کنیم […] دست به دست هم می‌دهیم تا چیزی فوق‌العاده بسازیم.» (ترجمه از فرانسه)'
   - image: ../../assets/uploads/news/walk-2026-11-07/interview-3.jpg
+    focus: '50% 45%'
     label:
       fr: 'Entrevue 3 · À Montréal depuis près de 17 ans'
       en: 'Interview 3 · In Montréal for almost 17 years'

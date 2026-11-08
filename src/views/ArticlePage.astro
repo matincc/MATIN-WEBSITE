@@ -141,7 +141,7 @@ const jsonLd = {
           <ul class="article-quotes" role="list">
             {d.quotes.map((q) => (
               <li class="article-quote">
-                <Picture src={q.image} alt="" widths={[320, 640]} sizes="(min-width: 64rem) 16rem, 90vw" formats={['avif', 'webp']} class="article-quote__img" />
+                <Picture src={q.image} alt="" widths={[320, 640]} sizes="(min-width: 64rem) 16rem, 90vw" formats={['avif', 'webp']} class="article-quote__img" style={q.focus ? `object-position: ${q.focus}` : undefined} />
                 <p class="article-quote__label">{pick(q.label, lang)}</p>
                 <blockquote class="article-quote__text"><p>{pick(q.text, lang)}</p></blockquote>
               </li>
@@ -490,7 +490,7 @@ const jsonLd = {
   }
   .article-quote:nth-child(2) { border-block-start-color: var(--matin-firouzeh); background: color-mix(in srgb, var(--matin-firouzeh) 10%, white); }
   .article-quote:nth-child(3) { border-block-start-color: var(--matin-brique); background: color-mix(in srgb, var(--matin-brique) 10%, white); }
-  .article-quote :global(.article-quote__img) { width: 100%; aspect-ratio: 4 / 3; object-fit: cover; border-radius: 0.75rem; }
+  .article-quote :global(.article-quote__img) { width: 100%; aspect-ratio: 1; object-fit: cover; object-position: 50% 30%; border-radius: 0.75rem; }
   .article-quote__label { margin-block: 0.85rem 0.4rem; font-family: var(--font-display); font-weight: 800; font-size: 0.95rem; color: var(--matin-encre); }
   .article-quote__text { margin: 0; font-style: italic; line-height: 1.6; color: var(--matin-encre); }
   .article-report { margin-block-start: 2rem; }

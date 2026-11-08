@@ -234,7 +234,7 @@ const news = defineCollection({
         video: z.object({ youtube: z.string().regex(/^[A-Za-z0-9_-]{11}$/), title: bi, thumbnail: image().optional() }).optional(),
         /** Matin News: short quotes, each with a still of the person (their consent is required). */
         quotes: z
-          .array(z.object({ image: image(), label: bi, text: bi }))
+          .array(z.object({ image: image(), focus: z.string().optional(), label: bi, text: bi }))
           .default([]),
         /** Matin News: a downloadable report, one file per language in public/media/ (Persian uses English). */
         report: z.object({ fr: z.string().startsWith('/media/'), en: z.string().startsWith('/media/') }).optional(),
