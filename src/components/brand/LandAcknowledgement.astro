@@ -6,7 +6,7 @@
  *
  * Owner's request, Oct 30 2026 (later the same day): the text sits INSIDE a beautiful photo
  * of Tiohtià:ke, warmer and more human. The photo is a landscape of the place (slot
- * `montrealWide`: Montréal seen from Mont-Royal, with its small credit), never a stock
+ * `montrealWide`: the St. Lawrence River with green trees, with its small credit), never a stock
  * picture of Indigenous people: a photo of real Kanien'kehá:ka people or an Indigenous
  * artwork is used only with their permission and credit. The text sits on a deep turquoise arch with a gold edge
  * (owner, Oct 31 2026: not a rectangle, straight text edges) so it reads on any photo.
@@ -76,8 +76,9 @@ const t = useTranslations(lang);
     padding-block-start: clamp(3rem, 2.5rem + 3vw, 4.5rem);
     /* An arch, like the rising sun, instead of a rectangle (owner, Oct 31 2026). */
     border-radius: 50% 50% 2rem 2rem / 8rem 8rem 2rem 2rem;
-    /* Deep turquoise: the saffron title reads at 4.8:1. */
-    background: color-mix(in srgb, var(--matin-firouzeh-ink) 65%, black);
+    /* Deep terracotta (owner, Nov 6 2026: warm against the green and blue of the St. Lawrence
+       photo): white text 8.1:1, pale saffron title about 6.5:1. */
+    background: color-mix(in srgb, var(--matin-brique-ink) 80%, black);
     color: var(--matin-white);
     border: 3px solid var(--matin-soleil);
     text-align: center;
@@ -101,7 +102,7 @@ const t = useTranslations(lang);
     font-weight: 800;
     letter-spacing: 0.18em;
     text-transform: uppercase;
-    color: var(--matin-soleil);
+    color: color-mix(in srgb, var(--matin-soleil) 30%, white);
   }
   :global(html[lang='fa']) .land__title {
     letter-spacing: 0;

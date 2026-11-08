@@ -663,6 +663,8 @@ const fr = {
     additional: 'Renseignements complémentaires (facultatif)',
     consentVolunteer:
       "J'accepte que Matin utilise ces renseignements uniquement pour examiner une possible collaboration bénévole, conformément à sa",
+    volunteerCheckNote:
+      'Pour les rôles auprès de personnes aînées ou de personnes mineures, une vérification des antécédents judiciaires peut être demandée, uniquement avec le consentement écrit de la personne bénévole.',
     volunteerSuccess:
       'Merci! Votre candidature a bien été envoyée. Nous l’examinerons et vous écrirons par courriel.',
     volunteerSubmit: 'Envoyer ma candidature',
