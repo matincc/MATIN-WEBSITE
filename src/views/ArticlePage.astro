@@ -14,6 +14,7 @@ import {
   ArrowRight,
   CalendarDays,
   Clock,
+  Download,
   ExternalLink,
   MapPin,
   Newspaper,
@@ -22,6 +23,7 @@ import PageLayout from '@/layouts/PageLayout.astro';
 import PostCard from '@/components/content/PostCard.astro';
 import DialogueArt from '@/components/brand/DialogueArt.astro';
 import Prose from '@/components/ui/Prose.astro';
+import VideoFacade from '@/components/ui/VideoFacade.astro';
 import ShareButtons from '@/components/ui/ShareButtons.astro';
 import { href, newsAnchors, path, type Alternates, type UiLang } from '@/i18n/routes';
 import { useTranslations, pick } from '@/i18n/ui';
@@ -128,6 +130,37 @@ const jsonLd = {
     <div class="container-site article-grid">
       <article class="article-main">
         <Prose html={renderMarkdown(body, lang)} class="article-prose" />
+
+        {d.video && (
+          <div class="article-video">
+            <VideoFacade lang={lang} youtubeId={d.video.youtube} title={pick(d.video.title, lang)!} thumbnail={d.video.thumbnail} />
+          </div>
+        )}
+
+        {d.quotes.length > 0 && (
+          <ul class="article-quotes" role="list">
+            {d.quotes.map((q) => (
+              <li class="article-quote">
+                <Picture src={q.image} alt="" widths={[320, 640]} sizes="(min-width: 64rem) 16rem, 90vw" formats={['avif', 'webp']} class="article-quote__img" />
+                <p class="article-quote__label">{pick(q.label, lang)}</p>
+                <blockquote class="article-quote__text"><p>{pick(q.text, lang)}</p></blockquote>
+              </li>
+            ))}
+          </ul>
+        )}
+
+        {d.report && (
+          <p class="article-report">
+            <a href={lang === 'fr' ? d.report.fr : d.report.en} class="btn btn-primary" download>
+              <Download size={18} aria-hidden="true" />
+              {lang === 'fr' ? 'Télécharger le retour en images (PDF)' : lang === 'fa' ? 'دریافت گزارش تصویری (PDF، انگلیسی)' : 'Download the photo report (PDF)'}
+            </a>
+          </p>
+        )}
+
+        {d.closing && pick(d.closing, lang) && (
+          <Prose html={renderMarkdown(pick(d.closing, lang)!, lang)} class="article-prose article-closing" />
+        )}
 
         {d.source && (
           <aside class="article-source" aria-label={t('news.sourceIntro')}>
@@ -275,10 +308,11 @@ const jsonLd = {
     align-items: center;
     gap: 0.45rem;
     font-weight: 600;
-    color: var(--color-ink);
+    /* The banner is deep terracotta since Nov 1 2026: white text, light saffron icons. */
+    color: var(--color-white);
   }
   .article-meta__date :global(svg) {
-    color: var(--color-primary);
+    color: color-mix(in srgb, var(--matin-soleil) 30%, white);
   }
 
   /* The visual on a soft turquoise band, framed in white with two flat brand blocks. */
@@ -436,6 +470,31 @@ const jsonLd = {
     font-size: clamp(1.125rem, 1.05rem + 0.3vw, 1.3rem);
     line-height: 1.7;
   }
+
+  /* Brand rule (owner, Nov 7 2026): the institute's name in bold is always brand blue. */
+  .article-main :global(.article-prose strong) { color: var(--matin-encre); font-weight: 800; }
+  .article-video { margin-block-start: 2.5rem; }
+  .article-quotes {
+    display: grid;
+    gap: 1.25rem;
+    margin-block-start: 2.5rem;
+    padding: 0;
+    list-style: none;
+  }
+  @media (min-width: 48rem) { .article-quotes { grid-template-columns: repeat(3, 1fr); } }
+  .article-quote {
+    padding: 1rem 1rem 1.25rem;
+    border-radius: var(--radius-card);
+    border-block-start: 5px solid var(--matin-soleil);
+    background: color-mix(in srgb, var(--matin-soleil) 12%, white);
+  }
+  .article-quote:nth-child(2) { border-block-start-color: var(--matin-firouzeh); background: color-mix(in srgb, var(--matin-firouzeh) 10%, white); }
+  .article-quote:nth-child(3) { border-block-start-color: var(--matin-brique); background: color-mix(in srgb, var(--matin-brique) 10%, white); }
+  .article-quote :global(.article-quote__img) { width: 100%; aspect-ratio: 4 / 3; object-fit: cover; border-radius: 0.75rem; }
+  .article-quote__label { margin-block: 0.85rem 0.4rem; font-family: var(--font-display); font-weight: 800; font-size: 0.95rem; color: var(--matin-encre); }
+  .article-quote__text { margin: 0; font-style: italic; line-height: 1.6; color: var(--matin-encre); }
+  .article-report { margin-block-start: 2rem; }
+  .article-main :global(.article-closing) { margin-block-start: 1.5rem; }
 
   .article-source {
     margin-block-start: 2.5rem;

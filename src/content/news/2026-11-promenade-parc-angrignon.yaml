@@ -1,0 +1,82 @@
+# Report on Matin's first public activity, Nov 7 2026 (texts approved by the President, Nov 7 2026).
+# Photos and interviews: participants' consent collected on site (walk-report thread).
+date: 2026-11-07
+author:
+  fr: 'Institut interculturel Matin'
+  en: 'Matin Intercultural Institute'
+  fa: 'مؤسسه میان‌فرهنگی متین'
+category: matin-news
+urlSlug:
+  fr: promenade-parc-angrignon-2026
+  en: parc-angrignon-walk-2026
+title:
+  fr: 'Trois semaines d’existence… et déjà dans le parc !'
+  en: 'Three weeks old… and already in the park!'
+  fa: 'سه هفته از تأسیس… و حالا در پارک!'
+excerpt:
+  fr: 'Le 7 novembre 2026, 21 personnes ont marché et échangé en français au parc Angrignon, lors de la toute première activité publique de l’Institut interculturel Matin.'
+  en: 'On November 7, 2026, 21 people walked and talked in French in Parc Angrignon, at Matin Intercultural Institute’s very first public activity.'
+  fa: '۷ نوامبر ۲۰۲۶، ۲۱ نفر در نخستین فعالیت عمومی مؤسسه میان‌فرهنگی متین در پارک آنگرینیون با هم قدم زدند و گفت‌وگو کردند.'
+image: ../../assets/uploads/news/walk-2026-11-07/hero.jpg
+imageAlt:
+  fr: 'Des participantes et participants marchent sur un sentier couvert de feuilles au parc Angrignon, en novembre.'
+  en: 'Participants walking along a leaf-covered path in Parc Angrignon in November.'
+  fa: 'شرکت‌کنندگان در مسیری پوشیده از برگ در پارک آنگرینیون، در ماه نوامبر، قدم می‌زنند.'
+imagePermission: true
+imageCredit: 'Photo : Institut interculturel Matin'
+body:
+  fr: |
+    **7 novembre 2026 · Parc Angrignon, LaSalle**
+
+    Le samedi 7 novembre 2026, l’**Institut interculturel Matin** a tenu sa toute première activité publique : une promenade et des échanges interculturels au parc Angrignon, inscrite au calendrier officiel de la Semaine québécoise des rencontres interculturelles. 21 personnes ont marché ensemble et échangé en français, malgré le vent froid de novembre. Trois participant·e·s ont livré leur témoignage devant la caméra.
+  en: |
+    **November 7, 2026 · Parc Angrignon, LaSalle**
+
+    On Saturday, November 7, 2026, **Matin Intercultural Institute** held its very first public activity: an intercultural walk and conversations in Parc Angrignon, listed on the official calendar of Québec’s Intercultural Encounters Week. 21 people walked together and talked in French, despite the cold November wind. Three participants shared their testimony on camera.
+  fa: |
+    **۷ نوامبر ۲۰۲۶ · پارک آنگرینیون، لاسال**
+
+    شنبه ۷ نوامبر ۲۰۲۶، **مؤسسه میان‌فرهنگی متین** نخستین فعالیت عمومی خود را برگزار کرد: پیاده‌روی و گفت‌وگوی میان‌فرهنگی در پارک آنگرینیون، که در تقویم رسمی «هفته دیدارهای میان‌فرهنگی کبک» ثبت شده بود. ۲۱ نفر با وجود باد سرد نوامبر با هم قدم زدند و به زبان فرانسه گفت‌وگو کردند. سه نفر از شرکت‌کنندگان روایت خود را جلوی دوربین بازگو کردند.
+video:
+  youtube: hxeyIScv8sU
+  thumbnail: ../../assets/uploads/news/walk-2026-11-07/video-thumb.jpg
+  title:
+    fr: 'Promenade interculturelle au parc Angrignon, 7 novembre 2026'
+    en: 'Intercultural walk in Parc Angrignon, November 7, 2026'
+    fa: 'پیاده‌روی میان‌فرهنگی در پارک آنگرینیون، ۷ نوامبر ۲۰۲۶'
+quotes:
+  - image: ../../assets/uploads/news/walk-2026-11-07/interview-1.jpg
+    label:
+      fr: 'Entrevue 1 · Montréalaise par amour'
+      en: 'Interview 1 · Came to Montréal for love'
+      fa: 'مصاحبه ۱ · ساکن مونترال به خاطر عشق'
+    text:
+      fr: '« Je suis tombée en amour […] de la ville […] parce que c’est une ville multiculturelle. Il y a des événements tout le temps, toutes les saisons. »'
+      en: '“I fell in love […] with the city […] because it’s a multicultural city. There are events all the time, every season.” (translated from French)'
+      fa: '«عاشق […] این شهر شدم […] چون شهری چندفرهنگی است. همیشه و در همه فصل‌ها رویدادی برپاست.» (ترجمه از فرانسه)'
+  - image: ../../assets/uploads/news/walk-2026-11-07/interview-2.jpg
+    label:
+      fr: 'Entrevue 2 · À Montréal depuis 8 ans'
+      en: 'Interview 2 · In Montréal for 8 years'
+      fa: 'مصاحبه ۲ · هشت سال در مونترال'
+    text:
+      fr: '« Il y a beaucoup de cultures […] on vit tous ensemble […] on s’unit ensemble pour créer quelque chose [d’]extraordinaire. »'
+      en: '“There are many cultures here […] we all live together […] we come together to create something extraordinary.” (translated from French)'
+      fa: '«اینجا فرهنگ‌های بسیاری هست […] همه با هم زندگی می‌کنیم […] دست به دست هم می‌دهیم تا چیزی فوق‌العاده بسازیم.» (ترجمه از فرانسه)'
+  - image: ../../assets/uploads/news/walk-2026-11-07/interview-3.jpg
+    label:
+      fr: 'Entrevue 3 · À Montréal depuis près de 17 ans'
+      en: 'Interview 3 · In Montréal for almost 17 years'
+      fa: 'مصاحبه ۳ · نزدیک به ۱۷ سال در مونترال'
+    text:
+      fr: '« Ça vous donne vraiment la possibilité de vous exprimer […] et de façonner votre avenir dans un nouveau pays. » (entrevue en anglais, traduite)'
+      en: '“It gives you really the ability to express yourself […] the way you want your future to shape in a new country.”'
+      fa: '«واقعاً این امکان را به شما می‌دهد که خودتان را بیان کنید […] و آینده‌تان را در کشوری تازه آن‌طور که می‌خواهید بسازید.» (ترجمه از انگلیسی)'
+report:
+  fr: /media/reports/matin-retour-en-images-2026-11-07.pdf
+  en: /media/reports/matin-photo-report-2026-11-07.pdf
+closing:
+  fr: '**Prochaine étape :** le Café interculturel Matin, en décembre (date et lieu à confirmer).'
+  en: '**Next step:** the Matin Intercultural Café, in December (date and place to be confirmed).'
+  fa: '**قدم بعدی:** کافه میان‌فرهنگی متین، در دسامبر (تاریخ و مکان به‌زودی اعلام می‌شود).'
+faReviewed: false

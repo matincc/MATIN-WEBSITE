@@ -230,6 +230,16 @@ const news = defineCollection({
         imagePermission: z.boolean().optional(),
         /** Credit and licence shown with the image, e.g. "Photo: Jane Doe, CC BY 4.0". */
         imageCredit: z.string().optional(),
+        /** Matin News: a YouTube video shown after the text (click to play, youtube-nocookie). */
+        video: z.object({ youtube: z.string().regex(/^[A-Za-z0-9_-]{11}$/), title: bi, thumbnail: image().optional() }).optional(),
+        /** Matin News: short quotes, each with a still of the person (their consent is required). */
+        quotes: z
+          .array(z.object({ image: image(), label: bi, text: bi }))
+          .default([]),
+        /** Matin News: a downloadable report, one file per language in public/media/ (Persian uses English). */
+        report: z.object({ fr: z.string().startsWith('/media/'), en: z.string().startsWith('/media/') }).optional(),
+        /** Matin News: a closing paragraph (Markdown) shown after the video, quotes and report. */
+        closing: biOpt,
         /** When the article discusses an external event or issue: link and attribution. */
         source: z.object({ url: z.url(), name: z.string().min(1) }).optional(),
         /** Drafts appear only on the local preview (npm run dev): never listed, built or indexed. */
