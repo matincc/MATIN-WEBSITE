@@ -79,6 +79,21 @@ const writeHref = `${href('contact', lang)}#write`;
               ))}
             </div>
 
+            {sheet.sources && sheet.sources.length > 0 && (
+              <div class="sheet__sources">
+                <p class="sheet__sources-label">{s.sourcesLabel[lang]}</p>
+                <ul>
+                  {sheet.sources.map((src) => (
+                    <li>
+                      <a href={src.url} target="_blank" rel="noopener noreferrer">
+                        {src.label[lang]}
+                      </a>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            )}
+
             <aside class="sheet__question">
               <p class="sheet__q-label">{s.questionLabel[lang]}</p>
               <p class="sheet__q">{tx(sheet.question[lang])}</p>
@@ -217,6 +232,22 @@ const writeHref = `${href('contact', lang)}#write`;
     font-size: 1.075rem;
     line-height: 1.75;
   }
+  .sheet__sources {
+    margin: 0 clamp(1.25rem, 1rem + 2vw, 2.75rem) 1.5rem;
+    padding-block-start: 1rem;
+    border-block-start: 1px solid color-mix(in srgb, var(--matin-encre) 20%, transparent);
+    font-size: 0.95rem;
+  }
+  .sheet__sources-label {
+    font-family: var(--font-display);
+    font-weight: 800;
+    color: var(--matin-encre);
+    margin-block-end: 0.4rem;
+  }
+  .sheet__sources ul { margin: 0; padding-inline-start: 1.2rem; list-style: disc; }
+  .sheet__sources li { margin-block: 0.25rem; }
+  .sheet__sources a { color: var(--matin-firouzeh-ink); text-decoration: underline; text-underline-offset: 2px; }
+
   .sheet__matin {
     margin-top: 0.9rem;
     padding: 0.75rem 1rem;
